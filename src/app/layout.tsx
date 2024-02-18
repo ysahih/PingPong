@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 
+import "./style/chatstyle.css";
+import"./style/navestyle.css";
+import"./style/homestyle.css";
+import"./style/slidebarstyle.css";
 import "./style/style.css";
 import "./globals.css";
 

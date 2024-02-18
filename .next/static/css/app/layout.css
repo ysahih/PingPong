@@ -1,0 +1,546 @@
+/*!*************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[3]!./src/app/style/chatstyle.css ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************/
+@import url('https://fonts.googleapis.com/css2?family=Lalezar&display=swap');
+
+
+*{
+    font-family: 'Lalezar', system-ui;
+    margin: 0;
+    padding: 0;
+    color: #FFFFFF;
+}
+
+
+.chat{ 
+    width: 360px;
+    height:  calc(100vh - 95.2px);
+    top: 94px;
+    left: 1074px; 
+    background: linear-gradient(0deg, #081041, #081041),
+                linear-gradient(0deg, #1B266B, #1B266B);
+    border-left: 1px solid #1B266B;
+    box-shadow: -5px 4px 10px 0px #00000040;
+    float: right;
+}
+
+/*!*************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[3]!./src/app/style/navestyle.css ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************/
+@import url('https://fonts.googleapis.com/css2?family=Lalezar&display=swap');
+
+
+*{
+    font-family: 'Lalezar', system-ui;
+    margin: 0;
+    padding: 0;
+    color: #FFFFFF;
+}
+
+
+.navebar
+{
+    width : 100%;
+    height: 94px;
+    display: flex;
+    justify-content: space-between;
+    background: linear-gradient(0deg, #081041, #081041),
+    linear-gradient(0deg, #1B266B, #1B266B);
+    border-bottom: 1px solid #1B266B;
+    box-shadow: 5px 4px 10px 0px #02041D; 
+
+}
+
+.nave1{
+    display: flex;
+    
+}
+
+
+.mainlogocontainer
+{
+    position: relative;
+    height: 100%;
+    width: 298px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    left: 9%;
+}
+
+.mainlogocontainer h1 
+{
+    font-size: 44px;
+    font-weight: 400;
+    line-height: 69px;
+    letter-spacing: 0em;
+
+}
+
+.mainlogocontainer h1 span
+{
+    color:  #0064FB;
+    
+
+}
+
+.NotificationAlert
+{
+    width: 221px;
+    height: 94px;
+    background: linear-gradient(269.83deg, #0E0952 0.13%, #182B8D 99.85%);
+    display: flex;
+    align-items:center;
+    flex-direction : row;
+    justify-content: space-around;
+    animation: alertAnimation 2s ease-in-out;
+}
+
+
+@keyframes alertAnimation {
+    0% { opacity: 0; transform: translateY(-60px); }
+    50% { opacity: 1; transform: translateY(0); }
+  }
+
+
+.NotificationAlertright
+{
+    width: 71px;
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: -40px;
+  
+}
+
+.NotificationAlertleft
+{
+    width: 110px;
+    display: flex; 
+    align-items: flex-start;
+    flex-direction : row;
+    justify-content: space-around;
+}
+
+.Notificationtext
+{
+    /* margin-top: -13px; */
+}
+
+.Notificationrname
+{
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0em;    
+    margin-bottom: -7px;
+
+}
+
+.Notificationgameterm
+{
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 16px;
+    letter-spacing: 0em;
+    text-align: left;
+   
+
+}
+
+.alertebutton
+{
+    
+}
+
+
+.nave2{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width : 20%;
+    max-height: 94px;
+    gap: 5px;
+    
+  
+}
+
+
+.notificationborder
+{
+    width: 38px;
+    height: 38px;
+    top: 27px;
+    left: 1205px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    Border :2px solid #FFD700;
+    border-radius: 40px;
+    background: #1B266B;
+    margin-top: -7px;
+
+}
+
+
+.logonotification
+{
+    width: 20.01px;
+    height: 20px;
+    /* top: 2px;
+    left: 1.99px; */
+  
+}
+
+.UserProfile
+{
+    padding-top: 2px;
+    padding-left: 10px;
+}
+
+
+.Profilelvl
+{
+    
+    margin-bottom : -20px;
+    color : #8A99E9;
+}
+
+.mylogo
+{
+    width : 306px ;
+    height: 94px;
+}
+
+
+/*!*************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[3]!./src/app/style/homestyle.css ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************/
+@import url('https://fonts.googleapis.com/css2?family=Lalezar&display=swap');
+
+
+*{
+    font-family: 'Lalezar', system-ui;
+    margin: 0;
+    padding: 0;
+    color: #FFFFFF;
+}
+/*!*****************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[3]!./src/app/style/slidebarstyle.css ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************/
+@import url('https://fonts.googleapis.com/css2?family=Lalezar&display=swap');
+
+
+*{
+    font-family: 'Lalezar', system-ui;
+    margin: 0;
+    padding: 0;
+    color: #FFFFFF;
+}
+
+
+
+.selidbarparent
+{
+    float: left;
+}
+
+.selidbar{
+    z-index: -1;
+    overflow: hidden;
+    width: 306px;
+    height:  calc(100vh - 95.2px);
+    background:  #081041;
+    margin-left: -8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.slibarelementTop
+{
+    margin-top: 70px;
+    width: 100%;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    flex-direction : column;
+    
+}
+
+
+.Sidebutton
+{
+    margin-top: 15px;
+    width: 203px;
+    height: 47px;
+
+    border-radius: 30px;
+    border-right: 1px solid #1B266B;
+    box-shadow: 5px 0px 10px 0px #00000040;
+    border: transparent;
+    color: white ;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+        font-size: 15px;
+        font-weight: 400;
+        line-height: 24px;
+        letter-spacing: 0em;
+        text-align: left;
+
+    background: linear-gradient(0deg, #1B266B, #1B266B),
+        linear-gradient(0deg, #0064FB, #0064FB);
+    border-top: 1px solid #0064FB;
+    transition: all 1.5s ease;
+    display: flex;
+    align-items: center;
+
+}
+
+.slidebarprofilebutton:hover , .Sidebutton:hover
+{
+
+    background: linear-gradient(0deg, #0064FB, #0064FB),
+linear-gradient(0deg, #1ECDF8, #1ECDF8);
+
+}
+.butoonImage
+{   
+    padding-left: 20px;
+    padding-right: 10px;
+}
+
+
+
+.ButoonSlideText
+{
+    padding-top: 10px;
+    display: inline;
+    
+    
+
+}
+
+.slibarelementBotton
+{
+    
+    width: 90%;
+    height: 300px;
+    border-top: 1px solid #0064FB;
+    margin-left: auto;
+    margin-right: auto;
+  
+    display: flex;
+}
+
+
+
+.sidebarprofile
+{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction : column; 
+    padding-top: 30px;    
+}
+
+
+.slidebarprofilebutton
+{
+    margin-top: 10px;
+    width: 115px;
+    height: 39px;
+    border: transparent;
+    border-radius: 10px; 
+    border-top: 1px solid #0064FB;
+    box-shadow: 5px 4px 10px 0px #00000040;
+    background: linear-gradient(0deg, #1B266B, #1B266B),
+        linear-gradient(0deg, #0064FB, #0064FB);
+    color: #FFFFFF;
+}
+
+.usernametext
+{
+    width: 65px;
+    height: 24px;
+    top: 795px;
+    left: 116px;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0em;
+    color: #FFFFFF;
+
+}
+/*!*********************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[3]!./src/app/style/style.css ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************/
+
+
+
+
+.main{
+    width: calc((100% - 659px) );
+    float: left;
+    height: calc((100vh - 95.2px) );
+    
+    display: flex;
+    align-items : center;
+    justify-content: space-around;
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* chat      beging      */
+
+
+.chat{ 
+    width: 360px;
+    height:  calc(100vh - 95.2px);
+    top: 94px;
+    left: 1074px; 
+    background: linear-gradient(0deg, #081041, #081041),
+                linear-gradient(0deg, #1B266B, #1B266B);
+    border-left: 1px solid #1B266B;
+    box-shadow: -5px 4px 10px 0px #00000040;
+    float: right;
+}
+
+
+
+/* chat end */
+
+
+
+
+
+
+/* home page   beging */
+
+
+
+
+.home{
+    width : 90%;
+    height: 87%;
+    /* background-color: #1ECDF8; */
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.home-top
+{
+    
+    width: 100%;
+    height: 40%;
+    z-index: -3;
+
+}
+
+
+
+
+.home-top-content
+{
+  position: absolute;
+  left: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    
+}
+
+.homeGameMode
+{
+    position: relative;
+    left: 5%;
+    top: 10%;
+}
+.GameColorMode
+{
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.text-image
+{
+    font-family: Lalezar;
+    font-size: 40px;
+    font-weight: 400;
+    line-height: 63px;
+    letter-spacing: 0em;
+    color: #8A99E9;
+
+}
+
+.button-image
+{
+    width: 67px;
+    height: 34.25px;
+    border-radius: 5px;
+    border: 0;
+    border-top: 0.5px solid #1ECDF8;
+    background: linear-gradient(0deg, #0064FB, #0064FB),
+    linear-gradient(0deg, #1ECDF8, #1ECDF8);
+
+
+}
+
+
+
+.home-top-image{
+   position: relative;
+   
+    z-index: -1;
+}
+
+
+
+.home-botton
+{
+    background: linear-gradient(0deg, #081041, #081041),
+        linear-gradient(0deg, #0064FB, #0064FB);
+    width: 100%;
+    height: 55%;
+}
+
+
+
+
+/* home page end  */
+
+
+
+
+
+
+
+
+/*!*****************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[3]!./src/app/globals.css ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************/
+
+body
+{
+    background: url(/_next/static/media/backgroung.d60339ed.svg);
+}
+
+
+
+
