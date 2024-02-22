@@ -4,6 +4,7 @@ body
     background: url("../../public/backgroung.svg");
 } */
 @import url('https://fonts.googleapis.com/css2?family=Lalezar&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Lalezar&display=swap');
 
 *{
     margin : 0;
@@ -16,12 +17,12 @@ body
     display: flex;
     justify-content: space-between;
     background: #081041;
-    border-bottom: 1px solid #1B266B;
-    width: 100%;
+    width: 100vw;
     height: 94px;
+    border-bottom: 1px solid #1B266B;
     box-shadow: 5px 4px 10px 0px #02041D;
     position: absolute;
-    bottom: calc(100vh - 94px);
+    bottom: calc(100% - 94px);
     /* border: 0px, 0px, 1px, 0px; */
     
 }
@@ -54,8 +55,13 @@ body
 .rightBar{
     gap: 1vw;
     display: flex;
-    margin-right: 5%;
-    margin-top: 24px;
+    padding-right: 5%;
+    padding-top: 24px;
+    
+    /* border-bottom: 1px solid #1B266B;
+    box-shadow: 5px 4px 10px 0px #02041D;
+    background: #081041; */
+    /* background-color: red; */
 }
 
 .notification{
@@ -78,7 +84,7 @@ body
     display: flex;
     flex-direction: column;
     align-items: center;
-
+    
 }
 
 .profileimage{
@@ -90,11 +96,8 @@ body
     margin-top: 20px;
     font-family: Lalezar;
     font-size: 15px;
-    font-weight: 400;
-    line-height: 24px;
-    letter-spacing: 0em;
-    text-align: left;
     color: #8A99E9;
+    /* background: red; */
 }
 
 /* !!!Sidebar */
@@ -110,8 +113,8 @@ body
     border-right: 1px solid #1B266B;
     box-shadow: 5px 0px 10px 0px #00000040;
     /* position: relative ; */
-
-
+    
+    
 }
 
 .buttons{
@@ -144,4 +147,81 @@ body
 
 .icon{
     margin-left: 20px;
+}
+
+
+/* //!!!!Chat */
+
+.body{
+    display: flex;
+    justify-content: space-between;
+}
+/* mo2aqat */
+.home{
+    width : calc(100vw - 400px - 300px);
+    background-color: blue;
+}
+
+.chat{
+    width: 400px;
+    margin-top: 94px;
+    height:calc(100vh - 94px);
+    background: #081041;
+    border-left: 1px solid #1B266B;
+    box-shadow: -5px 4px 10px 0px #00000040;
+}
+
+.chatheader{
+    display: flex;
+    margin-top: 60px;
+    margin-left: 10%;
+    margin-bottom: 15px;
+    gap: 8px;
+}
+
+.chatheader h2{
+    font-family: Inter;
+    font-size: 15px;
+    margin-top: -1px;
+    font-weight: 400;
+    /* line-height: 18px; */
+    /* letter-spacing: 0em; */
+    /* text-align: center; */
+    color: #FFFFFF;
+}
+
+.line{
+    width : 80%;
+    margin: 0px auto;
+    border: 0.5px solid #0064FB
+}
+
+
+.chatmembers{
+    display: flex;
+    justify-content: space-between;
+    margin-left: 10%;
+    margin-top: 10px;
+}
+
+.text{
+    margin: auto 0px;
+    display: flex;
+    justify-content: space-between;
+    width: 65%;
+}
+
+.text p{
+    font-family: Inter;
+    font-size: 15px;
+    color: #8A99E9;
+}
+
+.profiles{
+    display: flex;
+    margin-right: calc(10% + 14px);
+}
+
+.profilepic{
+    margin-right: -14px;
 }

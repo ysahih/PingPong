@@ -33,7 +33,7 @@ const Sidebar = () => {
         <div className="Sidebar">
             <Buttons/>
             <hr></hr>
-            
+            {/* TODO: logout */}
         </div>
     );
 }
