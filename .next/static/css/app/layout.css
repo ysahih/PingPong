@@ -1,0 +1,294 @@
+/*!*****************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[11].oneOf[12].use[3]!./src/app/globals.css ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************/
+/* 
+body
+{
+    background: url("../../public/backgroung.svg");
+} */
+@import url('https://fonts.googleapis.com/css2?family=Lalezar&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Lalezar&display=swap');
+
+*{
+    margin : 0;
+    padding : 0;
+ 
+    /* background-color: #8A99E9; */
+}
+
+.navbar{
+    display: flex;
+    justify-content: space-between;
+    background: #081041;
+    width: 100vw;
+    height: 94px;
+    border-bottom: 1px solid #1B266B;
+    box-shadow: 5px 4px 10px 0px #02041D;
+    position: absolute;
+    bottom: calc(100% - 94px);
+    /* border: 0px, 0px, 1px, 0px; */
+    
+}
+
+.logo{
+    display: flex;
+    align-items: center;
+    gap : 12px;
+    justify-content: center;
+    width : 300px;
+    
+    /* border-right: 3px solid #1B266B; */
+}
+
+/* // */
+
+.header{
+    width: calc(100% - 300px);
+    display: flex;
+    justify-content: space-between;
+}
+
+.Gameinvite{
+    width: 221px;
+    height: 94px;
+    background: linear-gradient(269.83deg, #081041 0.13%, #182B8D 99.85%);
+    
+}
+
+.rightBar{
+    gap: 1vw;
+    display: flex;
+    padding-right: 5%;
+    padding-top: 24px;
+    
+    /* border-bottom: 1px solid #1B266B;
+    box-shadow: 5px 4px 10px 0px #02041D;
+    background: #081041; */
+    /* background-color: red; */
+}
+
+.notification{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* background-color: yellow; */
+    
+}
+
+.notificationLogo{
+    margin-bottom: -45px;
+}
+
+.notificationLogo:last-child{
+    margin-top: 10px;
+}
+
+.profile{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+
+.profileimage{
+    margin-bottom: -45px;
+}
+
+
+.rightBar h2{
+    margin-top: 20px;
+    font-family: Lalezar;
+    font-size: 15px;
+    color: #8A99E9;
+    /* background: red; */
+}
+
+/* !!!Sidebar */
+
+.Sidebar{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 94px;
+    width : 300px;
+    height:calc(100vh - 94px);
+    background: #081041;
+    border-right: 1px solid #1B266B;
+    box-shadow: 5px 0px 10px 0px #00000040;
+    /* position: relative ; */
+    
+    
+}
+
+.buttons{
+    margin-top: 60px;
+}
+
+.sideButton{
+    display: flex;
+    align-items: center;
+    margin-top: 12px;
+    width: 203px;
+    height: 47px;
+    gap: 10px;
+    border-top: 1px solid #1ECDF8;
+    box-shadow: 5px 4px 10px 0px #00000040;
+    border-radius: 30px;
+    background: #0064FB;
+}
+
+
+.sideButton h2{
+    
+    font-family: Lalezar;
+    font-size: 15px;
+    font-weight: 400;
+    margin-top: 5px;
+    color: #FFFFFF;
+    
+}
+
+.icon{
+    margin-left: 20px;
+}
+
+
+/* //!!!!Chat */
+
+.body{
+    display: flex;
+    justify-content: space-between;
+}
+/* mo2aqat */
+.home{
+    width : calc(100vw - 450px - 300px);
+    background-color: blue;
+}
+
+.chat{
+    width: 450px;
+    margin-top: 94px;
+    height:calc(100vh - 94px);
+    background: #081041;
+    border-left: 1px solid #1B266B;
+    box-shadow: -5px 4px 10px 0px #00000040;
+}
+
+.chatheader{
+    display: flex;
+    margin-top: 60px;
+    margin-left: 10%;
+    margin-bottom: 15px;
+    gap: 8px;
+}
+
+.chatheader h2{
+    font-family: Inter;
+    font-size: 15px;
+    margin-top: -1px;
+    font-weight: 400;
+    color: #FFFFFF;
+}
+
+.line{
+    width : 80%;
+    margin: 0px auto;
+    border: 0.5px solid #0064FB
+}
+
+
+.chatmembers{
+    display: flex;
+    justify-content: space-between;
+    margin-left: 10%;
+    margin-top: 10px;
+    margin-bottom: 35px;
+}
+
+.text{
+    margin: auto 0px;
+    display: flex;
+    justify-content: space-between;
+    width: 65%;
+}
+
+.text p{
+    font-family: Inter;
+    font-size: 15px;
+    color: #8A99E9;
+}
+
+.profiles{
+    display: flex;
+    margin-right: calc(10% + 14px);
+}
+
+.profilepic{
+    margin-right: -14px;
+}
+
+
+
+
+/* //Messages */
+
+.Message{
+    width: 300px;
+    height: 94px;
+    /* background-color: red; */
+    color: #0F1647;
+    border-top: 1px solid #0064FB;
+    box-shadow: 5px 4px 10px 0px #00000040;
+    border-radius: 15px;
+    margin :10px auto ;
+    display: flex;
+    justify-content: space-between;
+}
+
+.picture{
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+
+.messageInfo{
+    margin-left: -35px;
+    margin-top: 12px;
+}
+.messageInfo p{
+    font-family: Inter;
+    font-size: 13px;
+    font-weight: 400;
+    color: #8A99E9;
+    margin-top: 8px;
+
+
+}
+
+.messageInfo h2{
+    font-family: Inter;
+    font-size: 15px;
+    font-weight: 400;
+    color: #FFFFFF;
+}
+
+.more{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.date{
+    font-family: Inter;
+    font-size: 12px;
+    font-weight: 400;
+    color: #8A99E9;
+    margin-bottom: 8px;
+    margin-right: 14px;
+}
+
+.dots{
+    margin-left: 16px;
+    margin-top: 6px;
+
+}

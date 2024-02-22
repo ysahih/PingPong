@@ -28,16 +28,36 @@ const Memebers = ()=>{
     );
 }
 
+const Message = () =>{
+    return (
+        <div className="Message">
+
+            <div className="picture">
+                <Image className="profilepic" src="/homeImages/memeber1.svg" alt="member" width={40} height={40}/>
+            </div>
+
+            <div className="messageInfo">
+                <h2 className="sendeName">Username</h2>
+                <p className="msg" >hello, How are you Doing today</p>
+                <p className="msg" >Is everything okay</p>
+            </div>
+
+            <div className="more">
+                <Image className="dots" src="/homeImages/dots.svg" alt="member" width={12} height={12}/>
+                <p className="date">15:30</p>
+            </div>
+        </div>
+    );
+}
+
 const Chat = () =>{
     return (
 
         <div className="chat">
-            
-           <Header/>
+            <Header/>
             <hr className="line"></hr>
             <Memebers/>
-        
-            <></>
+            <Message/>
         </div>
     );
 }
