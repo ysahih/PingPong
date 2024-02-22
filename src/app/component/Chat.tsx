@@ -38,13 +38,23 @@ const Message = () =>{
 
             <div className="messageInfo">
                 <h2 className="sendeName">Username</h2>
-                <p className="msg" >hello, How are you Doing today</p>
-                <p className="msg" >Is everything okay</p>
+                <p className="msg" >hello, how you doing!</p>
             </div>
 
             <div className="more">
                 <Image className="dots" src="/homeImages/dots.svg" alt="member" width={12} height={12}/>
                 <p className="date">15:30</p>
+            </div>
+            <div className="Useroption">
+                <div className="block">
+                    <Image className="optionlogo" src="/homeImages/chat.svg" alt="logo" width={19} height={17}/>
+                    <p>Block</p>
+                </div>
+                <hr className="liney"></hr>
+                <div className="clash">
+                    <Image className="optionlogo" src="/homeImages/chat.svg" alt="logo" width={19} height={17}/>
+                    <p>Clash</p>
+                </div>
             </div>
         </div>
     );
@@ -57,7 +67,13 @@ const Chat = () =>{
             <Header/>
             <hr className="line"></hr>
             <Memebers/>
-            <Message/>
+
+            <div className="messagesHolder">
+                <Message/>
+                <Message/>
+                <Message/>
+                <Message/>
+            </div>
         </div>
     );
 }

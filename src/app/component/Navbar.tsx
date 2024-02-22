@@ -20,13 +20,31 @@ const Notification = () =>{
     );
 }
 
+const Invite = () =>{
+    return (
+        <div className="Gameinvite">
+            <div className="userprofile">
+                <Image src="/homeImages/memeber1.svg" className="profileimage" alt="image" width={34} height={34}/>
+            </div>
+
+            <div className="info">
+                <h2 className="username">Username</h2>
+                <p className="type">Dark Valley</p>
+            </div>
+
+            <div className="desicion">
+                <Image src="/homeImages/Deny.svg" className="profileimage" alt="image" width={24} height={24}/>
+                <Image src="/homeImages/Accept.svg" className="profileimage" alt="image" width={24} height={24}/>
+            </div>
+        </div>
+    );
+}
+
 const Header = () =>{
     return (
         <div className="header">
             <div className="leftBar">
-                <div className="Gameinvite">
-                    {/* TODO: code the div */}
-                </div>
+                <Invite/>
             </div>
 
             <div className="rightBar">
