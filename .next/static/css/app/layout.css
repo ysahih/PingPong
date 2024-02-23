@@ -16,6 +16,16 @@ body
     /* background-color: #8A99E9; */
 }
 
+.body{
+    display: flex;
+    justify-content: space-between;
+}
+/* mo2aqat */
+.home{
+    width : calc(100% - 300px - min(30%, 400px));
+    background-color: rgb(4, 4, 45);
+}
+
 .navbar{
     display: flex;
     justify-content: space-between;
@@ -159,11 +169,13 @@ body
     border-radius: 10px;
     border-top: 1px solid #0064FB;
     box-shadow: 5px 4px 10px 0px #00000040;
+    transition: all .5s ease;
     
 }
 .logoutbutton:hover{
     border-top: 1px solid #1ECDF8;
     background: #0064FB;
+    
 }
 
 .logout h2{
@@ -192,6 +204,7 @@ body
     border-radius: 30px;
     background: #1B266B;
     border-top: 1px solid #0064FB;
+    transition: all .5s ease;
     
 }
 .sideButton:hover{
@@ -216,15 +229,7 @@ body
 
 /* //!!!!Chat */
 
-.body{
-    display: flex;
-    justify-content: space-between;
-}
-/* mo2aqat */
-.home{
-    width : calc(100% - 300px - min(30%, 400px));
-    background-color: blue;
-}
+
 
 .chat{
     width: 30%;
@@ -457,4 +462,69 @@ body
     gap : 8px;
     display: flex;
     align-items: center;
+}
+
+
+/* ./////////////////////////////////////////////////?./////////////////////////////////////////////////?./////////////////////////////////////////////////?
+*/
+
+
+.Games{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 7%;
+    width: 70%;
+    min-width: 450px;
+    max-width: 700px;
+    height: 705px;
+    margin: 200px auto;
+    border-radius: 15px;
+    background:#081041;
+    border-top: 1.5px solid #1B266B;
+    box-shadow: 5px 4px 10px 0px #00000040;
+}
+
+.darkRow, .LightRow{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    /* align-items: center; */
+    gap : 2%;
+}
+
+.tabledescribtion p{
+    font-family: Inter;
+    font-size: 12px;
+    font-weight: 400;
+    color: #8A99E9;
+
+
+}
+
+.tabledescribtion h2{
+
+    font-family: Lalezar;
+    font-size: 30px;
+    font-weight: 400;
+    color: #FFFFFF;
+}
+
+
+.Playbutton{
+    margin-top: 8px;
+    width: 50px;
+    height: 20px;
+    font-family: Inter;
+    font-size: 8px;
+    font-weight: 500;
+    border: none;
+    color: #FFFFFF;
+    border-radius: 6px;
+    background: #0064FB;
+    border-top: 0.5px solid #1ECDF8;
+}
+
+.LightRow .tabledescribtion{
+    margin-left: 15px;
 }

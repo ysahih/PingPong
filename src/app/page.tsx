@@ -2,6 +2,7 @@ import Image from "next/image";
 import Navbar from "./component/Navbar";
 import Sidebar from "./component/Sidebar";
 import Chat from "./component/Chat";
+import Games from "./component/Games";
 
 
 
@@ -14,7 +15,7 @@ export default function Home() {
         <Sidebar/>
         
         <div className="home">
-          {/* <Games/> */}
+          <Games/>
         </div>
         
         <Chat/>
