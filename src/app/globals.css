@@ -82,13 +82,14 @@ body
     
 }
 
-.profileimage{
+.profileimage, .profilecenter{
     margin-bottom: -45px;
 }
 
 
 .rightBar h2{
     margin-top: 20px;
+    margin-left: -5px;
     font-family: Lalezar;
     font-size: 15px;
     color: #8A99E9;
@@ -100,6 +101,7 @@ body
 .Sidebar{
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     align-items: center;
     margin-top: 94px;
     width : 300px;
@@ -108,13 +110,73 @@ body
     border-right: 1px solid #1B266B;
     box-shadow: 5px 0px 10px 0px #00000040;
     /* position: relative ; */
-    
+
     
 }
 
-.buttons{
-    margin-top: 60px;
+.logout{
+    width: 300px;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+
+.buttons{
+    margin-top: 80px;
+}
+
+.logout .Username{
+    margin-top: 50px;;
+}
+
+.logout .profile .profilecenter{
+    width: 70px;
+    height: 70px;
+    margin-bottom: -65px;
+}
+
+.logout .profile .profileimage{
+    width: 62px;
+    height: 62px;
+    /* margin-bottom: -60px; */
+}
+
+
+.logoutbutton{
+    font-family: Lalezar;
+    font-size: 12px;
+    font-weight: 10000;
+    color: #FFFFFF;
+    width: 115px;
+    Height:39px;
+    border: none;
+    background: none;
+    background: #1B266B;
+    border-radius: 10px;
+    border-top: 1px solid #0064FB;
+    box-shadow: 5px 4px 10px 0px #00000040;
+    
+}
+.logoutbutton:hover{
+    border-top: 1px solid #1ECDF8;
+    background: #0064FB;
+}
+
+.logout h2{
+    font-family: Lalezar;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #FFFFFF;
+
+
+}
+
+
+
 
 .sideButton{
     display: flex;
@@ -123,12 +185,16 @@ body
     width: 203px;
     height: 47px;
     gap: 10px;
-    border-top: 1px solid #1ECDF8;
     box-shadow: 5px 4px 10px 0px #00000040;
     border-radius: 30px;
-    background: #0064FB;
+    background: #1B266B;
+    border-top: 1px solid #0064FB;
+    
 }
-
+.sideButton:hover{
+    border-top: 1px solid #1ECDF8;
+    background: #0064FB
+}
 
 .sideButton h2{
     
@@ -161,6 +227,7 @@ body
     width: 30%;
     max-width: 400px;
     margin-top: 94px;
+    z-index: 2;
     height:calc(100vh - 94px);
     background: #081041;
     border-left: 1px solid #1B266B;
@@ -239,7 +306,6 @@ body
 
 .messagesHolder{
 
-
 }
 
 .picture{
@@ -255,6 +321,7 @@ body
     /* background-color: red; */
     max-width: 110px;
 }
+
 .messageInfo p{
     font-family: Inter;
     font-size: 13px;
@@ -387,4 +454,18 @@ body
     gap : 8px;
     display: flex;
     align-items: center;
+}
+
+
+/* ./////////////////////////////////////////////////?./////////////////////////////////////////////////?./////////////////////////////////////////////////?
+*/
+
+
+.Games{
+    width: 585px;
+    height: 705px;
+    border-radius: 10px;
+    background:red;
+    border-top: 1px solid #1B266B;
+    box-shadow: 5px 4px 10px 0px #00000040;
 }

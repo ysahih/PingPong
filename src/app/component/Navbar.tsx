@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Profile from "./Profile";
 
 
 const Logo = ()=>{
@@ -20,7 +21,7 @@ const Notification = () =>{
     );
 }
 
-const Invite = () =>{
+const Invite = () => {
     return (
         <div className="Gameinvite">
             <div className="userprofile">
@@ -40,6 +41,8 @@ const Invite = () =>{
     );
 }
 
+
+
 const Header = () =>{
     return (
         <div className="header">
@@ -49,10 +52,9 @@ const Header = () =>{
 
             <div className="rightBar">
                <Notification/>
-                <div className="profile">
-                    <Image  src="/homeImages/ell.svg" className="profileimage" alt="logo" width={48} height={48}/>
-                    <Image src="/homeImages/memeber1.svg" className="profileimage" alt="image" width={42} height={43}/>
-                </div>
+                    
+                <Profile/>
+                
                 <h2>LEVEL: 10</h2>
             </div>
         </div>

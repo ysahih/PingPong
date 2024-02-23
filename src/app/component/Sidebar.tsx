@@ -1,4 +1,6 @@
 import Image from "next/image";
+import Profile from "./Profile";
+
 
 const Buttons = () => {
     return (
@@ -32,8 +34,20 @@ const Sidebar = () => {
     return (
         <div className="Sidebar">
             <Buttons/>
-            <hr></hr>
-            {/* TODO: logout */}
+
+            <div className="logout">
+            
+                <Profile/>
+                    
+                <h2 className="Username">Username</h2>
+                
+                <div className="logoutSection">
+                    <button className="logoutbutton">
+                        logout
+                    </button>
+                </div>
+                
+            </div>
         </div>
     );
 }
