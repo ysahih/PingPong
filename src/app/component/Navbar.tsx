@@ -7,7 +7,7 @@ const Logo = ()=>{
     return (
         <div className="logo">
             <Image src="/homeImages/logo.svg" alt="logo" className="applogo" width={36} height={42}/>
-            <Image src="/homeImages/PONGY.svg" className="hidden md:block" alt="logo" width={136} height={36}/>
+            <Image src="/homeImages/PONGY.svg" className="Pongy" alt="logo" width={136} height={36}/>
         </div>
     );
 }

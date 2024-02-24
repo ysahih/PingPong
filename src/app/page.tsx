@@ -8,8 +8,10 @@ import Games from "./component/Games";
 const Home = () => {
 	return (
 		<div className="home">
-			<Games/>
-		
+			{/* <Games/> */}
+			<div className="chatholder visible xl:invisible">
+				<Chat/>
+			</div>
 		</div>
 
 	);
@@ -22,7 +24,9 @@ export default function App() {
 			<div className="body">
 				<Sidebar/>
 				<Home/>
-				<Chat/>
+				<div className="chatdiv hidden xl:block">
+					<Chat/>
+				</div>
 			</div>
 		</div>
 	);

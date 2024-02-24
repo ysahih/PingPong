@@ -32,7 +32,7 @@ const Memebers = ()=>{
 
 const UserOption = ()=>{
     return (
-        <div className="Useroption">
+        <div>
             <div className="block">
                 <Image className="optionlogo" src="/homeImages/chat.svg" alt="logo" width={19} height={17}/>
                 <p>Block</p>
@@ -59,11 +59,14 @@ const Message = () =>{
                 <p className="msg" >hello, how you doing!</p>
             </div>
 
+            <div className="Useroption">
+                <UserOption/>
+            </div>
+
             <div className="more">
                 <Image className="dots" src="/homeImages/dots.svg" alt="member" width={12} height={12}/>
                 <p className="date">15:30</p>
             </div>
-            <UserOption/>
         </div>
     );
 }
@@ -71,14 +74,14 @@ const Message = () =>{
 const Chat = () =>{
     return (
 
-        <div className="chat hidden xl:block">
-            <Header/>
-            <hr className="line"></hr>
-            <Memebers/>
+        <div className="chat">
+            <div className="chatbar">
+                <Header/>
+                <hr className="line"></hr>
+            </div>
 
             <div className="messagesHolder">
-                <Message/>
-                <Message/>
+                <Memebers/>
                 <Message/>
                 <Message/>
             </div>

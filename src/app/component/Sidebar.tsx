@@ -38,19 +38,19 @@ const PhoneButtons = ()=>{
     return (
         <div className="phonebuttons">
             <div>
-                <Image className="icon" src="homeimages/homeicon.svg" alt="logo" width={28} height={18}/>
+                <Image className="icon" src="homeimages/homeicon.svg" alt="logo" width={24} height={18}/>
             </div>
             <div>
-                <Image className="icon" src="homeimages/homeicon.svg" alt="logo" width={28} height={18}/>
+                <Image className="icon" src="homeimages/gamesicon.svg" alt="logo" width={30} height={18}/>
             </div>
             <div>
-                <Image className="icon" src="homeimages/homeicon.svg" alt="logo" width={28} height={18}/>
+                <Image className="icon" src="homeimages/rankingicon.svg" alt="logo" width={30} height={18}/>
             </div>
             <div>
-                <Image className="icon" src="homeimages/homeicon.svg" alt="logo" width={28} height={18}/>
+                <Image className="icon" src="homeimages/searchicon.svg" alt="logo" width={30} height={18}/>
             </div>
             <div>
-                <Image className="icon" src="homeimages/homeicon.svg" alt="logo" width={28} height={18}/>
+                <Image className="icon" src="homeimages/chaticon.svg" alt="logo" width={24} height={18}/>
             </div>
         </div>
     );
@@ -80,7 +80,7 @@ const Sidebar = () => {
                 
                <PhoneButtons/>
                 <div className="logoutIcon">
-                    <Image className="icon" src="homeimages/homeicon.svg" alt="logo" width={26} height={18}/>
+                    <Image className="icon" src="homeimages/logouticon.svg" alt="logo" width={26} height={18}/>
                 </div>
 
             </div>
