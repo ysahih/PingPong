@@ -6,6 +6,10 @@ body
 @import url('https://fonts.googleapis.com/css2?family=Lalezar&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Lalezar&display=swap');
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 *{
     margin : 0;
     padding : 0;
@@ -15,58 +19,65 @@ body
 
 .body{
     display: flex;
-    justify-content: space-between;
+    justify-content: stretch;
 }
 /* mo2aqat */
 .home{
-    width : calc(100% - 300px - min(30%, 400px));
+    /* width : calc(100% - 300px - min(30%, 400px)); */
+    width: 100%;
+    margin-top: 94px;
+    height:calc(100vh - 60px);
     background-color: rgb(4, 4, 45);
+    @media (max-width: 768px) {
+        margin-top: 60px;
+        
+    }
 }
 
 .navbar{
     display: flex;
-    justify-content: space-between;
     background: #081041;
-    width: 100vw;
+    width: 100%;
     height: 94px;
     border-bottom: 1px solid #1B266B;
     box-shadow: 5px 4px 10px 0px #02041D;
     position: absolute;
-    bottom: calc(100% - 94px);
-    /* border: 0px, 0px, 1px, 0px; */
-    
+    @media (max-width: 768px){
+        height: 60px;
+    }
 }
 
 .logo{
     display: flex;
-    align-items: center;
-    gap : 12px;
     justify-content: center;
-    width : 300px;
-    
-    /* border-right: 3px solid #1B266B; */
+    gap : 5%;
+    max-width : 301px;
+    width: 485px;
+    border-right: 1px solid #1B266B;
+    /* background-color: red; */
+    @media (max-width: 768px){
+        max-width: 70px;
+        min-width: 70px;
+    }
 }
 
 /* // */
 
 .header{
-    width: calc(100% - 300px);
+    width: 100% ;
     display: flex;
     justify-content: space-between;
 }
-
-
 
 .rightBar{
     gap: 1vw;
     display: flex;
     padding-right: 5%;
     padding-top: 24px;
+    @media (max-width: 768px){
+        padding-top: 5px;
+    }
     
-    /* border-bottom: 1px solid #1B266B;
-    box-shadow: 5px 4px 10px 0px #02041D;
-    background: #081041; */
-    /* background-color: red; */
 }
 
 .notification{
@@ -103,25 +114,63 @@ body
     font-family: Lalezar;
     font-size: 15px;
     color: #8A99E9;
+   
     /* background: red; */
 }
+/* //phone side bar */
+
+.PhoneSidebar{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    min-width : 70px;
+    max-width : 70px;
+    margin-top: 60px;
+    height:calc(100vh - 60px);
+    background: #081041;
+    border-right: 1px solid #1B266B;
+    box-shadow: 5px 0px 10px 0px #00000040;
+    @media (min-width: 769px){
+        display: none;
+    }
+    /* background-color: red; */
+
+}
+
+.PhoneSidebar .icon{
+    margin-right: 22px;
+    margin-bottom: 30px;
+    
+}
+
+.phonebuttons{
+    margin-top: 100px;
+}
+
+.logoutIcon{
+    margin-bottom: 50px;
+}
+
 
 /* !!!Sidebar */
 
-.Sidebar{
+.Sidebar {
+
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
     margin-top: 94px;
-    width : 300px;
     height:calc(100vh - 94px);
     background: #081041;
     border-right: 1px solid #1B266B;
     box-shadow: 5px 0px 10px 0px #00000040;
     /* position: relative ; */
 
-    
+    @media (max-width: 768px){
+        display: none;
+    }
 }
 
 .logout{
@@ -202,11 +251,20 @@ body
     background: #1B266B;
     border-top: 1px solid #0064FB;
     transition: all .5s ease;
+    @media (max-width: 768px){
+        display: none;
+    }
     
+}
+.sideButton:active{
+    border-top: 1px solid #1ECDF8;
+    background: #0064FB;
+
+
 }
 .sideButton:hover{
     border-top: 1px solid #1ECDF8;
-    background: #0064FB
+    background: #0064FB;
 }
 
 .sideButton h2{
@@ -229,7 +287,7 @@ body
 
 
 .chat{
-    width: 30%;
+    width: 40%;
     max-width: 400px;
     margin-top: 94px;
     z-index: 2;
@@ -237,6 +295,7 @@ body
     background: #081041;
     border-left: 1px solid #1B266B;
     box-shadow: -5px 4px 10px 0px #00000040;
+    transition: opacity 0.3s ease;
 }
 
 .chatheader{
@@ -298,7 +357,7 @@ body
 .Message{
     display: flex;
     justify-content: space-between;
-    width: 80%;
+    width: 70%;
     min-width: 260px;
     height: 94px;
     color: #0F1647;
@@ -309,9 +368,7 @@ body
 
 }
 
-.messagesHolder{
 
-}
 
 .picture{
     margin-top: 10px;
@@ -376,7 +433,7 @@ body
     height: 45px;
     background: #040A2F;
     margin-top: 18px;
-    margin-left: min(18%,  240px);
+    margin-left: 180px;
     position: absolute;
     border: 1px 0px 0px 0px;
     border-radius: 5px 0px 5px 5px;
@@ -388,7 +445,6 @@ body
 }
 
 .block p{
-
     display: flex;
     font-family: Inter;
     font-size: 12px;
@@ -398,7 +454,6 @@ body
 }
 
 .clash p{
-    display: flex;
     font-family: Inter;
     font-size: 12px;
     font-weight: 400;
@@ -411,8 +466,8 @@ body
 }
 
 .optionlogo{
-    margin-top: 2px;
-    width: 10px;
+    margin-top: 4px;
+    width: 12px;
     height: 10px;
 }
 
@@ -422,26 +477,36 @@ body
 
 .Gameinvite{
     display: flex;
-    justify-content: space-around;
     width: 220px;
     height: 94px;
     background: linear-gradient(269.83deg, #081041 0.13%, #182B8D 99.85%);
-    
+    @media (max-width: 768px){
+        height: 60px;
+        width: 180px;
+    }
 }
 
 .userprofile{
     margin-left: 8px;
-    margin-top: -12px;
+    margin-top: 12px; 
+}
+
+.userpic{
+    @media (max-width: 768px){
+        width: 100%
+    }
+    
 }
 
 .info{
-    margin-top: 16px;
-    margin-right: 15px;
+    margin-top: 14px;
+    margin-left: 15px;
+    margin-right: 5%;
 }
 
 .info h2{
     font-family: Lalezar;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 400;
     color: #FFFFFF;
     
@@ -455,13 +520,17 @@ body
 }
 
 .desicion{
-    height: 94px;
+
     gap : 8px;
     display: flex;
-    align-items: center;
 }
 
-
+.yes-no{
+    margin-top: 25px;
+    @media (max-width: 768px){
+        width: 18px;
+    }
+}
 /* ./////////////////////////////////////////////////?./////////////////////////////////////////////////?./////////////////////////////////////////////////?
 */
 
@@ -472,14 +541,18 @@ body
     justify-content: center;
     gap: 7%;
     width: 70%;
-    min-width: 450px;
+    /* min-width: 450px; !!! should be edited when handling responsivity */
     max-width: 700px;
-    height: 705px;
-    margin: 200px auto;
+    height: 700px;
+    margin: 10% auto;
     border-radius: 15px;
     background:#081041;
     border-top: 1.5px solid #1B266B;
     box-shadow: 5px 4px 10px 0px #00000040;
+    @media (max-width: 768px){
+        height: 50%;
+        
+    }
 }
 
 .darkRow, .LightRow{
@@ -495,16 +568,26 @@ body
     font-size: 12px;
     font-weight: 400;
     color: #8A99E9;
+    @media (max-width: 1000px){
+        font-size: 8px;
+    }
+    
+    
+}
 
-
+.tabledescribtion{
+    margin-top: 20px;
 }
 
 .tabledescribtion h2{
-
+    
     font-family: Lalezar;
     font-size: 30px;
     font-weight: 400;
     color: #FFFFFF;
+    @media (max-width: 1000px){
+        font-size: 20px;
+    }
 }
 
 
@@ -524,4 +607,28 @@ body
 
 .LightRow .tabledescribtion{
     margin-left: 15px;
+}
+
+/* Home */
+
+.hometable{
+    margin-top: 30px;
+    width: 100%;
+    /* min-width: 800px; */
+}
+
+/* //Game launcher*/
+
+.play h2{
+    font-family: Lalezar;
+    font-size: 40px;
+    font-weight: 400; 
+    color: #8A99E9;
+    margin-top: 100px;
+}
+
+.play{
+    position: absolute;
+   /* background-color: white; */
+
 }

@@ -1,5 +1,7 @@
-import Head from "next/head";
+// import Head from "next/head";
 import Image from "next/image";
+
+
 
 const Header = () =>{
     return(
@@ -69,7 +71,7 @@ const Message = () =>{
 const Chat = () =>{
     return (
 
-        <div className="chat">
+        <div className="chat hidden xl:block">
             <Header/>
             <hr className="line"></hr>
             <Memebers/>

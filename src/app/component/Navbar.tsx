@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Profile from "./Profile";
 
+const PhoneLogo = ()=>{}
 
 const Logo = ()=>{
     return (
         <div className="logo">
-            <Image src="/homeImages/logo.svg" alt="logo" width={36} height={42}/>
-            <Image  src="/homeImages/PONGY.svg" alt="logo" width={136} height={36}/>
+            <Image src="/homeImages/logo.svg" alt="logo" className="applogo" width={36} height={42}/>
+            <Image src="/homeImages/PONGY.svg" className="hidden md:block" alt="logo" width={136} height={36}/>
         </div>
     );
 }
@@ -25,17 +26,17 @@ const Invite = () => {
     return (
         <div className="Gameinvite">
             <div className="userprofile">
-                <Image src="/homeImages/memeber1.svg" className="profileimage" alt="image" width={34} height={34}/>
+                <Image src="/homeImages/memeber1.svg"  className="userpic" alt="image" width={34} height={34}/>
             </div>
 
-            <div className="info">
+            <div className="info ">
                 <h2 className="username">Username</h2>
                 <p className="type">Dark Valley</p>
             </div>
 
-            <div className="desicion">
-                <Image src="/homeImages/Deny.svg" className="profileimage" alt="image" width={24} height={24}/>
-                <Image src="/homeImages/Accept.svg" className="profileimage" alt="image" width={24} height={24}/>
+            <div className="desicion ">
+                <Image src="/homeImages/Deny.svg" className="yes-no   " alt="image" width={24} height={24}/>
+                <Image src="/homeImages/Accept.svg" className="yes-no " alt="image" width={24} height={24}/>
             </div>
         </div>
     );
@@ -46,16 +47,17 @@ const Invite = () => {
 const Header = () =>{
     return (
         <div className="header">
+
             <div className="leftBar">
                 <Invite/>
             </div>
 
-            <div className="rightBar">
+            <div className="rightBar ">
                <Notification/>
                     
                 <Profile/>
                 
-                <h2>LEVEL: 10</h2>
+                <h2 className="hidden md:block ">LEVEL: 10</h2>
             </div>
         </div>
 
