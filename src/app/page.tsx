@@ -4,10 +4,8 @@ import Navbar from "./component/Navbar";
 import Sidebar from "./component/Sidebar";
 import Chat from "./component/Chat";
 import Games from "./component/Games";
+
 import { Carousel, Typography, Button } from "@material-tailwind/react";
-// import { ThemeProvider, Button } from "@material-tailwind/react";
- 
-// export { ThemeProvider, Button };
 
 const Tables = ()=>{
 	return (
@@ -70,6 +68,34 @@ const Tables = ()=>{
 	);
 }
 
+const Statistics = ()=>{
+	return (
+		<>
+			<div className="statistics-line flex items-center">
+				<hr className="line"/>
+				<span className="px-4">Statistics</span>
+				<hr className="line"/>
+			</div>
+			<div className="Statistics">
+				<div className="Statistics-head">
+					<div>
+						<p>Opponent</p>
+					</div>
+
+					<div>
+						<p>Level</p>
+					</div>
+
+					<div>
+						<p>W/L</p>
+					</div>
+
+				</div>
+			</div>
+		</>
+	);
+}
+
 
 const Home = () => {
 	return (
@@ -80,7 +106,8 @@ const Home = () => {
 			</div> */}
 			<div className="home">
 				<Tables/>
-				{/* <Image src="/homeImages/darkvalley.svg" alt="dark valley" width={200} height={40}/> */}
+
+				<Statistics/>
 			</div>
 		</div>
 

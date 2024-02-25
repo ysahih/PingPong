@@ -677,13 +677,12 @@ body
 /* //Game launcher*/
 
 
-
 .tables{
-    width: 70%;
-    margin: 18px auto;
+    margin: 0px auto;
+    background-color: none;
+    width: 90%;
     max-width: 600px;
     min-width: 200px;
-    background-color: none;
     @media (max-width:769px) {
         width: 100%;
     }
@@ -724,15 +723,60 @@ body
 
 .playnow{
     font-family: Inter;
-    font-size: 6px;
+    font-size: 8px;
     font-weight: 500;
-    line-height: 7px;
+    line-height: 1px;
     color: #FFFFFF;
     border-top: 0.5px solid #1ECDF8;
     @media (max-width:580px) {
-        font-size: 8px;
-        font-weight: 400;
-
+        font-weight: 550;
+        font-size: 5px;
     }
+
+}
+
+/* //statistics */
+
+.statistics-line span{
+    font-family: Inter;
+    font-size: 12px;
+    font-weight: 500;
+    color: #FFFFFF;
+
+}
+
+.statistics-line .line{
+    border: 0.5px solid #0064FB;
+}
+
+.statistics-line{
+    width: 90%;
+    max-width: 700px;
+    margin: 20px auto;
+}
+
+.Statistics{
+    margin: 0px auto;
+    height: 400px;
+    width: 90%;
+    max-width: 700px;
+    border-top: 1px solid #1B266B;
+    border-radius: 12px;
+
+}
+
+.Statistics-head{
+    margin-top: 8px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    
+}
+.Statistics-head p{
+    font-family: Inter;
+    font-size: 10px;
+    font-weight: 500;
+    color: #8A99E9;
+
 
 }
