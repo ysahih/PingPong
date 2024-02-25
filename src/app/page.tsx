@@ -9,7 +9,14 @@ import { Carousel, Typography, Button } from "@material-tailwind/react";
 
 const Tables = ()=>{
 	return (
-		<Carousel className="tables rounded-lg">
+		<Carousel className="tables rounded-lg"
+			transitionDuration={2000}
+			autoPlay // Enable automatic sliding
+			infiniteLoop // Enable infinite loop
+			showArrows={false} // Hide navigation arrows
+			showStatus={false} 
+			// transition={{ duration: 1 }}
+		>
     		<div className=" darktable relative h-1/2 w-full">
     	  		<Image
     	    		src="/homeImages/darkvalley.svg"
@@ -97,6 +104,23 @@ const Statistics = ()=>{
 }
 
 
+const BackGround = ()=> {
+    return (
+        <div className='bg'>
+            <Image
+                src="/homeImages/Backgroundimage.svg"
+                alt="background"
+                priority={true}
+                fill
+				className="filter brightness-50"
+                sizes="100vw"
+                style={{
+                    objectFit: "cover",
+                }} />
+         </div>
+    );
+}
+
 const Home = () => {
 	return (
 		<div className="homepage">
@@ -106,7 +130,6 @@ const Home = () => {
 			</div> */}
 			<div className="home">
 				<Tables/>
-
 				<Statistics/>
 			</div>
 		</div>
@@ -117,6 +140,7 @@ const Home = () => {
 export default function App() {
 	return (
 		<div>
+			<BackGround/>
 			<Navbar/>
 			<div className="body">
 				<Sidebar/>

@@ -59,7 +59,7 @@ const PhoneButtons = ()=>{
 const Sidebar = () => {
     return (
         <>
-            <div className="Sidebar ">
+            <div className="Sidebar">
                 <Buttons/>
                 <div className="logout">
 
