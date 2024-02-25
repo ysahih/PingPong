@@ -9,13 +9,8 @@ import { Carousel, Typography, Button } from "@material-tailwind/react";
 
 const Tables = ()=>{
 	return (
-		<Carousel className="tables rounded-lg"
-			transitionDuration={2000}
-			autoPlay // Enable automatic sliding
-			infiniteLoop // Enable infinite loop
-			showArrows={false} // Hide navigation arrows
-			showStatus={false} 
-			// transition={{ duration: 1 }}
+		<Carousel 
+			className="tables rounded-lg"
 		>
     		<div className=" darktable relative h-1/2 w-full">
     	  		<Image
@@ -43,7 +38,7 @@ const Tables = ()=>{
     	  		  </div>
     	  		</div>
     	</div>
-    	<div className=" lighttable relative h-full w-full">
+    	<div className="lighttable relative h-full w-full">
     		<img
     	    	src="/homeImages/frozenarena.svg"
     	    	alt="image 2"
@@ -58,7 +53,7 @@ const Tables = ()=>{
     	      		>
 						Frozen Areana
     	      		</Typography>
-    	      		
+
     	     	 	<div className="flex text-sm">
     	      		  <Button
 					  		className="playnow"
@@ -72,6 +67,23 @@ const Tables = ()=>{
     
     	</Carousel>
 
+	);
+}
+
+const Match = () => {
+	return (
+		<div className="match">
+			<div className="opponent">
+				<Image src="/homeImages/member0.svg" alt="profile" width={26} height={26}/>
+				<p>UcefSahih</p>
+			</div>
+			<div className="level">
+				<p> 10 </p>
+			</div>
+			<div className="w-l">
+				<p> W </p>
+			</div>
+		</div>
 	);
 }
 
@@ -97,6 +109,13 @@ const Statistics = ()=>{
 						<p>W/L</p>
 					</div>
 
+				</div>
+				<div className="matches">
+					<Match/>
+					<Match/>
+					<Match/>
+					<Match/>
+					<Match/>
 				</div>
 			</div>
 		</>
@@ -150,7 +169,6 @@ export default function App() {
 				</div>
 			</div>
 		</div>
-
 
 	// 	
 

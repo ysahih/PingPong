@@ -58,7 +58,7 @@ const PhoneButtons = ()=>{
 
 const Sidebar = () => {
     return (
-        <>
+        <div className="side_holder">
             <div className="Sidebar">
                 <Buttons/>
                 <div className="logout">
@@ -84,7 +84,7 @@ const Sidebar = () => {
                 </div>
 
             </div>
-        </>
+        </div>
     );
 }
 
