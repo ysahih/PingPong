@@ -2679,11 +2679,11 @@ video {
     @media (max-width:1002px) {
         margin-left: 70px;
     }
-    @media (max-height:400px) {
+    @media (max-height:560px) {
         margin-left: 0px;
     }
         
-    @media (min-height:400px) and (min-width: 1002px){
+    @media (min-height:560px) and (min-width: 1002px){
         margin-left: 200px;
 
     }
@@ -2828,6 +2828,7 @@ video {
     position: fixed;
     /* margin-top: 60px; */
     /* min-height: 600px; */
+   
     background: #081041;
     border-right: 1px solid #1B266B;
     box-shadow: 5px 0px 10px 0px #00000040;
@@ -2836,7 +2837,7 @@ video {
     @media (min-width: 1001px){
         display: none;
     }
-    @media (max-height:400px) {
+    @media (max-height:560px) {
         position: static;
     }
     @media (min-width: 769px){
@@ -2846,27 +2847,29 @@ video {
 
 }
 
-.side_holder{
-}
-
-
-
-.PhoneSidebar .icon{
-    margin-bottom: 30px;
-    
-}
 
 .phonebuttons{
     margin-top: 100px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-right: 20px;
+ 
+    /* margin-right: 20px; */
     
 }
 
+.phonebutton{
+    /* display: flex; */
+    width: 60px;
+    margin: 25px auto;
+    padding-top: 5px;
+    margin-bottom: 5px;
+    height: 40px;
+    border-radius: 8px;
+}
+
+
+
+
 .logoutIcon{
-    /* margin-bottom: 50%; */
+    margin-bottom: 60%;
     margin-right: 20px;
 }
 
@@ -2893,7 +2896,7 @@ video {
     @media (max-width: 1000px){
         display: none;
     }
-    @media (max-height:400px) {
+    @media (max-height:560px) {
         position: static;
     }
 }
@@ -2941,7 +2944,6 @@ video {
     border-radius: 10px;
     border-top: 1px solid #0064FB;
     box-shadow: 5px 4px 10px 0px #00000040;
-    /* transition: all .5s ease; */
     
 }
 .logoutbutton:hover{
@@ -2986,16 +2988,18 @@ video {
     }
     cursor: pointer;
 }
-.sideButton:active{
-    border-top: 1px solid #1ECDF8;
+
+.activeChatButton{
     background: #0064FB;
-
-
+    border-top: 1px solid #1ECDF8;
 }
+
 .sideButton:hover{
-    border-top: 1px solid #1ECDF8;
     background: #0064FB;
+    border-top: 1px solid #1ECDF8;
 }
+
+
 
 .sideButton h2{
     
@@ -3203,7 +3207,7 @@ video {
     align-items: center;  
     /* gap : 3px; */
 
-     width: 55px; 
+    width: 65px; 
     
     margin-top: -10px;
     margin-right: 44px; 
@@ -3594,6 +3598,14 @@ video {
 
 .secondPlace, .thirdPlace{
     margin-top: 100px;
+}
+
+.first-3  {
+    font-family: Lalezar;
+    font-size: 11px;
+    font-weight: 200;
+    color: #FFFFFF;
+
 }
 
 .placeholder\:opacity-0::-moz-placeholder{
@@ -6484,5 +6496,3 @@ video {
 .\[\&\:\:-webkit-slider-thumb\]\:\[-webkit-appearance\:none\]::-webkit-slider-thumb{
   -webkit-appearance: none;
 }
-
-
