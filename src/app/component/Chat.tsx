@@ -47,7 +47,7 @@ const UserOption = ({ className }) => {
     );
 }
 
-const More = ()=>{
+const More = ()=> {
 
     const [showUserOption, setShowUserOption] = useState(false);
 

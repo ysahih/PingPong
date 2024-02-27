@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import Image from "next/image";
 import Navbar from "./component/Navbar";
 import Sidebar from "./component/Sidebar";
@@ -145,19 +146,71 @@ const BackGround = ()=> {
     );
 }
 
-const Home = () => {
+const Ranking = ()=>{
+	return(
+		<div className="ranking">
+				<div className="first-3">
+					<div className="secondPlace">
+						<Image src="/homeImages/firstplace.svg" width={18} height={7} alt="profile"/>
+						<Image src="/homeImages/memeber1.svg" width={43} height={43} alt="profile"/>
+						<p>Username</p>
+					</div>
+					<div className="firstPlace">
+						<Image src="/homeImages/firstplace.svg" width={30} height={16} alt="profile"/>
+						<Image src="/homeImages/memeber1.svg" width={60} height={60} alt="profile"/>
+						<p>Username</p>
+					</div>
+					<div className="thirdPlace">
+						<Image src="/homeImages/firstplace.svg" width={18} height={7} alt="profile"/>
+						<Image src="/homeImages/memeber1.svg" width={43} height={43} alt="profile"/>
+						<p>Username</p>
+					</div>
+				</div>
+				<div className="ranking-head">
+
+				</div>
+				<div className="">
+
+				</div>
+		</div> 
+	);
+}
+
+const Home = ({active}) => {
 	return (
 		<div className="homepage">
-			<div className="chatholder visible xl:invisible">
-				<Chat/>
-			</div>
-			<Games/>
-			<div className="home">
+			{active === 1 && <div className="home">
 				<Tables/>
 				<Statistics/>
-			</div>
+			</div>}
+			{active === 2 && <Games />}
+			{active === 3 && <Ranking/>}
+			{active === 5 && <div className="chatholder visible xl:invisible">
+				<Chat/>
+			</div>}
+
+
 		</div>
 
+	);
+}
+
+const Body = () => {
+	
+	const [activeComponent, setActiveComponent] = useState(1);
+
+	const handleButtonClick = (componentNumber: number) => {
+	  setActiveComponent(componentNumber);
+	};
+
+	return (
+		<div className="body">
+			<Sidebar ButtonClick={handleButtonClick} />
+			<Home active={activeComponent}/>
+			<div className="chatdiv hidden xl:block">
+				<Chat/>
+			</div>
+		</div>
 	);
 }
 
@@ -166,13 +219,7 @@ export default function App() {
 		<div>
 			<BackGround/>
 			<Navbar/>
-			<div className="body">
-				<Sidebar/>
-				<Home/>
-				<div className="chatdiv hidden xl:block">
-					<Chat/>
-				</div>
-			</div>
+			<Body/>
 		</div>
 
 	// 	
