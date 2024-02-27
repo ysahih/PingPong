@@ -2662,7 +2662,6 @@ video {
 
 .homepage{
     width: 100%;
-
     overflow: auto;
     overflow-x: hidden;
     min-height: 700px;
@@ -2689,14 +2688,35 @@ video {
 
     }
 
-
-
-
-    
 }
+
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+    
+  }
+  
+  /* Track */
+::-webkit-scrollbar-track {
+    background: #040A2F;
+    border-radius: 20px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    border-radius: 20px;
+      background: #1B266B;
+    }
+    
+    /* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+      background: #2b3993;
+
+  }
 .homepage::-webkit-scrollbar {
     width: 0; /* Hide the scrollbar on WebKit browsers */
-  }
+
+}
 
 .navbar{
     display: flex;
@@ -2938,8 +2958,6 @@ video {
     letter-spacing: 0em;
     text-align: left;
     color: #FFFFFF;
-
-
 }
 
 
@@ -2966,7 +2984,7 @@ video {
     @media (max-width: 769px){
         display: none;
     }
-    
+    cursor: pointer;
 }
 .sideButton:active{
     border-top: 1px solid #1ECDF8;
@@ -2995,25 +3013,27 @@ video {
 
 
 /* //!!!!Chat */
-
-.chat{
+.chatdiv, .chatholder{
+    overflow: scroll;
+    overflow-x: hidden;
 }
+ 
+.messagesHolder{
+    /* background-color: red; */
 
+
+} 
 
 .chatdiv{
-    /* position: absolute; */
-    float: left;
-    /* float: right; */
     width: 40%;
     max-width: 400px;
     min-width: 300px;
-    /* margin-top: 94px; */
-    /* z-index: 2; */
+    
     height: calc(100vh);
     /* padding-bottom: calc(100%); */
     min-height: 700px;
     background: #081041;
-    border-left: 1px solid #1B266B;
+    border-left: 1px solid #1b266b;
     box-shadow: -5px 4px 10px 0px #00000040;
     transition: opacity 0.3s ease;
     
@@ -3022,10 +3042,14 @@ video {
 .chatheader{
 
     display: flex;
-    margin-top: 150px;
     margin-left: 10%;
     margin-bottom: 15px;
     gap: 8px;
+    margin-top: 50px;
+    @media (min-width:1140px) {
+        margin-top: 140px;
+        
+    }
 }
 
 .chatheader h2{
@@ -3041,11 +3065,13 @@ video {
     min-width: 250px;
     max-width: 500px;
     height: 80%;
-    margin: 10% auto;
+    margin: 25% auto;
     border-radius: 15px;
     border-top: 1px solid #1B266B;
     box-shadow: 5px 4px 10px 0px #00000040;
     background: #081041;
+    
+
 }
 
 .line{
@@ -3093,17 +3119,18 @@ video {
 
 .Message{
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     width: 70%;
     min-width: 200px;
-    max-width: 250px;
+    /* gap: -50px; */
+    max-width: 299px;
     height: 94px;
     /* background-color: red; */
     color: #0F1647;
     border-top: 1px solid #0064FB;
     box-shadow: 5px 4px 10px 0px #00000040;
     border-radius: 15px;
-    margin :18px auto ;
+    margin: 18px auto ;
 }
 
 
@@ -3141,9 +3168,14 @@ video {
 }
 
 .more{
+    /* margin-top: 4px; */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    gap:10px;
+    width: 100px;
+    margin-right: -30px;
+    /* background-color: red; */
 }
 
 .date{
@@ -3151,30 +3183,36 @@ video {
     font-size: 12px;
     font-weight: 400;
     color: #8A99E9;
-    margin-bottom: 8px;
-    margin-right: 14px;
+    margin-bottom: 3px;
+    margin-left:22px;
+
+    flex: 0 0 0;
 }
 
 .dots{
-    margin-left: 16px;
-    margin-top: 6px;
+    margin-left: 42px;
+    margin-top: 12px;
+    cursor: pointer;
+    transition: width 0.1s;;
+    /* flex: 0 1 auto; */
+
 }
 
+.userOption{
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;  
+    /* gap : 3px; */
 
-.Useroption{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap : 3px;
-    width: 64px;
-    height: 45px;
-    background: #040A2F;
-    margin-top: 18px;
-    margin-right: -40px;
-    /* margin-left: 30%; */
+     /* width: 40px;  */
+    
+    margin-top: -10px;
+    margin-right: 44px; 
     border: 1px 0px 0px 0px;
-    border-radius: 5px 0px 5px 5px;
+    border-radius: 5px 0px 5px 5px; 
+    background: #040A2F;
+
 }
 
 .block, .clash {
@@ -3286,6 +3324,7 @@ video {
     width: 70%;
     /* min-width: 450px; !!! should be edited when handling responsivity */
     max-width: 700px;
+
     padding: 0px 30px;
     height: 700px;
     margin: 20% auto;
@@ -3296,6 +3335,7 @@ video {
     box-shadow: 5px 4px 10px 0px #00000040;
     @media (max-height: 1040px){
         height: 60%;
+        min-height: 500px;
     }
     @media (max-width: 769px){
         height: 60%;

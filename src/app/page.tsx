@@ -116,6 +116,11 @@ const Statistics = ()=>{
 					<Match/>
 					<Match/>
 					<Match/>
+					<Match/>
+					<Match/>
+					<Match/>
+					<Match/>
+					<Match/>
 				</div>
 			</div>
 		</>
@@ -143,10 +148,10 @@ const BackGround = ()=> {
 const Home = () => {
 	return (
 		<div className="homepage">
-			{/* <Games/>
 			<div className="chatholder visible xl:invisible">
 				<Chat/>
-			</div> */}
+			</div>
+			<Games/>
 			<div className="home">
 				<Tables/>
 				<Statistics/>

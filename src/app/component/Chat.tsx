@@ -1,4 +1,5 @@
 // import Head from "next/head";
+import { useState } from "react";
 import Image from "next/image";
 
 
@@ -30,9 +31,9 @@ const Memebers = ()=>{
     );
 }
 
-const UserOption = ()=>{
+const UserOption = ({ className }) => {
     return (
-        <div>
+        <div  className={`userOption ${className}`}>
             <div className="block">
                 <Image className="optionlogo" src="/homeImages/chat.svg" alt="logo" width={19} height={17}/>
                 <p>Block</p>
@@ -42,6 +43,23 @@ const UserOption = ()=>{
                 <Image className="optionlogo" src="/homeImages/chat.svg" alt="logo" width={19} height={17}/>
                 <p>Clash</p>
             </div>
+        </div>
+    );
+}
+
+const More = ()=>{
+
+    const [showUserOption, setShowUserOption] = useState(false);
+
+    const handleToggleUserOption = () => {
+      setShowUserOption(!showUserOption);
+    };
+
+    return (
+        <div className="more">
+            <Image className="dots" onClick={handleToggleUserOption} src="/homeImages/dots.svg" alt="member" width={12} height={16}/>
+            <UserOption className={showUserOption ? '' : 'invisible'} />
+            <p className="date">15:30</p>
         </div>
     );
 }
@@ -59,17 +77,12 @@ const Message = () =>{
                 <p className="msg" >hello, how you doing!</p>
             </div>
 
-            <div className="Useroption">
-                <UserOption/>
-            </div>
+           <More/>
 
-            <div className="more">
-                <Image className="dots" src="/homeImages/dots.svg" alt="member" width={12} height={12}/>
-                <p className="date">15:30</p>
-            </div>
         </div>
     );
 }
+
 
 const Chat = () =>{
     return (
@@ -80,8 +93,13 @@ const Chat = () =>{
                 <hr className="line"></hr>
             </div>
 
+            <Memebers/>
             <div className="messagesHolder">
-                <Memebers/>
+                <Message/>
+                <Message/>
+                <Message/>
+                <Message/>
+                <Message/>
                 <Message/>
                 <Message/>
             </div>
