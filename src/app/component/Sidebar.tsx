@@ -18,6 +18,7 @@ const Buttons = ({ButtonClick}) => {
     };
 
 
+
     return (
         <div className="buttons">
             <div className={`sideButton ${activeButton === 1 ? 'activeChatButton' : ''}`} onClick={() => handleButtonClick(1)}>

@@ -2884,12 +2884,11 @@ video {
     position: fixed;
     align-items: center;
     min-height: 600px;
-    gap: 20px;
+    gap: 100px;
     height: calc(100%);
     background: #081041;
     border-right: 1px solid #1B266B;
     box-shadow: 5px 0px 10px 0px #00000040;
-    /* margin-top: 10px; */
     @media (max-width: 1800px){
         width: 200px;
     }
@@ -2902,8 +2901,6 @@ video {
 }
 
 .logout{
-    width: 300px;
-    height: 250px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -2911,7 +2908,8 @@ video {
 }
 
 .buttons{
-    margin-top: 100px;
+    margin-top: 80px;
+
 }
 
 .logout .Username{
@@ -2995,8 +2993,7 @@ video {
 }
 
 .sideButton:hover{
-    background: #0064FB;
-    border-top: 1px solid #1ECDF8;
+    opacity: .5;
 }
 
 
@@ -3017,24 +3014,19 @@ video {
 
 
 /* //!!!!Chat */
-.chatdiv, .chatholder{
-    overflow: scroll;
-    overflow-x: hidden;
+/* .chatdiv, .chatholder{ */
+    /* } */
+    
+
+
+.chatholder .messagesHolder{
 }
- 
-.messagesHolder{
-    /* background-color: red; */
-
-
-} 
 
 .chatdiv{
     width: 40%;
     max-width: 400px;
     min-width: 300px;
-    
     height: calc(100vh);
-    /* padding-bottom: calc(100%); */
     min-height: 700px;
     background: #081041;
     border-left: 1px solid #1b266b;
@@ -3068,13 +3060,26 @@ video {
     width: 80%;
     min-width: 250px;
     max-width: 500px;
+    min-height: 520px;
     height: 80%;
-    margin: 25% auto;
+    margin: 27% auto;
     border-radius: 15px;
     border-top: 1px solid #1B266B;
     box-shadow: 5px 4px 10px 0px #00000040;
     background: #081041;
+}
+
+.messagesHolder{
+    overflow: scroll;
     
+    overflow-x: hidden;
+    max-height: 100%;
+    
+    height: calc(70vh - 98px);
+}
+.chatdiv .messagesHolder{
+    height: calc(64vh);
+    /* height: calc(100%); */
 
 }
 
@@ -3552,10 +3557,10 @@ video {
 
 .matches{
     overflow: scroll;
-
     max-height: 100%;
     height: 40vh;
     overflow-x: hidden;
+
 }
 
 .opponent{
