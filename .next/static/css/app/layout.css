@@ -3012,14 +3012,6 @@ video {
 }
 
 
-/* //!!!!Chat */
-/* .chatdiv, .chatholder{ */
-    /* } */
-    
-
-
-.chatholder .messagesHolder{
-}
 
 .chatdiv{
     width: 40%;
@@ -3058,25 +3050,27 @@ video {
 }
 
 .chatholder{
-    width: 80%;
-    min-width: 250px;
-    max-width: 500px;
-    min-height: 520px;
-    height: 80%;
-    margin: 27% auto;
-    border-radius: 15px;
-    border-top: 1px solid #1B266B;
-    box-shadow: 5px 4px 10px 0px #00000040;
+    margin: 0px auto;
+    margin-top: 150px;
+    width: 90%;
     background: #081041;
+    max-width: 800px;
+    height: 80vh;
+    min-height: 550px;
+    max-height: 80vh;
+    border-top: 1px solid #1B266B;
+    border-radius: 12px;
+    @media (max-width:769px) {
+        margin-top: 100px;
+    }
 }
 
 .messagesHolder{
     overflow: scroll;
     
     overflow-x: hidden;
-    max-height: 100%;
-    
     height: calc(70vh - 98px);
+    min-height: 370px;
 }
 
 .chatdiv .messagesHolder{
@@ -3343,7 +3337,7 @@ video {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    /* gap: 7%; */
+    gap: 7%;
     box-shadow: 5px 4px 10px 0px #00000040;
 }
 
