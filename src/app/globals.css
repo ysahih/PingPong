@@ -32,18 +32,11 @@ body
     width: 100%;
     overflow: auto;
     overflow-x: hidden;
-    min-height: 700px;
+    /* min-height: 700px; */
     height: 100vh;
   
-    @media (max-width: 200px) {
-        display: none;
-    }
-    @media (min-width: 1800px){
-        margin-left: 600px;
-    }
-    @media (min-width: 1002px){
-        margin-left: 0px;
-    }
+    
+   
     @media (max-width:1002px) {
         margin-left: 70px;
     }
@@ -53,9 +46,13 @@ body
         
     @media (min-height:560px) and (min-width: 1002px){
         margin-left: 200px;
-
+        
     }
 
+    @media (min-height:560px) and (min-width: 1800px){
+        margin-left: 300px;
+    }
+        
 }
 
 /* width */
@@ -249,12 +246,12 @@ body
 
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-between;
     position: fixed;
     align-items: center;
     width: 300px;
     min-height: 600px;
-    gap: 100px;
+
     height: calc(100%);
     background: #081041;
     border-right: 1px solid #1B266B;
@@ -274,11 +271,11 @@ body
     display: flex;
     flex-direction: column;
     align-items: center;
-
+    margin-bottom: 40px;
 }
 
 .buttons{
-    margin-top: 80px;
+    margin-top: 100px;
 
 }
 
@@ -952,29 +949,34 @@ body
 
 /* //ranking div */
 .ranking{
-    margin: 30% auto;
+    margin: 0px auto;
+    margin-top: 150px;
     padding-bottom: 25px;
     width: 90%;
     max-width: 700px;
     background: #081041;
     max-width: 800px;
-    height: 40vh;
-    max-height: 40vh;
+    height: 80vh;
+    max-height: 80vh;
     border-top: 1px solid #1B266B;
     border-radius: 12px;
+    @media (max-width:769px) {
+        margin-top: 100px;
+    }
 }
 
 .first-3{
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
 }
 .secondPlace, .thirdPlace, .firstPlace{
     display: flex;
     flex-direction: column;
-    /* justify-content: center; */
     align-items: center;
+    gap: 6px;
+
 }
 
 .secondPlace, .thirdPlace{
