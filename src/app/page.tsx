@@ -139,7 +139,7 @@ const BackGround = ()=> {
                 alt="background"
                 priority={true}
                 fill
-				className="filter brightness-50"
+				className="bgimage"
                 sizes="100vw"
                 style={{
                     objectFit: "cover",
