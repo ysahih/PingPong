@@ -252,6 +252,7 @@ body
     justify-content: space-around;
     position: fixed;
     align-items: center;
+    width: 300px;
     min-height: 600px;
     gap: 100px;
     height: calc(100%);
@@ -401,6 +402,8 @@ body
     border-left: 1px solid #1b266b;
     box-shadow: -5px 4px 10px 0px #00000040;
     transition: opacity 0.3s ease;
+
+    /* position: fixed; */
     
 }
 
@@ -446,9 +449,11 @@ body
     
     height: calc(70vh - 98px);
 }
+
 .chatdiv .messagesHolder{
-    height: calc(64vh);
-    /* height: calc(100%); */
+    height: calc(100vh - 300px);
+    /* height: calc(100% - 150px); */
+
 
 }
 

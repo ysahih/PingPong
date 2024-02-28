@@ -102,6 +102,12 @@ const Chat = () =>{
                 <Message/>
                 <Message/>
                 <Message/>
+                <Message/>
+                <Message/>
+                <Message/>
+                <Message/>
+                <Message/>
+                <Message/>
             </div>
         </div>
     );
