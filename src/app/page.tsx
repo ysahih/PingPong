@@ -2,8 +2,10 @@
 import { useState } from "react";
 import Image from "next/image";
 import Navbar from "./component/Navbar";
+import Ranking from "./component/Ranking";
 import Sidebar from "./component/Sidebar";
 import Chat from "./component/Chat";
+import Search from "./component/Search"
 import Games from "./component/Games";
 
 import { Carousel, Typography, Button } from "@material-tailwind/react";
@@ -146,35 +148,7 @@ const BackGround = ()=> {
     );
 }
 
-const Ranking = ()=>{
-	return(
-		<div className="ranking">
-				<div className="first-3">
-					<div className="secondPlace">
-						<Image src="/homeImages/firstplace.svg" width={18} height={7} alt="profile"/>
-						<Image src="/homeImages/memeber1.svg" width={43} height={43} alt="profile"/>
-						<p>Username</p>
-					</div>
-					<div className="firstPlace">
-						<Image src="/homeImages/firstplace.svg" width={30} height={16} alt="profile"/>
-						<Image src="/homeImages/memeber1.svg" width={60} height={60} alt="profile"/>
-						<p>Username</p>
-					</div>
-					<div className="thirdPlace">
-						<Image src="/homeImages/firstplace.svg" width={18} height={7} alt="profile"/>
-						<Image src="/homeImages/memeber1.svg" width={43} height={43} alt="profile"/>
-						<p>Username</p>
-					</div>
-				</div>
-				<div className="ranking-head">
 
-				</div>
-				<div className="">
-
-				</div>
-		</div> 
-	);
-}
 
 const Home = ({active}) => {
 	return (
@@ -185,6 +159,7 @@ const Home = ({active}) => {
 			</div>}
 			{active === 2 && <Games />}
 			{active === 3 && <Ranking/>}
+			{active === 4 && <Search/>}
 			{active === 5 && <div className="chatholder visible xl:invisible">
 				<Chat/>
 			</div>}

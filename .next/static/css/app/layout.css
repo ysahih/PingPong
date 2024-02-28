@@ -2669,6 +2669,7 @@ video {
   
     
    
+
     @media (max-width:1002px) {
         margin-left: 70px;
     }
@@ -3325,30 +3326,25 @@ video {
 
 
 .Games{
+    margin: 0px auto;
+    margin-top: 150px;
+    width: 90%;
+    background: #081041;
+    max-width: 800px;
+    height: 80vh;
+    max-height: 80vh;
+    border-top: 1px solid #1B266B;
+    border-radius: 12px;
+    @media (max-width:769px) {
+        margin-top: 90px;
+        height: 50%;
+    }
+    min-height: 440px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    /* justify-content: stretch; */
-    gap: 7%;
-    width: 70%;
-    /* min-width: 450px; !!! should be edited when handling responsivity */
-    max-width: 700px;
-
-    padding: 0px 30px;
-    height: 700px;
-    margin: 20% auto;
-    border-radius: 15px;
-    background:#081041;
-    border-top: 2px solid #1B266B;
-    /* max-height: 550px; */
+    /* gap: 7%; */
     box-shadow: 5px 4px 10px 0px #00000040;
-    @media (max-height: 1040px){
-        height: 60%;
-        min-height: 500px;
-    }
-    @media (max-width: 769px){
-        height: 60%;
-    }
 }
 
 .darkRow, .LightRow{
@@ -3392,11 +3388,12 @@ video {
 
 
 .Playbutton{
+    
     margin-top: 8px;
-    width: 50px;
-    height: 20px;
+    width: 65px;
+    height: 25px;
     font-family: Inter;
-    font-size: 8px;
+    font-size: 10px;
     font-weight: 500;
     border: none;
     color: #FFFFFF;
@@ -3618,6 +3615,21 @@ video {
     font-weight: 200;
     color: #FFFFFF;
 
+}
+
+.search{
+    margin: 0px auto;
+    margin-top: 150px;
+    width: 90%;
+    background: #081041;
+    max-width: 800px;
+    height: 80vh;
+    max-height: 80vh;
+    border-top: 1px solid #1B266B;
+    border-radius: 12px;
+    @media (max-width:769px) {
+        margin-top: 100px;
+    }
 }
 
 .placeholder\:opacity-0::-moz-placeholder{
@@ -6508,3 +6520,4 @@ video {
 .\[\&\:\:-webkit-slider-thumb\]\:\[-webkit-appearance\:none\]::-webkit-slider-thumb{
   -webkit-appearance: none;
 }
+
