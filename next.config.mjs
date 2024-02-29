@@ -11,9 +11,7 @@ const nextConfig = {
       },
       future: {
         webpack5: true,
-      },
-    // output: 'export',
-    // images: { unoptimized: true } 
+      }
 }
 
 export default nextConfig
