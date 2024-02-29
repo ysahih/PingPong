@@ -1,7 +1,7 @@
 import Image from "next/image";
-import Signup from '@/components/signup'
+import Signup from '@/components/signComonents/signup';
 import { useRouter } from "next/navigation";
-import Signin from "@/components/signin";
+import Signin from '@/components/signComonents/signin';
 import { useState } from "react";
 
 

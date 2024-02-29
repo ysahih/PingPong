@@ -1,4 +1,4 @@
-import UserDataContext, { UserData } from "@/components/context";
+import UserDataContext, { UserData } from "@/components/context/context";
 import {useContext } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";

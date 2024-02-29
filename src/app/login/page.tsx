@@ -2,9 +2,9 @@
 "use strict";
 import '@/styles/login/styles.css'
 import Image from "next/image";
-import Signup from '@/components/signup'
+import Signup from '@/components/signComonents/signup';
 import React, { useEffect, useState } from 'react';
-import Signin from '@/components/signin';
+import Signin from '@/components/signComonents/signin';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { Loding } from '../home/Loding';

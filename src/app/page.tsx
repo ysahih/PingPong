@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import '../styles/login/landingPage.css';
 import axios from 'axios';
-import UserDataContext, { UserData } from '@/components/context';
+import UserDataContext,{UserData} from '@/components/context/context';
 import Home from './home/Home';
 import { Loding } from './home/Loding';
 import { useRouter } from 'next/navigation';

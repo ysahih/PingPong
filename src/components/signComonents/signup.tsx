@@ -1,9 +1,9 @@
 "use client";
 import axios from "axios";
 import {useFormik } from "formik";
-import { SignupForm, signupValidationSchema } from "./Formik/Formik";
+import { SignupForm, signupValidationSchema } from "@/components/Formik/Formik";
 import '@/styles/login/styles.css';
-import UpdateUserData from "./context/update.context";
+import UpdateUserData from "@/components/context/update.context";
 import { useContext } from "react";
 import { useRouter } from "next/navigation";
 

@@ -1,7 +1,7 @@
 "use client";
 import axios from "axios";
 import { useContext, useEffect, useRef, useState } from "react";
-import UpdateUserData from "./context/update.context";
+import UpdateUserData from "@/components/context/update.context";
 import { useRouter } from "next/navigation";
 
 export default function Signin() {
