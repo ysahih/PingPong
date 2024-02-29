@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import '../styles/login/landingPage.css';
 import axios from 'axios';
 import UserDataContext,{UserData} from '@/components/context/context';
-import Home from './home/Home';
+import App from './App';
 import { Loding } from './home/Loding';
 import { useRouter } from 'next/navigation';
 
@@ -31,7 +31,7 @@ export default function landingPage()
                 else
                     setData(res.data);
                 } catch (error) {
-                    console.log('Error:', error);
+                    // console.log('Error:', error);
                     router.push('/login');
                 }
         }
@@ -41,9 +41,10 @@ export default function landingPage()
     return (
         <>
             <UserDataContext.Provider value={data}>
-            {data? <Home/> : <Loding/>}
+            {data? <App/> : <Loding/>}
             </UserDataContext.Provider>
         </>
     );
 }
 // req.password
+
