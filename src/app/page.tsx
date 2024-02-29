@@ -7,7 +7,7 @@ import UserDataContext,{UserData} from '@/components/context/context';
 import Home from './home/Home';
 import { Loding } from './home/Loding';
 import { useRouter } from 'next/navigation';
-// import '@/styles/globals.css';
+
 
 export default function landingPage()
 {
