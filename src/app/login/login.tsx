@@ -3,17 +3,17 @@ import Signup from '@/components/signComonents/signup';
 import { useRouter } from "next/navigation";
 import Signin from '@/components/signComonents/signin';
 import { useState } from "react";
-
+import '../globals.css';
 
 const Login = () => {
     const router = useRouter(); 
     const [insignin, setsign] = useState(true);
     
 return  (
-    <div className='main'>
-        <div className='container' >
-          <div className='row'>
-              <div className="logo">
+    <div className='main_1'>
+        <div className='Container' >
+          <div className='row_0'>
+              <div className="flex items-center pt-8 w-50 logoContainer">
                 <Image
                     className="logoImg"
                     src='./Vector.svg'
@@ -37,7 +37,7 @@ return  (
                     {insignin ? <Signin/> : <Signup/>}
                   </div>
               </div>
-            </div>
+          </div>
           <div className='row1'>
               <div id='div-row1'>
                   <div  className='btnAuth' onClick={()=>{

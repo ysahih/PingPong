@@ -15,7 +15,7 @@ const BackGround = () => {
                 placeholder="blur"
                 style={{
                     objectFit: 'cover',
-                    filter: 'saturate(0.65)',
+                    filter: 'saturate(0.55)',
                 }} />
          </div>
     );

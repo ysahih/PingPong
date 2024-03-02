@@ -64,6 +64,7 @@ import Chat from "./component/Chat";
 import Search from "./component/Search"
 import Games from "./component/Games";
 import "./globals.css";
+
 import { Carousel, Typography, Button } from "@material-tailwind/react";
 
 const Tables = ()=>{
@@ -248,7 +249,7 @@ const Body = () => {
 export default function App() {
 	return (
 		<div>
-			<BackGround/>
+			{/* <BackGround/> */}
 			<Navbar/>
 			<Body/>
 		</div>

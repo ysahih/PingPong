@@ -1,18 +1,17 @@
-.main{
+.main_1{
+    display: flex;
     position: absolute;
     width: 100vw;
     height: 100vh;
-    display: flex;
-    /* flex-direction: column; */
     justify-content: center;
     align-items: center;
-    color: white;   
+    color: white;  
     font-size: 1.2em;
     line-height: 1.6em;
 }
 
 
-.container{
+.Container{
     display: flex;
     width: 714px;
     height: 608px;
@@ -25,18 +24,18 @@
     position: absolute;
 }
 
-.row{
-    padding-left: 53px;
-    width: calc(50% - 53px);
+.row_0{
+    padding-left: 60px;
+    width: 50%;
     /* background-color: red; */
 }
 
-/* .row h1{
+/* .row_0 h1{
     margin-bottom: 40px;
 } */
 #loginBtn{
 
-    margin-top: 30px;
+    margin-top: 40px;
     width: 100%;
     cursor: pointer;
 }
@@ -56,6 +55,7 @@
 #loginBtn a:hover{
     border-bottom: 2px solid #0064FB;
 }
+
 .inactive_sing{
     opacity: 50%;
 
@@ -111,7 +111,7 @@
 }
 
 @media (max-height: 750px){
-    .main{
+    .main_1{
         margin-top: 10%;
         align-items: flex-start;
     }
@@ -133,7 +133,6 @@
   }
 
 .input-container{
-    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -159,7 +158,7 @@
     height: 52px;
     padding: 18px, 20px, 18px, 20px;
     border-radius: 10px;
-    margin-left: 166px;
+    margin-left: 148px;
     font-size: 25px;
     font-weight: 400;
     line-height: 39px;
@@ -194,7 +193,6 @@
     padding-bottom: 8px;
     margin-top: 20px;
     border-left: 1px solid #0064FB;
-    /* border-left: green solid 2px; */
 }
 
 .btnAuth {
@@ -216,19 +214,12 @@
 
 .btnAuth:hover{
     opacity: .5;
-    outline-color: var(--white-color);
+    outline-color: white;
 }
 .btnAuth img{
     margin-left: 30px;
     width: 32px;
     height: 32px;
-}
-
-.logo{
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 20px 0;
 }
 
 .logoImg{
@@ -242,8 +233,13 @@
 }
 
 .logoName{
+    font-size: 40px;
+    @media (max-width: 769px) {
+        font-size: 32px;
+    }
     transition: all .9s ease;
 }
+
 
 .logoName:hover{
     filter: drop-shadow(10px 7px 10px #0064FB);
@@ -251,10 +247,17 @@
 }
 
 
-h1 span{
+.logoName span{
     color: #0064FB;
+    @media (max-width: 769px) {
+        font-size: 32px;
+        
+    }
 }
 
+.logoContainer{
+    gap: 20px;
+}
 
 @media (max-width: 768px){
 
@@ -262,33 +265,40 @@ h1 span{
         font-size: 20px;
     }
 
-    .container{
-        width: 100%;
+    .Container{
+        padding: 1px;
+        width: 90%;
         max-width: 360px;
-        height: auto;
+        height: 570px;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        padding-top: 20px;
-        /* border-radius: 0px; */
+        justify-content: space-between;
+        
     }
 
-    .logo{
-        padding: 10px 20px;
+    .logoContainer{
+        padding: 0;
+        margin: 0;
+        height: 0;
+        padding-left: 20px;
+        padding-bottom: 20px;
+        gap: 12px;
     }
-
-    .logo img{
-        width: 35px;
-        height: 35px;
-    }
+    .logoImg{
+        width: 38px;
     
-    .logo h1, .logo span{
-        font-size: 25px;
     }
 
-    .row{
+    /* .logoName{
+        font-size: 35px;
+    } */
+    
+    /* .logoName span{
+        font-size: 35px;
+    } */
+
+    .row_0{
         /* background-color: red; */
-        height: auto;
         padding: 0px;
         margin: 0px;;
         text-align: center;
@@ -332,6 +342,8 @@ h1 span{
         align-items: center;
         width: 100%;
         font-size: 14px;
+        padding-top: 0;
+        margin-top: 20px;
         /* background-color: green; */
         padding-bottom: 5px;
         animation: down .5s ease;
@@ -344,11 +356,6 @@ h1 span{
     .input{
         font-size: 14px;
         margin-bottom: 5px;
-        /* margin-left: 20px; */
-        /* margin: 0; */
-        /* margin-left: 25px; */
-
-        /* padding: 0; */
     }
   
     #div-row1{
