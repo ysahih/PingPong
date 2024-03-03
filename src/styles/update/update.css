@@ -28,7 +28,7 @@
     border-top: 0.5px solid #0064FB;
 }
 
-.update-container .logo{
+.update-container .loginLogo{
    margin-left: 53px;
 }
 
@@ -167,7 +167,7 @@ input[type="file"] {
         text-align: center;
     }
 
-    .update-container .logo{
+    .update-container .loginLogo{
         margin-left: 0px;
     }
 

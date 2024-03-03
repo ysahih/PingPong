@@ -23,7 +23,7 @@ const UpdatePage = () => {
 
     return (
     <>
-    <main className="main">
+    <main className="main_1">
         <div className="update-container">
             <div className="logo">
                 <Image
