@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  userName  String    @unique
+  email     String    @unique
+  hash      String
+  image     String?
+  firstName String?
+  lastName  String?
+  token     Boolean   @default(false)
+  game      GameData[]
+  online    Boolean   @default(false)
+  sentRequests   FriendRequest[] @relation("Sender")
+  friendRequests    FriendRequest[] @relation("Receiver")
+  update    Boolean   @default(false)
+  // friends         Friends[]       @relation("Friends", references: [id])
+  // friendOf        User[]          @relation("", references: [id])
+  @@map("Users")
+}
+
+// model Friends {
+//   id        Int       @id @default(autoincrement())
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime  @updatedAt
+//   user      User?      @relation("Friends", fields: [userId], references: [id])
+//   userId    Int?
+//   friend    User?     @relation("Friends", fields: [friendId], references: [id])
+//   friendId  Int?
+//   @@unique([userId, friendId ])
+//   @@map("Friends")
+// }
+
+// model Message {
+//   id        Int       @id @default(autoincrement())
+//   createdAt DateTime  @default(now())
+//   updatedAt DateTime  @updatedAt
+//   content   String
+//   sender    User?      @relation("Sender", fields: [senderId], references: [id])
+//   senderId  Int?
+//   receiver  User?     @relation("Receiver", fields: [receiverId], references: [id])
+//   receiverId Int?
+//   @@map("Messages")
+// }
+
+model FriendRequest {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  sender    User?      @relation("Sender", fields: [senderId], references: [id])
+  senderId  Int?
+  receiver  User?     @relation("Receiver", fields: [receiverId], references: [id])
+  receiverId Int?
+  accepted Boolean @default(false)
+  blocked  Boolean @default(false)
+  @@unique([senderId, receiverId ])
+  @@map("FriendRequests")
+}
+
+
+model GameData {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  gameName  String?
+  users     User[]
+  // whatchingUser User[] @relation("WatchingUser")
+  @@map("GameDatas")
+}
+
+// model Game {
+//   id         Int       @id @default(autoincrement())
+//   createdAt  DateTime  @default(now())
+//   updatedAt  DateTime  @updatedAt
+//   gameName   String
+//   gameDataId Int
+//   gameData   GameData  @relation(fields: [gameDataId], references: [id])
+  
+//   @@map("Games")
+// }
+
