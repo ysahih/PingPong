@@ -20,9 +20,8 @@ return  (
                     alt="logo"
                     width={50}
                     height={50}
-                    style={{
-                        maxWidth: "100%",
-                    }} />
+                    priority={true}
+                 />
                 <h1 className="logoName">P<span>O</span>NGy</h1>
               </div>
               <div id='loginBtn'>

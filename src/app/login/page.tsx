@@ -32,7 +32,7 @@ function main()
                     withCredentials: true,
                 }
                 );
-                if (res.data && res.data.update) {
+                if (res.data && res.data.update !== undefined) {
                   if (typeof window !== 'undefined') {
                     if (res.data.update === true) {
                       router.push('/');
@@ -44,7 +44,7 @@ function main()
                   }
                 }
                 else
-                setonline(false);
+                  setonline(false);
             } catch (error) {
                 setonline(false);
             } 
