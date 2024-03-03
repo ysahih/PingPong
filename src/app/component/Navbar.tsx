@@ -1,5 +1,8 @@
 import Image from "next/image";
 import Profile from "./Profile";
+import { UserData } from "@/components/context/context";
+import { useContext } from "react";
+import UserDataContext from "@/components/context/context";
 
 const PhoneLogo = ()=>{}
 
@@ -45,6 +48,9 @@ const Invite = () => {
 
 
 const Header = () =>{
+    const data: UserData | null = useContext(UserDataContext);
+
+
     return (
         <div className="header">
 
@@ -55,9 +61,9 @@ const Header = () =>{
             <div className="rightBar ">
                <Notification/>
                     
-                <Profile/>
+                <Profile src={data?.image}/>
                 
-                <h2 className="hidden md:block ">LEVEL: 10</h2>
+                <h2 className="hidden md:block "> {data?.userName}</h2>
             </div>
         </div>
 

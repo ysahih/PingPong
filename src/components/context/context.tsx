@@ -4,11 +4,11 @@ export type UserData = {
     id       : number,
     createdAt: Date,
     updatedAt: Date,
-    userName : String,
-    email    : String,
-    image    : String,
-    firstName: String,
-    lastName : String,
+    userName : string,
+    email    : string,
+    image    : string,
+    firstName: string,
+    lastName : string,
     online   : Boolean,
 }
 
