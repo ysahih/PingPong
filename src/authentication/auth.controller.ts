@@ -5,7 +5,7 @@ import { LoginData, signupData } from "./dto/form";
 import { AuthGuard } from "@nestjs/passport";
 import { JwtAuthGuard } from "./jwtStrategy/jwtguards";
 import { generateJwtToken } from "./jwtStrategy/jwtToken";
-import {ExpressAdapter, FileInterceptor, MulterModule} from "@nestjs/platform-express";
+import { FileInterceptor} from "@nestjs/platform-express";
 
 
 
@@ -16,6 +16,29 @@ export class authController{
     private readonly BackendUrl = process.env.FRONTEND_URL;
 
     constructor (private authS: authService){
+    }
+
+    @Get('generate-2fa')
+    @UseGuards(JwtAuthGuard)
+    async generateTwoFactorAuthenticationSecret(@Req() req: Request, @Res() res: Response){
+        console.log(req.user['userName']);
+        const src = await this.authS.TwofactorAuthentication(req.user['userName']);
+        res.json(src);
+    }
+
+    @Post('validate-2fa')
+    @UseGuards(JwtAuthGuard)
+    async validateTwoFactorAuthenticationCode(@Req() req: Request, @Body('token') token: string, @Res() res: Response){
+        console.log(token);
+        const valid = await this.authS.validateTwofactor(token, req.user['userId']);
+        res.json(valid);
+    }
+    
+    @Get('disable-2fa')
+    @UseGuards(JwtAuthGuard)
+    async disableTwoFactorAuthentication(@Req() req: Request, @Res() res: Response){
+        const message = await this.authS.disableTwofactor(req.user['userId']);
+        res.json(message);
     }
 
     @Post('signin')

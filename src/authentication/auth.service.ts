@@ -2,11 +2,11 @@ import { Injectable } from "@nestjs/common";
 import { prismaService } from "src/prisma/prisma.service";
 import { LoginData, signupData } from "./dto/form";
 import * as argon from 'argon2';
-
+import { TwoFactorAuthenticationService } from "./2fa/2fa";
 
 @Injectable({})
 export class authService {
-    constructor(private prism: prismaService,){};
+    constructor(private prism: prismaService, private Twofa: TwoFactorAuthenticationService){};
     
 
     async generateUniqueUsername(baseUsername: string): Promise<string> {
@@ -33,6 +33,80 @@ export class authService {
         }
     
         return uniqueUsername;
+    }
+ 
+    async TwofactorAuthentication(userName: string){
+        try{
+            const secret = await this.Twofa.generateTwoFactorAuthenticationSecret(userName);
+            if (!secret || !secret.secret || !secret.qrCodeData)
+                return null;
+            const check = await this.prism.user.findUnique({
+                where:{
+                    userName: userName,
+                },
+                select:{
+                    twoFa : true,
+                }
+            })
+            if (check.twoFa)
+                return {'error': '2fa already enabled'};
+            const user = await this.prism.user.update({
+                where:{
+                    userName: userName,
+                },
+                data:{
+                    secret: secret.secret,
+                    twoFa : true,
+                }
+            })
+            if (user)
+                return secret.qrCodeData;
+            else
+                return null;
+        }
+        catch (error){
+            return null;
+        }
+    }
+
+    async disableTwofactor(id: number){
+        try{
+            const user = await this.prism.user.update({
+                where:{
+                    id: id,
+                },
+                data:{
+                    twoFa : false,
+                }
+            })
+            if (user)
+                return {'message': '2fa disabled', status: true};
+            else
+                return {'message': '2fa not disabled', status: false};
+        }
+        catch (error){
+           return {'message': 'something went wrong 2fa not disabled', status: false};
+        }
+    }
+
+    async validateTwofactor(token: string, id: number){
+        try{
+            const user = await this.prism.user.findUnique({
+                where:{
+                    id,
+                },
+                select:{
+                    secret: true,
+                }
+            })
+            if (!user)
+                return false;
+            const valid = await this.Twofa.isTwoFactorAuthenticationCodeValid(user.secret, token);
+                return valid;
+        }
+        catch (error){
+            return false;
+        }
     }
 
     async Changedata(id: number, image: string, userName: string, password: string){

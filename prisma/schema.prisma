@@ -19,6 +19,8 @@ model User {
   hash      String
   image     String?
   firstName String?
+  secret    String?
+  twoFa     Boolean   @default(false)
   lastName  String?
   token     Boolean   @default(false)
   game      GameData[]
