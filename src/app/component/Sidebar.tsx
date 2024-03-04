@@ -6,46 +6,36 @@ import Router from "next/navigation";
 import { useRouter } from "next/navigation";
 import UserDataContext from "@/components/context/context";
 import { useContext } from "react";
+import RenderContext, { renderContext } from "@/components/context/render";
 
-const Buttons = ({ButtonClick}) => {
+const Buttons = () => {
     
-    const [activeButton, setActiveButton] = useState(1);
-
-    const handleActiveButton = (buttonId) => {
-      setActiveButton(buttonId);
-    };
-
-    
-    const handleButtonClick = (value:number) => {
-        handleActiveButton(value);
-        ButtonClick(value);
-    };
-
+    const context : renderContext | null = useContext(RenderContext);
 
 
     return (
         <div className="buttons">
-            <div className={`sideButton ${activeButton === 1 ? 'activeChatButton' : ''}`} onClick={() => handleButtonClick(1)}>
+            <div className={`sideButton ${context?.render === "home" ? 'activeChatButton' : ''}`} onClick={() => context?.setRender('home')}>
                 <Image className="icon" src="homeimages/homeicon.svg" alt="logo" width={14} height={18}/>
                 <h2>Home</h2> 
             </div>
 
-            <div className={`sideButton ${activeButton === 2 ? 'activeChatButton' : ''}`} onClick={() => handleButtonClick(2)}>
+            <div className={`sideButton ${context?.render === "games" ? 'activeChatButton' : ''}`} onClick={() => context?.setRender('games')}>
                 <Image className="icon" src="homeimages/gamesicon.svg" alt="logo" width={20} height={18}/>
                 <h2>Games</h2> 
             </div>
 
-            <div className={`sideButton ${activeButton === 3 ? 'activeChatButton' : ''}`}  onClick={() => handleButtonClick(3)}>
+            <div className={`sideButton ${context?.render === "ranking" ? 'activeChatButton' : ''}`}  onClick={() => context?.setRender('ranking')}>
                 <Image className="icon" src="homeimages/rankingicon.svg" alt="logo" width={20} height={18}/>
                 <h2>Ranking</h2> 
             </div>
 
-            <div className={`sideButton ${activeButton === 4 ? 'activeChatButton' : ''}`}  onClick={() => handleButtonClick(4)}>
+            <div className={`sideButton ${context?.render === "search" ? 'activeChatButton' : ''}`}  onClick={() => context?.setRender('search')}>
                 <Image className="icon" src="homeimages/searchicon.svg" alt="logo" width={20} height={18}/>
                 <h2>Search</h2> 
             </div>
 
-            <div className={`sideButton visible xl:invisible ${activeButton === 5 ? 'activeChatButton' : ''}`} onClick={() => handleButtonClick(5)}>
+            <div className={`sideButton visible xl:invisible ${context?.render === "chat" ? 'activeChatButton' : ''}`} onClick={() => context?.setRender('chat')}>
                 <Image className="icon" src="homeimages/chaticon.svg" alt="logo" width={20} height={18}/>
                 <h2>Chat</h2> 
             </div>
@@ -118,7 +108,7 @@ const Sidebar = ({ButtonClick}) => {
     return (
         <div className="side_holder">
             <div className="Sidebar">
-                <Buttons ButtonClick={ButtonClick}/>
+                <Buttons/>
                 <div className="logout">
 
                     <Profile src={data?.image} />

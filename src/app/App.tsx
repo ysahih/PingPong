@@ -37,7 +37,7 @@
 // }
 
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Image from "next/image";
 import Navbar from "./component/Navbar";
 import Ranking from "./component/Ranking";
@@ -50,6 +50,7 @@ import axios from "axios";
 import Router from "next/navigation";
 
 import { Carousel, Typography, Button } from "@material-tailwind/react";
+import RenderContext, { renderContext } from "@/components/context/render";
 
 
 const Tables = ()=>{
@@ -193,18 +194,20 @@ const BackGround = ()=> {
 
 
 const Home = ({active}) => {
+	const context : renderContext | null = useContext(RenderContext);
 	return (
 		<div className="homepage">
-			{active === 1 && <div className="home">
+			{context?.render === "profile" && <div className="home">
 				<Tables/>
 				<Statistics/>
 			</div>}
-			{active === 2 && <Games />}
-			{active === 3 && <Ranking/>}
-			{active === 4 && <Search/>}
-			{active === 5 && <div className="chatholder visible xl:invisible">
+			{context?.render === "games" && <Games />}
+			{context?.render === "ranking" && <Ranking/>}
+			{context?.render === "search" && <Search/>}
+			{context?.render === "chat" && <div className="chatholder visible xl:invisible">
 				<Chat/>
 			</div>}
+			{context?.render === "profile" && <div className="profile"/>}
 
 
 		</div>
@@ -233,14 +236,14 @@ const Body = () => {
 
 export default function App() {
 	
-
+	const [render, setRender] = useState('Home');
+	
 	return (
-		<div>
-			<Navbar/>
-			<Body/>
-		</div>
-
-	// 	
-
+		<RenderContext.Provider value={{render, setRender}}>
+			<div>
+				<Navbar/>
+				<Body/>
+			</div>
+		</RenderContext.Provider>
 	);
 }
