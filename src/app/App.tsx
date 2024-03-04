@@ -6,28 +6,10 @@
 
 
 // export default function Home() {
-//     const data: UserData | null = useContext(UserDataContext);
+//     
 //     const router = useRouter();
 
-//     async function Logout()
-//     {
-//         try{
-//             const res = await axios.get(process.env.NEST_API + '/logout', {
-//                 headers: {
-//                     'Content-Type': 'application/json',
-//                 },
-//                 withCredentials: true,
-//             })
-//             if(res.data){
-//                 // //console.log('Success:', data);
-               
-//                     router.push('/login');
-//             }
-//         }
-//         catch (error) {
-//             //console.error('Error:', error);
-//         };
-//     }
+//     
     
 //     return <>
         
@@ -64,8 +46,11 @@ import Chat from "./component/Chat";
 import Search from "./component/Search"
 import Games from "./component/Games";
 import "./globals.css";
+import axios from "axios";
+import Router from "next/navigation";
 
 import { Carousel, Typography, Button } from "@material-tailwind/react";
+
 
 const Tables = ()=>{
 	return (
@@ -247,9 +232,10 @@ const Body = () => {
 }
 
 export default function App() {
+	
+
 	return (
 		<div>
-			{/* <BackGround/> */}
 			<Navbar/>
 			<Body/>
 		</div>

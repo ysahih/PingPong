@@ -11,7 +11,19 @@ import { useRouter } from 'next/navigation';
 
 export default function landingPage()
 {
-    const [data, setData] = useState<UserData | null>(null);
+    const ddata: UserData = {
+        id: 0,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        userName: "ucef",
+        email: "",
+        image: "",
+        firstName: "",
+        lastName: "",
+        online: false,
+    };
+
+    const [data, setData] = useState<UserData | null>(ddata);
     
     const router = useRouter();
 
@@ -26,13 +38,13 @@ export default function landingPage()
                     withCredentials: true,
                 });
                 if (res.data === undefined || res.data === false || res.data === null || res.data.update === undefined || res.data.update === false) {
-                    router.push('/login');
+                    // router.push('/login');
                 }
                 else
                     setData(res.data);
                 } catch (error) {
                     // console.log('Error:', error);
-                    router.push('/login');
+                    // router.push('/login');
                 }
         }
         getdata();
@@ -42,6 +54,7 @@ export default function landingPage()
         <>
             <UserDataContext.Provider value={data}>
             {data? <App/> : <Loding/>}
+            {/* <App/> */}
             </UserDataContext.Provider>
         </>
     );

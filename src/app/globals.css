@@ -160,6 +160,11 @@
     
 }
 
+.profileimage{
+    height: 42px;
+    width: 42px;
+}
+
 .profileimage, .profilecenter{
     margin-bottom: -45px;
 }
@@ -204,12 +209,14 @@
     
 }
 
+
+
 .phonebutton{
-    /* display: flex; */
+    display: flex;
     width: 60px;
     height: 30px;
     margin: 25px auto;
-    padding-top: 5px;
+    justify-content: center;
     margin-bottom: 5px;
     height: 40px;
     border-radius: 8px;
@@ -219,8 +226,8 @@
 
 
 .logoutIcon{
-    margin-bottom: 60%;
-    margin-right: 20px;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 
@@ -274,8 +281,8 @@
 }
 
 .logout .profile .profileimage{
-    width: 62px;
-    height: 62px;
+    width: 60px;
+    height: 60px;
     /* margin-bottom: -60px; */
 }
 
