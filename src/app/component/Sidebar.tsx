@@ -4,7 +4,7 @@ import { useState } from "react";
 import axios from "axios";
 import Router from "next/navigation";
 import { useRouter } from "next/navigation";
-import UserDataContext from "@/components/context/context";
+import UserDataContext, { UserData } from "@/components/context/context";
 import { useContext } from "react";
 import RenderContext, { renderContext } from "@/components/context/render";
 
@@ -44,37 +44,28 @@ const Buttons = () => {
 
 }
 
-const PhoneButtons = ({ButtonClick}) => {
+const PhoneButtons = () => {
     
-    const [activeButton, setActiveButton] = useState(1);
-
-    const handleActiveButton = (buttonId) => {
-      setActiveButton(buttonId);
-    };
-
-    const handleButtonClick = (value:number) => {
-        handleActiveButton(value);
-        ButtonClick(value);
-    };
+    const context : renderContext | null = useContext(RenderContext);
 
     return (
 
         <div className="phonebuttons">
 
-            <div className={`phonebutton ${activeButton === 1 ? 'activeChatButton' : ''}`} onClick={() => handleButtonClick(1)}>
+            <div className={`phonebutton ${context?.render === "home" ? 'activeChatButton' : ''}`} onClick={() => context?.setRender('home')}>
                 <Image className="Phoneicon" src="homeimages/homeicon.svg" alt="logo" width={24} height={20}/>
             </div>
 
-             <div className={`phonebutton ${activeButton === 2 ? 'activeChatButton' : ''}`} onClick={() => handleButtonClick(2)}>
+             <div className={`phonebutton ${context?.render === "games" ? 'activeChatButton' : ''}`} onClick={() => context?.setRender('games')}>
                 <Image className="Phoneicon" src="homeimages/gamesicon.svg" alt="logo" width={30} height={18}/>
             </div>
-             <div className={`phonebutton ${activeButton === 3 ? 'activeChatButton' : ''}`} onClick={() => handleButtonClick(3)}>
+             <div className={`phonebutton ${context?.render === "ranking" ? 'activeChatButton' : ''}`} onClick={() => context?.setRender('ranking')}>
                 <Image className="Phoneicon" src="homeimages/rankingicon.svg" alt="logo" width={30} height={18}/>
             </div>
-             <div className={`phonebutton ${activeButton === 4 ? 'activeChatButton' : ''}`} onClick={() => handleButtonClick(4)}>
+             <div className={`phonebutton ${context?.render === "search" ? 'activeChatButton' : ''}`} onClick={() => context?.setRender('search')}>
                 <Image className="Phoneicon" src="homeimages/searchicon.svg" alt="logo" width={30} height={18}/>
             </div>
-             <div className={`phonebutton ${activeButton === 5 ? 'activeChatButton' : ''}`} onClick={() => handleButtonClick(5)}>
+             <div className={`phonebutton ${context?.render === "chat" ? 'activeChatButton' : ''}`} onClick={() => context?.setRender('chat')}>
                 <Image className="Phoneicon" src="homeimages/chaticon.svg" alt="logo" width={24} height={18}/>
             </div>
 
@@ -82,10 +73,11 @@ const PhoneButtons = ({ButtonClick}) => {
     );
 }
 
-const Sidebar = ({ButtonClick}) => {
+const Sidebar = () => {
 
     const data: UserData | null = useContext(UserDataContext);
-    const router = useRouter()
+    const router = useRouter();
+
     async function Logout() {
         try{
             const res = await axios.get(process.env.NEST_API + '/logout', {
@@ -113,7 +105,7 @@ const Sidebar = ({ButtonClick}) => {
 
                     <Profile src={data?.image} />
 
-                    <h2 className="Username">{data.userName}</h2>
+                    <h2 className="Username">{data?.userName}</h2>
 
                     <div className="logoutSection">
                         <button className="logoutbutton" onClick={Logout}>
@@ -126,7 +118,7 @@ const Sidebar = ({ButtonClick}) => {
         
             <div className="PhoneSidebar">
                 
-               <PhoneButtons ButtonClick={ButtonClick}/>
+               <PhoneButtons/>
                 <div className="logoutIcon" onClick={Logout}>
                     <Image className="" src="homeimages/logouticon.svg" alt="logo" width={26} height={18}/>
                 </div>

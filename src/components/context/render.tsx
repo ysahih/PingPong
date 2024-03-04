@@ -1,7 +1,7 @@
 import React, { SetStateAction } from 'react';
 
 export class renderContext {
-    render: string = 'Home';
+    render: string = 'home';
     setRender: React.Dispatch<SetStateAction<string>> = () => {};
 }
 

@@ -37,7 +37,7 @@
 // }
 
 
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import Navbar from "./component/Navbar";
 import Ranking from "./component/Ranking";
@@ -193,11 +193,26 @@ const BackGround = ()=> {
 
 
 
-const Home = ({active}) => {
+const Home = () => {
 	const context : renderContext | null = useContext(RenderContext);
+
+	
+  	useEffect(() => {
+
+   		const handleResize = () => {
+      		if (window.innerWidth > 1139 && context?.render === "chat") {
+				context.setRender("home");
+			}
+		};
+		window.addEventListener('resize', handleResize);
+		return () => {
+			window.removeEventListener('resize', handleResize);
+		};
+	  }, [context]);
+	  
 	return (
 		<div className="homepage">
-			{context?.render === "profile" && <div className="home">
+			{context?.render === "home" && <div className="home">
 				<Tables/>
 				<Statistics/>
 			</div>}
@@ -225,8 +240,8 @@ const Body = () => {
 
 	return (
 		<div className="body">
-			<Sidebar ButtonClick={handleButtonClick} />
-			<Home active={activeComponent}/>
+			<Sidebar />
+			<Home />
 			<div className="chatdiv hidden xl:block">
 				<Chat/>
 			</div>
@@ -236,7 +251,7 @@ const Body = () => {
 
 export default function App() {
 	
-	const [render, setRender] = useState('Home');
+	const [render, setRender] = useState('home');
 	
 	return (
 		<RenderContext.Provider value={{render, setRender}}>
