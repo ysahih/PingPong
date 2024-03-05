@@ -37,7 +37,7 @@
 // }
 
 
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import Navbar from "./component/Navbar";
 import Ranking from "./component/Ranking";
@@ -51,6 +51,7 @@ import Router from "next/navigation";
 
 import { Carousel, Typography, Button } from "@material-tailwind/react";
 import RenderContext, { renderContext } from "@/components/context/render";
+import UserProfile from "@/components/userProfile";
 
 
 const Tables = ()=>{
@@ -195,9 +196,23 @@ const BackGround = ()=> {
 
 const Home = ({active}) => {
 	const context : renderContext | null = useContext(RenderContext);
+	useEffect(() => {
+		const handleResize = () => {
+		  if (window.innerWidth > 1140 && context?.render === 'chat') {
+			context?.setRender('home');
+		  }
+		};
+	
+		window.addEventListener('resize', handleResize);
+	
+		return () => {
+		  window.removeEventListener('resize', handleResize);
+		};
+	  }, [context]);
+
 	return (
 		<div className="homepage">
-			{context?.render === "profile" && <div className="home">
+			{context?.render === "home" && <div className="home">
 				<Tables/>
 				<Statistics/>
 			</div>}
@@ -207,7 +222,9 @@ const Home = ({active}) => {
 			{context?.render === "chat" && <div className="chatholder visible xl:invisible">
 				<Chat/>
 			</div>}
-			{context?.render === "profile" && <div className="profile"/>}
+			{context?.render === "profile" && 
+				<UserProfile/>
+			}
 
 
 		</div>
@@ -236,7 +253,7 @@ const Body = () => {
 
 export default function App() {
 	
-	const [render, setRender] = useState('Home');
+	const [render, setRender] = useState('home');
 	
 	return (
 		<RenderContext.Provider value={{render, setRender}}>
