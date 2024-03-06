@@ -1,86 +1,156 @@
-import { Body, Logger } from "@nestjs/common";
+import { Body, Logger, UseFilters, UsePipes, ValidationPipe } from "@nestjs/common";
 import { ConnectedSocket, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
 import { Server, Socket } from 'socket.io';
 import { UsersServices } from "./usersRooms/user.class";
-import { User } from "./usersRooms/UserRoom.interface";
-import { JoinRoomDTO, MessageDTO } from "./gateway.interface";
+import { CreateRoom, JoinRoomDTO, MessageDTO } from "./gateway.interface";
 import { RoomsServices } from "./usersRooms/room.class";
-
+import { PrismaService } from "src/PrismaService/prisma.service";
+import { Prisma } from "@prisma/client";
+import { ExceptionHandler } from "./ExceptionFilter/exception.filter";
 
 @WebSocketGateway({
 	// cors: {
-		// origin: ['http://localhost:3000'],
+	// origin: ['http://localhost:3000'],
 	// },
+	// cookie: true,
 })
 export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
 	@WebSocketServer()
-	private _server: Server;
-	logger : Logger = new Logger(serverGateway.name);
+	private _server: Server = new Server({
+	});
+	logger: Logger = new Logger(serverGateway.name);
 
-	constructor(private _users :UsersServices, private _rooms :RoomsServices) {}
+	constructor(private _users: UsersServices, private _rooms: RoomsServices, private _prisma: PrismaService) {}
 
-	afterInit() :void {
+	async afterInit() {
+
+		// this._server.use(this._middleware.use);
 		this.logger.log('The Default gateway succefully started.');
 	}
 
-	// TODO: Add Guards for Auth
-	handleConnection(client: Socket) :void {
+	// Authorization Part
+	async handleConnection(client: Socket): Promise<void> {
 
-		const { id, username } = client.handshake.query;
+		// TODO: Get the Key and decode it
+		const { id } = client.handshake.query;
 
-		if (typeof id === 'string' && typeof username === 'string')
-		{
-			const newUser :User = {
-				_id: parseInt(id),
-				_username: username,
-				_socketId: client.id,
-			}
-			this._users.addUser(client.id, newUser);
-			console.log(this._users.getUserBySocketId(client.id));
+		// Check if the user exists
+		const user = await this._prisma.findUser(parseInt(id.toString()));
+
+		// if exists Just add it the _users map with infos
+		if (user) {
+			this._users.addUser(client, this._users.organizeUser(client.id, user), this._rooms.connectToRooms);
+		}
+		else {
+			// if doesn't exists send an error
+			this._server.to(client.id).emit('error', `Authorization Failed !`);
+			// Disconnect him
+			client.disconnect(true);
 		}
 	}
 
-	handleDisconnect(client: Socket) :void {
+	handleDisconnect(@ConnectedSocket() client: Socket): void {
 
-		this._users.deleteUser(client.id);
+		// Get the user out of the rooms and out of the users Map
+		this._users.deleteUser(client, this._rooms.disconnectToRooms);
 	}
 
-	// TODO: Validate data Format
-	@SubscribeMessage('newMessage')
-	handleMessage(@ConnectedSocket() client :Socket, @Body() payload :MessageDTO) : void {
+	// TODO: Check Blocked At Users and rooms, Also Muted
+	// TODO: Add Message Validator
+	@UseFilters(ExceptionHandler)
+	@UsePipes(ValidationPipe)
+	@SubscribeMessage('directMessage')
+	async handleDirectMessage(@ConnectedSocket() client: Socket, @Body() payload: MessageDTO): Promise<void> {
 
-		console.log(`${this._users.getUserBySocketId(client.id)._username}: ${payload.message}`);
+		console.log('Hello');
+		// Get sender User Infos
+		const fromUser = this._users.getUserBySocketId(client.id);
+		// Check if already there's that conversation
+		const isExist = fromUser.DirectChat.find(conv => conv.toUserId === payload.to);
 
-		if (typeof payload.to === 'number')
-			this._server.to(this._users.getUserById(payload.to)._socketId).emit('chat', payload.message);
-		else
-		{
-			// if (this._rooms.getRoomById(payload.to))
-			this._server.to(payload.to).emit('chat', payload.message);
-			// console.log(this._rooms.getRoomByName(payload.to));
+		if (!isExist) {
+			console.log('Conversation does not Exist !');
+			// If dosn't exist create new record
+			const newConv = await this._prisma.createConversation(payload);
+			// ADD conversation ID for USER1 object
+			this._users.addNewConversation(client.id, newConv.id, payload.to);
+			// ADD conversation ID for USER2 object
+			this._users.addNewConversation(this._users.getSocketId(payload.to), newConv.id, payload.from);
 		}
+		else {
+			console.log('Conversation Exists !');
+			// If Exist Just add the message at the conversation ID
+			await this._prisma.updateConversation(isExist.id, payload);
+		}
+		// Check if the receiver user is online between the _users
+		const toUser = this._users.getUserById(payload.to);
+		// if is Online, send him a message to the 'chat' event
+		if (toUser)
+			this._server.to(this._users.getSocketId(payload.to)).emit('chat', payload.message);
 	}
 
+	@UseFilters(ExceptionHandler)
+	@UsePipes(ValidationPipe)
 	@SubscribeMessage('createRoom')
-	handleCreateRoom(@ConnectedSocket() client :Socket, @Body() payload: JoinRoomDTO) :void {
+	async handleCreateRoom(@ConnectedSocket() client: Socket, @Body() payload: CreateRoom): Promise<void> {
 
 		try {
-			this._rooms.create(payload.roomName, this._users.getUserById(payload.userId));
+
+			// Create a room record
+			const newRoom = await this._prisma.createRoom(payload, payload.type);
+			// Add the room to the user's room array of Objects
+			this._users.addNewRoom(client.id, newRoom, 'OWNER');
+			console.log(this._users.getUserBySocketId(client.id));
+			
+			// Check Execption
 		} catch (e) {
-			client.emit('error', e.message);
+			// If it's From prisma
+			if ((e) instanceof Prisma.PrismaClientKnownRequestError)
+			{
+				// Means that the room already exist with that name
+				if (e.code === 'P2002')
+				this._server.to(client.id).emit('error', `${payload.name} already exists !`);
+			}
+			// Something else happened
+			else
+				this._server.to(client.id).emit('error', `${payload.name} Room creation failed !`);
 		}
 	}
 
+	// TODO: Check Banned
+	@UseFilters(ExceptionHandler)
+	@UsePipes(ValidationPipe)
 	@SubscribeMessage('joinRoom')
-	handleJoinRoom(@ConnectedSocket() client: Socket, @Body() payload: JoinRoomDTO) :void {
+	async handleJoinRoom(@ConnectedSocket() client :Socket, @Body() payload :JoinRoomDTO) :Promise<void> {
+
+		console.log(payload);
+
+		// Check if the room Exists
+		const foundedRoom = await this._prisma.findRoom(payload.roomId);
 
 		try {
-			this._rooms.join(payload.roomName, this._users.getUserById(payload.userId));
-			this._rooms.printUsersInRoom(payload.roomName);
-		} catch (e) {
-			console.log('heyy');
-			client.emit('error', e.message);
+			
+			// If exists just Join it
+			if (foundedRoom)
+			{
+				await this._prisma.joinRoom(foundedRoom.id, payload);
+				// Join the virtual room at the server
+				client.join(foundedRoom.name);
+				// Add that room to the user's room array of Objects
+				this._users.addNewRoom(client.id, foundedRoom, 'USER');
+				console.log(this._users.getUserBySocketId(client.id));
+			}
+			else
+			{
+				// If doesn't exist just inform the user
+				this._server.to(client.id).emit('error', `Room with ${payload.roomId}:ID not found !`);
+			}
+			
+		}
+		catch (e) {
+			// This exeception throws when the user is already there
+			this._server.to(client.id).emit('error', `User with ${payload.userId}:ID already exists !`);
 		}
 	}
 };

@@ -1,26 +1,45 @@
+import { IsEnum, IsIn, IsInt, IsNotEmpty, IsString } from "@nestjs/class-validator"
+import { Prisma, ROOMTYPE } from "@prisma/client"
 
-// Message Interface
-export interface MessageDTO {
+// Message Class
+export class MessageDTO {
+
+	@IsInt()
 	from	:number
-	to		:number | string
+
+	@IsInt()
+	to		:number
+
+	@IsNotEmpty()
+	@IsString()
 	message	:string
-	room	:boolean
 }
 
-// export interface MessageDTO {
-// 	from	:string
-// 	to		:string
-// 	message	:string
-// }
+// Join room class
+export class JoinRoomDTO {
 
-// New Connection Query = Will change into JWT
-export interface NewConnectionQueryDTO {
-	id			:number
-	username	:string
-}
-
-export interface JoinRoomDTO {
-	userId		:number
+	@IsInt()
 	roomId		:number
-	roomName	:string
+
+	@IsInt()
+	userId		:number
+}
+
+// Create room class
+export class CreateRoom {
+
+	@IsInt()
+	ownerId		: number
+
+	@IsNotEmpty()
+	@IsString()
+	name		:string
+
+	@IsEnum(ROOMTYPE)
+	@IsString()
+	type		:ROOMTYPE
+
+	@IsNotEmpty()
+	@IsString()
+	password	?:string
 }
