@@ -1,27 +1,45 @@
 
 // User Inetface
-export interface User {
-	_id :number
-	_socketId ?:string
-	_username :string
+export class User {
+
+	id			:number
+	username	:string
+	socketId	:string
+	rooms		:Room[]
+	DirectChat	:Conversations[]
 }
 
 // User's Role Interface
-export interface UserInRoom {
-	user :User
-	role : 'OWNER' | 'ADMIN' | 'USER'
-	// muted :boolean
-}
+// export interface UserInRoom {
+// 	// user: User
+// 	room	:Room
+// 	role	:'OWNER' | 'ADMIN' | 'USER'
+// 	// muted :boolean
+// }
 
 // Room Interface
 export interface Room {
-	name :string
-	users :UserInRoom
+	id			:number
+	name		:string
+	UserRole	:'OWNER' | 'ADMIN' | 'USER',
+	type		:'PUBLIC' | 'PROTECTED' | 'PRIVATE'
 }
 
-// Room's roles pptions
-enum ROLE {
-	'OWNER',
-	'ADMIN',
-	'USER',
+// Converstion Interface
+export interface Conversations {
+	id			:number
+	toUserId	:number
 }
+
+// Room's roles options
+// enum ROLE {
+// 	'OWNER',
+// 	'ADMIN',
+// 	'USER',
+// }
+
+// enum ROOMTYPE {
+// 	'PUBLIC',
+// 	PROTECTED',
+// 	'PRIVATE'
+// }
