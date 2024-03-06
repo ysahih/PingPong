@@ -98,8 +98,8 @@ const Sidebar = () => {
     }
 
     return (
-        <div className="side_holder">
-            <div className="Sidebar">
+        <>
+          <div className="Sidebar">
                 <Buttons/>
                 <div className="logout">
 
@@ -115,16 +115,16 @@ const Sidebar = () => {
 
                 </div>
             </div>
-        
-            <div className="PhoneSidebar">
+
+        <div className="PhoneSidebar">
                 
                <PhoneButtons/>
                 <div className="logoutIcon" onClick={Logout}>
                     <Image className="" src="homeimages/logouticon.svg" alt="logo" width={26} height={18}/>
                 </div>
 
-            </div>
         </div>
+    </>
     );
 }
 
