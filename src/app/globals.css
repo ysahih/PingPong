@@ -23,7 +23,7 @@
 
 
 .bgimage{
-    filter: blur(5px) brightness(70%);
+    /* filter: blur(5px) brightness(70%); */
 }
 
 .homepage{
@@ -598,12 +598,6 @@
     margin-top: 12px; 
 }
 
-@media (max-width: 769px){
-        .userpic{
-
-            width: 100%
-        }
-}
     
 
 .info{
@@ -1110,12 +1104,7 @@
     }
 }
 
-@media (max-width: 769px){
-    .navbar{
-
-        height: 60px;
-    }
-}
+@media(max-width:769px){}
 @media (max-width: 1000px){
     .Pongy{
 
@@ -1139,12 +1128,6 @@
     }
 }
 
-@media (max-width: 769px){
-    .rightBar{
-
-        padding-top: 5px;
-    }
-}
 
 @media (max-width: 1800px){
     .Sidebar {
@@ -1172,12 +1155,7 @@
 
 }
 
-@media (max-width: 769px){
-    .sideButton{
 
-        display: none;
-    }
-}
 
 
 @media (min-width:1140px) {
@@ -1188,39 +1166,10 @@
     
 }
 
-@media (max-width:769px) {
-    .chatholder{
 
-        margin-top: 100px;
-    }
-}
-@media (max-width: 769px){
-    .Gameinvite{
 
-        height: 60px;
-        width: 180px;
-    }
-}
-@media (max-width: 366px){
-    .Gameinvite{
 
-        display: none;
-    }
-}
-@media (max-width: 769px){
-    .yes-no{
 
-        margin-top: 25px;
-        width: 18px;
-    }
-}
-
-@media (max-width:769px) {
-    .Games{
-
-        margin-top: 100px;
-    }
-}
 @media (max-width:370px) {
     .Games{
         
@@ -1236,33 +1185,80 @@
     }
 }
 @media (max-width: 769px){
-    .tabledescribtion p{
-
-        font-size: 6px;
-    }
+    
 }
 @media (max-width: 1000px){
     .tabledescribtion h2{
-
         font-size: 20px;
     }
 }
-@media (max-width: 769px){
-    .tabledescribtion h2{
 
-        font-size: 10px;
+@media (max-width: 366px){
+    .Gameinvite{
+        display: none;
     }
 }
+
+
 @media (max-width:769px) {
+    .chatholder{
+    
+        margin-top: 100px;
+    }
+    .Gameinvite{
+    
+        height: 60px;
+        width: 180px;
+    }
+    
+    .yes-no{
+    
+        margin-top: 25px;
+        width: 18px;
+    }
+    .Games{
+        margin-top: 100px;
+    }
+    .tabledescribtion p{
+    
+        font-size: 6px;
+    }
+    .sideButton{
+
+        display: none;
+    }
+
+    .rightBar{
+
+        padding-top: 5px;
+    }
+
+    .navbar{
+
+        height: 60px;
+    }
+
+    .userpic{
+
+        width: 100%
+    }
+
+    .tables{
+
+        width: 100%;
+    }
+
+    .tabledescribtion h2{
+    
+        font-size: 10px;
+    }
     .search{
 
         margin-top: 100px;
-    }
-}
-@media (max-width:769px) {
-    .ranking{
-
-        margin-top: 100px;
+        .ranking{
+        
+            margin-top: 100px;
+        }
     }
 }
 @media (max-width:580px) {
@@ -1272,12 +1268,7 @@
         font-size: 5px;
     }
 }
-@media (max-width:769px) {
-    .tables{
-
-        width: 100%;
-    }
-}
+@media (max-width:769px) {}
 @media (max-width:420px) {
     .tables{
 
@@ -1286,15 +1277,12 @@
 }
 @media (max-width: 600px) {
     .typo{
-
         font-size: small;
     }
 }
 
 @media (max-height: 555px) {
-    .chatholder .convoHolder{
-
-        
+    .chatholder .convoHolder{        
         height: 80%;
     }
 }

@@ -9,7 +9,7 @@ import { Input } from "postcss";
 const Header = () =>{
     return(
         <div className="chatheader">
-            <Image src="/homeImages/chat.svg" alt="logo" width={19} height={17}/>
+            <Image src="./homeImages/chat.svg" alt="logo" width={19} height={17}/>
             <h2>General Chat</h2>
         </div>
     );
@@ -27,25 +27,29 @@ const Memebers = ()=>{
             </div>
 
             <div className="profiles">
-                <Image className="profilepic" src="/homeImages/memeber1.svg" alt="member" width={35} height={35}/>
-                <Image className="profilepic" src="/homeImages/memeber1.svg" alt="member" width={35} height={35}/>
-                <Image className="profilepic" src="/homeImages/memeber1.svg" alt="member" width={35} height={35}/>
+                <Image className="profilepic" src="./homeImages/memeber1.svg" alt="member" width={35} height={35}/>
+                <Image className="profilepic" src="./homeImages/memeber1.svg" alt="member" width={35} height={35}/>
+                <Image className="profilepic" src="./homeImages/memeber1.svg" alt="member" width={35} height={35}/>
             </div>
         </div>
         </>
     );
 }
 
-const UserOption = ({ className }) => {
+interface userOptionClass{
+    className: string;
+}
+
+const UserOption = ( { className }: userOptionClass ) => {
     return (
         <div  className={`userOption ${className}`}>
             <div className="block">
-                <Image className="optionlogo" src="/homeImages/chat.svg" alt="logo" width={19} height={17}/>
+                <Image className="optionlogo" src="./homeImages/chat.svg" alt="logo" width={19} height={17}/>
                 <p>Block</p>
             </div>
             <hr className="liney"></hr>
             <div className="clash">
-                <Image className="optionlogo" src="/homeImages/chat.svg" alt="logo" width={19} height={17}/>
+                <Image className="optionlogo" src="./homeImages/chat.svg" alt="logo" width={19} height={17}/>
                 <p>Clash</p>
             </div>
         </div>
@@ -62,7 +66,7 @@ const More = ()=> {
 
     return (
         <div className="more">
-            <Image className="dots" onClick={handleMsgOption} src="/homeImages/dots.svg" alt="member" width={12} height={16}/>
+            <Image className="dots" onClick={handleMsgOption} src="./homeImages/dots.svg" alt="member" width={12} height={16}/>
             <UserOption className={showMsgOption ? '' : 'invisible'} />
             <p className="date">15:30</p>
         </div>
@@ -74,7 +78,7 @@ const Message = () =>{
         <div className="Message">
 
             <div className="picture">
-                <Image className="profilepic" src="/homeImages/memeber1.svg" alt="member" width={40} height={40}/>
+                <Image className="profilepic" src="./homeImages/memeber1.svg" alt="member" width={40} height={40}/>
             </div>
 
             <div className="messageInfo">
