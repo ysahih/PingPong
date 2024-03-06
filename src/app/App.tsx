@@ -1,3 +1,4 @@
+
 // import UserDataContext, { UserData } from "@/components/context/context";
 // import {useContext } from "react";
 // import Image from "next/image";
@@ -49,25 +50,27 @@ import "./globals.css";
 import axios from "axios";
 import Router from "next/navigation";
 
-import { Carousel, Typography, Button } from "@material-tailwind/react";
+import { Carousel, Typography, Button, Switch } from "@material-tailwind/react";
 import RenderContext, { renderContext } from "@/components/context/render";
 
 
 const Tables = ()=>{
 	return (
 		<Carousel 
+			placeholder="carousel"
 			className="tables rounded-lg"
-		>
+			>
     		<div className=" darktable relative h-1/2 w-full">
     	  		<Image
-    	    		src="/homeImages/darkvalley.svg"
+    	    		src="./homeImages/darkvalley.svg"
     	    		alt="image 1"
 					width={200} height={100}
     	    		className="h-full w-full object-cover"
-    	  		/>
+					/>
     	  		<div className="playdarknow absolute inset-0 grid h-full w-full place-items-center ">
     	    		<div className="w-3/4 text-center md:w-2/4">
     	      			<Typography
+							placeholder="type"
     	    		 	   variant="h2"
     	    		 	   color="white"
     	    			    className="typo"
@@ -76,6 +79,7 @@ const Tables = ()=>{
     	      			</Typography>
     	      			<div className="flex">
     	        			<Button
+								placeholder="button"
 								className="playnow" 
 							 	color="blue">
     	        			  	Play Now
@@ -86,13 +90,14 @@ const Tables = ()=>{
     	</div>
     	<div className="lighttable relative h-full w-full">
     		<img
-    	    	src="/homeImages/frozenarena.svg"
+    	    	src="./homeImages/frozenarena.svg"
     	    	alt="image 2"
     	    	className="h-full w-full object-cover"
     	  	/>
     		<div className="playlightnow absolute inset-0 grid h-full w-full place-items-center ">
     	    	<div className=" w-3/4 text-center md:w-2/4">
     	      		<Typography
+						placeholder="type"
     	        		variant="h2"
     	        		color="white"
     	        		className="typo"
@@ -102,7 +107,8 @@ const Tables = ()=>{
 
     	     	 	<div className="flex text-sm">
     	      		  <Button
-					  		className="playnow"
+					  		placeholder="button"
+							className="playnow"
 							color="white">
     	      	  	 	Play Now
     	      	  	</Button>
@@ -120,7 +126,7 @@ const Match = () => {
 	return (
 		<div className="match">
 			<div className="opponent">
-				<Image src="/homeImages/member0.svg" alt="profile" width={26} height={26}/>
+				<Image src="./homeImages/member0.svg" alt="profile" width={26} height={26}/>
 				<p>UcefSahih</p>
 			</div>
 			<div className="level">
@@ -178,7 +184,7 @@ const BackGround = ()=> {
     return (
         <div className='bg'>
             <Image
-                src="/homeImages/Backgroundimage.svg"
+                src="./homeImages/Backgroundimage.svg"
                 alt="background"
                 priority={true}
                 fill
