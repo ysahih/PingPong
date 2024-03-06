@@ -14,6 +14,6 @@ const existingConfig: Config = {
   plugins: [],
 };
 
-const mergedConfig: Config = withMT(existingConfig);
+const mergedConfig = withMT(existingConfig);
 
 export default mergedConfig;

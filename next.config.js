@@ -2,7 +2,7 @@
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
-  output: 'export',
+  // output: 'export',
   env: {
     NEST_API: process.env.NEST_API,
   },

@@ -8,7 +8,7 @@ const Games = () => {
           <div className="darkRow">
 
             <div className="darktable">
-                <Image src="homeimages/Darktable.svg" alt="table" width={200} height={200}/>
+                <Image src="./homeImages/darktable.svg" alt="table" width={200} height={200}/>
             </div>
 
             <div className="tabledescribtion">
@@ -29,7 +29,7 @@ const Games = () => {
             </div>
 
             <div className="Lighttable">
-                <Image src="homeimages/lighttable.svg" alt="table" width={200} height={200}/>
+                <Image src="./homeImages/lighttable.svg" alt="table" width={200} height={200}/>
             </div>
           </div>
 

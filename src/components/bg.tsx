@@ -1,12 +1,12 @@
 import Image from "next/image";
 import '@/styles/login/landingPage.css';
-import bgound from '../../public/Backgroundimage.webp';
+import bground from '../../public/homeImages/Backgroundimage.webp';
 
 const BackGround = () => {
     return (
         <div className='bg'>
             <Image
-                src={bgound}
+                src={bground}
                 alt="background"
                 priority={true}
                 quality={100}

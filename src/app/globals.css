@@ -18,12 +18,12 @@
 
 .body{
     display: flex;
-    justify-content: stretch;
+    /* justify-content: stretch; */
 }
 
 
 .bgimage{
-    filter: blur(5px) brightness(70%);
+    /* filter: blur(5px) brightness(70%); */
 }
 
 .homepage{
@@ -31,21 +31,8 @@
     overflow: auto;
     overflow-x: hidden;
     height: 100vh;
-    @media (max-width:1002px) {
-        margin-left: 70px;
-    }
-    @media (max-height:560px) {
-        margin-left: 0px;
-    }
-        
-    @media (min-height:560px) and (min-width: 1002px){
-        margin-left: 200px;
-        
-    }
-
-    @media (min-height:560px) and (min-width: 1800px){
-        margin-left: 300px;
-    }
+    
+ 
         
 }
 
@@ -73,7 +60,7 @@
 
   }
 .homepage::-webkit-scrollbar {
-    width: 0; /* Hide the scrollbar on WebKit browsers */
+    width: 0;
 
 }
 
@@ -86,17 +73,9 @@
     box-shadow: 5px 4px 10px 0px #02041D;
     position: fixed;
     z-index: 100;
-    @media (max-width: 769px){
-        height: 60px;
-    }
 }
 
-.Pongy{
-    
-    @media (max-width: 1000px){
-        display: none;
-    }
-}
+
 
 .logo{
     display: flex;
@@ -107,15 +86,7 @@
     max-width : 302px;
     border-right: 1px solid var(--item-border-color);
     /* background-color: red; */
-    @media (max-width: 1800px){
-        max-width: 200px;
-        min-width: 200px;
-
-    }
-    @media (max-width: 1000px){
-        max-width: 70px;
-        min-width: 70px;
-    }
+    
 }
 
 /* // */
@@ -131,9 +102,7 @@
     display: flex;
     padding-right: 5%;
     padding-top: 24px;
-    @media (max-width: 769px){
-        padding-top: 5px;
-    }
+    
     
 }
 
@@ -182,24 +151,20 @@
 }
 /* //phone side bar */
 
+
 .PhoneSidebar{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
     min-width : 70px;
+    z-index: 3;
     max-width : 70px;
     position: fixed;
     background: var(--bg-color);
     border-right: 1px solid var(--item-border-color);
     box-shadow: 5px 0px 10px 0px #00000040;
     height: 100%;
-    @media (min-width: 1001px){
-        display: none;
-    }
-    @media (max-height:560px) {
-        position: static;
-    }
 }
 
 
@@ -233,7 +198,11 @@
 
 
 /* !!!Sidebar */
-
+/* .side-holder{
+    @media (max-width: 1000px){
+        display: none;
+    }
+} */
 .Sidebar {
 
     display: flex;
@@ -243,20 +212,12 @@
     align-items: center;
     width: 300px;
     min-height: 600px;
-
+    z-index: 3;
     height: calc(100%);
     background: var(--bg-color);
     border-right: 1px solid var(--item-border-color);
     box-shadow: 5px 0px 10px 0px #00000040;
-    @media (max-width: 1800px){
-        width: 200px;
-    }
-    @media (max-width: 1000px){
-        display: none;
-    }
-    @media (max-height:560px) {
-        position: static;
-    }
+   
 }
 
 .logout{
@@ -335,14 +296,7 @@
     border-top: 1px solid var(--border-top-color);
     transition: all .5s ease;
     
-    @media (max-width: 1800px){
-        width: 140px;
-
-    }
-    
-    @media (max-width: 769px){
-        display: none;
-    }
+  
     cursor: pointer;
 }
 
@@ -388,17 +342,18 @@
     
 }
 
-.chatheader{
+.chatholder .chatheader{
+    display: none;
+}
 
+.chatheader{
+    
     display: flex;
     margin-left: 10%;
     margin-bottom: 15px;
     gap: 8px;
     margin-top: 50px;
-    @media (min-width:1140px) {
-        margin-top: 140px;
-        
-    }
+
 }
 
 .chatheader h2{
@@ -409,26 +364,25 @@
     color: #FFFFFF;
 }
 
+
+
 .chatholder{
     margin: 0px auto;
     margin-top: 150px;
     width: 90%;
-    background: var(--bg-color);
     max-width: 800px;
+    background: var(--bg-color);
     height: 80vh;
     min-height: 550px;
     max-height: 80vh;
     border-top: 1px solid var(--item-border-color);
     border-radius: 12px;
     box-shadow: 5px 4px 10px 0px #00000040;
-    @media (max-width:769px) {
-        margin-top: 100px;
-    }
+   
 }
 
 .messagesHolder{
     overflow: scroll;
-    
     overflow-x: hidden;
     height: calc(70vh - 120px);
     min-height: 370px;
@@ -492,8 +446,8 @@
     /* gap: -50px; */
     max-width: 299px;
     height: 94px;
-    /* background-color: red; */
-    background-color: #0F1647;
+    background-color: var(--item-border-color);
+    /* background-color: #0F1647; */
     border-top: 1px solid var(--border-top-color);
     box-shadow: 5px 4px 10px 0px #00000040;
     border-radius: 15px;
@@ -622,13 +576,7 @@
     height: 94px;
     background: linear-gradient(269.83deg, var(--bg-color) 0.13%, #182B8D 99.85%);
     border-bottom: 1px solid var(--item-border-color);
-    @media (max-width: 769px){
-        height: 60px;
-        width: 180px;
-    }
-    @media (max-width: 366px){
-        display: none;
-    }
+   
 
     opacity: 0;
     transform: translateY(-100%);
@@ -651,12 +599,7 @@
     margin-top: 12px; 
 }
 
-.userpic{
-    @media (max-width: 769px){
-        width: 100%
-    }
     
-}
 
 .info{
     margin-top: 14px;
@@ -687,10 +630,6 @@
 
 .yes-no{
     margin-top: 50px;
-    @media (max-width: 769px){
-        margin-top: 25px;
-        width: 18px;
-    }
 }
 /* ./////////////////////////////////////////////////?./////////////////////////////////////////////////?./////////////////////////////////////////////////?
 */
@@ -706,12 +645,7 @@
     max-height: 80vh;
     border-top: 1px solid var(--item-border-color);
     border-radius: 12px;
-    @media (max-width:769px) {
-        margin-top: 100px;
-    }
-    @media (max-width:370px) {
-        height: 60%;
-    }
+    
     min-height: 470px;
     display: flex;
     flex-direction: column;
@@ -732,12 +666,6 @@
     font-size: 12px;
     font-weight: 400;
     color: #8A99E9;
-    @media (max-width: 1000px){
-        font-size: 10px;
-    }
-    @media (max-width: 769px){
-        font-size: 6px;
-    }
     
 }
 
@@ -751,12 +679,6 @@
     font-size: 30px;
     font-weight: 400;
     color: #FFFFFF;
-    @media (max-width: 1000px){
-        font-size: 20px;
-    }
-    @media (max-width: 769px){
-        font-size: 10px;
-    }
 }
 
 
@@ -796,12 +718,7 @@
     width: 90%;
     max-width: 600px;
     min-width: 200px;
-    @media (max-width:769px) {
-        width: 100%;
-    }
-    @media (max-width:420px) {
-        margin-top: 45px;
-    }
+   
 }
 
 
@@ -810,9 +727,7 @@
     font-weight: 400;
     color: #8A99E9;
     font-size: large;
-    @media (max-width: 600px) {
-        font-size: small;
-    }
+   
 }
 
 .playlightnow .typo{
@@ -844,10 +759,7 @@
     line-height: 1px;
     color: #FFFFFF;
     border-top: 0.5px solid var(--hover-border-color);
-    @media (max-width:580px) {
-        font-weight: 550;
-        font-size: 5px;
-    }
+    
 
 }
 
@@ -965,9 +877,7 @@
     border-top: 1px solid var(--item-border-color);
     border-radius: 12px;
     box-shadow: 5px 4px 10px 0px #00000040;
-    @media (max-width:769px) {
-        margin-top: 100px;
-    }
+  
 }
 
 .first-3{
@@ -1007,7 +917,373 @@
     border-top: 1px solid var(--item-border-color);
     border-radius: 12px;
     box-shadow: 5px 4px 10px 0px #00000040;
-    @media (max-width:769px) {
+ 
+}
+
+
+/* /conversation// */
+
+.convo{
+
+    width: 95%;
+    margin: 0px auto;
+    margin-top: 20px;
+    border-radius: 20px;
+    height: calc(80vh);
+    padding: 1px;
+    border-top: 1px solid var(--border-top-color);
+    /* background-color: var(--item-border-color); */
+}
+
+.chatholder .convo{
+    height: calc(65vh);
+}
+    
+.chatholder .input-footer{
+    margin-left: -5.9%;
+    
+}
+.chatholder .convoInput{
+    margin-left: 50px;
+    width: 50vw;
+}
+
+.convoInput {
+    border: none;
+  background-color: #040A2F;
+  outline: none;
+  padding-left: 10px;
+  font-family: Inter;
+  font-size: 12px;
+  font-weight: 400;
+  color: #8A99E9;
+  /* height: 180px; */
+    width: fit-content; 
+    overflow-wrap: break-word;
+    word-wrap: break-word; /* Fallback for older browsers */
+
+    /* background-color: red */
+  }
+
+.input-footer{
+    display: flex;
+    /* justify-content: space-around; */
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 20px;
+    gap: 9%;
+    background: #040A2F;
+    border-top: .5px solid var(--border-top-color);
+   
+}
+
+.sendLogo{
+    color: var(--hover-border-color) ;
+    margin-left: -10px;
+    width:  30px;
+    height: 30px;
+}
+
+/* //convo details */
+
+.convoHeader{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+    gap: 30px;
+
+}
+.sender-info h2{
+    font-family: Inter;
+    font-size: 15px;
+    font-weight: 400;
+    color: white;
+
+
+}
+.sender-info{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-right: 35px;
+}
+
+.convo hr{
+    width: 90%;
+    margin: 12px auto ;
+    border: 0.5px solid  var(--border-top-color);
+}
+
+.chatholder .convoHolder{
+    height: calc(90vh - 320px);
+   
+}
+
+.convoHolder{
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow: auto;
+    overflow-x: hidden;
+    height: calc(100vh - 310px);
+
+}
+
+.convoHolder p{
+
+    font-family: Inter;
+    font-size: 13px;
+    font-weight: 400;
+    color : white;
+}
+
+.myMsg, .othersMsg{
+    padding: 10px;
+    margin-bottom: 10px;
+    height: auto;
+    width: fit-content;
+    max-width: 70%;
+   
+}
+
+.myMsg{
+    background-color: var(--item-border-color);
+    border-radius: 15px 0px 15px 15px;
+    align-self: end;
+    
+}
+
+.othersMsg{
+    background-color: var(--border-top-color);
+    border-radius: 0px 15px 15px 15px;
+
+}
+
+
+
+/* media// */
+
+@media (min-width: 1001px){
+    .PhoneSidebar{
+        display: none;
+    }
+}
+@media (max-height: 559px) {
+    .PhoneSidebar{
+    position: static;
+    }
+}
+
+@media (max-width:1002px) {
+    .homepage{
+
+        
+        margin-left: 70px;
+    }
+}
+@media (max-height: 559px) {
+    .homepage{
+
+        margin-left: 0px;
+    }
+}
+
+@media (min-height:559px) and (min-width: 1002px){
+    .homepage{
+
+        margin-left: 200px;
+    }
+    
+}
+
+@media (min-height:559px) and (min-width: 1800px){
+    .homepage{
+
+        margin-left: 300px;
+    }
+}
+
+@media(max-width:769px){}
+@media (max-width: 1000px){
+    .Pongy{
+
+        display: none;
+    }
+}
+
+@media (max-width: 1800px){
+    .logo{
+
+        max-width: 200px;
+        min-width: 200px;
+    }
+
+}
+@media (max-width: 1000px){
+    .logo{
+
+        max-width: 70px;
+        min-width: 70px;
+    }
+}
+
+
+@media (max-width: 1800px){
+    .Sidebar {
+        width: 200px;
+    }
+}
+
+@media (max-width: 1000px){
+    .Sidebar {
+    display: none;
+    }
+}
+
+@media (max-height:559px) {
+    .Sidebar {
+        position: static;
+    }
+}
+
+@media (max-width: 1800px){
+    .sideButton{
+
+        width: 140px;
+    }
+
+}
+
+
+
+
+@media (min-width:1140px) {
+    .chatheader{
+
+        margin-top: 140px;
+    }
+    
+}
+
+
+
+
+
+@media (max-width:370px) {
+    .Games{
+        
+        height: 60%;
+    }
+}
+
+@media (max-width: 1000px){
+    
+    .tabledescribtion p{
+
+        font-size: 10px;
+    }
+}
+@media (max-width: 769px){
+    
+}
+@media (max-width: 1000px){
+    .tabledescribtion h2{
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 366px){
+    .Gameinvite{
+        display: none;
+    }
+}
+
+
+@media (max-width:769px) {
+    .chatholder{
+    
         margin-top: 100px;
+    }
+    .Gameinvite{
+    
+        height: 60px;
+        width: 180px;
+    }
+    
+    .yes-no{
+    
+        margin-top: 25px;
+        width: 18px;
+    }
+    .Games{
+        margin-top: 100px;
+    }
+    .tabledescribtion p{
+    
+        font-size: 6px;
+    }
+    .sideButton{
+
+        display: none;
+    }
+
+    .rightBar{
+
+        padding-top: 5px;
+    }
+
+    .navbar{
+
+        height: 60px;
+    }
+
+    .userpic{
+
+        width: 100%
+    }
+
+    .tables{
+
+        width: 100%;
+    }
+
+    .tabledescribtion h2{
+    
+        font-size: 10px;
+    }
+    .search{
+
+        margin-top: 100px;
+        .ranking{
+        
+            margin-top: 100px;
+        }
+    }
+}
+@media (max-width:580px) {
+    .playnow{
+
+        font-weight: 550;
+        font-size: 5px;
+    }
+}
+@media (max-width:769px) {}
+@media (max-width:420px) {
+    .tables{
+
+        margin-top: 45px;
+    }
+}
+@media (max-width: 600px) {
+    .typo{
+        font-size: small;
+    }
+}
+
+@media (max-height: 555px) {
+    .chatholder .convoHolder{        
+        height: 80%;
     }
 }
