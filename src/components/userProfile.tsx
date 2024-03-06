@@ -46,8 +46,7 @@ const QrCode = (props: QrCodeProps) => {
     );
     if (res.data !== undefined) {
       setEnable2Fa(res.data.status);
-      if (res.data.status === true) 
-     { 
+      if (res.data.status === true) {
         props.towFa(true);
         props.close(false);
       }
@@ -232,7 +231,7 @@ const SettingsAnd2Fa = () => {
       <button
         ref={RefBtn}
         className="btn2Fa"
-        onClick={() => (TwoFaStatus? setDisable2Fa(true): setQrclose(true))}
+        onClick={() => (TwoFaStatus ? setDisable2Fa(true) : setQrclose(true))}
       >
         {TwoFaStatus ? "Disable 2FA" : "Enable 2FA"}
       </button>
