@@ -8,7 +8,6 @@ export class TwoFactorAuthenticationService {
         const secret = authenticator.generateSecret();
         const otpauthUrl = authenticator.keyuri(username, 'PONGy', secret);
         const qrCodeData = await qrcode.toDataURL(otpauthUrl);
-        
         return { secret, qrCodeData };
     }
 
