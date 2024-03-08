@@ -2,9 +2,10 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from "@nestjs/c
 import { serverGateway } from "./gateway.chat";
 import { UsersServices } from "./usersRooms/user.class";
 import { RoomsServices } from "./usersRooms/room.class";
+import { GatewayService } from "./geteway.service";
 
 @Module({
-    providers: [serverGateway, UsersServices, RoomsServices],
+    providers: [serverGateway, UsersServices, RoomsServices, GatewayService],
 })
 export class GatewayModule {
 

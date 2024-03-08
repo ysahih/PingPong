@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Conversations, User } from "./UserRoom.interface";
 import { Socket } from "socket.io";
-import { Room } from "../usersRooms/UserRoom.interface";
+import { Room } from "./UserRoom.interface";
 
 @Injectable()
 export class UsersServices {
@@ -67,8 +67,7 @@ export class UsersServices {
 	deleteUser(socket: Socket, cb: (socket: Socket, rooms: Room[]) => void): void {
 
 		const user = this._users.get(socket.id);
-		if (user)
-		{
+		if (user) {
 			console.log(`${user.username} will be deleted !`);
 			cb(socket, this._users.get(socket.id).rooms);
 			this._users.delete(socket.id);
@@ -111,7 +110,7 @@ export class UsersServices {
 		});
 	}
 
-	addNewRoom(socketId: string, room :any, userRole) :void {
+	addNewRoom(socketId: string, room: any, userRole): void {
 
 		this._users.get(socketId).rooms.push({
 			id: room.id,

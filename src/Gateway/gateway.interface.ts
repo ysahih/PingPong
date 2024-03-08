@@ -1,5 +1,5 @@
 import { IsEnum, IsIn, IsInt, IsNotEmpty, IsString } from "@nestjs/class-validator"
-import { Prisma, ROOMTYPE } from "@prisma/client"
+import { ROOMTYPE } from "@prisma/client"
 
 // Message Class
 export class MessageDTO {
