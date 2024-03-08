@@ -1,5 +1,10 @@
+
 # DS_Store
 .DS_Store
 
 # vscode
 .vscode
+
+node_modules
+.next
+
