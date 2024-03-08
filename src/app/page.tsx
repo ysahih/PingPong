@@ -18,46 +18,47 @@ export default function landingPage()
     const router = useRouter();
 
     useEffect(() => {
-        if(!data)
-        {
-            const getdata = async () => {
-            try {
-                const ApiUrl = process.env.NEST_API;
-                const res = await axios.get(ApiUrl + '/profile', {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    withCredentials: true,
-                });
-                if (res.data === undefined || res.data === false || res.data === null || res.data.update === undefined || res.data.update === false) {
-                    router.push('/login');
-                }
-                else if (res.data.twoFa === true) {
-                    setData(res.data);
-                    setCheckTwoFactor(res.data.twofaCheck);
-                }
-                else if (res.data.twoFa === false) {
-                    setData(res.data);
-                    setCheckTwoFactor(true);
-                }
-                else
-                    setData(res.data);
-                console.log('Data:', res.data);
-                } catch (error) {
-                    // console.log('Error:', error);
-                    router.push('/login');
-                }
-            }
-            getdata();
-        }
+        // if(!data)
+        // {
+        //     const getdata = async () => {
+        //     try {
+        //         const ApiUrl = process.env.NEST_API;
+        //         const res = await axios.get(ApiUrl + '/profile', {
+        //             headers: {
+        //                 'Content-Type': 'application/json',
+        //             },
+        //             withCredentials: true,
+        //         });
+        //         if (res.data === undefined || res.data === false || res.data === null || res.data.update === undefined || res.data.update === false) {
+        //             router.push('/login');
+        //         }
+        //         else if (res.data.twoFa === true) {
+        //             setData(res.data);
+        //             setCheckTwoFactor(res.data.twofaCheck);
+        //         }
+        //         else if (res.data.twoFa === false) {
+        //             setData(res.data);
+        //             setCheckTwoFactor(true);
+        //         }
+        //         else
+        //             setData(res.data);
+        //         console.log('Data:', res.data);
+        //         } catch (error) {
+        //             // console.log('Error:', error);
+        //             router.push('/login');
+        //         }
+        //     }
+        //     getdata();
+        // }
     },[]);
     
 
     return (
         <>
-            <UserDataContext.Provider value={data}>
+            {/* <UserDataContext.Provider value={data}>
             {data? checkTwoFactor? <App/> : <VerifyTwoFa close={setCheckTwoFactor}/> : <Loding/>}
-            </UserDataContext.Provider>
+            </UserDataContext.Provider> */}
+            <App/>
         </>
     );
 }

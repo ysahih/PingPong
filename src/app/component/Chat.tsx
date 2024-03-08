@@ -3,6 +3,7 @@ import { RiSendPlaneFill } from "react-icons/ri";
 import { useState } from "react";
 import Image from "next/image";
 import { Input } from "postcss";
+import { number } from "yup";
 
 
 
@@ -72,10 +73,19 @@ const More = ()=> {
         </div>
     );
 }
+type Props = {
+    handleMsgClick: (value:number) => void;
+};
 
-const Message = () =>{
+
+const Message = ({handleMsgClick} : Props) =>{
+    const handleClick = ()=>{
+        handleMsgClick(1);
+    }
     return (
-        <div className="Message">
+        <div className="Message" onClick={()=>{
+            handleMsgClick(1);
+        }}>
 
             <div className="picture">
                 <Image className="profilepic" src="./homeImages/memeber1.svg" alt="member" width={40} height={40}/>
@@ -92,16 +102,19 @@ const Message = () =>{
     );
 }
 
-const Conversation = () =>{
+const Conversation = ({handleMsgClick}: Props) =>{
+    const handleClick = ()=>{
+        handleMsgClick(0);
+    }
     return (
-        <>
+        <div className="conversation">
             <div className="convo">
                 <div className="convoHeader">
                     <div className="sender-info">
                         <Image src="./homeImages/memeber1.svg" width={38} height={42} alt="photo"/>
                         <h2>Username</h2>
                     </div>
-                    <Image className="go-back" src="./homeImages/goback.svg" width={28} height={25} alt="back"/>
+                    <Image className="go-back" src="./homeImages/goback.svg" onClick={handleClick} width={28} height={25} alt="back" />
                 </div>
                 <hr />
 
@@ -281,32 +294,54 @@ const Conversation = () =>{
                         <p>hi, thank you</p>
                     </div> */}
                 </div>
-
             </div>
             <div className="input-footer">
                 <input className="convoInput" placeholder="Send a Message..."/>
                 <RiSendPlaneFill className="sendLogo"/>
             </div>
-        </>
+        </div>
     );
 }
+// const ChatChat = ()=>{
+//     return (
+//         <div className="">
+//             <div className="chatbar">
+//                 <Header/>
+//                 <Memebers/>
+//             </div>
+//              <div className="messagesHolder">
+//                 <Message />
+//             </div> 
+//         </div>
+//     );
+// }
 
 
-const Chat = () =>{
+const Chat = () => {
+    
+    //TDO: fetch HTTP chat data;
+    //(after getting the data, it should be mapped in as messages)//
+    //(then we should listen for 2 events: *online and *newMessage) //
+    //firts we add new messages recieved on the socket to the Message map//
 
+    const [ShowConvo, setShowConvo]  = useState(0);
+
+    const handleMsgClick = (value:number)=>{
+        setShowConvo(value);
+    }
     return (
         <div className="chat">
-            <div className="chatbar">
-                <Header/>
-            </div>
-
+            {ShowConvo === 0 && <div className="">
+                <div className="chatbar">
+                    <Header/>
+                    <Memebers/>
+                </div>
+                 <div className="messagesHolder">
+                    <Message handleMsgClick={handleMsgClick}/>
+                </div> 
+            </div>}
+            {ShowConvo === 1 && <Conversation  handleMsgClick={handleMsgClick}/>}
             
-            {/* <Memebers/> */}
-            {/* <div className="messagesHolder">
-                <Message />
-            </div> */}
-
-            <Conversation/>
         </div>
     );
 }
