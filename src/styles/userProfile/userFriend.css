@@ -1,0 +1,17 @@
+.containerUserFriends{
+    color: white;
+}
+
+.FriendsPh{
+    font-family: Lalezar;
+    font-size: 12px;
+    font-weight: 10000;
+    color: #FFFFFF;
+    border: none;
+    background: none;
+    background: var(--item-border-color);
+    background: radial-gradient(circle, var(--item-border-color) 20%, #040A2F 100%);
+    border-radius: 10px;
+    border-top: 1px solid var(--border-top-color);
+    box-shadow: 5px 4px 10px 0px #00000040;
+}

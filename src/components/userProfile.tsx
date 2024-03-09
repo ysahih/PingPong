@@ -12,10 +12,9 @@ import axios from "axios";
 import AuthCode from "react-auth-code-input";
 import CloseBtn from "./closebtn";
 import Switch from "react-switch";
+import UserFriends from "./userProfile/userProfile";
 
-const ProfileFriends = () => {
-  return <div>friends</div>;
-};
+
 
 interface QrCodeProps {
   close: (val: boolean) => void;
@@ -155,7 +154,7 @@ const Disable2Fa = (props: Disable2FaProps) => {
 
   const DisableTwoFaWithToken = async () => {
     if (btnValue && btnValue.current) {
-      (btnValue.current as HTMLButtonElement).textContent = "Desabling...";
+      (btnValue.current as HTMLButtonElement).textContent = "Disabling...";
     }
     const res = await axios.post(
       "http://localhost:3000/disable-2fa",
@@ -315,7 +314,7 @@ const UserProfile = () => {
         </div>
       </div>
       <div className="profileFriends">
-        {settings ? <SettingsAnd2Fa /> : <ProfileFriends />}
+        {settings ? <SettingsAnd2Fa /> : <UserFriends/>}
       </div>
       <div className="profileAwords"></div>
     </div>
