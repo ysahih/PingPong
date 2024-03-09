@@ -42,7 +42,7 @@ export default function landingPage()
                 }
                 else
                     setData(res.data);
-                console.log('Data:', res.data);
+                console.log('Data:', res.data, data);
                 } catch (error) {
                     // console.log('Error:', error);
                     router.push('/login');

@@ -2,6 +2,12 @@ import AuthCode from "react-auth-code-input";
 import CloseBtn from "../closebtn";
 import { useRef, useState } from "react";
 import axios from "axios";
+import { HtmlContext } from "next/dist/server/future/route-modules/app-page/vendored/contexts/entrypoints";
+import { useRouter } from "next/navigation";
+
+
+
+
 
 interface VerifyTwoFaProps {
     close: (val: boolean) => void;
@@ -11,7 +17,25 @@ const VerifyTwoFa = (props: VerifyTwoFaProps) => {
     const [input, setInput] = useState("");
     const btnValue = useRef(null);
     const [enable2Fa, setEnable2Fa] = useState(true);
-  
+    const router = useRouter();
+    const Logout = async () => {
+      try{
+          const res = await axios.get(process.env.NEST_API + '/logout', {
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              withCredentials: true,
+          })
+          if(res.data){
+              // //console.log('Success:', data);
+             
+                  router.push('/login');
+          }
+      }
+      catch (error) {
+          //console.error('Error:', error);
+      };
+    }
     const DisableTwoFaWithToken = async () => {
       if (btnValue && btnValue.current) {
         (btnValue.current as HTMLButtonElement).textContent = "Verify...";
@@ -41,7 +65,7 @@ const VerifyTwoFa = (props: VerifyTwoFaProps) => {
     return (
       <div className="QrContainer ">
         <div className="QRCentent DisableContainer">
-          <div className="closeBTN">
+          <div className="closeBTN" onClick={Logout}>
             <CloseBtn close={props.close} />
           </div>
           <h1>Two Factor Authenticator</h1>
@@ -57,7 +81,13 @@ const VerifyTwoFa = (props: VerifyTwoFaProps) => {
           <AuthCode
             inputClassName={`inputwith ${!enable2Fa && "InputError"} `}
             onChange={(res: string) => {
-              setInput(res), setEnable2Fa(true);
+              setInput(res);
+              setEnable2Fa(true);
+              setTimeout(() => {
+              if (res.length === 6 && btnValue.current && btnValue.current as HTMLButtonElement) {
+                (btnValue.current as HTMLButtonElement).click();
+              }
+            }, 200);
             }}
             allowedCharacters="numeric"
           />
@@ -66,10 +96,15 @@ const VerifyTwoFa = (props: VerifyTwoFaProps) => {
             ref={btnValue}
             className="btn2Fa"
             type="submit"
+            
             onClick={DisableTwoFaWithToken}
           >
             Verify
           </button>
+          <h3 className="Qrtext">
+            or
+          </h3>
+          <button className="btn2Fa" onClick={Logout}>Logout</button>
         </div>
       </div>
     );

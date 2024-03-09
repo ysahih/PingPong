@@ -110,6 +110,11 @@ const QrCode = (props: QrCodeProps) => {
           inputClassName={`inputwith ${!enable2Fa && "InputError"} `}
           onChange={(res: string) => {
             setInput(res), setEnable2Fa(true);
+            setTimeout(() => {
+              if (res.length === 6 && btnValue.current && btnValue.current as HTMLButtonElement) {
+                (btnValue.current as HTMLButtonElement).click();
+              }
+            }, 200);
           }}
           allowedCharacters="numeric"
         />
@@ -195,6 +200,11 @@ const Disable2Fa = (props: Disable2FaProps) => {
           inputClassName={`inputwith ${!enable2Fa && "InputError"} `}
           onChange={(res: string) => {
             setInput(res), setEnable2Fa(true);
+            setTimeout(() => {
+              if (res.length === 6 && btnValue.current && btnValue.current as HTMLButtonElement) {
+                (btnValue.current as HTMLButtonElement).click();
+              }
+            }, 200);
           }}
           allowedCharacters="numeric"
         />
