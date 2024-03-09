@@ -16,7 +16,7 @@ const BackGround = () => {
                 style={{
                     objectFit: 'cover',
                     // filter: 'saturate(0.55)',
-                    filter: 'brightness(0.60)',
+                    filter: 'brightness(0.70)',
                 }} />
          </div>
     );

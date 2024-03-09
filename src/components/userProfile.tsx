@@ -1,7 +1,6 @@
 import "@/styles/userProfile/userprofile.css";
 import Image from "next/image";
 import {
-  HtmlHTMLAttributes,
   useContext,
   useEffect,
   useRef,
@@ -13,6 +12,7 @@ import AuthCode from "react-auth-code-input";
 import CloseBtn from "./closebtn";
 import Switch from "react-switch";
 import UserFriends from "./userProfile/userProfile";
+import Awards from "./userProfile/Awards";
 
 
 
@@ -89,7 +89,7 @@ const QrCode = (props: QrCodeProps) => {
             src={QRsrc}
             width={200}
             height={200}
-            alt="settings"
+            alt="Qr code"
             className="Qrimg"
           />
         ) : (
@@ -283,6 +283,7 @@ const UserProfile = () => {
           }}
         >
           <Image
+            className="hover:scale-[120%] transition-all duration-300 ease-in-out"
             src="/Settings.svg"
             width={26}
             height={26}
@@ -316,7 +317,9 @@ const UserProfile = () => {
       <div className="profileFriends">
         {settings ? <SettingsAnd2Fa /> : <UserFriends/>}
       </div>
-      <div className="profileAwords"></div>
+      <div className="profileAwards">
+        <Awards/>
+      </div>
     </div>
   );
 };

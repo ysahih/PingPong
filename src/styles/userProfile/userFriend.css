@@ -1,17 +1,51 @@
-.containerUserFriends{
-    color: white;
+.containerUserFriends {
+  color: white;
 }
 
-.FriendsPh{
-    font-family: Lalezar;
-    font-size: 12px;
-    font-weight: 10000;
-    color: #FFFFFF;
-    border: none;
-    background: none;
-    background: var(--item-border-color);
-    background: radial-gradient(circle, var(--item-border-color) 20%, #040A2F 100%);
-    border-radius: 10px;
-    border-top: 1px solid var(--border-top-color);
-    box-shadow: 5px 4px 10px 0px #00000040;
+.FriendsPh {
+  font-family: Lalezar;
+  font-size: 12px;
+  font-weight: 10000;
+  color: #ffffff;
+  border: none;
+  background: none;
+  background: var(--item-border-color);
+  background: radial-gradient(
+    circle,
+    var(--item-border-color) 20%,
+    #040a2f 100%
+  );
+  border-radius: 10px;
+  border-top: 1px solid var(--border-top-color);
+  box-shadow: 5px 4px 10px 0px #00000040;
+}
+
+::-webkit-scrollbar {
+  height: 5px;
+}
+
+.animationClass {
+  animation: fadeIn 2s ease;
+  animation: shadow1 1s ease infinite;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes shadow1 {
+  0% {
+    box-shadow: 0px 0px 0px 0px #09f130d8;
+  }
+  50% {
+    box-shadow: 1px 0px 5px 8px #099cf140;
+  }
+  100% {
+    box-shadow: 0px 0px 0px 0px #099cf140;
+  }
 }

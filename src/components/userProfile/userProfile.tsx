@@ -1,41 +1,19 @@
 import "@/styles/userProfile/userFriend.css";
 import React, { useRef, useState } from "react";
 import Image from "next/image";
+import { FaUserFriends } from "react-icons/fa";
+import { MdOutlineBlock } from "react-icons/md";
+import { MdGroupAdd } from "react-icons/md";
+import Friends from "./Friends";
+import Blocked from "./Blocked";
+import Invits from "./Invits";
 
-const Friend = () => {
-  return (
-    <div className="FriendsPh min-w-[150px] h-[150px] bg-[#040A2F] mr-[15px] flex flex-col  items-center">
-      <div className="relative">
-        {/* Status Indicator */}
-        <p className="absolute w-2.5 h-2.5 bg-green-500 rounded-full z-50 -top-[-10px] -right-[-6px] transform translate-x-1/2 translate-y-1/2 border-[1px] border-white"></p>
-
-        {/* Profile Image */}
-        <div
-          className="mt-[10px] inline-block rounded-full overflow-hidden border-2 border-transparent shadow-lg w-[60px] h-[60px]"
-          style={{ outline: ".2px solid #535C91" }}
-        >
-          <Image
-            className="bg-cover bg-center w-full h-full"
-            src="https://media.istockphoto.com/id/1322220448/photo/abstract-digital-futuristic-eye.jpg?s=1024x1024&w=is&k=20&c=LEk3Riu7RsJXkWMTEdmQ1yDkgf5F95ScLNZQ4j0P23g="
-            width={60}
-            height={60}
-            objectFit="cover"
-            alt="user"
-          />
-        </div>
-      </div>
-      <div className="containerFriend__info">
-        <h3>Username</h3>
-        <p>Online</p>
-      </div>
-    </div>
-  );
-};
 
 const UserFriends = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
+  const [stateClick, setStateClick] = useState(0);
 
   const onDragStart = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     if (scrollContainerRef.current) {
@@ -65,28 +43,50 @@ const UserFriends = () => {
   };
 
   return (
-    <div className="containerUserFriends">
-      <div className="w-100  flex p-[20px]">
-        <h3 className="pr-[5%] text-2xl text-[#8A99E9]">Friends</h3>
-        <h3 className="pr-[5%] text-2xl text-[#8A99E9]">Blocked</h3>
-        <h3 className="pr-[5%] text-2xl text-[#8A99E9]">Invits</h3>
+    <div className="containerUserFriends relative">
+      <div className="flex p-[20px] pt-[20px]">
+        <div
+          className={`cursor-pointer pr-[5%] text-[24px] text-[#8A99E9] flex justify-center items-center text-center gap-2 hover:scale-[110%] transition-all duration-300 ease-in-out ${stateClick !== 0? 'opacity-25': ''}`}
+          onClick={() => {
+            setStateClick(0);
+            scrollContainerRef.current?.scrollTo({ left: 0 });
+          }}
+        >
+          <FaUserFriends />
+          <span className="mt-[4px]">Friends</span>
+        </div>
+        <div
+          className={`cursor-pointer pr-[5%] text-[24px] text-[#8A99E9] flex justify-center items-center text-center gap-2 hover:scale-[110%] transition-all duration-300 ease-in-out ${stateClick !== 1? 'opacity-25': ''}`}
+          onClick={() => {
+            setStateClick(1);
+            scrollContainerRef.current?.scrollTo({ left: 0 });
+          }}
+        >
+          <MdOutlineBlock />
+          <span className="cursor-pointer mt-[4px]">Blocked</span>
+        </div>
+        <div
+          className={`cursor-pointer pr-[5%] text-[24px] text-[#8A99E9] flex justify-center items-center text-center gap-2 hover:scale-[110%] transition-all duration-300 ease-in-out ${stateClick !== 2? 'opacity-25': ''}`}
+          onClick={() => {
+            setStateClick(2);
+            scrollContainerRef.current?.scrollTo({ left: 0 });
+          }}
+        >
+          <MdGroupAdd />
+          <span className="cursor-pointer mt-[4px]">Invits</span>
+        </div>
       </div>
       <div
-        className="ml-[20px] mr-[15px] h-[180px] overflow-x-auto flex flex-row"
+        className="ml-[20px] mr-[15px] h-[250px] overflow-x-auto flex"
         ref={scrollContainerRef}
         onMouseDown={onDragStart}
         onMouseLeave={onDragEnd}
         onMouseUp={onDragEnd}
         onMouseMove={onDragMove}
       >
-        <Friend />
-        <Friend />
-        <Friend />
-        <Friend />
-        <Friend />
-        <Friend />
-        <Friend />
-        <Friend />
+        {stateClick === 0 && <Friends />}
+        {stateClick === 1 && <Blocked />}
+        {stateClick === 2 && <Invits />}
       </div>
     </div>
   );

@@ -29,7 +29,7 @@
 .profileFriends {
   box-shadow: 5px 4px 10px 0px #00000040;
   border-top: 1px solid var(--item-border-color);
-  height: 257px;
+  height: 340px;
   border-radius: 10px;
   border: 1px, 0px, 0px, 0px;
   gap: 10px;
@@ -46,10 +46,10 @@
   margin-top: -20px;
 }
 
-.profileAwords {
+.profileAwards {
   box-shadow: 5px 4px 10px 0px #00000040;
   border-top: 1px solid var(--item-border-color);
-  height: 183px;
+  height: 340px;
   background: var(--bg-color);
   border-radius: 10px;
   border: 1px, 0px, 0px, 0px;
