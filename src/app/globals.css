@@ -84,8 +84,10 @@
     min-width: 302px;
     width: 485px;
     max-width : 302px;
+    z-index: 3;
+    background-color: var(--bg-color);
     border-right: 1px solid var(--item-border-color);
-    /* background-color: red; */
+
     
 }
 
@@ -375,7 +377,8 @@
 .chatholder{
     margin: 0px auto;
     margin-top: 150px;
-    width: 90%;
+    width: 65%;
+    min-width: 300px;
     max-width: 800px;
     background: var(--bg-color);
     height: 80vh;
@@ -448,13 +451,12 @@
 
 
 .Message{
+
     display: flex;
-    justify-content: space-around;
     width: 85%;
-    min-width: 200px;
-    /* gap: -50px; */
+    min-width: 180px;
     max-width: 300px;
-    height: 94px;
+    height: 100px;
     background-color: var(--item-border-color);
     /* background-color: #0F1647; */
     border-top: 1px solid var(--border-top-color);
@@ -468,18 +470,21 @@
     max-width: 320px;
 }
 
+.chatData{
+    display: flex;
+    /* max-width: 140px;
+    width: 80%;
+    min-width: 90px; */
+}
+
 
 .picture{
-    margin-top: 10px;
-    margin-left: 10px;
-    margin-right: 10px;
+    margin: 14px;
 }
 
 
 .messageInfo{
-    margin-top: 12px;
-    width: 110px;
-    max-width: 110px;
+    margin-top: 16px;
     margin-right: 40px;
 }
 
@@ -506,10 +511,9 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 10px;
-    width: 100px;
-    margin-right: -20px;
-    /* background-color: red; */
+    /* margin-left: 2%; */
+    width: 26%;
+
 }
 
 .date{
@@ -522,7 +526,7 @@
 }
 
 .dots{
-    margin-left: 42px;
+    margin-left: 32px;
     margin-top: 12px;
     cursor: pointer;
     transition: width 0.1s;;
@@ -536,11 +540,11 @@
     justify-content: center; 
     align-items: center;  
     /* gap : 3px; */
-
+    height: 48px;
     width: 65px; 
-    
-    margin-top: -10px;
-    margin-right: 44px; 
+    /* margin-right: 44px;  */
+
+    margin-left: -16px;
     border: 1px 0px 0px 0px;
     border-radius: 5px 0px 5px 5px; 
     background: #040A2F;
@@ -592,18 +596,25 @@
    
 
     opacity: 0;
-    transform: translateY(-100%);
-    animation: slideInFromTop 1s forwards;
-}
+    transform: translateX(-100%);
+    animation: slideInFromTop 2s forwards;
+    }
 
     @keyframes slideInFromTop {
       0% {
         opacity: 0;
-        transform: translateY(-100%);
+        transform: translateX(-100%);
+        /* z-index: -3; */
+    }
+    50% {
+           /* z-index: -3; */
+          opacity: 0;
+          transform: translateX(-50%);
       }
+
       100% {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateX(0);
       }
 }
 
@@ -938,7 +949,7 @@
 
 .convo{
 
-    width: 95%;
+    width: 90%;
     margin: 0px auto;
     margin-top: 20px;
     border-radius: 20px;
@@ -949,6 +960,7 @@
 }
 
 .chatholder .convo{
+    min-width: 200px;
     height: calc(65vh);
 }
     
@@ -958,36 +970,34 @@
 
     
 }
-.chatholder .convoInput{
-    margin-left: 50px;
-    width: 50vw;
+.chatholder .input-footer{
+    justify-content: center;
+    left: -22%;
+    gap: 14%;
 }
 
 .convoInput {
     border: none;
-  background-color: #040A2F;
-  outline: none;
-  padding-left: 10px;
-  font-family: Inter;
-  font-size: 12px;
-  font-weight: 400;
-  color: #8A99E9;
+    background-color: #040A2F;
+    outline: none;
+
+    padding-left: 10px;
+    font-family: Inter;
+    font-size: 12px;
+    font-weight: 400;
+    color: #8A99E9;
   /* height: 180px; */
-    width: fit-content; 
-    overflow-wrap: break-word;
-    word-wrap: break-word; /* Fallback for older browsers */
 
     /* background-color: red */
   }
 
 .input-footer{
     display: flex;
-    /* justify-content: space-around; */
     position: fixed;
     bottom: 0;
     width: 100%;
     padding: 20px;
-    gap: 9%;
+    gap: 8%;
     background: #040A2F;
     border-top: .5px solid var(--border-top-color);
    
@@ -997,7 +1007,7 @@
     color: var(--hover-border-color) ;
     margin-left: -10px;
     width:  30px;
-    height: 30px;
+    height:  30px;
 }
 
 /* //convo details */
@@ -1008,7 +1018,7 @@
 }
 
 .chatholder .conversation{
-    width: 60%;
+    width: 100%;
     min-width: 300px;
     margin: 0px auto;
 }
@@ -1260,12 +1270,10 @@
     }
 
     .navbar{
-
         height: 60px;
     }
 
     .userpic{
-
         width: 100%
     }
 
@@ -1311,4 +1319,18 @@
     .chatholder .convoHolder{        
         height: 80%;
     }
+}
+
+@media (max-width: 400px) {
+    .chatholder .convo{
+        width: 74%;        
+        /* margin: 0px auto; */
+    }
+}
+
+
+@media (max-width: 340px) {
+    .chatholder .convo{
+        margin: 0px 20px; 
+    }       
 }

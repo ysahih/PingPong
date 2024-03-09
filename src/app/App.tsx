@@ -211,14 +211,11 @@ const Home = () => {
 			{context?.render === "games" && <Games />}
 			{context?.render === "ranking" && <Ranking/>}
 			{context?.render === "search" && <Search/>}
-			{context?.render === "chat" && <div className="chatholder visible xl:invisible">
-				<Chat/>
-			</div>}
-			{context?.render === "profile" && 
-				<UserProfile/>
-			}
-
-
+			{context?.render === "profile" && <UserProfile/>}
+			{context?.render === "chat" && 
+				<div className="chatholder visible xl:invisible">
+					<Chat/>
+				</div> }
 		</div>
 
 	);

@@ -67,7 +67,7 @@ const More = ()=> {
 
     return (
         <div className="more">
-            <Image className="dots" onClick={handleMsgOption} src="./homeImages/dots.svg" alt="member" width={12} height={16}/>
+            <Image className="dots" onClick={handleMsgOption} src="./homeImages/dots.svg" alt="member" width={16} height={16}/>
             <UserOption className={showMsgOption ? '' : 'invisible'} />
             <p className="date">15:30</p>
         </div>
@@ -83,17 +83,17 @@ const Message = ({handleMsgClick} : Props) =>{
         handleMsgClick(1);
     }
     return (
-        <div className="Message" onClick={()=>{
-            handleMsgClick(1);
-        }}>
+        <div className="Message">
 
-            <div className="picture">
-                <Image className="profilepic" src="./homeImages/memeber1.svg" alt="member" width={40} height={40}/>
-            </div>
+            <div className="chatData" onClick={()=>{handleMsgClick(1)}}>
+                <div className="picture">
+                    <Image className="profilepic" src="./homeImages/memeber1.svg" alt="member" width={48} height={40}/>
+                </div>
 
-            <div className="messageInfo">
-                <h2 className="sendeName">Username</h2>
-                <p className="msg" >hello, how you doing!</p>
+                <div className="messageInfo">
+                    <h2 className="sendeName">Username</h2>
+                    <p className="msg" >hello, how you doing!</p>
+                </div>
             </div>
 
            <More/>
@@ -296,7 +296,7 @@ const Conversation = ({handleMsgClick}: Props) =>{
                 </div>
             </div>
             <div className="input-footer">
-                <input className="convoInput" placeholder="Send a Message..."/>
+                <textarea className="convoInput" placeholder="Send a Message..."/>
                 <RiSendPlaneFill className="sendLogo"/>
             </div>
         </div>
