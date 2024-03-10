@@ -452,7 +452,9 @@
 
 .Message{
 
-    display: flex;
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    grid-gap: 10px;
     width: 85%;
     min-width: 180px;
     max-width: 300px;
@@ -471,10 +473,8 @@
 }
 
 .chatData{
-    display: flex;
-    /* max-width: 140px;
-    width: 80%;
-    min-width: 90px; */
+    display: grid;
+    grid-template-columns: 1fr 2fr;
 }
 
 
@@ -485,7 +485,6 @@
 
 .messageInfo{
     margin-top: 16px;
-    margin-right: 40px;
 }
 
 .messageInfo p{
@@ -507,12 +506,11 @@
 }
 
 .more{
-    /* margin-top: 4px; */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     /* margin-left: 2%; */
-    width: 26%;
+    /* width: 50px; */
 
 }
 

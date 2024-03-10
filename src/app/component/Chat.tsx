@@ -1,9 +1,11 @@
 // import Head from "next/head";
 import { RiSendPlaneFill } from "react-icons/ri";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import Image from "next/image";
+import { chatData } from "./Dto/Dto";
 import { Input } from "postcss";
 import { number } from "yup";
+import axios from "axios";
 
 
 
@@ -56,8 +58,11 @@ const UserOption = ( { className }: userOptionClass ) => {
         </div>
     );
 }
-
-const More = ()=> {
+type Props = {
+    handleMsgClick: (value:number) => void;
+    user : chatData;
+};
+const More = ({user}: chatData)=> {
 
     const [showMsgOption, setShowMsgOption] = useState(false);
 
@@ -69,16 +74,14 @@ const More = ()=> {
         <div className="more">
             <Image className="dots" onClick={handleMsgOption} src="./homeImages/dots.svg" alt="member" width={16} height={16}/>
             <UserOption className={showMsgOption ? '' : 'invisible'} />
-            <p className="date">15:30</p>
+            <p className="date">hh</p>
         </div>
     );
 }
-type Props = {
-    handleMsgClick: (value:number) => void;
-};
 
 
-const Message = ({handleMsgClick} : Props) =>{
+
+const Message = ({handleMsgClick, user} : Props) =>{
     const handleClick = ()=>{
         handleMsgClick(1);
     }
@@ -91,12 +94,12 @@ const Message = ({handleMsgClick} : Props) =>{
                 </div>
 
                 <div className="messageInfo">
-                    <h2 className="sendeName">Username</h2>
-                    <p className="msg" >hello, how you doing!</p>
+                    <h2 className="sendeName">{user.userName}</h2>
+                    <p className="msg" >{user.lastMessage.length < 30 ? user.lastMessage : user.lastMessage.slice(0, 30) + "..."}</p>
                 </div>
             </div>
 
-           <More/>
+           <More user={user}/>
 
         </div>
     );
@@ -319,16 +322,33 @@ const Conversation = ({handleMsgClick}: Props) =>{
 
 const Chat = () => {
     
-    //TDO: fetch HTTP chat data;
+    //TODO: fetch HTTP chat data;
     //(after getting the data, it should be mapped in as messages)//
     //(then we should listen for 2 events: *online and *newMessage) //
     //firts we add new messages recieved on the socket to the Message map//
 
-    const [ShowConvo, setShowConvo]  = useState(0);
+    const [chatdata, setChatdata] = useState<chatData[] | null >(null);
 
+    useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const response = await axios.get('http://127.0.0.1:5501/json.json');
+            setChatdata(response.data);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        };
+
+        fetchData();
+        
+    }, []);
+    const [ShowConvo, setShowConvo]  = useState(0);
     const handleMsgClick = (value:number)=>{
         setShowConvo(value);
     }
+    if(chatdata)
+        console.log(chatdata);
+   
     return (
         <div className="chat">
             {ShowConvo === 0 && <div className="">
@@ -336,11 +356,16 @@ const Chat = () => {
                     <Header/>
                     <Memebers/>
                 </div>
-                 <div className="messagesHolder">
+                 {/* <div className="messagesHolder">
                     <Message handleMsgClick={handleMsgClick}/>
-                </div> 
+                </div>  */}
+                <div className="messagesHolder">
+                    {chatdata?.map((user) => (
+                    <Message handleMsgClick={handleMsgClick} user={user} />
+                 ))}
+                 </div>
             </div>}
-            {ShowConvo === 1 && <Conversation  handleMsgClick={handleMsgClick}/>}
+            {ShowConvo === 1 && <Conversation  user={null} handleMsgClick={handleMsgClick}/>}
             
         </div>
     );
