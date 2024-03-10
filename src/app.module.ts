@@ -6,10 +6,11 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { WebSocketModule } from './WebSocket/websocket.module';
+import { GatewayModule } from './Gateway/gateway.module';
 
 
 @Module({
-  imports: [PassportModule.register({session: true}), ConfigModule.forRoot({isGlobal: true,}) ,AuthMod, UserModule, GameModule, PrismaModule, WebSocketModule, ],
+  imports: [PassportModule.register({session: true}), ConfigModule.forRoot({isGlobal: true,}) ,AuthMod, UserModule, GameModule, PrismaModule, GatewayModule],
 })
 
 export class AppModule {}
