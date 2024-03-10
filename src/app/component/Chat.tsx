@@ -62,9 +62,21 @@ type Props = {
     handleMsgClick: (value:number) => void;
     user : chatData;
 };
-const More = ({user}: chatData)=> {
+
+const More = ({user}: {user: chatData})=> {
 
     const [showMsgOption, setShowMsgOption] = useState(false);
+    
+    const chatDate = new Date(user.sentAt);
+    const currentDate = new Date();
+    let formattedDate;
+    if (chatDate.toDateString() === currentDate.toDateString()) {
+      const hours = chatDate.getHours();
+      const minutes = chatDate.getMinutes();
+      formattedDate = `${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
+    } else {
+      formattedDate = chatDate.toLocaleDateString();
+    }
 
     const handleMsgOption = () => {
       setShowMsgOption(!showMsgOption);
@@ -74,7 +86,7 @@ const More = ({user}: chatData)=> {
         <div className="more">
             <Image className="dots" onClick={handleMsgOption} src="./homeImages/dots.svg" alt="member" width={16} height={16}/>
             <UserOption className={showMsgOption ? '' : 'invisible'} />
-            <p className="date">hh</p>
+            <p className="date">{formattedDate}</p>
         </div>
     );
 }
@@ -82,13 +94,15 @@ const More = ({user}: chatData)=> {
 
 
 const Message = ({handleMsgClick, user} : Props) =>{
+
     const handleClick = ()=>{
-        handleMsgClick(1);
+        handleMsgClick(user.id);
     }
+
     return (
         <div className="Message">
 
-            <div className="chatData" onClick={()=>{handleMsgClick(1)}}>
+            <div className="chatData" onClick={()=>{handleMsgClick(user.id)}}>
                 <div className="picture">
                     <Image className="profilepic" src="./homeImages/memeber1.svg" alt="member" width={48} height={40}/>
                 </div>
@@ -99,23 +113,23 @@ const Message = ({handleMsgClick, user} : Props) =>{
                 </div>
             </div>
 
-           <More user={user}/>
-
+           <More user={user} />
         </div>
     );
 }
 
-const Conversation = ({handleMsgClick}: Props) =>{
+const Conversation = ({handleMsgClick, user}: Props) =>{
     const handleClick = ()=>{
         handleMsgClick(0);
     }
+    
     return (
         <div className="conversation">
             <div className="convo">
                 <div className="convoHeader">
                     <div className="sender-info">
                         <Image src="./homeImages/memeber1.svg" width={38} height={42} alt="photo"/>
-                        <h2>Username</h2>
+                        <h2>{user.userName}</h2>
                     </div>
                     <Image className="go-back" src="./homeImages/goback.svg" onClick={handleClick} width={28} height={25} alt="back" />
                 </div>
@@ -123,7 +137,7 @@ const Conversation = ({handleMsgClick}: Props) =>{
 
                 <div className="convoHolder">
                     <div className="myMsg">
-                        <p>hello there from youssef sahih i want to try if the width and height fit perfectly and yes did they do;</p>
+                        <p>{user.lastMessage}</p>
                     </div>
                     <div className="othersMsg">
                         <p>hi, thank you</p>
@@ -346,8 +360,7 @@ const Chat = () => {
     const handleMsgClick = (value:number)=>{
         setShowConvo(value);
     }
-    if(chatdata)
-        console.log(chatdata);
+
    
     return (
         <div className="chat">
@@ -356,16 +369,14 @@ const Chat = () => {
                     <Header/>
                     <Memebers/>
                 </div>
-                 {/* <div className="messagesHolder">
-                    <Message handleMsgClick={handleMsgClick}/>
-                </div>  */}
+               
                 <div className="messagesHolder">
-                    {chatdata?.map((user) => (
+                    {chatdata?.map((user: chatData) => (
                     <Message handleMsgClick={handleMsgClick} user={user} />
                  ))}
                  </div>
             </div>}
-            {ShowConvo === 1 && <Conversation  user={null} handleMsgClick={handleMsgClick}/>}
+            {ShowConvo !== 0 && <Conversation handleMsgClick={handleMsgClick} user={chatdata?.find(user => user.id === ShowConvo)} />}
             
         </div>
     );

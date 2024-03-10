@@ -509,6 +509,8 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+
+    /* align-items: center; */
     /* margin-left: 2%; */
     /* width: 50px; */
 
@@ -519,8 +521,9 @@
     font-size: 12px;
     font-weight: 400;
     color: #8A99E9;
-    margin-bottom: 3px;
-    margin-left:22px;
+    margin-bottom: 4px;
+
+    align-self: center;
 }
 
 .dots{
