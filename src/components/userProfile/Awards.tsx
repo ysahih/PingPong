@@ -4,13 +4,14 @@ import Image from "next/image";
 import { FaAward } from "react-icons/fa6";
 
 const Award = () => {
+
    return (
-    <div className="max-w-[100px] min-w-[100px] h-[100px] bg-[#FFFFFF]">
-        <Image  src="https://media.istockphoto.com/id/1322220448/photo/abstract-digital-futuristic-eye.jpg?s=1024x1024&w=is&k=20&c=LEk3Riu7RsJXkWMTEdmQ1yDkgf5F95ScLNZQ4j0P23g="
-                width={100}
-                height={100}
-                alt="user"
-                className="bg-cover bg-center w-full h-full max-w-[100px] max-h-[100px] rounded-full overflow-hidden border-2 border-transparent shadow-lg"
+    <div className=" FriendsPh max-w-[120px] min-w-[120px] rounded-[5px] h-[120px] flex justify-center">
+        <Image  src="./iconsProfile/Award Medal 6.svg"
+          width={100}
+          height={100}
+          alt="user"
+          className="bg-cover bg-center w-full h-full max-w-[100px] max-h-[100px]  overflow-hidden border-2 border-transparent shadow-lg"
         />
     </div>
     )
@@ -63,13 +64,26 @@ const Awards = () => {
           </div>
         </div>
         <div
-        className="ml-[20px] mr-[15px] h-[240px] grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4 items-center justify-center m-auto w-full max-w-[96%] overflow-scroll overflow-x-hidden"
+        className="mx-auto h-[240px] grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 2xl:grid-cols-5 gap-4 overflow-y-scroll overflow-x-hidden"
+        style={{ maxWidth: '96%' }}
           ref={scrollContainerRef}
           onMouseDown={onDragStart}
           onMouseLeave={onDragEnd}
           onMouseUp={onDragEnd}
           onMouseMove={onDragMove}
         >
+          <Award/>
+          <Award/>
+          <Award/>
+          <Award/>
+          <Award/>
+          <Award/>
+          <Award/>
+          <Award/>
+          <Award/>
+          <Award/>
+          <Award/>
+          <Award/>
           <Award/>
           <Award/>
           <Award/>

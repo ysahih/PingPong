@@ -44,16 +44,16 @@ const UserFriends = () => {
 
   return (
     <div className="containerUserFriends relative">
-      <div className="flex p-[20px] pt-[20px]">
+      <div className="flex p-[20px] pt-[20px] gap-4 sm:gap-1 ">
         <div
-          className={`cursor-pointer pr-[5%] text-[24px] text-[#8A99E9] flex justify-center items-center text-center gap-2 hover:scale-[110%] transition-all duration-300 ease-in-out ${stateClick !== 0? 'opacity-25': ''}`}
+          className={`cursor-pointer  pr-[5%] text-[25px] text-[#8A99E9] flex justify-center items-center text-center gap-2 hover:scale-[110%] transition-all duration-300 ease-in-out ${stateClick !== 0? 'opacity-25': ''}`}
           onClick={() => {
             setStateClick(0);
             scrollContainerRef.current?.scrollTo({ left: 0 });
           }}
         >
-          <FaUserFriends />
-          <span className="mt-[4px]">Friends</span>
+          <FaUserFriends className="min-w-[25px] min-h-[25px]"/>
+          <span className="mt-[4px] hidden sm:block">Friends</span>
         </div>
         <div
           className={`cursor-pointer pr-[5%] text-[24px] text-[#8A99E9] flex justify-center items-center text-center gap-2 hover:scale-[110%] transition-all duration-300 ease-in-out ${stateClick !== 1? 'opacity-25': ''}`}
@@ -62,8 +62,8 @@ const UserFriends = () => {
             scrollContainerRef.current?.scrollTo({ left: 0 });
           }}
         >
-          <MdOutlineBlock />
-          <span className="cursor-pointer mt-[4px]">Blocked</span>
+          <MdOutlineBlock className="min-w-[25px] min-h-[25px]" />
+          <span className="mt-[4px] hidden sm:block">Blocked</span>
         </div>
         <div
           className={`cursor-pointer pr-[5%] text-[24px] text-[#8A99E9] flex justify-center items-center text-center gap-2 hover:scale-[110%] transition-all duration-300 ease-in-out ${stateClick !== 2? 'opacity-25': ''}`}
@@ -72,12 +72,13 @@ const UserFriends = () => {
             scrollContainerRef.current?.scrollTo({ left: 0 });
           }}
         >
-          <MdGroupAdd />
-          <span className="cursor-pointer mt-[4px]">Invits</span>
+          <MdGroupAdd className="min-w-[25px] min-h-[25px]"/>
+          <span className=" mt-[4px] hidden sm:block">Invits</span>
         </div>
       </div>
+    
       <div
-        className="ml-[20px] mr-[15px] h-[250px] overflow-x-auto flex"
+        className="m-[10px] pl-[20px] h-[250px] overflow-x-auto flex"
         ref={scrollContainerRef}
         onMouseDown={onDragStart}
         onMouseLeave={onDragEnd}

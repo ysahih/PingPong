@@ -1,61 +1,93 @@
 import "@/styles/userProfile/userFriend.css";
+import axios from "axios";
 import Image from "next/image";
+import { useContext, useEffect, useState } from "react";
+import { InvitsType } from "./Dto";
+import ProfileDataContext from "../context/profilDataContext";
 
 
-const Invit = () => {
-    return(
-        <div className="FriendsPh min-w-[190px] h-[230px] bg-[#040A2F] mr-[15px] flex flex-col items-center">
-        <div className="relative">
-          <div
-            className="mt-[16px] inline-block rounded-full overflow-hidden border-2 border-transparent shadow-lg w-[60px] h-[60px]"
-            style={{ outline: ".2px solid #535C91" }}
-          >
-            <Image
-              className="bg-cover bg-center w-full h-full"
-              src="https://media.istockphoto.com/id/1322220448/photo/abstract-digital-futuristic-eye.jpg?s=1024x1024&w=is&k=20&c=LEk3Riu7RsJXkWMTEdmQ1yDkgf5F95ScLNZQ4j0P23g="
-              width={60}
-              height={60}
-              alt="user"
-            />
-          </div>
-        </div>
-        <div className="containerFriend__info">
-          <h3 className="text-[16px]">Username</h3>
-          <p className="text-center text-[#8A99E9] text-[12px]">#12</p>
-        </div>
-        <div className="flex items-center justify-center  w-[100%] gap-6 mt-12">
+
+
+interface InvitProps {
+  value: InvitsType;
+}
+
+const Invit = (props: InvitProps) => {
+  const values = props.value;
+
+  const Accept = async (id: number) => {
+    try {
+      const response = await axios.post(`http://localhost:3000/user/accept?id=${id}`, {
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
+      );
+      console.log('ACCEPT',response.data);
+    }
+    catch (error) {
+      console.error(error);
+    }
+  };
+
+  return (
+    <div key={values.id} className="FriendsPh min-w-[190px] h-[230px] bg-[#040A2F] mr-[15px] flex flex-col items-center">
+      <div className="relative">
+        <div
+          className="mt-[16px] inline-block rounded-full overflow-hidden border-2 border-transparent shadow-lg w-[60px] h-[60px]"
+          style={{ outline: ".2px solid #535C91" }}
+        >
           <Image
-            className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out"
-            src="./iconsProfile/Deny.svg"
-            width={32}
-            height={32}
-            property="true"
-            alt="online"
-          />
-           <Image
-            className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out"
-            src="./iconsProfile/accept.svg"
-            width={32}
-            height={32}
-            property="true"
-            alt="online"
+            className="bg-cover bg-center w-full h-full"
+            src={values.sender.image}
+            width={60}
+            height={60}
+            alt="user"
           />
         </div>
       </div>
-    )
-}
+      <div className="containerFriend__info">
+        <h3 className="text-[16px]">{values.sender.userName}</h3>
+        <p className="text-center text-[#8A99E9] text-[12px]">#12</p>
+      </div>
+      <div className="flex items-center justify-center  w-[100%] gap-6 mt-12">
+        <Image
+          className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out"
+          src="./iconsProfile/Deny.svg"
+          width={32}
+          height={32}
+          property="true"
+          alt="online"
+        />
+        <Image
+          onClick={() => Accept(values.sender.id)}
+          className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out"
+          src="./iconsProfile/accept.svg"
+          width={32}
+          height={32}
+          property="true"
+          alt="online"
+        />
+      </div>
+    </div>
+  );
+};
 
 const Invits = () => {
-    return (
-        <>
-       <Invit/>
-       <Invit/>
-       <Invit/>
-       <Invit/>
-       <Invit/>
-       <Invit/>
-       <Invit/>
-        </>
-    )
-}
+  // const [Invits, setInvits] = useState<InvitsType[] | null>(null);
+
+  const Invits = useContext(ProfileDataContext)?.InvitsData;
+
+  return (
+    <>
+      {Invits &&
+        Invits.map((invit: InvitsType) => {
+          return <Invit key={invit.id} value={invit} />;
+        })}
+    </>
+  );
+};
 export default Invits;

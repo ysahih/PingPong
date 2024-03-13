@@ -49,6 +49,9 @@ import Games from "./component/Games";
 import "./globals.css";
 import axios from "axios";
 import Router from "next/navigation";
+import { FiChevronsRight } from "react-icons/fi";
+import '@/styles/userProfile/userFriend.css';
+
 
 import { Carousel, Typography, Button, Switch } from "@material-tailwind/react";
 import RenderContext, { renderContext } from "@/components/context/render";
@@ -224,6 +227,8 @@ const Home = () => {
 	);
 }
 
+
+
 const Body = () => {
 	
 	const [activeComponent, setActiveComponent] = useState(1);
@@ -235,6 +240,9 @@ const Body = () => {
 	return (
 		<div className="body">
 			<Sidebar />
+			<div className="absolute w-[50px] h-[50px] text-white mt-[70px] flex items-center justify-center z-50" >
+				<FiChevronsRight className="w-[30px] h-[30px]"/>
+			</div>
 			<Home />
 			<div className="chatdiv hidden xl:block">
 				<Chat/>

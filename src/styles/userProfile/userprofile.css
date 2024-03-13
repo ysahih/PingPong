@@ -15,9 +15,14 @@
 .HeadProfile {
   display: flex;
   justify-content: space-between;
-  box-shadow: 5px 4px 10px 0px #00000040;
+  /* box-shadow: 5px 4px 10px 0px #00000040; */
   border-top: 1px solid var(--item-border-color);
-  background: var(--bg-color);
+  /* background: var(--bg-color); */
+  background: radial-gradient(
+    circle,
+    #101747 0%,
+    var(--bg-color) 60%
+  );
   height: 146px;
   top: 160px;
   left: 398px;
@@ -27,7 +32,7 @@
 }
 
 .profileFriends {
-  box-shadow: 5px 4px 10px 0px #00000040;
+  /* box-shadow: 5px 4px 10px 0px #00000040; */
   border-top: 1px solid var(--item-border-color);
   height: 340px;
   border-radius: 10px;
@@ -47,7 +52,7 @@
 }
 
 .profileAwards {
-  box-shadow: 5px 4px 10px 0px #00000040;
+  /* box-shadow: 5px 4px 10px 0px #00000040; */
   border-top: 1px solid var(--item-border-color);
   height: 340px;
   background: var(--bg-color);
@@ -64,7 +69,6 @@
 
 .ProfileUserName {
   font-family: Lalezar;
-  font-size: 32px;
   font-weight: 400;
   line-height: 50px;
   letter-spacing: 0em;

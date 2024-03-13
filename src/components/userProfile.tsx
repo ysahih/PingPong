@@ -254,6 +254,7 @@ const UserProfile = () => {
   const context = useContext(UserDataContext);
   const [settings, setSettings] = useState(false);
 
+  
   return (
     <div className="userProfile">
       <div className="HeadProfile">
@@ -266,7 +267,7 @@ const UserProfile = () => {
             alt="avatar"
           />
           <div>
-            <h2 className="ProfileUserName">
+            <h2 className="ProfileUserName text-xl md:text-2xl xl:text-3xl" >
               {context?.userName} <span> #12 </span>
             </h2>
             <h3 className="ProfileUserFName">
@@ -317,7 +318,7 @@ const UserProfile = () => {
       <div className="profileFriends">
         {settings ? <SettingsAnd2Fa /> : <UserFriends/>}
       </div>
-      <div className="profileAwards">
+      <div className={settings?'hidden' : "profileAwards "}>
         <Awards/>
       </div>
     </div>

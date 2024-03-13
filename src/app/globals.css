@@ -153,7 +153,7 @@
 
 
 .PhoneSidebar{
-    display: flex;
+    display: none;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
@@ -1080,7 +1080,7 @@
     .homepage{
 
         
-        margin-left: 70px;
+        /* margin-left: 70px; */
     }
 }
 @media (max-height: 559px) {

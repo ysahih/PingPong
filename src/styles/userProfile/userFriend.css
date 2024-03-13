@@ -26,7 +26,7 @@
 
 .animationClass {
   animation: fadeIn 2s ease;
-  animation: shadow1 1s ease infinite;
+  animation: shadow 1.5s ease infinite;
 }
 
 @keyframes fadeIn {
@@ -43,9 +43,59 @@
     box-shadow: 0px 0px 0px 0px #09f130d8;
   }
   50% {
-    box-shadow: 1px 0px 5px 8px #099cf140;
+    box-shadow: 1px 0px 5px 5px #099cf140;
   }
   100% {
     box-shadow: 0px 0px 0px 0px #099cf140;
   }
+}
+@keyframes borderAnimation {
+  0% {
+    border: 0px solid rgba(6, 255, 48, 0); /* Start with no visible border */
+  }
+  50% {
+    border: 6px solid rgba(9, 156, 241, 0.25); /* Border becomes wider and semi-transparent */
+  }
+  100% {
+    border: 0px solid rgba(9, 156, 241, 0); /* Border goes back to invisible */
+  }
+}
+
+.borderBottom {
+  border-bottom: 1px solid var(--item-border-color);
+  box-shadow: 5px 4px 10px 0px #02041D;
+}
+
+@keyframes colorchange {
+  0% {
+    background: #ff0000;
+  }
+  14% {
+    background: #ffa500;
+  }
+  28% {
+    background: #ffff00;
+  }
+  42% {
+    background: #008000;
+  }
+  56% {
+    background: #0000ff;
+  }
+  70% {
+    background: #4b0082;
+  }
+  84% {
+    background: #ee82ee;
+  }
+  100% {
+    background: #ff0000;
+  }
+}
+
+.rainbow {
+  animation: colorchange 45s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-play-state: running;
 }
