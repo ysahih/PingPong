@@ -10,9 +10,6 @@ import { GatewayService } from "./geteway.service";
 import * as jwt from 'jsonwebtoken';
 
 
-
-
-
 @WebSocketGateway({
 	cors: {
 		origin: ['http://localhost:5500'],
@@ -20,13 +17,11 @@ import * as jwt from 'jsonwebtoken';
 	},
 	
 })
-// @UseGuards()
-
 export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
 	@WebSocketServer()
-	private _server: Server = new Server({
-	});
+	private _server: Server = new Server();
+
 	logger: Logger = new Logger(serverGateway.name);
 
 	constructor(private _users: UsersServices, private _rooms: RoomsServices, private _prisma: GatewayService) { }
@@ -40,39 +35,24 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 	// Authorization Part
 	async handleConnection(client: Socket): Promise<void> {
 
-		// TODO: Get the Key and decode it
-	
-		console.log(client.handshake.headers.cookie);
-		try{
-			const token = client.handshake.headers.cookie;
-			if (!token)
-			{
-				client.disconnect(true);
-				// return;
-			}
-			const payload = jwt.verify(token.toString(), 'essadike');
-			// TODO: get data from the DB
-			console.log('client connect:' ,payload)
-		}
-		catch(err){
+		try {
+			const allToken = client.handshake.headers.cookie;
+
+			if (!allToken)
+				throw (new Error());
+
+			const accessToken = allToken.split('; ').find(element => element.startsWith('jwt='));
+
+			const payload = jwt.verify(accessToken.split('=')[1], 'essadike');
+
+			const user = await this._prisma.findUser(payload['id']);
+
+			this._users.addUser(client, this._users.organizeUser(client.id, user), this._rooms.connectToRooms);
+
+		} catch(err) {
 			this._server.to(client.id).emit('error', 'Unauthorized !');
 			client.disconnect();
 		}
-		// console.log(token);
-
-		// Check if the user exists
-		// const user = await this._prisma.findUser(parseInt(id.toString()));
-
-		// if exists Just add it the _users map with infos
-		// if (user) {
-		// 	this._users.addUser(client, this._users.organizeUser(client.id, user), this._rooms.connectToRooms);
-		// }
-		// else {
-		// 	// if doesn't exists send an error
-		// 	this._server.to(client.id).emit('error', `Authorization Failed !`);
-		// 	// Disconnect him
-		// 	client.disconnect(true);
-		// }
 	}
 
 	handleDisconnect(@ConnectedSocket() client: Socket): void {

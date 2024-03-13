@@ -79,7 +79,7 @@ export class UsersServices {
 		// Orginize Founded User Into The User Interface Shape
 		const newUser: User = {
 			id: foundUser.id,
-			username: foundUser.username,
+			username: foundUser.userName,
 			socketId: socketId,
 			rooms: foundUser.rooms.map(room => {
 				const newRoom: Room = {
