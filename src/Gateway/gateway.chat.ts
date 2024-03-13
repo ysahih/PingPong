@@ -8,6 +8,7 @@ import { Prisma } from "@prisma/client";
 import { ExceptionHandler } from "./ExceptionFilter/exception.filter";
 import { GatewayService } from "./geteway.service";
 import * as jwt from 'jsonwebtoken';
+import { Payload } from "src/authentication/dto/payload.message";
 
 
 
@@ -50,8 +51,10 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 				client.disconnect(true);
 				// return;
 			}
-			const payload = jwt.verify(token.toString(), 'essadike');
+			const jwtToken = token.split('=')[1];
+			const payload = jwt.verify(jwtToken, 'essadike');
 			// TODO: get data from the DB
+			this._users.addUser(client, this._users.organizeUser(client.id, payload), this._rooms.connectToRooms);
 			console.log('client connect:' ,payload)
 		}
 		catch(err){
@@ -65,7 +68,6 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
 		// if exists Just add it the _users map with infos
 		// if (user) {
-		// 	this._users.addUser(client, this._users.organizeUser(client.id, user), this._rooms.connectToRooms);
 		// }
 		// else {
 		// 	// if doesn't exists send an error
@@ -174,5 +176,19 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 			// This exeception throws when the user is already there
 			this._server.to(client.id).emit('error', `User with ${payload.userId}:ID already exists !`);
 		}
+
+
 	}
+	/**
+	 * handle friends request : by essadike
+	 */
+	
+	@SubscribeMessage('NewInvit')
+	async handleNewFriend(@Body() Payload: {userId: number, friend: {id: number, username: string, image: string}}) {
+		 this._server.to(Payload.userId.toString()).emit('NewFriend', Payload.friend)
+	}
+	/**
+	 * end of functions :by essadike
+	 */
+
 };

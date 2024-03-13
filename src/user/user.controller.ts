@@ -1,4 +1,4 @@
-import { Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from 'src/authentication/jwtStrategy/jwtguards';
 import { Request } from 'express';
@@ -7,24 +7,55 @@ import { Request } from 'express';
 export class UserController {
     constructor(private Userservice: UserService){}
 
-    @Post('sendrequest')
+    @Post('sendinvit')
     @UseGuards(JwtAuthGuard)
-    RequestFriend(@Req() req : Request)
+    async RequestFriend(@Query() id : string, @Req() req : Request)
     {
-        const json = req.body;
-        return this.Userservice.sendFriendRequest(req.user['userId'], parseInt(json['id']))
+        console.log(id['id'])
+        const user = await this.Userservice.sendFriendRequest(req.user['userId'], parseInt(id['id']))
+        return user;
     }
 
-    @Post('get')
+    @Get('invits')
     @UseGuards(JwtAuthGuard)
-    getFriendRequest(@Req() req : Request){
-       return this.Userservice.FriendRequest(req.user['userId'])
+    async getFriendRequest(@Req() req : Request){
+       return await this.Userservice.getfriendsRequest(req.user['userId'])
     }
 
-    @Post('/accept/:id')
+    @Get('friends')
     @UseGuards(JwtAuthGuard)
-    acceptFriendRequest(@Req() req : Request){
-        return this.Userservice.acceptFriendRequest(req.user['userId'], parseInt(req.params.id))
+    async sendFriendRequest(@Req() req : Request){
+       return await this.Userservice.Friends(req.user['userId'])
     }
 
+    @Post('accept')
+    @UseGuards(JwtAuthGuard)
+    async acceptFriendRequest(@Query() id : string, @Req() req : Request){
+
+        return await this.Userservice.acceptFriendRequest(req.user['userId'], parseInt(id['id']))
+    }
+
+    @Get('blocked')
+    @UseGuards(JwtAuthGuard)
+    async getBlocked(@Req() req : Request){
+        return await this.Userservice.blockedFriens(req.user['userId'])
+    }
+
+    @Patch('block')
+    @UseGuards(JwtAuthGuard)
+    async blockFriend(@Query() id : string, @Req() req : Request){
+        return await this.Userservice.blockFriendRequest(req.user['userId'], parseInt(id['id']))
+    }
+
+    @Patch('unblock')
+    @UseGuards(JwtAuthGuard)
+    async unblockFriend(@Query() id : string, @Req() req : Request){
+        return await this.Userservice.unblockFriendRequest(req.user['userId'], parseInt(id['id']))
+    }
+
+    @Get('search')
+    @UseGuards(JwtAuthGuard)
+    async searchUser(@Query() userName : string){
+        return await this.Userservice.searchUser(userName['userName'])
+    }
 }
