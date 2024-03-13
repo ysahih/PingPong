@@ -1,33 +1,58 @@
-import { Injectable, Logger, OnModuleInit, Scope } from "@nestjs/common";
-import { Prisma, PrismaClient, ROOMTYPE } from "@prisma/client";
+import { Injectable } from "@nestjs/common";
+import { ROOMTYPE } from "@prisma/client";
 import { CreateRoom, MessageDTO, JoinRoomDTO } from "src/Gateway/gateway.interface";
 import { prismaService } from "src/prisma/prisma.service";
 
 @Injectable()
 export class GatewayService  {
 
-	private logger = new Logger(GatewayService.name);
-
 	constructor(private _prisma :prismaService) {}
 
 	async findUser(id :number) {
-		const user = await this._prisma.user.findUnique({
+		// const user = await this._prisma.user.findUnique({
+		// 	where: {
+		// 		id: id,
+		// 	},
+		// 	include: {
+		// 		rooms: {
+		// 			select: {
+		// 				userRole: true,
+		// 				room: {
+		// 					select: {
+		// 						name: true,
+		// 						id: true,
+		// 						type: true,
+		// 					}
+		// 				}
+		// 			}
+		// 		},
+		// 		conv: {
+		// 			select: {
+		// 				id: true,
+		// 				users: true,
+		// 			},
+		// 		},
+		// 	},
+		// });
 
+		const user = await this._prisma.user.findUnique({
 			where: {
 				id: id,
 			},
-			include: {
+			select: {
+				id: true,
+				userName: true,
 				rooms: {
 					select: {
 						userRole: true,
 						room: {
 							select: {
-								name: true,
 								id: true,
+								name: true,
 								type: true,
-							}
-						}
-					}
+							},
+						},
+					},
 				},
 				conv: {
 					select: {
@@ -36,7 +61,8 @@ export class GatewayService  {
 					},
 				},
 			},
-		});
+		})
+
 		return (user);
 	}
 
@@ -58,6 +84,7 @@ export class GatewayService  {
 				},
 			},
 		});
+
 		return (newConv);
 	}
 
@@ -72,9 +99,9 @@ export class GatewayService  {
 					create: {
 						content: payload.message,
 						userId: payload.from,
-					}
-				}
-			}
+					},
+				},
+			},
 		});
 	}
 
@@ -106,7 +133,7 @@ export class GatewayService  {
 				id: true,
 				name: true,
 				type: true,
-			}
+			},
 		});
 
 		return (foundedRoom);
@@ -126,5 +153,5 @@ export class GatewayService  {
 				},
 			},
 		});
-	}
+	};
 }
