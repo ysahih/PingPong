@@ -3,9 +3,10 @@ import { serverGateway } from "./gateway.chat";
 import { UsersServices } from "./usersRooms/user.class";
 import { RoomsServices } from "./usersRooms/room.class";
 import { GatewayService } from "./geteway.service";
+import { FriendsService } from "src/user/user.service";
 
 @Module({
-    providers: [serverGateway, UsersServices, RoomsServices, GatewayService],
+    providers: [serverGateway, UsersServices, RoomsServices, GatewayService, FriendsService],
 })
 export class GatewayModule {
 

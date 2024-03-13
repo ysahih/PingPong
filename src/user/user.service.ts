@@ -1,72 +1,323 @@
-import { Injectable } from '@nestjs/common';
-import { error } from 'console';
-import { prismaService } from 'src/prisma/prisma.service';
+import { Injectable } from "@nestjs/common";
+import { prismaService } from "src/prisma/prisma.service";
 
 @Injectable()
-export class UserService {
-    constructor(private prisma: prismaService){}
+export class FriendsService {
+  constructor(private prisma: prismaService) {}
 
-    async sendFriendRequest(UserId: number, TargetId: number)
-    {
-        const friends = await this.prisma.friendRequest.create({
-            data:{
-                senderId : UserId,
-                receiverId: TargetId
-            }
-        })
-        return friends;
+  async searchUser(userName: string) {
+    try {
+      const user = await this.prisma.user.findMany({
+        where: {
+          userName: {
+            contains: userName,
+          },
+        },
+        select: {
+          userName: true,
+          image: true,
+          id: true,
+        },
+      });
+      return user;
+    } catch (e) {
+      return null;
     }
-    
-    async acceptFriendRequest(UserId: number, TargetId: number)
-    {
-        const friends = await this.prisma.friendRequest.updateMany({
-            where:{
-                receiverId: UserId
-            },
-            data:{
-                accepted: true
-            }
-        })
-        return friends;
+  }
+
+  async sendFriendRequest(UserId: number, TargetId: number) {
+    if (UserId === TargetId) {
+      return null;
     }
 
-    async FriendRequest(UserId: number)
-    {
-        const reqFriend = await this.prisma.user.findUnique({
-            where:{
-                id: UserId,
+    try {
+      const check = await this.prisma.friendRequest.findMany({
+        where: {
+          OR: [
+            {
+              AND: {
+                receiverId: UserId,
+                senderId: TargetId,
+              },
             },
-            select:{
-                friendRequests:true
-                // InvitSend: true
+            {
+              AND: {
+                receiverId: TargetId,
+                senderId: UserId,
+              },
             },
-        })
-        // console.log(reqFriend);
-        const ids = reqFriend.friendRequests.map(request => request.senderId);
-        // console.log(ids)
-        const users = await this.prisma.user.findMany({
-            where: {
-              id: { in: ids }
-            },
-            select:{
-                userName: true,
-                image: true,
-                id:true,
-                friendRequests:{
-                    where:{
-                        receiverId: UserId
-                    },
-                    select:{
-                        senderId: true,
-                        accepted: true
-                    }
-                }
-            },
-            orderBy: {
-                id:'desc'
-              }
-          });
-        //   console.log(users)
-        return users;
+          ],
+        },
+      });
+      if (check.length > 0) {
+        return null;
+      }
+      const friend = await this.prisma.user.findUnique({
+        where: {
+          id: TargetId,
+        },
+      });
+      if (!friend) {
+        return null;
+      }
+      const friends = await this.prisma.friendRequest.create({
+        data: {
+          senderId: UserId,
+          receiverId: TargetId,
+        },
+      });
+      return friends;
+    } catch (e) {
+      return null;
     }
+  }
+
+  async getfriendsRequest(UserId: number) {
+    const friends = await this.prisma.friendRequest.findMany({
+      where: {
+        AND: {
+          receiverId: UserId,
+          blocked: false,
+          accepted: false,
+        },
+      },
+      select: {
+        id: true,
+        sender: {
+          select: {
+            userName: true,
+            image: true,
+            id: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    return friends;
+  }
+
+  async Friends(UserId: number) {
+    try {
+      const friends = await this.prisma.friendRequest.findMany({
+        where: {
+          OR: [
+            {
+              receiverId: UserId,
+              accepted: true,
+              blocked: false,
+            },
+            {
+              senderId: UserId,
+              accepted: true,
+              blocked: false,
+            },
+          ],
+        },
+        select: {
+          id: true,
+          senderId: true,
+          sender: {
+            select: {
+              userName: true,
+              image: true,
+              id: true,
+            },
+          },
+          receiver: {
+            select: {
+              userName: true,
+              image: true,
+              id: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+      const Friends = friends.map((request) => {
+        // Determine if the user is the sender or receiver
+        const isSender = request.senderId === UserId;
+        const friendData = isSender ? request.receiver : request.sender;
+        return {
+          id: friendData.id,
+          userName: friendData.userName,
+          image: friendData.image,
+        };
+      });
+      return Friends;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async acceptFriendRequest(UserId: number, TargetId: number) {
+    try {
+      const friends = await this.prisma.friendRequest.updateMany({
+        where: {
+          AND: {
+            receiverId: UserId,
+            senderId: TargetId,
+          },
+        },
+        data: {
+          accepted: true,
+        },
+      });
+      return friends;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async blockedFriens(UserId: number) {
+    try {
+      const blockedfriends = await this.prisma.friendRequest.findMany({
+        where: {
+          OR: [
+            {
+              receiverId: UserId,
+              blocked: true,
+              blockedById: UserId,
+            },
+            {
+              senderId: UserId,
+              blocked: true,
+              blockedById: UserId,
+            },
+          ],
+        },
+        select: {
+          id: true,
+          senderId: true,
+          sender: {
+            select: {
+              userName: true,
+              image: true,
+              id: true,
+            },
+          },
+          receiver: {
+            select: {
+              userName: true,
+              image: true,
+              id: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      const Blockedfriends = blockedfriends.map((request) => {
+        const isSender = request.senderId === UserId;
+        const friendData = isSender ? request.receiver : request.sender;
+        return {
+          id: friendData.id,
+          userName: friendData.userName,
+          image: friendData.image,
+        };
+      });
+      return Blockedfriends;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async blockFriendRequest(UserId: number, TargetId: number) {
+    try {
+      const friends = await this.prisma.friendRequest.updateMany({
+        where: {
+          OR: [
+            {
+              AND: {
+                receiverId: UserId,
+                senderId: TargetId,
+              },
+            },
+            {
+              AND: {
+                receiverId: TargetId,
+                senderId: UserId,
+              },
+            },
+          ],
+        },
+        data: {
+          accepted: false,
+          blocked: true,
+          blockedById: UserId,
+        },
+      });
+      return friends;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async deleteFriendRequest(UserId: number, TargetId: number) {
+    try {
+      const friends = await this.prisma.friendRequest.deleteMany({
+        where: {
+          OR: [
+            {
+              AND: {
+                receiverId: UserId,
+                senderId: TargetId,
+              },
+            },
+            {
+              AND: {
+                receiverId: TargetId,
+                senderId: UserId,
+              },
+            },
+          ],
+        },
+      });
+      return friends;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async unblockFriendRequest(UserId: number, TargetId: number) {
+    try {
+      const friends = await this.prisma.friendRequest.updateMany({
+        where: {
+          OR: [
+            {
+              AND: {
+                blockedById: UserId,
+                receiverId: UserId,
+                senderId: TargetId,
+              },
+            },
+            {
+              AND: {
+                blockedById: UserId,
+                receiverId: TargetId,
+                senderId: UserId,
+              },
+            },
+          ],
+        },
+        data: {
+          blocked: false,
+          accepted: false,
+          blockedById: null,
+        },
+      });
+      if (friends)
+        await this.deleteFriendRequest(UserId, TargetId);
+      else
+        return null;
+      return friends;
+    } catch (e) {
+      return null;
+    }
+  }
 }

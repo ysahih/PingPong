@@ -8,11 +8,13 @@ import { Prisma } from "@prisma/client";
 import { ExceptionHandler } from "./ExceptionFilter/exception.filter";
 import { GatewayService } from "./geteway.service";
 import * as jwt from 'jsonwebtoken';
+import { Payload } from "src/authentication/dto/payload.message";
+import { FriendsService } from "src/user/user.service";
 
 
 @WebSocketGateway({
 	cors: {
-		origin: ['http://localhost:5500'],
+		origin: [process.env.FRONTEND_URL],
 		credentials: true,
 	},
 	
@@ -24,7 +26,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
 	logger: Logger = new Logger(serverGateway.name);
 
-	constructor(private _users: UsersServices, private _rooms: RoomsServices, private _prisma: GatewayService) { }
+	constructor(private _users: UsersServices, private _rooms: RoomsServices, private _prisma: GatewayService, private FriendsService: FriendsService) { }
 
 	async afterInit() {
 
@@ -154,5 +156,22 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 			// This exeception throws when the user is already there
 			this._server.to(client.id).emit('error', `User with ${payload.userId}:ID already exists !`);
 		}
+
+
 	}
+	/**
+	 * handle friends request : by essadike
+	 */
+	
+	@SubscribeMessage('NewInvit')
+	async handleNewFriend(@ConnectedSocket() client: Socket, @Body() Payload: any) {
+		
+		this._users.getUserBySocketId(client.id)
+		const targetFriend = await this.FriendsService.sendFriendRequest(Payload.from, Payload.to);
+
+	}
+	/**
+	 * end of functions :by essadike
+	 */
+
 };

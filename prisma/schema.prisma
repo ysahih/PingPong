@@ -32,22 +32,22 @@ model User {
   rooms     UserRoom[]
   messages  Message[]
   conv      Converstaion[]
-  // friends         Friends[]       @relation("Friends", references: [id])
-  // friendOf        User[]          @relation("", references: [id])
+  friends         Friends[]       @relation("Friends")
+  friendsReceived Friends[]       @relation("friendsReceived")
   @@map("Users")
 }
 
-// model Friends {
-//   id        Int       @id @default(autoincrement())
-//   createdAt DateTime  @default(now())
-//   updatedAt DateTime  @updatedAt
-//   user      User?      @relation("Friends", fields: [userId], references: [id])
-//   userId    Int?
-//   friend    User?     @relation("Friends", fields: [friendId], references: [id])
-//   friendId  Int?
-//   @@unique([userId, friendId ])
-//   @@map("Friends")
-// }
+model Friends {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      User?      @relation("Friends", fields: [userId], references: [id])
+  userId    Int?
+  friendsReceived    User?     @relation("friendsReceived", fields: [friendsReceivid], references: [id])
+  friendsReceivid  Int?
+  @@unique([userId, friendsReceivid ])
+  @@map("Friends")
+}
 
 // model Message {
 //   id        Int       @id @default(autoincrement())
@@ -63,6 +63,7 @@ model User {
 
 model FriendRequest {
   id        Int       @id @default(autoincrement())
+  blockedById Int?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   sender    User?      @relation("Sender", fields: [senderId], references: [id])
