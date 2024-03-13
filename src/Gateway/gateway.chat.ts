@@ -9,6 +9,7 @@ import { ExceptionHandler } from "./ExceptionFilter/exception.filter";
 import { GatewayService } from "./geteway.service";
 import * as jwt from 'jsonwebtoken';
 import { Payload } from "src/authentication/dto/payload.message";
+import { FriendsService } from "src/user/user.service";
 
 
 
@@ -16,12 +17,12 @@ import { Payload } from "src/authentication/dto/payload.message";
 
 @WebSocketGateway({
 	cors: {
-		origin: ['http://localhost:5500'],
+		origin: [process.env.FRONTEND_URL],
 		credentials: true,
 	},
 	
 })
-// @UseGuards()
+
 
 export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
@@ -30,7 +31,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 	});
 	logger: Logger = new Logger(serverGateway.name);
 
-	constructor(private _users: UsersServices, private _rooms: RoomsServices, private _prisma: GatewayService) { }
+	constructor(private _users: UsersServices, private _rooms: RoomsServices, private _prisma: GatewayService, private FriendsService: FriendsService) { }
 
 	async afterInit() {
 
@@ -43,7 +44,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
 		// TODO: Get the Key and decode it
 	
-		console.log(client.handshake.headers.cookie);
+		// console.log(client.handshake.headers.cookie);
 		try{
 			const token = client.handshake.headers.cookie;
 			if (!token)
@@ -54,8 +55,8 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 			const jwtToken = token.split('=')[1];
 			const payload = jwt.verify(jwtToken, 'essadike');
 			// TODO: get data from the DB
-			this._users.addUser(client, this._users.organizeUser(client.id, payload), this._rooms.connectToRooms);
 			console.log('client connect:' ,payload)
+			// this._users.addUser(client, this._users.organizeUser(client.id, payload), this._rooms.connectToRooms);
 		}
 		catch(err){
 			this._server.to(client.id).emit('error', 'Unauthorized !');
@@ -184,8 +185,11 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 	 */
 	
 	@SubscribeMessage('NewInvit')
-	async handleNewFriend(@Body() Payload: {userId: number, friend: {id: number, username: string, image: string}}) {
-		 this._server.to(Payload.userId.toString()).emit('NewFriend', Payload.friend)
+	async handleNewFriend(@ConnectedSocket() client: Socket, @Body() Payload: any) {
+		
+		this._users.getUserBySocketId(client.id)
+		const targetFriend = await this.FriendsService.sendFriendRequest(Payload.from, Payload.to);
+
 	}
 	/**
 	 * end of functions :by essadike

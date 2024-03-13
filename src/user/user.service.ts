@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { prismaService } from "src/prisma/prisma.service";
 
 @Injectable()
-export class UserService {
+export class FriendsService {
   constructor(private prisma: prismaService) {}
 
   async searchUser(userName: string) {
