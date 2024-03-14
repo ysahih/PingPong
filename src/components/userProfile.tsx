@@ -1,11 +1,6 @@
 import "@/styles/userProfile/userprofile.css";
 import Image from "next/image";
-import {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import UserDataContext from "./context/context";
 import axios from "axios";
 import AuthCode from "react-auth-code-input";
@@ -13,8 +8,6 @@ import CloseBtn from "./closebtn";
 import Switch from "react-switch";
 import UserFriends from "./userProfile/userProfile";
 import Awards from "./userProfile/Awards";
-
-
 
 interface QrCodeProps {
   close: (val: boolean) => void;
@@ -110,7 +103,11 @@ const QrCode = (props: QrCodeProps) => {
           onChange={(res: string) => {
             setInput(res), setEnable2Fa(true);
             setTimeout(() => {
-              if (res.length === 6 && btnValue.current && btnValue.current as HTMLButtonElement) {
+              if (
+                res.length === 6 &&
+                btnValue.current &&
+                (btnValue.current as HTMLButtonElement)
+              ) {
                 (btnValue.current as HTMLButtonElement).click();
               }
             }, 200);
@@ -200,7 +197,11 @@ const Disable2Fa = (props: Disable2FaProps) => {
           onChange={(res: string) => {
             setInput(res), setEnable2Fa(true);
             setTimeout(() => {
-              if (res.length === 6 && btnValue.current && btnValue.current as HTMLButtonElement) {
+              if (
+                res.length === 6 &&
+                btnValue.current &&
+                (btnValue.current as HTMLButtonElement)
+              ) {
                 (btnValue.current as HTMLButtonElement).click();
               }
             }, 200);
@@ -254,20 +255,19 @@ const UserProfile = () => {
   const context = useContext(UserDataContext);
   const [settings, setSettings] = useState(false);
 
-  
   return (
     <div className="userProfile">
       <div className="HeadProfile">
         <div className="ImgHeadProfileContainer">
           <Image
-            className="ImgHeadprofile"
+            className="ImgHeadprofile w-[70px] h-[70px] rounded-full md:w-[75px] md:h-[75px] "
             src={context?.image ? context?.image : "./defaultImg.svg"}
             width={75}
             height={75}
             alt="avatar"
           />
           <div>
-            <h2 className="ProfileUserName text-xl md:text-2xl xl:text-3xl" >
+            <h2 className="ProfileUserName text-[20px] sm:text-xl">
               {context?.userName} <span> #12 </span>
             </h2>
             <h3 className="ProfileUserFName">
@@ -275,16 +275,9 @@ const UserProfile = () => {
             </h3>
           </div>
         </div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "flex-end",
-            width: "50%",
-          }}
-        >
+        <div className="flex flex-col items-end">
           <Image
-            className="hover:scale-[120%] transition-all duration-300 ease-in-out"
+            className="hover:scale-[120%] w-[20px] md:w-[26px] transition-all duration-300 ease-in-out"
             src="/Settings.svg"
             width={26}
             height={26}
@@ -295,15 +288,7 @@ const UserProfile = () => {
             }}
             onClick={() => setSettings(!settings)}
           />
-          <div
-            style={{
-              display: "flex",
-              padding: "1px",
-              justifyContent: "flex-end",
-              gap: "5px",
-              marginRight: "20%",
-            }}
-          >
+          <div className="flex sm:mr-[35%] p-1 gap-1 sm:gap-0 sm-p-0 justify-center">
             <div>
               <h3 className="WinsLowssers">Wins</h3>
               <h3 className="counterWinsLowsers">30</h3>
@@ -316,10 +301,10 @@ const UserProfile = () => {
         </div>
       </div>
       <div className="profileFriends">
-        {settings ? <SettingsAnd2Fa /> : <UserFriends/>}
+        {settings ? <SettingsAnd2Fa /> : <UserFriends />}
       </div>
-      <div className={settings?'hidden' : "profileAwards "}>
-        <Awards/>
+      <div className={settings ? "hidden" : "profileAwards "}>
+        <Awards />
       </div>
     </div>
   );

@@ -15,6 +15,28 @@ import { FriendsType, InvitsType } from "@/components/userProfile/Dto";
 import io, { Socket } from "socket.io-client";
 import SocketContext from "@/components/context/socket";
 
+
+/*
+  * if u need to use the socket in the app component, you can use the SocketContext to get
+  * the socket instance like this:
+  * 
+  * expemple:
+  * 
+  * const socket = useContext(SocketContext);
+  * 
+  * for accessing FriendsData, InvitsData, and BlockedFriend, you can use the ProfileDataContext
+  * 
+  * example:
+  * const { FriendsData, InvitsData, BlockedData } = useContext(ProfileDataContext);
+  * 
+  * if you need to use the user public data, you can use the UserDataContext
+  * 
+  * example:
+  * 
+  * const data = useContext(UserDataContext);
+  */
+
+
 interface PropesBlockedData {
   setFriendsData: (FriendsData: FriendsType[]) => void;
 }
@@ -81,51 +103,52 @@ export default function landingPage() {
   const [Socket, setSocket] = useState<Socket | null>(null);
   const router = useRouter();
 
-  const socket = io(process.env.NEST_API ?? "", {
-    withCredentials: true,
-    autoConnect: false,
-  });
+  useEffect(() => {
+    // Check if the socket has already been initialized
+    if (Socket) return;
+  
+    const socket = io(process.env.NEST_API ?? "", {
+        withCredentials: true,
+        // autoConnect: true by default, so no need to explicitly call connect()
+    });
+  
+    // Setup event listeners only once
+    socket.on("connect", () => {
+        console.log("socket connected::::::::::::::::::::::");
+    });
+  
+    socket.on("disconnect", () => {
+        console.log("socket disconnected::::::::::::::::::::::");
+    });
+  
+    socket.on("NewFriend", (data: FriendsType) => {
+      if (data === undefined || !data) return;
+        console.log("NewFriend", data);
+        setFriendsData((currentFriends) => currentFriends ? [...currentFriends, data] : [data]);
+    });
+  
+    socket.on("NewInvit", (data) => {
+        console.log("NewInvit :", data);
+        setInvitsData((currentInvits) => currentInvits ? [...currentInvits, data] : [data]);
+    });
+  
+    socket.on("NewBlocked", (data: FriendsType) => {
+        console.log("NewBlocked", data);
+        setBlockedData((currentBlocked) => currentBlocked ? [...currentBlocked, data] : [data]);
+    });
+  
+    // Update the Socket state to ensure this effect runs only once
+    setSocket(socket);
+  
+    // Cleanup function to disconnect socket when component unmounts
+    return () => {
+      socket.disconnect();
+    };
+  }, []); // Removed Socket from dependency array
+
 
   useEffect(() => {
-    socket.connect();
-    socket.on("connect", () => {
-      console.log("socket connected");
-      setSocket(socket);
-    });
-
-    socket.on("NewFriend", (data: FriendsType) => {
-      console.log("NewFriend", data);
-      setFriendsData((currentFriends) => {
-        if (currentFriends) {
-          return [...currentFriends, data];
-        } else {
-          return [data];
-        }
-      });
-    });
-
-    socket.on("NewInvit", (data: InvitsType) => {
-      console.log("NewInvit", data);
-      setInvitsData((currentInvits) => {
-        if (currentInvits) {
-          return [...currentInvits, data];
-        } else {
-          return [data];
-        }
-      });
-    });
-
     
-    socket.on("NewBlocked", (data: FriendsType) => {
-      console.log("NewBlocked", data);
-      setBlockedData((currentBlocked) => {
-        if (currentBlocked) {
-          return [...currentBlocked, data];
-        } else {
-          return [data];
-        }
-      });
-    });
 
     if (!data) {
       const getdata = async () => {
@@ -169,11 +192,22 @@ export default function landingPage() {
     if (!BlockedData) {
       getBlocked({ setBlockedData });
     }
+
+    return () => {
+      Socket?.off('connect')
+      Socket?.off('disconnect')
+    };
   }, []);
 
-  console.log("FriendsData:", FriendsData);
-  console.log("InvitsData:", InvitsData);
-  console.log("BlockedData:", BlockedData);
+  // console.log("FriendsData:", FriendsData);
+  // console.log("InvitsData:", InvitsData);
+  // console.log("BlockedData:", BlockedData);
+
+  
+
+
+  
+
 
   return (
     <>

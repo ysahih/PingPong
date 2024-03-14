@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
 import { InvitsType } from "./Dto";
 import ProfileDataContext from "../context/profilDataContext";
+import SocketContext from "../context/socket";
 
 
 
@@ -15,23 +16,26 @@ interface InvitProps {
 const Invit = (props: InvitProps) => {
   const values = props.value;
 
-  const Accept = async (id: number) => {
-    try {
-      const response = await axios.post(`http://localhost:3000/user/accept?id=${id}`, {
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      }
-      );
-      console.log('ACCEPT',response.data);
-    }
-    catch (error) {
-      console.error(error);
-    }
-  };
+  // const Accept = async (id: number) => {
+
+  //   // socket?.emit("NewInvit", 'heelhsdbhbksdbgskd gsdbjg jksbgsjkdg ');
+  //   try {
+  //     const response = await axios.post(`http://localhost:3000/user/accept?id=${id}`, {
+  //     },
+  //     {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       withCredentials: true,
+  //     }
+  //     );
+  //     console.log('ACCEPT',response.data);
+  //   }
+  //   catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+  const socket = useContext(SocketContext);
 
   return (
     <div key={values.id} className="FriendsPh min-w-[190px] h-[230px] bg-[#040A2F] mr-[15px] flex flex-col items-center">
@@ -63,7 +67,7 @@ const Invit = (props: InvitProps) => {
           alt="online"
         />
         <Image
-          onClick={() => Accept(values.sender.id)}
+          onClick={() => socket?.emit("NewFriend",{id: values.sender.id})}
           className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out"
           src="./iconsProfile/accept.svg"
           width={32}

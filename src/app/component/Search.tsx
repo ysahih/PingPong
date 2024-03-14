@@ -1,8 +1,10 @@
 import { CiSearch } from "react-icons/ci";
 import { IoMdPersonAdd } from "react-icons/io";
 import Image from "next/image";
-import { use, useEffect, useState } from "react";
+import { use, useContext, useEffect, useState } from "react";
 import axios from "axios";
+import SocketContext from "@/components/context/socket";
+import { Socket } from "socket.io-client";
 
 type UserProps = {
   id: number;
@@ -10,27 +12,32 @@ type UserProps = {
   userName: string;
 };
 
-const sendUInvitation = async (id: number) => {
-  try {
-    const dataInvitation = await axios.post(
-      "http://localhost:3000/user/sendinvit?id=" + id,
-      {},
-      {
-        withCredentials: true,
-      }
-    );
-    console.log(dataInvitation);
-  } catch (error) {
-    console.log(error);
-  }
-};
+// const sendUInvitation = async (id: number) => {
+//   try {
+//     // socket?.emit("NewInvit", "sdgjshhdjlgsdkdlgls");
+//     const dataInvitation = await axios.post(
+//       "http://localhost:3000/user/sendinvit?id=" + id,
+//       {},
+//       {
+//         withCredentials: true,
+//       }
+//     );
+//     console.log(dataInvitation);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
 const User = (props: UserProps) => {
+  const socket = useContext(SocketContext);
   return (
     <div className="m-4 bg-[#8A99E9] text-white gap-4  min-w-[200px] bg-[#00000] min-h-[200px] m-[20px] flex flex-col items-center p-[10px]">
       <Image src={props.image || "./re"} alt="profile" width={46} height={46} />
       <h3>{props.userName}</h3>
-      <IoMdPersonAdd className="w-[30px] h-[30px]" onClick={()=> sendUInvitation(props.id)}/>
+      <IoMdPersonAdd
+        className="w-[30px] h-[30px]"
+        onClick={() => socket?.emit("NewInvit", { id: props.id })}
+      />
     </div>
   );
 };

@@ -15,24 +15,18 @@
 .HeadProfile {
   display: flex;
   justify-content: space-between;
-  /* box-shadow: 5px 4px 10px 0px #00000040; */
   border-top: 1px solid var(--item-border-color);
-  /* background: var(--bg-color); */
   background: radial-gradient(
     circle,
     #101747 0%,
     var(--bg-color) 60%
   );
   height: 146px;
-  top: 160px;
-  left: 398px;
   border-radius: 10px;
   border: 1px, 0px, 0px, 0px;
-  gap: 10px;
 }
 
 .profileFriends {
-  /* box-shadow: 5px 4px 10px 0px #00000040; */
   border-top: 1px solid var(--item-border-color);
   height: 340px;
   border-radius: 10px;
@@ -117,6 +111,58 @@
   letter-spacing: 0em;
   text-align: left;
   color: #8a99e9;
+}
+
+@media (max-width: 465px)
+{
+  .ImgHeadProfileContainer {
+    margin: 0px;
+    justify-content: start;
+    gap: 10px;
+
+  }
+  .ImgHeadProfileContainer {
+    margin: 0px;
+    margin-left: 10px;
+    justify-content: start;
+  }
+  .WinsLowssers
+  {
+    font-size: 9px;
+    margin-right: 15px;
+  }
+  .counterWinsLowsers {
+    font-size: 9px;
+    margin-top: 5px;
+  }
+  .ProfileUserFName {
+    margin-top: 5px;
+    font-size: 10px;
+    width: fit-content;
+    margin-top: -10px;
+  }
+
+  .ProfileUserName span {
+    font-size: 8px;
+    margin-left: 2px;
+  }
+  .ProfileUserName{
+    font-size: 16px;
+    padding: 0px;
+    gap: 0px;
+    height: fit-content;
+  }
+}
+
+@media (max-width: 369px)
+{
+  .ImgHeadprofile{
+    width: 50px;
+    height: 50px;
+  }
+  .ProfileUserName{
+    font-size: 12px;
+  }
 }
 
 .btn2Fa {

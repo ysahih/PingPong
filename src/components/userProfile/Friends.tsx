@@ -36,7 +36,7 @@ const Friend = (props: friendsType) => {
         <p
           className="absolute w-2.5 h-2.5 bg-green-500 rounded-full -top-[-12px] -right-[-8px] transform translate-x-1/2 translate-y-1/2 border-[4px] border-transparent animationClass"
           style={{
-            zIndex: 101,
+            zIndex: 99,
           }}
         ></p>
         <div
