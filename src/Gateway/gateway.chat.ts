@@ -8,7 +8,6 @@ import { Prisma } from "@prisma/client";
 import { ExceptionHandler } from "./ExceptionFilter/exception.filter";
 import { GatewayService } from "./geteway.service";
 import * as jwt from 'jsonwebtoken';
-import { Payload } from "src/authentication/dto/payload.message";
 import { FriendsService } from "src/user/user.service";
 
 
@@ -17,7 +16,6 @@ import { FriendsService } from "src/user/user.service";
 		origin: [process.env.FRONTEND_URL],
 		credentials: true,
 	},
-	
 })
 export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
 
@@ -30,7 +28,6 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
 	async afterInit() {
 
-		// this._server.use(this._middleware.use);
 		this.logger.log('The Default gateway succefully started.');
 	}
 
@@ -49,7 +46,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
 			const user = await this._prisma.findUser(payload['id']);
 
-			this._users.addUser(client, this._users.organizeUser(client.id, user), this._rooms.connectToRooms);
+			this._users.addUser(client, this._users.organizeUserData(client.id, user), this._rooms.connectToRooms);
 
 		} catch(err) {
 			this._server.to(client.id).emit('error', 'Unauthorized !');
@@ -63,16 +60,15 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 		this._users.deleteUser(client, this._rooms.disconnectToRooms);
 	}
 
-	// TODO: Check Blocked At Users and rooms, Also Muted
-	// TODO: Add Message Validator
 	@UseFilters(ExceptionHandler)
 	@UsePipes(ValidationPipe)
 	@SubscribeMessage('directMessage')
 	async handleDirectMessage(@ConnectedSocket() client: Socket, @Body() payload: MessageDTO): Promise<void> {
 
-		console.log('Hello');
+		// TODO: Check Blocked At Users and rooms, Also Muted
+
 		// Get sender User Infos
-		const fromUser = this._users.getUserBySocketId(client.id);
+		const fromUser = this._users.getUserById(payload.from);
 		// Check if already there's that conversation
 		const isExist = fromUser.DirectChat.find(conv => conv.toUserId === payload.to);
 
@@ -80,10 +76,8 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 			console.log('Conversation does not Exist !');
 			// If dosn't exist create new record
 			const newConv = await this._prisma.createConversation(payload);
-			// ADD conversation ID for USER1 object
-			this._users.addNewConversation(client.id, newConv.id, payload.to);
-			// ADD conversation ID for USER2 object
-			this._users.addNewConversation(this._users.getSocketId(payload.to), newConv.id, payload.from);
+			// ADD conversation ID for USER1 and USER2
+			this._users.addNewConversation(payload, newConv.id);
 		}
 		else {
 			console.log('Conversation Exists !');
@@ -94,7 +88,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 		const toUser = this._users.getUserById(payload.to);
 		// if is Online, send him a message to the 'chat' event
 		if (toUser)
-			this._server.to(this._users.getSocketId(payload.to)).emit('chat', payload.message);
+			toUser.socketId.forEach((socktId :string) => this._server.to(socktId).emit('chat', payload.message));
 	}
 
 	@UseFilters(ExceptionHandler)
@@ -104,15 +98,17 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
 		try {
 
+			// TODO: Handle if it is protected it should contain a password
 			// Create a room record
 			const newRoom = await this._prisma.createRoom(payload, payload.type);
 			// Add the room to the user's room array of Objects
-			this._users.addNewRoom(client.id, newRoom, 'OWNER');
-			console.log(this._users.getUserBySocketId(client.id));
+			this._users.addNewRoom(payload.ownerId, newRoom, 'OWNER');
+			console.log(this._users.getUserById(payload.ownerId));
 
 			// Check Execption
 		} catch (e) {
 			// If it's From prisma
+			// FIXME: I don't have to send errors to all client
 			if ((e) instanceof Prisma.PrismaClientKnownRequestError) {
 				// Means that the room already exist with that name
 				if (e.code === 'P2002')
@@ -130,43 +126,47 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 	@SubscribeMessage('joinRoom')
 	async handleJoinRoom(@ConnectedSocket() client: Socket, @Body() payload: JoinRoomDTO): Promise<void> {
 
-		console.log(payload);
-
 		// Check if the room Exists
 		const foundedRoom = await this._prisma.findRoom(payload.roomId);
 
 		try {
-
 			// If exists just Join it
 			if (foundedRoom) {
 				await this._prisma.joinRoom(foundedRoom.id, payload);
+				// Add that room to the user's room array of Objects
+				this._users.addNewRoom(payload.userId, foundedRoom);
 				// Join the virtual room at the server
 				client.join(foundedRoom.name);
-				// Add that room to the user's room array of Objects
-				this._users.addNewRoom(client.id, foundedRoom, 'USER');
-				console.log(this._users.getUserBySocketId(client.id));
+				console.log(this._users.getUserById(payload.userId));
 			}
 			else {
 				// If doesn't exist just inform the user
 				this._server.to(client.id).emit('error', `Room with ${payload.roomId}:ID not found !`);
 			}
-
 		}
 		catch (e) {
 			// This exeception throws when the user is already there
-			this._server.to(client.id).emit('error', `User with ${payload.userId}:ID already exists !`);
+			if (e.code === 'P2002')
+				this._server.to(client.id).emit('error', `User with ${payload.userId}:ID already exists !`);
+			// Something else happened
+			else
+				this._server.to(client.id).emit('error', `User with ${payload.userId}:ID can't join the room !`);
 		}
-
-
 	}
 	/**
 	 * handle friends request : by essadike
 	 */
-	
+
 	@SubscribeMessage('NewInvit')
 	async handleNewFriend(@ConnectedSocket() client: Socket, @Body() Payload: any) {
 		
-		this._users.getUserBySocketId(client.id)
+		// If you want all sockets (Windows) of the same client
+		// You can get the client infos by "ID", like
+		// const user = this._users.getUserById(Payload.fromId);
+		// and then iterate on the user.sockets array using "forEach", like
+		// user.sockets.forEach((socketId :string) => this._server.emit(YOUR_EVENT_NAME, THE_MESSAGE));
+		// In that "forEach" Method you can emit events to all sockets (Windows) of the same client/user
+
 		const targetFriend = await this.FriendsService.sendFriendRequest(Payload.from, Payload.to);
 
 	}

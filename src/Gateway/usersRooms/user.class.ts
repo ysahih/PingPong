@@ -2,85 +2,91 @@ import { Injectable } from "@nestjs/common";
 import { Conversations, User } from "./UserRoom.interface";
 import { Socket } from "socket.io";
 import { Room } from "./UserRoom.interface";
+import { MessageDTO } from "../gateway.interface";
+import { ROLE } from "@prisma/client";
 
 @Injectable()
 export class UsersServices {
 
 	// Properties
-	private _users: Map<string, User>;
+	private _users: Map<number, User>;
 
 	// Default Constructor
 	constructor() {
 
-		this._users = new Map();
+		this._users = new Map<number, User>();
 	}
 
+	// Add the user to the map and connected to the rooms
 	addUser(socket: Socket, user: User, cb: (socket: Socket, rooms: Room[]) => void) {
 
-		console.log(user);
-		this._users.set(socket.id, user);
-		cb(socket, user.rooms);
-		console.log(`${user.username} added !`);
-	}
-
-	// Get Connected User By "Socket Id"
-	getUserBySocketId(socketId: string): User {
-
-		return (this._users.get(socketId));
+		if (this._users.has(user.id))
+		{
+			this._users.get(user.id).socketId.push(socket.id);
+			console.log(`${user.username}:ID already Exists!`);
+		}
+		else
+		{
+			this._users.set(user.id, user);
+			console.log(`${user.username} added !`);
+		}
+		console.log(this._users.get(user.id));
+		// Connect to rooms
+		cb(socket, this._users.get(user.id).rooms);
+		// TODO: Made status as ONLINE
 	}
 
 	// Get Connected User By "DB Id"
 	getUserById(id: number): User {
 
-		for (const user of this._users.values())
-			if (user.id == id)
-				return (user);
+		return (this._users.get(id));
 	}
 
-	// Get Connected User By "Username"
-	getUserByUsername(username: string): User {
+	// Find socketId's user and return a Promise with that userId and index od socket at the sockets array
+	async findUserSocket(socketId :string) :Promise<{id: number, index: number} | null> {
 
 		for (const user of this._users.values())
-			if (user.username == username)
-				return (user);
-	}
-
-	getSocketId(id: number): string {
-
-		for (const user of this._users.values())
-			if (user.id == id)
-				return (user.socketId);
-	}
-
-	// Get All Connected Users
-	getAllUser(): Iterable<User> {
-
-		return (this._users.values());
-	}
-
-	getUserRooms(socketId: string): string[] {
-
-		return (this._users.get(socketId).rooms.map(room => room.name));
+		{
+			const index = user.socketId.indexOf(socketId);
+			if (index != -1)
+				return ({id: user.id, index: index});
+		}
+		return (null);
 	}
 
 	// Delete A Connected user
-	deleteUser(socket: Socket, cb: (socket: Socket, rooms: Room[]) => void): void {
+	async deleteUser(socket: Socket, cb: (socket: Socket, rooms: Room[]) => void): Promise<void> {
 
-		const user = this._users.get(socket.id);
-		if (user) {
-			console.log(`${user.username} will be deleted !`);
-			cb(socket, this._users.get(socket.id).rooms);
-			this._users.delete(socket.id);
+		const data :{id: number, index: number} = await this.findUserSocket(socket.id);
+
+		if (data)
+		{
+			cb(socket, this._users.get(data.id).rooms);
+
+			console.log('Before: ');
+			console.log(this._users.get(data.id).socketId);
+
+			this._users.get(data.id).socketId.splice(data.index, 1);
+
+			console.log('After: ');
+			console.log(this._users.get(data.id).socketId);
+
+			if (!this._users.get(data.id).socketId.length)
+			{
+				console.log(`${this._users.get(data.id).username} will be deleted !`);
+				this._users.delete(data.id);
+			}
+			// TODO: Made status as OFFLINE
 		}
 	}
 
-	organizeUser(socketId: string, foundUser: any): User {
+	// Orginize Founded User from the DB Into The User Interface Shape
+	organizeUserData(socketId: string, foundUser: any): User {
 
-		// Orginize Founded User Into The User Interface Shape
 		const newUser: User = {
 			id: foundUser.id,
 			username: foundUser.userName,
-			socketId: socketId,
+			socketId: [socketId],
 			rooms: foundUser.rooms.map(room => {
 				const newRoom: Room = {
 					id: room.room.id,
@@ -102,31 +108,34 @@ export class UsersServices {
 		return (newUser);
 	}
 
-	addNewConversation(socketId: string, newConvId: number, toUserId: number): void {
+	// Create new conversation data at the user's map element
+	addNewConversation(payload: MessageDTO, newConvId: number): void {
 
-		this._users.get(socketId).DirectChat.push({
+		this._users.get(payload.from).DirectChat.push({
 			id: newConvId,
-			toUserId: toUserId,
+			toUserId: payload.to,
 		});
+
+		if (this._users.get(payload.to))
+		{
+			this._users.get(payload.to).DirectChat.push({
+				id: newConvId,
+				toUserId: payload.from,
+			});
+		}
 	}
 
-	addNewRoom(socketId: string, room: any, userRole): void {
+	// Add room data at the user's map element
+	addNewRoom(userId :number, room: any, userRole ?:ROLE): void {
 
-		this._users.get(socketId).rooms.push({
+		this._users.get(userId).rooms.push({
 			id: room.id,
 			name: room.name,
 			type: room.type,
-			UserRole: userRole
+			UserRole: userRole || 'USER',
 		});
-	}
 
-	printAllUser(): void {
-
-		if (this._users.size) {
-			console.log('\n----------- Connected Users -----------');
-			for (const user of this._users.values())
-				console.log(user);
-			console.log('---------------------------------------\n');
-		}
+		console.log('Room Updates:');
+		console.log(this._users.get(userId));
 	}
 }
