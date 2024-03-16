@@ -4,27 +4,36 @@ import Image from "next/image";
 import { use, useContext, useEffect, useState } from "react";
 import { FriendsType } from "./Dto";
 import ProfileDataContext from "../context/profilDataContext";
+import SocketContext from "../context/socket";
+import UserDataContext from "../context/context";
 
 interface friendsType {
   value: FriendsType;
 }
 
-const block = async (id: number) => {
-  try {
-    const dataBlocked = await axios.patch(
-      `http://localhost:3000/user/block?id=${id}`,
-      {},
-      {
-        withCredentials: true,
-      }
-    );
-    console.log(dataBlocked);
-  } catch (error) {
-    console.log(error);
-  }
-};
+// const block = async (id: number) => {
+//   try {
+//     const dataBlocked = await axios.patch(
+//       `http://localhost:3000/user/block?id=${id}`,
+//       {},
+//       {
+//         withCredentials: true,
+//       }
+//     );
+//     console.log(dataBlocked);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };
 
 const Friend = (props: friendsType) => {
+  const socket = useContext(SocketContext);
+  const user = useContext(UserDataContext);
+
+  const block = (id: number) => {
+    socket?.emit("NewBlocked", {id: id, userId: user?.id});
+  };
+  
   return (
     <div className="FriendsPh min-w-[190px] h-[230px] bg-[#040A2F] mr-[15px] flex flex-col items-center">
       <div className="relative">

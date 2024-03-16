@@ -5,6 +5,7 @@ import { use, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import SocketContext from "@/components/context/socket";
 import { Socket } from "socket.io-client";
+import UserDataContext from "@/components/context/context";
 
 type UserProps = {
   id: number;
@@ -30,13 +31,15 @@ type UserProps = {
 
 const User = (props: UserProps) => {
   const socket = useContext(SocketContext);
+  const user = useContext(UserDataContext);
+  
   return (
     <div className="m-4 bg-[#8A99E9] text-white gap-4  min-w-[200px] bg-[#00000] min-h-[200px] m-[20px] flex flex-col items-center p-[10px]">
       <Image src={props.image || "./re"} alt="profile" width={46} height={46} />
       <h3>{props.userName}</h3>
       <IoMdPersonAdd
         className="w-[30px] h-[30px]"
-        onClick={() => socket?.emit("NewInvit", { id: props.id })}
+        onClick={() => socket?.emit("NewInvit", { id: props.id, userId: user?.id })}
       />
     </div>
   );

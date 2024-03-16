@@ -118,23 +118,35 @@ export default function landingPage() {
     });
   
     socket.on("disconnect", () => {
-        console.log("socket disconnected::::::::::::::::::::::");
+      console.log("socket disconnected::::::::::::::::::::::");
     });
-  
+
+    socket.on("DeleteFriend", (id : number) => {
+      console.log("DeleteFriend", id);
+      setFriendsData((currentInvits) => currentInvits ? currentInvits.filter((invit: FriendsType) => invit.id !== id) : null);
+    })
+
+    socket.on("UnBlocked", (id : number) => {
+      console.log("UnBlocked", id);
+      setBlockedData((currentBlocked) => currentBlocked ? currentBlocked.filter((blocked: FriendsType) => blocked.id !== id) : null);
+    });
+    
     socket.on("NewFriend", (data: FriendsType) => {
       if (data === undefined || !data) return;
-        console.log("NewFriend", data);
-        setFriendsData((currentFriends) => currentFriends ? [...currentFriends, data] : [data]);
+      console.log("NewFriend", data);
+      setFriendsData((currentFriends) => currentFriends ? [...currentFriends, data] : [data]);
+      setInvitsData((currentInvits) => currentInvits ? currentInvits.filter((invit: InvitsType) => invit.sender.id !== data.id) : null);
     });
-  
-    socket.on("NewInvit", (data) => {
-        console.log("NewInvit :", data);
-        setInvitsData((currentInvits) => currentInvits ? [...currentInvits, data] : [data]);
+
+    socket.on("NewInvit", (data: InvitsType) => {
+      console.log("NewInvit :", data);
+      setInvitsData((currentInvits) => currentInvits ? [...currentInvits, data] : [data]);
     });
   
     socket.on("NewBlocked", (data: FriendsType) => {
         console.log("NewBlocked", data);
         setBlockedData((currentBlocked) => currentBlocked ? [...currentBlocked, data] : [data]);
+        setFriendsData((currentFriends) => currentFriends ? currentFriends.filter((friend: FriendsType) => friend.id !== data.id) : null);
     });
   
     // Update the Socket state to ensure this effect runs only once
