@@ -4,27 +4,21 @@ import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
 import { FriendsType } from "./Dto";
 import ProfileDataContext from "../context/profilDataContext";
+import SocketContext from "../context/socket";
+import UserDataContext from "../context/context";
 
 interface BlockedType {
   value: FriendsType;
 }
 
 const unblock = async (id: number) => {
-  try {
-    const dataBlocked = await axios.patch(
-      `http://localhost:3000/user/unblock?id=${id}`,
-      {},
-      {
-        withCredentials: true,
-      }
-    );
-    console.log(dataBlocked);
-  } catch (error) {
-    console.log(error);
-  }
+  
+  
 };
 
 const Block = (props: BlockedType) => {
+  const socket = useContext(SocketContext);
+  const user = useContext(UserDataContext)
   return (
     <div className="FriendsPh min-w-[190px] h-[230px] bg-[#040A2F] mr-[15px] flex flex-col items-center">
       <div className="relative">
@@ -48,7 +42,7 @@ const Block = (props: BlockedType) => {
       <div className="flex items-center justify-center  w-[100%] gap-4 mt-12">
         <Image
           onClick={() => {
-            unblock(props.value.id);
+            socket?.emit("UnBlocked", { id : props.value.id , userId: user?.id});
           }}
           className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out"
           src="./iconsProfile/unblock.svg"
