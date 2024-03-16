@@ -1,8 +1,11 @@
 // import Head from "next/head";
 import { RiSendPlaneFill } from "react-icons/ri";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import Image from "next/image";
+import { chatData } from "./Dto/Dto";
 import { Input } from "postcss";
+import { number } from "yup";
+import axios from "axios";
 
 
 
@@ -55,10 +58,25 @@ const UserOption = ( { className }: userOptionClass ) => {
         </div>
     );
 }
+type Props = {
+    handleMsgClick: (value:number) => void;
+    user : chatData;
+};
 
-const More = ()=> {
+const More = ({user}: {user: chatData})=> {
 
     const [showMsgOption, setShowMsgOption] = useState(false);
+    
+    const chatDate = new Date(user.sentAt);
+    const currentDate = new Date();
+    let formattedDate;
+    if (chatDate.toDateString() === currentDate.toDateString()) {
+      const hours = chatDate.getHours();
+      const minutes = chatDate.getMinutes();
+      formattedDate = `${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
+    } else {
+      formattedDate = chatDate.toLocaleDateString();
+    }
 
     const handleMsgOption = () => {
       setShowMsgOption(!showMsgOption);
@@ -66,48 +84,60 @@ const More = ()=> {
 
     return (
         <div className="more">
-            <Image className="dots" onClick={handleMsgOption} src="./homeImages/dots.svg" alt="member" width={12} height={16}/>
+            <Image className="dots" onClick={handleMsgOption} src="./homeImages/dots.svg" alt="member" width={16} height={16}/>
             <UserOption className={showMsgOption ? '' : 'invisible'} />
-            <p className="date">15:30</p>
+            <p className="date">{formattedDate}</p>
         </div>
     );
 }
 
-const Message = () =>{
+
+
+const Message = ({handleMsgClick, user} : Props) =>{
+
+    const handleClick = ()=>{
+        handleMsgClick(user.id);
+    }
+
     return (
         <div className="Message">
 
-            <div className="picture">
-                <Image className="profilepic" src="./homeImages/memeber1.svg" alt="member" width={40} height={40}/>
+            <div className="chatData" onClick={()=>{handleMsgClick(user.id)}}>
+                <div className="picture">
+                    <Image className="profilepic" src="./homeImages/memeber1.svg" alt="member" width={48} height={40}/>
+                </div>
+
+                <div className="messageInfo">
+                    <h2 className="sendeName">{user.userName}</h2>
+                    <p className="msg" >{user.lastMessage.length < 30 ? user.lastMessage : user.lastMessage.slice(0, 30) + "..."}</p>
+                </div>
             </div>
 
-            <div className="messageInfo">
-                <h2 className="sendeName">Username</h2>
-                <p className="msg" >hello, how you doing!</p>
-            </div>
-
-           <More/>
-
+           <More user={user} />
         </div>
     );
 }
 
-const Conversation = () =>{
+const Conversation = ({handleMsgClick, user}: Props) =>{
+    const handleClick = ()=>{
+        handleMsgClick(0);
+    }
+    
     return (
-        <>
+        <div className="conversation">
             <div className="convo">
                 <div className="convoHeader">
                     <div className="sender-info">
                         <Image src="./homeImages/memeber1.svg" width={38} height={42} alt="photo"/>
-                        <h2>Username</h2>
+                        <h2>{user.userName}</h2>
                     </div>
-                    <Image className="go-back" src="./homeImages/goback.svg" width={28} height={25} alt="back"/>
+                    <Image className="go-back" src="./homeImages/goback.svg" onClick={handleClick} width={28} height={25} alt="back" />
                 </div>
                 <hr />
 
                 <div className="convoHolder">
                     <div className="myMsg">
-                        <p>hello there from youssef sahih i want to try if the width and height fit perfectly and yes did they do;</p>
+                        <p>{user.lastMessage}</p>
                     </div>
                     <div className="othersMsg">
                         <p>hi, thank you</p>
@@ -153,6 +183,9 @@ const Conversation = () =>{
                     </div>
                     <div className="othersMsg">
                         <p>hi, thank you</p>
+                    </div>
+                    <div className="myMsg">
+                        <p>hello there;</p>
                     </div>
                     <div className="myMsg">
                         <p>hello there;</p>
@@ -281,32 +314,73 @@ const Conversation = () =>{
                         <p>hi, thank you</p>
                     </div> */}
                 </div>
-
             </div>
             <div className="input-footer">
-                <input className="convoInput" placeholder="Send a Message..."/>
+                <textarea className="convoInput" placeholder="Send a Message..."/>
                 <RiSendPlaneFill className="sendLogo"/>
             </div>
-        </>
+        </div>
     );
 }
+// const ChatChat = ()=>{
+//     return (
+//         <div className="">
+//             <div className="chatbar">
+//                 <Header/>
+//                 <Memebers/>
+//             </div>
+//              <div className="messagesHolder">
+//                 <Message />
+//             </div> 
+//         </div>
+//     );
+// }
 
 
-const Chat = () =>{
+const Chat = () => {
+    
+    //TODO: fetch HTTP chat data;
+    //(after getting the data, it should be mapped in as messages)//
+    //(then we should listen for 2 events: *online and *newMessage) //
+    //firts we add new messages recieved on the socket to the Message map//
 
+    const [chatdata, setChatdata] = useState<chatData[] | null >(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const response = await axios.get('http://127.0.0.1:5501/json.json');
+            setChatdata(response.data);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        };
+
+        fetchData();
+        
+    }, []);
+    const [ShowConvo, setShowConvo]  = useState(0);
+    const handleMsgClick = (value:number)=>{
+        setShowConvo(value);
+    }
+
+   
     return (
         <div className="chat">
-            <div className="chatbar">
-                <Header/>
-            </div>
-
+            {ShowConvo === 0 && <div className="">
+                <div className="chatbar">
+                    <Header/>
+                    <Memebers/>
+                </div>
+               
+                <div className="messagesHolder">
+                    {chatdata?.map((user: chatData) => (
+                    <Message handleMsgClick={handleMsgClick} user={user} />
+                 ))}
+                 </div>
+            </div>}
+            {ShowConvo !== 0 && <Conversation handleMsgClick={handleMsgClick} user={chatdata?.find(user => user?.id === ShowConvo)!} />}
             
-            {/* <Memebers/> */}
-            {/* <div className="messagesHolder">
-                <Message />
-            </div> */}
-
-            <Conversation/>
         </div>
     );
 }

@@ -1,5 +1,6 @@
 import BackGround from "@/components/bg";
-import "../styles/login/landingPage.css";
+import "@/styles/login/loding.css";
+import "@/styles/login/landingPage.css";
 
 export const metadata = {
   title: "PONGy",

@@ -27,12 +27,12 @@ const Notification = () =>{
 
 const Invite = () => {
     return (
-        <div className="Gameinvite">
+        <div className="Gameinvite drift-animation">
             <div className="userprofile">
                 <Image src="./homeImages/memeber1.svg"  className="userpic" alt="image" width={34} height={34}/>
             </div>
 
-            <div className="info ">
+            <div className="info">
                 <h2 className="username">Username</h2>
                 <p className="type">Dark Valley</p>
             </div>
