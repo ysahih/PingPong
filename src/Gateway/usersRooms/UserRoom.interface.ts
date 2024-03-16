@@ -4,10 +4,19 @@ export class User {
 
 	id			:number
 	username	:string
-	socketId	:string
+	socketId	?:string[]
 	rooms		:Room[]
 	DirectChat	:Conversations[]
 }
+
+// export class User {
+
+// 	id			:number
+// 	username	:string
+// 	socketId	:string
+// 	rooms		:Room[]
+// 	DirectChat	:Conversations[]
+// }
 
 // User's Role Interface
 // export interface UserInRoom {

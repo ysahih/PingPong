@@ -65,7 +65,25 @@ export class FriendsService {
           senderId: UserId,
           receiverId: TargetId,
         },
+        select: {
+          id: true,
+          sender: {
+            select: {
+              userName: true,
+              image: true,
+              id: true,
+            },
+          },
+          receiver: {
+            select: {
+              userName: true,
+              image: true,
+              id: true,
+            },
+          },
+        },
       });
+
       return friends;
     } catch (e) {
       return null;
@@ -73,29 +91,33 @@ export class FriendsService {
   }
 
   async getfriendsRequest(UserId: number) {
-    const friends = await this.prisma.friendRequest.findMany({
-      where: {
-        AND: {
-          receiverId: UserId,
-          blocked: false,
-          accepted: false,
-        },
-      },
-      select: {
-        id: true,
-        sender: {
-          select: {
-            userName: true,
-            image: true,
-            id: true,
+    try {
+      const friends = await this.prisma.friendRequest.findMany({
+        where: {
+          AND: {
+            receiverId: UserId,
+            blocked: false,
+            accepted: false,
           },
         },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-    return friends;
+        select: {
+          id: true,
+          sender: {
+            select: {
+              userName: true,
+              image: true,
+              id: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+      return friends;
+    } catch (e) {
+      return null;
+    }
   }
 
   async Friends(UserId: number) {
@@ -153,7 +175,7 @@ export class FriendsService {
     }
   }
 
-  async acceptFriendRequest(UserId: number, TargetId: number) {
+  async acceptFriendRequest(UserId: number, TargetId: number): Promise<any> {
     try {
       const friends = await this.prisma.friendRequest.updateMany({
         where: {
@@ -166,7 +188,31 @@ export class FriendsService {
           accepted: true,
         },
       });
-      return friends;
+      if (friends.count > 0) {
+        const friend = await this.prisma.user.findUnique({
+          where: {
+            id: TargetId,
+          },
+          select: {
+            userName: true,
+            image: true,
+            id: true,
+          },
+        });
+
+        const user = await this.prisma.user.findUnique({
+          where: {
+            id: UserId,
+          },
+          select: {
+            userName: true,
+            image: true,
+            id: true,
+          },
+        });
+        return { reciever: friend, sender: user };
+      }
+      return null;
     } catch (e) {
       return null;
     }
@@ -229,6 +275,7 @@ export class FriendsService {
 
   async blockFriendRequest(UserId: number, TargetId: number) {
     try {
+      // check if the user is already blocked
       const friends = await this.prisma.friendRequest.updateMany({
         where: {
           OR: [
@@ -251,8 +298,22 @@ export class FriendsService {
           blocked: true,
           blockedById: UserId,
         },
+        
       });
-      return friends;
+      if (friends.count > 0) {
+        const user = await this.prisma.user.findUnique({
+          where: {
+            id: TargetId,
+          },
+          select: {
+            userName: true,
+            image: true,
+            id: true,
+          },
+        });
+        return user;
+      }
+      return null;
     } catch (e) {
       return null;
     }
@@ -311,10 +372,8 @@ export class FriendsService {
           blockedById: null,
         },
       });
-      if (friends)
-        await this.deleteFriendRequest(UserId, TargetId);
-      else
-        return null;
+      if (friends) await this.deleteFriendRequest(UserId, TargetId);
+      else return null;
       return friends;
     } catch (e) {
       return null;
