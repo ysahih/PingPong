@@ -72,7 +72,7 @@
     border-bottom: 1px solid var(--item-border-color);
     box-shadow: 5px 4px 10px 0px #02041D;
     position: fixed;
-    z-index: 100;
+    z-index: 10;
 }
 
 
@@ -1100,14 +1100,12 @@
 }
 
 
-
+.home-margin{
+    margin-left: 70px;
+}
 /* media// */
 
-@media (min-width: 1001px){
-    .PhoneSidebar{
-        display: none;
-    }
-}
+
 @media (max-height: 559px) {
     .PhoneSidebar{
         position: static;
@@ -1119,13 +1117,12 @@
     }
 }
 
-@media (max-width:1002px) {
+@media (min-width:1001px) {
     .homepage{
-
-        
         margin-left: 70px;
     }
 }
+
 @media (max-height: 559px) {
     .homepage{
         margin-left: 0px;
@@ -1146,7 +1143,20 @@
     }
 }
 
-@media(max-width:769px){}
+@media(max-width:769px){
+    .PopupBtn{
+        display: block;
+    }
+    
+}
+
+@media (min-width:769px)
+{
+    .PhoneSidebar{
+        display: fixed;
+    }
+}
+
 @media (max-width: 1000px){
     .Pongy{
 
@@ -1182,6 +1192,19 @@
     display: none;
     }
 }
+
+@media (min-width: 1001px){
+    .PhoneSidebar{
+        display: none;
+    }
+}
+
+@media (min-width: 769px){
+    .PhoneSidebar{
+        /* display: none; */
+    }
+}
+
 
 @media (max-height:559px) {
     .Sidebar {

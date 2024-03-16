@@ -187,6 +187,9 @@ const Conversation = ({handleMsgClick, user}: Props) =>{
                     <div className="myMsg">
                         <p>hello there;</p>
                     </div>
+                    <div className="myMsg">
+                        <p>hello there;</p>
+                    </div>
                     <div className="othersMsg">
                         <p>hi, thank you</p>
                     </div>

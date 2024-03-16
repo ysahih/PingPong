@@ -38,7 +38,7 @@
 // }
 
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Navbar from "./component/Navbar";
 import Ranking from "./component/Ranking";
@@ -49,6 +49,9 @@ import Games from "./component/Games";
 import "./globals.css";
 import axios from "axios";
 import Router from "next/navigation";
+import { FiChevronsRight } from "react-icons/fi";
+import '@/styles/userProfile/userFriend.css';
+
 
 import { Carousel, Typography, Button, Switch } from "@material-tailwind/react";
 import RenderContext, { renderContext } from "@/components/context/render";
@@ -200,10 +203,10 @@ const BackGround = ()=> {
 
 
 
-const Home = () => {
+const Home = (props: { showPopup: boolean }) => {
 	const context : renderContext | null = useContext(RenderContext);
 	return (
-		<div className="homepage">
+		<div className={props.showPopup ? 'home-margin homepage' : 'homepage'}>
 			{context?.render === "home" && <div className="home">
 				<Tables/>
 				<Statistics/>
@@ -221,23 +224,42 @@ const Home = () => {
 	);
 }
 
-const Body = () => {
-	
-	const [activeComponent, setActiveComponent] = useState(1);
 
-	const handleButtonClick = (componentNumber: number) => {
-	  setActiveComponent(componentNumber);
-	};
+
+const Body = () => {
+
+	const [showPopup, setShowPopup] = useState(true);
+
+	
+	useEffect(() => {
+		const handleResize = () => {
+		  if (window.innerWidth <= 768)
+			setShowPopup(false);
+		   else 
+			setShowPopup(true);
+		};
+	  
+		handleResize();
+	  
+		window.addEventListener('resize', handleResize);
+	  
+		return () => window.removeEventListener('resize', handleResize);
+		
+	  }, []);
+	
 
 	return (
 		<div className="body">
-			<Sidebar />
-			<Home />
+			<Sidebar showPopup={showPopup}/>
+			<div className="absolute cursor-pointer w-[80px] h-[50px] text-white mt-[60px] flex items-center justify-center z-20 hidden PopupBtn" onClick={ () => {setShowPopup(!showPopup)}}>
+				<FiChevronsRight className="w-[30px] h-[30px]"/>
+			</div>
+			<Home showPopup={showPopup}/>
 			<div className="chatdiv hidden xl:block">
 				<Chat/>
 			</div>
 		</div>
-	);
+  	);
 }
 
 export default function App() {

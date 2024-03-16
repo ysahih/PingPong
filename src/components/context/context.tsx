@@ -11,7 +11,7 @@ export type UserData = {
     lastName : string,
     online   : Boolean,
     twoFa    : Boolean,
-    twofaCheck: Boolean,
+    twoFaCheck: Boolean,
 }
 
 const UserDataContext = React.createContext<UserData | null>(null);
