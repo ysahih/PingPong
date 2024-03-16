@@ -273,6 +273,23 @@ export class FriendsService {
     }
   }
 
+  async Online(id: number, status: boolean) {
+    try{
+      const user = await this.prisma.user.update({
+        where: {
+          id,
+        },
+        data: {
+          online: status,
+        },
+      });
+      return user;
+    }
+    catch(e){
+      return null;
+    }
+  }
+  
   async blockFriendRequest(UserId: number, TargetId: number) {
     try {
       // check if the user is already blocked
