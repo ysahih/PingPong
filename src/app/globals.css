@@ -598,25 +598,29 @@
 
     opacity: 0;
     transform: translateX(-100%);
-    animation: slideInFromTop 2s forwards;
-    }
+   
+}
 
-    @keyframes slideInFromTop {
-      0% {
-        opacity: 0;
-        transform: translateX(-100%);
-        /* z-index: -3; */
-    }
-    50% {
-           /* z-index: -3; */
-          opacity: 0;
-          transform: translateX(-50%);
-      }
+.drift-animation{
+    animation: slideInFromTop .5s forwards;
+}
 
-      100% {
-        opacity: 1;
-        transform: translateX(0);
-      }
+@keyframes slideInFromTop {
+  0% {
+    opacity: 0;
+    transform: translateX(-100%);
+    /* z-index: -3; */
+}
+50% {
+       /* z-index: -3; */
+      opacity: 0;
+      transform: translateX(-50%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .userprofile{
@@ -1138,10 +1142,21 @@
 
 @media (min-height:559px) and (min-width: 1800px){
     .homepage{
-
         margin-left: 300px;
     }
 }
+
+
+.retation180{
+    transition: transform 1s ease;
+    transform: rotate(180deg);
+}
+
+.retation0{
+    transition: transform 1s ease;
+    transform: rotate(0deg);
+}
+
 
 @media(max-width:769px){
     .PopupBtn{
@@ -1214,10 +1229,8 @@
 
 @media (max-width: 1800px){
     .sideButton{
-
         width: 140px;
     }
-
 }
 
 

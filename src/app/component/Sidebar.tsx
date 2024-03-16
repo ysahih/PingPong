@@ -200,7 +200,7 @@ const Sidebar = (props: { showPopup: boolean}) => {
 
   return (
     <>
-      <div className="Sidebar">
+      <div className="Sidebar drift-animation">
         <Buttons />
         <div className="logout">
           <Profile src={data?.image} />
@@ -215,7 +215,7 @@ const Sidebar = (props: { showPopup: boolean}) => {
         </div>
       </div>
 
-     {props.showPopup && <div className="PhoneSidebar" >
+     {props.showPopup && <div className="PhoneSidebar drift-animation" >
         <PhoneButtons />
         <div className="logoutIcon" onClick={Logout}>
           <Image
