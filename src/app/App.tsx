@@ -251,9 +251,9 @@ const Body = () => {
 	return (
 		<div className="body">
 			<Sidebar showPopup={showPopup}  />
-			{/* <div className= "absolute cursor-pointer w-[80px] h-[50px] ml-[20px] text-white mt-[60px] flex items-center justify-center z-20 hidden PopupBtn" onClick={ () => {setShowPopup(!showPopup)}}>
+			<div className= "absolute cursor-pointer w-[80px] h-[50px] ml-[20px] text-white mt-[60px] flex items-center justify-center z-20 hidden PopupBtn" onClick={ () => {setShowPopup(!showPopup)}}>
 				<FiChevronsRight className= {` w-[30px] h-[30px] ${showPopup? 'retation180' : 'retation0'}`}/>
-			</div> */}
+			</div>
 			<Home showPopup={showPopup}/>
 			<div className="chatdiv hidden xl:block">
 				<Chat/>
