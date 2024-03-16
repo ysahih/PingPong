@@ -379,7 +379,7 @@ const Chat = () => {
                  ))}
                  </div>
             </div>}
-            {ShowConvo !== 0 && <Conversation handleMsgClick={handleMsgClick} user={chatdata?.find(user => user.id === ShowConvo)} />}
+            {ShowConvo !== 0 && <Conversation handleMsgClick={handleMsgClick} user={chatdata?.find(user => user?.id === ShowConvo)!} />}
             
         </div>
     );

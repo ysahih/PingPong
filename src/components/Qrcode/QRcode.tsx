@@ -36,7 +36,7 @@ const VerifyTwoFa = (props: VerifyTwoFaProps) => {
       (btnValue.current as HTMLButtonElement).textContent = "Verify...";
     }
     const res = await axios.post(
-      "http://localhost:3000/verify-2fa",
+      process.env.NEST_API +"/verify-2fa",
       { token: input },
       {
         headers: {

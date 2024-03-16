@@ -13,28 +13,12 @@ type UserProps = {
   userName: string;
 };
 
-// const sendUInvitation = async (id: number) => {
-//   try {
-//     // socket?.emit("NewInvit", "sdgjshhdjlgsdkdlgls");
-//     const dataInvitation = await axios.post(
-//       "http://localhost:3000/user/sendinvit?id=" + id,
-//       {},
-//       {
-//         withCredentials: true,
-//       }
-//     );
-//     console.log(dataInvitation);
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
-
 const User = (props: UserProps) => {
   const socket = useContext(SocketContext);
   const user = useContext(UserDataContext);
   
   return (
-    <div className="m-4 bg-[#8A99E9] text-white gap-4  min-w-[200px] bg-[#00000] min-h-[200px] m-[20px] flex flex-col items-center p-[10px]">
+    <div className="m-4 bg-[#8A99E9] text-white gap-4  min-w-[200px] bg-[#00000] h-[200px] m-[20px] flex flex-col items-center p-[10px]">
       <Image src={props.image || "./re"} alt="profile" width={46} height={46} />
       <h3>{props.userName}</h3>
       <IoMdPersonAdd
@@ -53,7 +37,7 @@ const Search = () => {
     const search = async () => {
       try {
         const dataSearch = await axios.get(
-          "http://localhost:3000/user/search?userName=" + userName,
+          process.env.NEST_API + "/user/search?userName=" + userName,
           {
             withCredentials: true,
           }
@@ -68,23 +52,25 @@ const Search = () => {
   }, []);
 
   return (
-    <div className="search">
-      <div className="input flex items-center gap-1">
+    <div className="search flex flex-col items-center w-full p-8">
+      <div className="input flex  items-center gap-2">
         <CiSearch className="w-[30px] h-[30px]" />
         <input
-          type="text"
+          type="search"
           placeholder="Search"
-          className="bg-transparent border-none"
+          className="bg-transparent border-none focus:border-none focus:outline-none w-[224px] h-[40px] text-white text-[16px]"
+          onChange={(e) => setUserName(e.target.value)}
         />
       </div>
-      <div className=" w-[100%] h-[240px] justify-evenly grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 2xl:grid-cols-3 gap-8 overflow-y-scroll overflow-x-hidden">
+      <div className="w-full max-w-3xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3  gap-4 overflow-scroll">
         {users.map((user) => (
+          user.userName.startsWith(userName) && (
           <User
             key={user.id}
             id={user.id}
             image={user.image}
             userName={user.userName}
-          />
+          />)
         ))}
       </div>
     </div>

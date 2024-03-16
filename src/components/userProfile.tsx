@@ -27,7 +27,7 @@ const QrCode = (props: QrCodeProps) => {
       (btnValue.current as HTMLButtonElement).textContent = "Verifying...";
     }
     const res = await axios.post(
-      "http://localhost:3000/enable-2fa",
+      process.env.NEST_API + "/enable-2fa",
       { token: input },
       {
         headers: {
@@ -52,7 +52,7 @@ const QrCode = (props: QrCodeProps) => {
   useEffect(() => {
     if (!QRsrc) {
       const generate2Fa = async () => {
-        const res = await axios.get("http://localhost:3000/generate-2fa", {
+        const res = await axios.get(process.env.NEST_API + "/generate-2fa", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -154,7 +154,7 @@ const Disable2Fa = (props: Disable2FaProps) => {
       (btnValue.current as HTMLButtonElement).textContent = "Disabling...";
     }
     const res = await axios.post(
-      "http://localhost:3000/disable-2fa",
+      process.env.NEST_API + "/disable-2fa",
       { token: input },
       {
         headers: {
