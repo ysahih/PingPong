@@ -112,6 +112,17 @@ export default function landingPage() {
         // autoConnect: true by default, so no need to explicitly call connect()
     });
   
+    socket.on("online", (data: {id: number}) => {
+      console.log("online", data);
+      if(data)
+        setFriendsData((currentFriends) => currentFriends ? currentFriends.map((friend: FriendsType) => friend.id === data.id ? {...friend, online: true} : friend) : null);
+    });
+
+    socket.on("offline", (data: {id: number}) => { 
+      console.log("offline", data);
+      if(data)
+        setFriendsData((currentFriends) => currentFriends ? currentFriends.map((friend: FriendsType) => friend.id === data.id ? {...friend, online: false} : friend) : null);
+    });
     // Setup event listeners only once
     socket.on("connect", () => {
         console.log("socket connected::::::::::::::::::::::");
