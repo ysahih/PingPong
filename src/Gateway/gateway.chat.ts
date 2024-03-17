@@ -89,16 +89,17 @@ export class serverGateway
 	}
 	}
 
+	// you need to handle the disconnect event, remove the user and set it offline just whenn the user is disconnected of all sockets
   async handleDisconnect(@ConnectedSocket() client: Socket): Promise<void> {
 	// Get the user out of the rooms and out of the users Map
 
 	const id = await this._users.deleteUser(client, this._rooms.disconnectToRooms);
-
+	if (id < 0) return;
 	const allSockets = this._users.getAllSocketsIds();
 
 	allSockets.forEach((sokcetId :string) => this._server.to(sokcetId).emit('offline', {id: id}));
 
-	this.FriendsService.Online(id, false);
+	await this.FriendsService.Online(id, false);
   }
 
   @UseFilters(ExceptionHandler)
