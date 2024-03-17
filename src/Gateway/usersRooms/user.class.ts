@@ -55,7 +55,7 @@ export class UsersServices {
 	}
 
 	// Delete A Connected user
-	async deleteUser(socket: Socket, cb: (socket: Socket, rooms: Room[]) => void): Promise<void> {
+	async deleteUser(socket: Socket, cb: (socket: Socket, rooms: Room[]) => void): Promise<number> {
 
 		const data :{id: number, index: number} = await this.findUserSocket(socket.id);
 
@@ -78,6 +78,8 @@ export class UsersServices {
 			}
 			// TODO: Made status as OFFLINE
 		}
+
+		return (data.id);
 	}
 
 	// Orginize Founded User from the DB Into The User Interface Shape
@@ -137,5 +139,18 @@ export class UsersServices {
 
 		console.log('Room Updates:');
 		console.log(this._users.get(userId));
+	}
+
+	getAllSocketsIds() :string[] {
+
+		let arr :string[] = [];
+
+		for (const user of this._users.values())
+		{
+			arr = arr.concat(user.socketId);
+			console.log(arr);
+		}
+
+		return (arr);
 	}
 }

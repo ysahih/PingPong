@@ -58,4 +58,10 @@ export class UserController {
     async searchUser(@Query() userName : string){
         return await this.FriendsService.searchUser(userName['userName'])
     }
+
+    // @Get('conversation')
+    // @UseGuards(JwtAuthGuard)
+    // async GetConversation(@Req() req : Request){
+    //     return await this.FriendsService.Getconversation(req.user['userId']);
+    // }
 }

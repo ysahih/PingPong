@@ -396,4 +396,26 @@ export class FriendsService {
       return null;
     }
   }
+
+  // async Getconversation(id :number){
+
+  //   try{
+  //       const coversation = await this.prisma.user.findUnique({
+  //         where: {
+  //           id: id,
+  //         },
+  //         include: {
+  //           conv: {
+
+  //           },
+  //           rooms: {
+  //           }
+  //         }
+  //       });
+  //   }
+  //   catch(err)
+  //     {
+  //       return null
+  //     }
+  // }
 }
