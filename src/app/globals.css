@@ -72,9 +72,8 @@
     border-bottom: 1px solid var(--item-border-color);
     box-shadow: 5px 4px 10px 0px #02041D;
     position: fixed;
-    z-index: 10;
+    z-index: 30;
 }
-
 
 
 .logo{
@@ -212,8 +211,9 @@
     justify-content: space-between;
     position: fixed;
     align-items: center;
-    width: 300px;
-    min-height: 600px;
+    min-width: 302px;
+    max-width : 302px;
+    width: 485px;
     z-index: 3;
     height: calc(100%);
     background: var(--bg-color);
@@ -1109,12 +1109,21 @@
 }
 /* media// */
 
-
+@media (max-height:559px) {
+    
+}
 @media (max-height: 559px) {
     .PhoneSidebar{
         position: static;
-        height: calc(100vh + 60px);
+        height: 200%;
+        min-height: 600px;
+        margin-top: 10px;
         gap: 50px;
+    }
+    .Sidebar {
+        height: calc(100vh + 94px);
+        min-height: 700px;
+        position: static;
     }
     .phonebuttons{
         margin-top: 70px;
@@ -1181,15 +1190,19 @@
 
 @media (max-width: 1800px){
     .logo{
-
         max-width: 200px;
         min-width: 200px;
+    }
+    .Sidebar{
+        max-width: 200px;
+        min-width: 200px;
+
     }
 
 }
 @media (max-width: 1000px){
+    
     .logo{
-
         max-width: 70px;
         min-width: 70px;
     }
@@ -1221,11 +1234,7 @@
 }
 
 
-@media (max-height:559px) {
-    .Sidebar {
-        position: static;
-    }
-}
+
 
 @media (max-width: 1800px){
     .sideButton{

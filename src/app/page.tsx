@@ -240,7 +240,9 @@ export default function landingPage() {
         </SocketContext.Provider>
         </ProfileDataContext.Provider>
       </UserDataContext.Provider> */}
-      <App />
+      <SocketContext.Provider value={Socket}>
+        <App /> 
+      </SocketContext.Provider>
     </>
   );
 }

@@ -2,11 +2,12 @@
 import { RiSendPlaneFill } from "react-icons/ri";
 import { use, useEffect, useState } from "react";
 import Image from "next/image";
+import { useContext } from "react";
 import { chatData } from "./Dto/Dto";
 import { Input } from "postcss";
 import { number } from "yup";
 import axios from "axios";
-
+import SocketContext from "@/components/context/socket";
 
 
 const Header = () =>{
@@ -122,7 +123,12 @@ const Conversation = ({handleMsgClick, user}: Props) =>{
     const handleClick = ()=>{
         handleMsgClick(0);
     }
-    
+    //TODO: fetch all messages (user to user).
+    // useEffect(()=>{
+
+    //     const respose = await axios.get("https://localhost");
+        
+    // }, [])
     return (
         <div className="conversation">
             <div className="convo">
@@ -339,14 +345,18 @@ const Conversation = ({handleMsgClick, user}: Props) =>{
 
 const Chat = () => {
     
-    //TODO: fetch HTTP chat data;
-    //(after getting the data, it should be mapped in as messages)//
-    //(then we should listen for 2 events: *online and *newMessage) //
+    //TODO: fetch HTTP chat data;: done
+    //(after getting the data, it should be mapped in as messages)// Done;
+
+    //(then we should listen for 2 events: *online and *newMessage) // before and after entering the conversation 
+    
     //firts we add new messages recieved on the socket to the Message map//
 
     const [chatdata, setChatdata] = useState<chatData[] | null >(null);
-
+    const socket = useContext(SocketContext);
+    //
     useEffect(() => {
+
         const fetchData = async () => {
           try {
             const response = await axios.get('http://127.0.0.1:5501/json.json');
@@ -355,9 +365,12 @@ const Chat = () => {
             console.error('Error fetching data:', error);
           }
         };
-
         fetchData();
-        
+
+        socket?.on("newMessage", (data)=>{
+            setChatdata((chatdata) => chatdata ? [...chatdata, data] : [data])
+        });//
+
     }, []);
     const [ShowConvo, setShowConvo]  = useState(0);
     const handleMsgClick = (value:number)=>{
