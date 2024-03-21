@@ -24,19 +24,21 @@ import { GatewayService } from "./geteway.service";
 import * as jwt from "jsonwebtoken";
 import { FriendsService } from "src/user/user.service";
 
+import { Message } from "@prisma/client";
+
 type Invitation = {
   id: number;
   sender: {
-	id: number;
-	userName: string;
-	image: string;
+    id: number;
+    userName: string;
+    image: string;
   };
 };
 
 @WebSocketGateway({
   cors: {
-	origin: [process.env.FRONTEND_URL],
-	credentials: true,
+    origin: [process.env.FRONTEND_URL],
+    credentials: true,
   },
 })
 export class serverGateway
@@ -48,127 +50,141 @@ export class serverGateway
   logger: Logger = new Logger(serverGateway.name);
 
   constructor(
-	private _users: UsersServices,
-	private _rooms: RoomsServices,
-	private _prisma: GatewayService,
-	private FriendsService: FriendsService
+    private _users: UsersServices,
+    private _rooms: RoomsServices,
+    private _prisma: GatewayService,
+    private FriendsService: FriendsService
   ) {}
 
   async afterInit() {
-	this.logger.log("The Default gateway succefully started.");
+    this.logger.log("The Default gateway succefully started.");
   }
 
   // Authorization Part
-	async handleConnection(client: Socket): Promise<void> {
-	try {
-		const allToken = client.handshake.headers.cookie;
+  async handleConnection(client: Socket): Promise<void> {
+    // const message = await this._prisma.findMessage(1);
+    const chat = await this._prisma.allConversations(1);
+    // console.dir(JSON.stringify(chat, null, 4));
 
-		if (!allToken) throw new Error();
+    // try {
+    //   const allToken = client.handshake.headers.cookie;
 
-		const accessToken = allToken
-		.split("; ")
-		.find((element) => element.startsWith("jwt="));
+    //   if (!allToken) throw new Error();
 
-		const payload = jwt.verify(accessToken.split("=")[1], "essadike");
+    //   const accessToken = allToken
+    //     .split("; ")
+    //     .find((element) => element.startsWith("jwt="));
 
-		const user = await this._prisma.findUser(payload["id"]);
+    //   const payload = jwt.verify(accessToken.split("=")[1], "essadike");
 
-		const allSockets = this._users.getAllSocketsIds();
+      const user = await this._prisma.findUser(1);
+      // const user = await this._prisma.findUser(payload["id"]);
 
-		this._users.addUser(
-			client,
-			this._users.organizeUserData(client.id, user),
-			this._rooms.connectToRooms
-			);
+      // const allSockets = this._users.getAllSocketsIds();
 
-		allSockets.forEach((sokcetId :string) => this._server.to(sokcetId).emit('online', {id: user.id}));
-		this.FriendsService.Online(user.id, true);
-	} catch (err) {
-		this._server.to(client.id).emit("error", "Unauthorized !");
-		client.disconnect();
-	}
-	}
+      this._users.addUser(
+        client,
+        this._users.organizeUserData(client.id, user),
+        this._rooms.connectToRooms
+      );
+
+    //   allSockets.forEach((sokcetId: string) =>
+    //     this._server.to(sokcetId).emit("online", { id: user.id })
+    //   );
+    //   this.FriendsService.Online(user.id, true);
+    // } catch (err) {
+    //   this._server.to(client.id).emit("error", "Unauthorized !");
+    //   client.disconnect();
+    // }
+  }
 
   async handleDisconnect(@ConnectedSocket() client: Socket): Promise<void> {
-	// Get the user out of the rooms and out of the users Map
+    // Get the user out of the rooms and out of the users Map
 
-	const id = await this._users.deleteUser(client, this._rooms.disconnectToRooms);
+    const id = await this._users.deleteUser(
+      client,
+      this._rooms.disconnectToRooms
+    );
 
-	const allSockets = this._users.getAllSocketsIds();
+    const allSockets = this._users.getAllSocketsIds();
 
-	allSockets.forEach((sokcetId :string) => this._server.to(sokcetId).emit('offline', {id: id}));
+    allSockets.forEach((sokcetId: string) =>
+      this._server.to(sokcetId).emit("offline", { id: id })
+    );
 
-	this.FriendsService.Online(id, false);
+    this.FriendsService.Online(id, false);
   }
 
   @UseFilters(ExceptionHandler)
   @UsePipes(ValidationPipe)
   @SubscribeMessage("directMessage")
   async handleDirectMessage(
-	@ConnectedSocket() client: Socket,
-	@Body() payload: MessageDTO
+    @ConnectedSocket() client: Socket,
+    @Body() payload: MessageDTO
   ): Promise<void> {
-	// TODO: Check Blocked At Users and rooms, Also Muted
+    
 
-	// Get sender User Infos
-	const fromUser = this._users.getUserById(payload.from);
-	// Check if already there's that conversation
-	const isExist = fromUser.DirectChat.find(
-	  (conv) => conv.toUserId === payload.to
-	);
+    // TODO: When A user send a message at that sended user to read status
 
-	if (!isExist) {
-	  console.log("Conversation does not Exist !");
-	  // If dosn't exist create new record
-	  const newConv = await this._prisma.createConversation(payload);
-	  // ADD conversation ID for USER1 and USER2
-	  this._users.addNewConversation(payload, newConv.id);
-	} else {
-	  console.log("Conversation Exists !");
-	  // If Exist Just add the message at the conversation ID
-	  await this._prisma.updateConversation(isExist.id, payload);
-	}
-	// Check if the receiver user is online between the _users
-	const toUser = this._users.getUserById(payload.to);
-	// if is Online, send him a message to the 'chat' event
-	if (toUser)
-	  toUser.socketId.forEach((socktId: string) =>
-		this._server.to(socktId).emit("chat", payload.message)
-	  );
+    // Get sender User Infos
+    const fromUser = this._users.getUserById(payload.from);
+    // Check if already there's that conversation
+    const isExist = fromUser.DirectChat.find(
+      (conv) => conv.toUserId === payload.to
+    );
+
+    if (!isExist) {
+      console.log("Conversation does not Exist !");
+      // If dosn't exist create new record
+      const newConv = await this._prisma.createConversation(payload);
+      // ADD conversation ID for USER1 and USER2
+      this._users.addNewConversation(payload, newConv.id);
+    } else {
+      console.log("Conversation Exists !");
+      // If Exist Just add the message at the conversation ID
+      await this._prisma.updateConversation(isExist.id, payload);
+    }
+    // Check if the receiver user is online between the _users
+    const toUser = this._users.getUserById(payload.to);
+    // if is Online, send him a message to the 'chat' event
+    if (toUser)
+      toUser.socketId.forEach((socktId: string) =>
+        this._server.to(socktId).emit("chat", payload.message)
+      );
   }
 
   @UseFilters(ExceptionHandler)
   @UsePipes(ValidationPipe)
   @SubscribeMessage("createRoom")
   async handleCreateRoom(
-	@ConnectedSocket() client: Socket,
-	@Body() payload: CreateRoom
+    @ConnectedSocket() client: Socket,
+    @Body() payload: CreateRoom
   ): Promise<void> {
-	try {
-	  // TODO: Handle if it is protected it should contain a password
-	  // Create a room record
-	  const newRoom = await this._prisma.createRoom(payload, payload.type);
-	  // Add the room to the user's room array of Objects
-	  this._users.addNewRoom(payload.ownerId, newRoom, "OWNER");
-	  console.log(this._users.getUserById(payload.ownerId));
+    try {
+      // TODO: Handle if it is protected it should contain a password
+      // Create a room record
+      const newRoom = await this._prisma.createRoom(payload, payload.type);
+      // Add the room to the user's room array of Objects
+      this._users.addNewRoom(payload.ownerId, newRoom, "OWNER");
+      console.log(this._users.getUserById(payload.ownerId));
 
-	  // Check Execption
-	} catch (e) {
-	  // If it's From prisma
-	  // FIXME: I don't have to send errors to all client
-	  if (e instanceof Prisma.PrismaClientKnownRequestError) {
-		// Means that the room already exist with that name
-		if (e.code === "P2002")
-		  this._server
-			.to(client.id)
-			.emit("error", `${payload.name} already exists !`);
-	  }
-	  // Something else happened
-	  else
-		this._server
-		  .to(client.id)
-		  .emit("error", `${payload.name} Room creation failed !`);
-	}
+      // Check Execption
+    } catch (e) {
+      // If it's From prisma
+      // FIXME: I don't have to send errors to all client
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        // Means that the room already exist with that name
+        if (e.code === "P2002")
+          this._server
+            .to(client.id)
+            .emit("error", `${payload.name} already exists !`);
+      }
+      // Something else happened
+      else
+        this._server
+          .to(client.id)
+          .emit("error", `${payload.name} Room creation failed !`);
+    }
   }
 
   // TODO: Check Banned
@@ -176,42 +192,42 @@ export class serverGateway
   @UsePipes(ValidationPipe)
   @SubscribeMessage("joinRoom")
   async handleJoinRoom(
-	@ConnectedSocket() client: Socket,
-	@Body() payload: JoinRoomDTO
+    @ConnectedSocket() client: Socket,
+    @Body() payload: JoinRoomDTO
   ): Promise<void> {
-	// Check if the room Exists
-	const foundedRoom = await this._prisma.findRoom(payload.roomId);
+    // Check if the room Exists
+    const foundedRoom = await this._prisma.findRoom(payload.roomId);
 
-	try {
-	  // If exists just Join it
-	  if (foundedRoom) {
-		await this._prisma.joinRoom(foundedRoom.id, payload);
-		// Add that room to the user's room array of Objects
-		this._users.addNewRoom(payload.userId, foundedRoom);
-		// Join the virtual room at the server
-		client.join(foundedRoom.name);
-		console.log(this._users.getUserById(payload.userId));
-	  } else {
-		// If doesn't exist just inform the user
-		this._server
-		  .to(client.id)
-		  .emit("error", `Room with ${payload.roomId}:ID not found !`);
-	  }
-	} catch (e) {
-	  // This exeception throws when the user is already there
-	  if (e.code === "P2002")
-		this._server
-		  .to(client.id)
-		  .emit("error", `User with ${payload.userId}:ID already exists !`);
-	  // Something else happened
-	  else
-		this._server
-		  .to(client.id)
-		  .emit(
-			"error",
-			`User with ${payload.userId}:ID can't join the room !`
-		  );
-	}
+    try {
+      // If exists just Join it
+      if (foundedRoom) {
+        await this._prisma.joinRoom(foundedRoom.id, payload);
+        // Add that room to the user's room array of Objects
+        this._users.addNewRoom(payload.userId, foundedRoom);
+        // Join the virtual room at the server
+        client.join(foundedRoom.name);
+        console.log(this._users.getUserById(payload.userId));
+      } else {
+        // If doesn't exist just inform the user
+        this._server
+          .to(client.id)
+          .emit("error", `Room with ${payload.roomId}:ID not found !`);
+      }
+    } catch (e) {
+      // This exeception throws when the user is already there
+      if (e.code === "P2002")
+        this._server
+          .to(client.id)
+          .emit("error", `User with ${payload.userId}:ID already exists !`);
+      // Something else happened
+      else
+        this._server
+          .to(client.id)
+          .emit(
+            "error",
+            `User with ${payload.userId}:ID can't join the room !`
+          );
+    }
   }
   /**
    * handle friends request : by essadike
@@ -219,101 +235,101 @@ export class serverGateway
 
   @SubscribeMessage("NewInvit")
   async handleNewFriend(
-	@ConnectedSocket() client: Socket,
-	@Body() Payload: { id: number; userId: number }
+    @ConnectedSocket() client: Socket,
+    @Body() Payload: { id: number; userId: number }
   ) {
-	const targetFriend = await this.FriendsService.sendFriendRequest(
-	  Payload.userId,
-	  Payload.id
-	);
+    const targetFriend = await this.FriendsService.sendFriendRequest(
+      Payload.userId,
+      Payload.id
+    );
 
-	if (targetFriend) {
-	  const newInvit: Invitation = {
-		id: targetFriend.id,
-		sender: {
-		  id: targetFriend.sender.id,
-		  userName: targetFriend.sender.userName,
-		  image: targetFriend.sender.image,
-		},
-	  };
-	  const Sockets = this._users.getUserById(Payload.id);
-	  if (Sockets) {
-		Sockets.socketId.forEach((socktId: string) => {
-		  this._server.to(socktId).emit("NewInvit", newInvit);
-		});
-		console.log(" newInvet from :", targetFriend.sender);
-	  }
-	}
+    if (targetFriend) {
+      const newInvit: Invitation = {
+        id: targetFriend.id,
+        sender: {
+          id: targetFriend.sender.id,
+          userName: targetFriend.sender.userName,
+          image: targetFriend.sender.image,
+        },
+      };
+      const Sockets = this._users.getUserById(Payload.id);
+      if (Sockets) {
+        Sockets.socketId.forEach((socktId: string) => {
+          this._server.to(socktId).emit("NewInvit", newInvit);
+        });
+        console.log(" newInvet from :", targetFriend.sender);
+      }
+    }
   }
 
   @SubscribeMessage("NewFriend")
   async handleAcceptFriend(@Body() Payload: { id: number; userId: number }) {
-	const targetFriend = await this.FriendsService.acceptFriendRequest(
-	  Payload.userId,
-	  Payload.id
-	);
-	if (targetFriend !== null) {
-	  const SocketsTarget = this._users.getUserById(Payload.id);
-	  if (SocketsTarget) {
-		SocketsTarget.socketId.forEach((socktId: string) => {
-		  this._server.to(socktId).emit("NewFriend", targetFriend.sender);
-		});
-	  }
-	  const client = this._users.getUserById(Payload.userId);
-	  if (client) {
-		client.socketId.forEach((socktId: string) => {
-		  this._server.to(socktId).emit("NewFriend", targetFriend.reciever);
-		});
-	  }
-	}
+    const targetFriend = await this.FriendsService.acceptFriendRequest(
+      Payload.userId,
+      Payload.id
+    );
+    if (targetFriend !== null) {
+      const SocketsTarget = this._users.getUserById(Payload.id);
+      if (SocketsTarget) {
+        SocketsTarget.socketId.forEach((socktId: string) => {
+          this._server.to(socktId).emit("NewFriend", targetFriend.sender);
+        });
+      }
+      const client = this._users.getUserById(Payload.userId);
+      if (client) {
+        client.socketId.forEach((socktId: string) => {
+          this._server.to(socktId).emit("NewFriend", targetFriend.reciever);
+        });
+      }
+    }
   }
 
   // @SubscribeMessage("RejectFriend")
 
   @SubscribeMessage("NewBlocked")
   async handleNewBlocked(@Body() Payload: { id: number; userId: number }) {
-	const targetFriend = await this.FriendsService.blockFriendRequest(
-	  Payload.userId,
-	  Payload.id
-	);
-	if (targetFriend !== null) {
-	  const SocketsTarget = this._users.getUserById(Payload.id);
-	  if (SocketsTarget) {
-		SocketsTarget.socketId.forEach((socktId: string) => {
-		  this._server.to(socktId).emit("DeleteFriend", Payload.userId);
-		});
-	  }
-	  const client = this._users.getUserById(Payload.userId);
-	  if (client) {
-		client.socketId.forEach((socktId: string) => {
-		  this._server.to(socktId).emit("NewBlocked", targetFriend);
-		});
-	  }
-	}
+    const targetFriend = await this.FriendsService.blockFriendRequest(
+      Payload.userId,
+      Payload.id
+    );
+    if (targetFriend !== null) {
+      const SocketsTarget = this._users.getUserById(Payload.id);
+      if (SocketsTarget) {
+        SocketsTarget.socketId.forEach((socktId: string) => {
+          this._server.to(socktId).emit("DeleteFriend", Payload.userId);
+        });
+      }
+      const client = this._users.getUserById(Payload.userId);
+      if (client) {
+        client.socketId.forEach((socktId: string) => {
+          this._server.to(socktId).emit("NewBlocked", targetFriend);
+        });
+      }
+    }
   }
 
   @SubscribeMessage("UnBlocked")
   async handleUnBlocked(@Body() Payload: { id: number; userId: number }) {
-	const targetFriend = await this.FriendsService.unblockFriendRequest(
-	  Payload.userId,
-	  Payload.id
-	);
-	if (targetFriend !== null) {
-	  // const SocketsTarget = this._users.getUserById(Payload.id);
-	  // if (SocketsTarget) {
-	  //   SocketsTarget.socketId.forEach((socktId: string) => {
-	  //     this._server.to(socktId).emit("UnBlocked", Payload.userId);
-	  //   });
-	  // }
-	  console.log("unblocked", targetFriend);
-	  
-	  const client = this._users.getUserById(Payload.userId);
-	  if (client) {
-		client.socketId.forEach((socktId: string) => {
-		  this._server.to(socktId).emit("UnBlocked", Payload.id);
-		});
-	  }
-	}
+    const targetFriend = await this.FriendsService.unblockFriendRequest(
+      Payload.userId,
+      Payload.id
+    );
+    if (targetFriend !== null) {
+      // const SocketsTarget = this._users.getUserById(Payload.id);
+      // if (SocketsTarget) {
+      //   SocketsTarget.socketId.forEach((socktId: string) => {
+      //     this._server.to(socktId).emit("UnBlocked", Payload.userId);
+      //   });
+      // }
+      console.log("unblocked", targetFriend);
+
+      const client = this._users.getUserById(Payload.userId);
+      if (client) {
+        client.socketId.forEach((socktId: string) => {
+          this._server.to(socktId).emit("UnBlocked", Payload.id);
+        });
+      }
+    }
   }
   /**
    * end of functions :by essadike

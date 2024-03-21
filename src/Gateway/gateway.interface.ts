@@ -43,3 +43,15 @@ export class CreateRoom {
 	@IsString()
 	password	?:string
 }
+
+
+export class ChatData {
+	id: number
+	username: string
+	image: string
+	lastMessaeg: string
+	createdAt: Date
+	isOnline: boolean
+	isRead: boolean
+	isRoom: boolean
+}

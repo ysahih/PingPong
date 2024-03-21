@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { ChatData } from "src/Gateway/gateway.interface";
 import { prismaService } from "src/prisma/prisma.service";
 
 @Injectable()
@@ -397,25 +398,89 @@ export class FriendsService {
     }
   }
 
-  // async Getconversation(id :number){
+  async Getconversation(id :number){
 
-  //   try{
-  //       const coversation = await this.prisma.user.findUnique({
-  //         where: {
-  //           id: id,
-  //         },
-  //         include: {
-  //           conv: {
+    try{
+      const lastMessajes = await this.prisma.user.findUnique({
+        where: {
+          id: id,
+        },
+        select: {
+          conv: {
+            orderBy: {
+              messages: {
+                _count: "asc",
+              },
+            },
+            include: {
+              users: {
+                where: {
+                  id: {
+                    not: id,
+                  },
+                },
+                select: {
+                  id: true,
+                  userName: true,
+                  image: true,
+                },
+              },
+              messages: {
+                orderBy: {
+                  createdAt: "desc",
+                },
+                take: 1,
+                select: {
+                  content: true,
+                  createdAt: true,
+                  userId: true,
+                  readBy: {
+                    select: {
+                      users: {
+                        select: {
+                          id: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+  
+      let sortedData = new Array<ChatData>();
+  
+      if (lastMessajes?.conv) {
+        lastMessajes.conv.forEach((conv) => {
+          let orgConv = new ChatData();
+  
+          if (conv?.users[0]) {
+            orgConv.id = conv.users[0].id;
+            orgConv.username = conv.users[0].userName;
+            orgConv.image = conv.users[0].image;
+          }
+          if (conv?.messages) {
+            orgConv.lastMessaeg = conv.messages[0].content;
+            orgConv.createdAt = conv.messages[0].createdAt;
+            if (conv?.messages[0].readBy) orgConv.isRead = true;
+            else orgConv.isRead = false;
+            orgConv.isRoom = false;
+            // FIXME: This is should be handled
+            orgConv.isOnline = orgConv.isRead;
+          }
+          if (orgConv) sortedData.push(orgConv);
+        });
+      }
+  
+      // console.log(sortedData);
 
-  //           },
-  //           rooms: {
-  //           }
-  //         }
-  //       });
-  //   }
-  //   catch(err)
-  //     {
-  //       return null
-  //     }
-  // }
+      return sortedData;
+    }
+    catch(err)
+      {
+        return null
+      }
+  }
 }
