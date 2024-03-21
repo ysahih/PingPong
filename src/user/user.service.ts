@@ -146,6 +146,7 @@ export class FriendsService {
               userName: true,
               image: true,
               id: true,
+              online: true,
             },
           },
           receiver: {
@@ -153,6 +154,7 @@ export class FriendsService {
               userName: true,
               image: true,
               id: true,
+              online: true,
             },
           },
         },
@@ -168,6 +170,7 @@ export class FriendsService {
           id: friendData.id,
           userName: friendData.userName,
           image: friendData.image,
+          online: friendData.online,
         };
       });
       return Friends;
