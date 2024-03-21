@@ -2,7 +2,7 @@
 import { RiSendPlaneFill } from "react-icons/ri";
 import { use, useEffect, useState } from "react";
 import Image from "next/image";
-import { chatData } from "./Dto/Dto";
+import { ChatData } from "./Dto/Dto";
 import { Input } from "postcss";
 import { number } from "yup";
 import axios from "axios";
@@ -60,20 +60,20 @@ const UserOption = ( { className }: userOptionClass ) => {
 }
 type Props = {
     handleMsgClick: (value:number) => void;
-    user : chatData;
+    user : ChatData;
 };
 
-const More = ({user}: {user: chatData})=> {
+const More = ({user}: {user: ChatData})=> {
 
     const [showMsgOption, setShowMsgOption] = useState(false);
     
-    const chatDate = new Date(user.sentAt);
+    const chatDate = new Date(user.createdAt);
     const currentDate = new Date();
     let formattedDate;
     if (chatDate.toDateString() === currentDate.toDateString()) {
       const hours = chatDate.getHours();
       const minutes = chatDate.getMinutes();
-      formattedDate = `${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
+      formattedDate = `${hours< 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
     } else {
       formattedDate = chatDate.toLocaleDateString();
     }
@@ -344,27 +344,29 @@ const Chat = () => {
     //(then we should listen for 2 events: *online and *newMessage) //
     //firts we add new messages recieved on the socket to the Message map//
 
-    const [chatdata, setChatdata] = useState<chatData[] | null >(null);
+    const [chatdata, setChatdata] = useState<ChatData[] | null >(null);
 
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const response = await axios.get('http://127.0.0.1:5501/json.json');
+            const response = await axios.get('http://localhost:3000/user/conversation', {
+                withCredentials: true,
+            });
             setChatdata(response.data);
-          } catch (error) {
+        } catch (error) {
             console.error('Error fetching data:', error);
-          }
-        };
+        }
+    };
+    fetchData();
 
-        fetchData();
-        
-    }, []);
-    const [ShowConvo, setShowConvo]  = useState(0);
-    const handleMsgClick = (value:number)=>{
-        setShowConvo(value);
-    }
+    
+}, []);
+const [ShowConvo, setShowConvo]  = useState(0);
+const handleMsgClick = (value:number)=>{
+    setShowConvo(value);
+}
 
-   
+
     return (
         <div className="chat">
             {ShowConvo === 0 && <div className="">
@@ -374,7 +376,7 @@ const Chat = () => {
                 </div>
                
                 <div className="messagesHolder">
-                    {chatdata?.map((user: chatData) => (
+                    {chatdata?.map((user: ChatData) => (
                     <Message handleMsgClick={handleMsgClick} user={user} />
                  ))}
                  </div>
