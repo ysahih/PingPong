@@ -75,11 +75,12 @@ export class UsersServices {
 			{
 				console.log(`${this._users.get(data.id).username} will be deleted !`);
 				this._users.delete(data.id);
+				return (data.id);
 			}
 			// TODO: Made status as OFFLINE
 		}
 
-		return (data?.id);
+		return (-1);
 	}
 
 	// Orginize Founded User from the DB Into The User Interface Shape

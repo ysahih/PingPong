@@ -218,6 +218,8 @@ export class serverGateway
    * handle friends request : by essadike
    */
 
+
+  // need to add online status to here
   @SubscribeMessage("NewInvit")
   async handleNewFriend(
 	@ConnectedSocket() client: Socket,

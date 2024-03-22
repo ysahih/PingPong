@@ -200,6 +200,7 @@ export class FriendsService {
             userName: true,
             image: true,
             id: true,
+            online: true,
           },
         });
 
@@ -211,6 +212,7 @@ export class FriendsService {
             userName: true,
             image: true,
             id: true,
+            online: true,
           },
         });
         return { reciever: friend, sender: user };
