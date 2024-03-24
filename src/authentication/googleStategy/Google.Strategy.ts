@@ -19,7 +19,7 @@ export class GoogleStregy extends PassportStrategy(Strategy){
         // console.log(accessToken);
         // console.log(refreshToken);
         // console.log(profile.photos[0].value);
-        const user = await this.Auth.ValideteUser(profile.emails[0].value, profile.displayName, profile.photos[0].value);
+        const user = await this.Auth.ValideteUser(profile.emails[0].value, profile.displayName, profile.photos[0].value, profile.name.givenName, profile.name.familyName);
         console.log(user);
         // const payload = { email: user.email, sub: user.id };
         const jwt = generateJwtToken(user);

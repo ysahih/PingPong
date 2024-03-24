@@ -4,7 +4,7 @@ import { Strategy } from "passport-oauth2";
 import axios from "axios";
 import { authService } from "../auth.service";
 import { generateJwtToken } from "../jwtStrategy/jwtToken";
-
+import * as fs from "fs";
 @Injectable()
 export class IntraStrategy extends PassportStrategy(Strategy, "intra") {
   constructor(private AuthS: authService) {
@@ -29,10 +29,15 @@ export class IntraStrategy extends PassportStrategy(Strategy, "intra") {
         headers: { Authorization: `Bearer ${accessToken}`},
       });
       const profile2 = profileResponse.data;
+      
+      // fs.writeFileSync("profile.json", JSON.stringify(profile2, null, 2));
+      // console.log(profile2.email, profile2.login, profile2.image.link);
       const user = await this.AuthS.ValideteUser(
         profile2.email,
         profile2.login,
-        profile2.image.link
+        profile2.image.link,
+        profile2.first_name,
+        profile2.last_name,
       );
       const token: string = generateJwtToken(user);
       return done(null, token);

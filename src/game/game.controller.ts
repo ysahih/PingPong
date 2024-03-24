@@ -23,4 +23,4 @@ export class gameController{
         return await this.gameService.joinGame(id ,request.user['userId']);
     }
 
-}
+} 

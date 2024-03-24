@@ -280,7 +280,7 @@ export class authService {
     }
   }
 
-  async ValideteUser(email: string, userName: string, image: string) {
+  async ValideteUser(email: string, userName: string, image: string, first_name: string = 'null', last_name: string = 'null') {
     try {
       const user = await this.prism.user.findUnique({
         where: {
@@ -305,7 +305,8 @@ export class authService {
               email: email,
               hash: hash,
               userName: username,
-              firstName: "hhhhh",
+              firstName: first_name,
+              lastName: last_name,
               image: image,
               token: true,
               online: true,

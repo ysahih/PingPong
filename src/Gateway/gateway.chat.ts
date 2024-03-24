@@ -62,25 +62,21 @@ export class serverGateway
 
   // Authorization Part
   async handleConnection(client: Socket): Promise<void> {
-    // const message = await this._prisma.findMessage(1);
-    const chat = await this._prisma.allConversations(1);
-    // console.dir(JSON.stringify(chat, null, 4));
 
-    // try {
-    //   const allToken = client.handshake.headers.cookie;
+    try {
+      const allToken = client.handshake.headers.cookie;
 
-    //   if (!allToken) throw new Error();
+      if (!allToken) throw new Error();
 
-    //   const accessToken = allToken
-    //     .split("; ")
-    //     .find((element) => element.startsWith("jwt="));
+      const accessToken = allToken
+        .split("; ")
+        .find((element) => element.startsWith("jwt="));
 
-    //   const payload = jwt.verify(accessToken.split("=")[1], "essadike");
+      const payload = jwt.verify(accessToken.split("=")[1], "essadike");
 
-      const user = await this._prisma.findUser(1);
-      // const user = await this._prisma.findUser(payload["id"]);
+      const user = await this._prisma.findUser(payload["id"]);
 
-      // const allSockets = this._users.getAllSocketsIds();
+      const allSockets = this._users.getAllSocketsIds();
 
       this._users.addUser(
         client,
@@ -88,14 +84,14 @@ export class serverGateway
         this._rooms.connectToRooms
       );
 
-    //   allSockets.forEach((sokcetId: string) =>
-    //     this._server.to(sokcetId).emit("online", { id: user.id })
-    //   );
-    //   this.FriendsService.Online(user.id, true);
-    // } catch (err) {
-    //   this._server.to(client.id).emit("error", "Unauthorized !");
-    //   client.disconnect();
-    // }
+      allSockets.forEach((sokcetId: string) =>
+        this._server.to(sokcetId).emit("online", { id: user.id })
+      );
+      this.FriendsService.Online(user.id, true);
+    } catch (err) {
+      this._server.to(client.id).emit("error", "Unauthorized !");
+      client.disconnect();
+    }
   }
 
 	// you need to handle the disconnect event, remove the user and set it offline just whenn the user is disconnected of all sockets
@@ -106,7 +102,7 @@ export class serverGateway
       client,
       this._rooms.disconnectToRooms
     );
-
+	if (id < 0) return;
     const allSockets = this._users.getAllSocketsIds();
 
     allSockets.forEach((sokcetId: string) =>
@@ -230,7 +226,7 @@ export class serverGateway
           );
     }
   }
-  /**
+   /**
    * handle friends request : by essadike
    */
 
@@ -238,101 +234,101 @@ export class serverGateway
   // need to add online status to here
   @SubscribeMessage("NewInvit")
   async handleNewFriend(
-    @ConnectedSocket() client: Socket,
-    @Body() Payload: { id: number; userId: number }
+	@ConnectedSocket() client: Socket,
+	@Body() Payload: { id: number; userId: number }
   ) {
-    const targetFriend = await this.FriendsService.sendFriendRequest(
-      Payload.userId,
-      Payload.id
-    );
-
-    if (targetFriend) {
-      const newInvit: Invitation = {
-        id: targetFriend.id,
-        sender: {
-          id: targetFriend.sender.id,
-          userName: targetFriend.sender.userName,
-          image: targetFriend.sender.image,
-        },
-      };
-      const Sockets = this._users.getUserById(Payload.id);
-      if (Sockets) {
-        Sockets.socketId.forEach((socktId: string) => {
-          this._server.to(socktId).emit("NewInvit", newInvit);
-        });
-        console.log(" newInvet from :", targetFriend.sender);
-      }
-    }
+	const targetFriend = await this.FriendsService.sendFriendRequest(
+	  Payload.userId,
+	  Payload.id
+	);
+	
+	if (targetFriend) {
+	  const newInvit: Invitation = {
+		id: targetFriend.id,
+		sender: {
+		  id: targetFriend.sender.id,
+		  userName: targetFriend.sender.userName,
+		  image: targetFriend.sender.image,
+		},
+	  };
+	  const Sockets = this._users.getUserById(Payload.id);
+	  if (Sockets) {
+		Sockets.socketId.forEach((socktId: string) => {
+		  this._server.to(socktId).emit("NewInvit", newInvit);
+		});
+		console.log(" newInvet from :", targetFriend.sender);
+	  }
+	}
   }
 
   @SubscribeMessage("NewFriend")
   async handleAcceptFriend(@Body() Payload: { id: number; userId: number }) {
-    const targetFriend = await this.FriendsService.acceptFriendRequest(
-      Payload.userId,
-      Payload.id
-    );
-    if (targetFriend !== null) {
-      const SocketsTarget = this._users.getUserById(Payload.id);
-      if (SocketsTarget) {
-        SocketsTarget.socketId.forEach((socktId: string) => {
-          this._server.to(socktId).emit("NewFriend", targetFriend.sender);
-        });
-      }
-      const client = this._users.getUserById(Payload.userId);
-      if (client) {
-        client.socketId.forEach((socktId: string) => {
-          this._server.to(socktId).emit("NewFriend", targetFriend.reciever);
-        });
-      }
-    }
+	const targetFriend = await this.FriendsService.acceptFriendRequest(
+	  Payload.userId,
+	  Payload.id
+	);
+	if (targetFriend !== null) {
+	  const SocketsTarget = this._users.getUserById(Payload.id);
+	  if (SocketsTarget) {
+		SocketsTarget.socketId.forEach((socktId: string) => {
+		  this._server.to(socktId).emit("NewFriend", targetFriend.sender);
+		});
+	  }
+	  const client = this._users.getUserById(Payload.userId);
+	  if (client) {
+		client.socketId.forEach((socktId: string) => {
+		  this._server.to(socktId).emit("NewFriend", targetFriend.reciever);
+		});
+	  }
+	}
   }
 
   // @SubscribeMessage("RejectFriend")
 
   @SubscribeMessage("NewBlocked")
   async handleNewBlocked(@Body() Payload: { id: number; userId: number }) {
-    const targetFriend = await this.FriendsService.blockFriendRequest(
-      Payload.userId,
-      Payload.id
-    );
-    if (targetFriend !== null) {
-      const SocketsTarget = this._users.getUserById(Payload.id);
-      if (SocketsTarget) {
-        SocketsTarget.socketId.forEach((socktId: string) => {
-          this._server.to(socktId).emit("DeleteFriend", Payload.userId);
-        });
-      }
-      const client = this._users.getUserById(Payload.userId);
-      if (client) {
-        client.socketId.forEach((socktId: string) => {
-          this._server.to(socktId).emit("NewBlocked", targetFriend);
-        });
-      }
-    }
+	const targetFriend = await this.FriendsService.blockFriendRequest(
+	  Payload.userId,
+	  Payload.id
+	);
+	if (targetFriend !== null) {
+	  const SocketsTarget = this._users.getUserById(Payload.id);
+	  if (SocketsTarget) {
+		SocketsTarget.socketId.forEach((socktId: string) => {
+		  this._server.to(socktId).emit("DeleteFriend", Payload.userId);
+		});
+	  }
+	  const client = this._users.getUserById(Payload.userId);
+	  if (client) {
+		client.socketId.forEach((socktId: string) => {
+		  this._server.to(socktId).emit("NewBlocked", targetFriend);
+		});
+	  }
+	}
   }
 
   @SubscribeMessage("UnBlocked")
   async handleUnBlocked(@Body() Payload: { id: number; userId: number }) {
-    const targetFriend = await this.FriendsService.unblockFriendRequest(
-      Payload.userId,
-      Payload.id
-    );
-    if (targetFriend !== null) {
-      // const SocketsTarget = this._users.getUserById(Payload.id);
-      // if (SocketsTarget) {
-      //   SocketsTarget.socketId.forEach((socktId: string) => {
-      //     this._server.to(socktId).emit("UnBlocked", Payload.userId);
-      //   });
-      // }
-      console.log("unblocked", targetFriend);
-
-      const client = this._users.getUserById(Payload.userId);
-      if (client) {
-        client.socketId.forEach((socktId: string) => {
-          this._server.to(socktId).emit("UnBlocked", Payload.id);
-        });
-      }
-    }
+	const targetFriend = await this.FriendsService.unblockFriendRequest(
+	  Payload.userId,
+	  Payload.id
+	);
+	if (targetFriend !== null) {
+	  // const SocketsTarget = this._users.getUserById(Payload.id);
+	  // if (SocketsTarget) {
+	  //   SocketsTarget.socketId.forEach((socktId: string) => {
+	  //     this._server.to(socktId).emit("UnBlocked", Payload.userId);
+	  //   });
+	  // }
+	  console.log("unblocked", targetFriend);
+	  
+	  const client = this._users.getUserById(Payload.userId);
+	  if (client) {
+		client.socketId.forEach((socktId: string) => {
+		  this._server.to(socktId).emit("UnBlocked", Payload.id);
+		});
+	  }
+	}
   }
   /**
    * end of functions :by essadike
