@@ -112,6 +112,17 @@ export default function landingPage() {
         // autoConnect: true by default, so no need to explicitly call connect()
     });
   
+    socket.on("online", (data: {id: number}) => {
+      console.log("online", data);
+      if(data)
+        setFriendsData((currentFriends) => currentFriends ? currentFriends.map((friend: FriendsType) => friend.id === data.id ? {...friend, online: true} : friend) : null);
+    });
+
+    socket.on("offline", (data: {id: number}) => { 
+      console.log("offline", data);
+      if(data)
+        setFriendsData((currentFriends) => currentFriends ? currentFriends.map((friend: FriendsType) => friend.id === data.id ? {...friend, online: false} : friend) : null);
+    });
     // Setup event listeners only once
     socket.on("connect", () => {
         console.log("socket connected::::::::::::::::::::::");
@@ -162,53 +173,53 @@ export default function landingPage() {
   useEffect(() => {
     
 
-    // if (!data) {
-    //   const getdata = async () => {
-    //     try {
-    //       const ApiUrl = process.env.NEST_API;
-    //       const res = await axios.get(ApiUrl + "/profile", {
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //         },
-    //         withCredentials: true,
-    //       });
-    //       if (
-    //         res.data === undefined ||
-    //         res.data === false ||
-    //         res.data === null ||
-    //         res.data.update === undefined ||
-    //         res.data.update === false
-    //       ) {
-    //         router.push("/login");
-    //       } else if (res.data.twoFa === true) {
-    //         setData(res.data);
-    //         setCheckTwoFactor(res.data.twofaCheck);
-    //       } else if (res.data.twoFa === false) {
-    //         setData(res.data);
-    //         setCheckTwoFactor(true);
-    //       } else setData(res.data);
-    //       console.log("Data:", res.data, data);
-    //     } catch (error) {
-    //       // console.log('Error:', error);
-    //       router.push("/login");
-    //     }
-    //   };
-    //   getdata();
-    // }
-    // if (!FriendsData) {
-    //   getFriends({ setFriendsData });
-    // }
-    // if (!InvitsData) {
-    //   getInvits({ setInvitsData });
-    // }
-    // if (!BlockedData) {
-    //   getBlocked({ setBlockedData });
-    // }
+    if (!data) {
+      const getdata = async () => {
+        try {
+          const ApiUrl = process.env.NEST_API;
+          const res = await axios.get(ApiUrl + "/profile", {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          });
+          if (
+            res.data === undefined ||
+            res.data === false ||
+            res.data === null ||
+            res.data.update === undefined ||
+            res.data.update === false
+          ) {
+            router.push("/login");
+          } else if (res.data.twoFa === true) {
+            setData(res.data);
+            setCheckTwoFactor(res.data.twofaCheck);
+          } else if (res.data.twoFa === false) {
+            setData(res.data);
+            setCheckTwoFactor(true);
+          } else setData(res.data);
+          console.log("Data:", res.data, data);
+        } catch (error) {
+          // console.log('Error:', error);
+          router.push("/login");
+        }
+      };
+      getdata();
+    }
+    if (!FriendsData) {
+      getFriends({ setFriendsData });
+    }
+    if (!InvitsData) {
+      getInvits({ setInvitsData });
+    }
+    if (!BlockedData) {
+      getBlocked({ setBlockedData });
+    }
 
-    // return () => {
-    //   Socket?.off('connect')
-    //   Socket?.off('disconnect')
-    // };
+    return () => {
+      Socket?.off('connect')
+      Socket?.off('disconnect')
+    };
   }, []);
 
   // console.log("FriendsData:", FriendsData);
@@ -223,7 +234,7 @@ export default function landingPage() {
 
   return (
     <>
-      {/* <UserDataContext.Provider value={data}>
+      <UserDataContext.Provider value={data}>
         <ProfileDataContext.Provider
           value={{ FriendsData, InvitsData, BlockedData }}
         >
@@ -239,10 +250,7 @@ export default function landingPage() {
           )}
         </SocketContext.Provider>
         </ProfileDataContext.Provider>
-      </UserDataContext.Provider> */}
-      <SocketContext.Provider value={Socket}>
-        <App /> 
-      </SocketContext.Provider>
+      </UserDataContext.Provider>
     </>
   );
 }

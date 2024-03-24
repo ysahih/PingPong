@@ -51,7 +51,7 @@ const Invit = (props: InvitProps) => {
         <Image
           onClick={() => socket?.emit("NewFriend",{id: values.sender.id, userId: user?.id})}
           className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out"
-          src="./iconsProfile/accept.svg"
+          src="./iconsProfile/Accept.svg"
           width={32}
           height={32}
           property="true"

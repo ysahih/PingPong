@@ -31,23 +31,26 @@ const Friend = (props: friendsType) => {
   const user = useContext(UserDataContext);
 
   const block = (id: number) => {
-    socket?.emit("NewBlocked", {id: id, userId: user?.id});
+    socket?.emit("NewBlocked", { id: id, userId: user?.id });
   };
-  
+
   return (
     <div className="FriendsPh min-w-[190px] h-[230px] bg-[#040A2F] mr-[15px] flex flex-col items-center">
       <div className="relative">
-        {/* Status Indicator */}
-        <p
-          className="absolute w-2.5 h-2.5 bg-green-500 rounded-full z-50 -top-[-12px] -right-[-8px] transform translate-x-1/2 translate-y-1/2 border-[4px] border-transparent "
-          style={{ outline: "4px solid #040a2f" }}
-        ></p>
-        <p
-          className="absolute w-2.5 h-2.5 bg-green-500 rounded-full -top-[-12px] -right-[-8px] transform translate-x-1/2 translate-y-1/2 border-[4px] border-transparent animationClass"
-          style={{
-            zIndex: 99,
-          }}
-        ></p>
+        {props.value.online && (
+          <>
+            <p
+              className="absolute w-2.5 h-2.5 bg-green-500 rounded-full z-50 -top-[-12px] -right-[-8px] transform translate-x-1/2 translate-y-1/2 border-[4px] border-transparent "
+              style={{ outline: "4px solid #040a2f" }}
+            ></p>
+            <p
+              className="absolute w-2.5 h-2.5 bg-green-500 rounded-full -top-[-12px] -right-[-8px] transform translate-x-1/2 translate-y-1/2 border-[4px] border-transparent animationClass"
+              style={{
+                zIndex: 99,
+              }}
+            ></p>
+          </>
+        )}
         <div
           className="mt-[16px] inline-block rounded-full overflow-hidden border-2 border-transparent shadow-lg w-[60px] h-[60px]"
           style={{ outline: ".2px solid #535C91" }}

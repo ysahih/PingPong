@@ -3,11 +3,14 @@ import { RiSendPlaneFill } from "react-icons/ri";
 import { use, useEffect, useState } from "react";
 import Image from "next/image";
 import { useContext } from "react";
-import { chatData } from "./Dto/Dto";
+import { ChatData } from "./Dto/Dto";
 import { Input } from "postcss";
 import { number } from "yup";
 import axios from "axios";
 import SocketContext from "@/components/context/socket";
+import UserDataContext from "@/components/context/context";
+import { input } from "@material-tailwind/react";
+import ChatContext, { chatContext } from "@/components/context/chatContext";
 
 
 const Header = () =>{
@@ -61,20 +64,20 @@ const UserOption = ( { className }: userOptionClass ) => {
 }
 type Props = {
     handleMsgClick: (value:number) => void;
-    user : chatData;
+    user : ChatData;
 };
 
-const More = ({user}: {user: chatData})=> {
+const More = ({user}: {user: ChatData})=> {
 
     const [showMsgOption, setShowMsgOption] = useState(false);
     
-    const chatDate = new Date(user.sentAt);
+    const chatDate = new Date(user.createdAt);
     const currentDate = new Date();
     let formattedDate;
     if (chatDate.toDateString() === currentDate.toDateString()) {
       const hours = chatDate.getHours();
       const minutes = chatDate.getMinutes();
-      formattedDate = `${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
+      formattedDate = `${hours< 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
     } else {
       formattedDate = chatDate.toLocaleDateString();
     }
@@ -120,9 +123,32 @@ const Message = ({handleMsgClick, user} : Props) =>{
 }
 
 const Conversation = ({handleMsgClick, user}: Props) =>{
+
+    
+    const socket = useContext(SocketContext);
+    const [Input, setInput] = useState("");
+    const sender  = useContext(UserDataContext);
+    const sendInput = () => {
+        socket?.emit("directMessage", {
+            from: sender?.id,
+            to : user.id,
+            message: Input
+        })
+    }
     const handleClick = ()=>{
         handleMsgClick(0);
     }
+    const handleInput = (event)=>{
+        setInput(event.target.value)
+    }
+    useEffect(()=>{
+        socket?.on("chat", (convodata)=>{
+            console.log(convodata)
+        });
+        return () => {
+            socket?.off("chat");
+        }
+    }, [])
     //TODO: fetch all messages (user to user).
     // useEffect(()=>{
 
@@ -142,188 +168,12 @@ const Conversation = ({handleMsgClick, user}: Props) =>{
                 <hr />
 
                 <div className="convoHolder">
-                    <div className="myMsg">
-                        <p>{user.lastMessage}</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>hello there;</p>
-                    </div>
-                    <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div>
-                    <div className="myMsg">
-                        <p>finish</p>
-                    </div>
-                    {/* <div className="othersMsg">
-                        <p>hi, thank you</p>
-                    </div> */}
+                    
                 </div>
             </div>
             <div className="input-footer">
-                <textarea className="convoInput" placeholder="Send a Message..."/>
-                <RiSendPlaneFill className="sendLogo"/>
+                <textarea className="convoInput" placeholder="Send a Message..." onSubmit={handleInput}/>
+                <RiSendPlaneFill className="sendLogo" onClick={sendInput}/>
             </div>
         </div>
     );
@@ -352,47 +202,54 @@ const Chat = () => {
     
     //firts we add new messages recieved on the socket to the Message map//
 
-    const [chatdata, setChatdata] = useState<chatData[] | null >(null);
+    const [chatdata, setChatdata] = useState<ChatData[] | null >(null);
     const socket = useContext(SocketContext);
-    //
+    // const [chat, setchat]  = useState(0);
+    const Convo = useContext(ChatContext);
+
+    // const handleMsgClick = (value:number)=>{
+    //     setchat(value);
+    // }
+
     useEffect(() => {
 
         const fetchData = async () => {
-          try {
-            const response = await axios.get('http://127.0.0.1:5501/json.json');
-            setChatdata(response.data);
-          } catch (error) {
-            console.error('Error fetching data:', error);
-          }
+            try {
+                const response = await axios.get('http://localhost:3000/user/conversation', {
+                    withCredentials: true,
+                });
+                // console.log(response.data);
+                setChatdata(response.data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
         };
         fetchData();
+        //listen
+        socket?.on("newConvo", (newChatData) =>{
+            console.log(newChatData);
+            chatdata?.push(newChatData);
+        })
 
-        socket?.on("newMessage", (data)=>{
-            setChatdata((chatdata) => chatdata ? [...chatdata, data] : [data])
-        });//
-
+        return () => { socket?.off("newConvo") }
     }, []);
-    const [ShowConvo, setShowConvo]  = useState(0);
-    const handleMsgClick = (value:number)=>{
-        setShowConvo(value);
-    }
 
-   
+
     return (
         <div className="chat">
-            {ShowConvo === 0 && <div className="">
+            {Convo?.chat === 0 && <div className="">
                 <div className="chatbar">
                     <Header/>
                     <Memebers/>
                 </div>
                
                 <div className="messagesHolder">
-                    {chatdata?.map((user: chatData) => (
-                    <Message handleMsgClick={handleMsgClick} user={user} />
-                 ))}
+                    {chatdata?.map((user: ChatData) => (
+                        <Message handleMsgClick={()=>Convo?.setChat(user.id)} user={user} />
+                    ))}
                  </div>
             </div>}
-            {ShowConvo !== 0 && <Conversation handleMsgClick={handleMsgClick} user={chatdata?.find(user => user.id === ShowConvo)} />}
+            {Convo?.chat !== 0 && <Conversation handleMsgClick={()=>Convo?.setChat(0)} user={chatdata?.find(user => user?.id === Convo?.chat)!} />}
             
         </div>
     );

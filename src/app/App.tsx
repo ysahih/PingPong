@@ -54,6 +54,7 @@ import '@/styles/userProfile/userFriend.css';
 
 
 import { Carousel, Typography, Button, Switch } from "@material-tailwind/react";
+import ChatContext, { chatContext } from "@/components/context/chatContext";
 import RenderContext, { renderContext } from "@/components/context/render";
 import UserProfile from "@/components/userProfile";
 
@@ -248,17 +249,22 @@ const Body = () => {
 	  }, []);
 	
 
+	const [chat, setChat] = useState(0);
+
 	return (
-		<div className="body">
-			<Sidebar showPopup={showPopup}  />
-			<div className= "absolute cursor-pointer w-[80px] h-[50px] ml-[20px] text-white mt-[60px] flex items-center justify-center z-20 hidden PopupBtn" onClick={ () => {setShowPopup(!showPopup)}}>
-				<FiChevronsRight className= {` w-[30px] h-[30px] ${showPopup? 'retation180' : 'retation0'}`}/>
+		<ChatContext.Provider value={{chat, setChat}}>
+
+			<div className="body">
+				<Sidebar showPopup={showPopup}  />
+				<div className= "absolute cursor-pointer w-[80px] h-[50px] ml-[20px] text-white mt-[60px] flex items-center justify-center z-20 hidden PopupBtn" onClick={ () => {setShowPopup(!showPopup)}}>
+					<FiChevronsRight className= {` w-[30px] h-[30px] ${showPopup? 'retation180' : 'retation0'}`}/>
+				</div>
+				<Home showPopup={showPopup}/>
+				<div className="chatdiv hidden xl:block">
+					<Chat/>
+				</div>
 			</div>
-			<Home showPopup={showPopup}/>
-			<div className="chatdiv hidden xl:block">
-				<Chat/>
-			</div>
-		</div>
+		</ChatContext.Provider>
   	);
 }
 
