@@ -47,12 +47,23 @@ export class CreateRoom {
 
 export class ChatData {
 	id: number
-	convId :number
-	username: string
+	userName: string
 	image: string
 	lastMessaeg: string
 	createdAt: Date
 	isOnline: boolean
 	isRead: boolean
 	isRoom: boolean
+}
+
+export class Messages {
+	content :string
+	userId :number
+}
+
+export class ConvData {
+	id :number
+	userName :string
+	image :string
+	messages :Messages[]
 }

@@ -87,10 +87,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async GetMessages(@Req() req :Request) {
 
-    console.log('--------------------------')
-    console.log(typeof req.query['id']);
-
-    console.log('--------------------------')
+    // console.log('--------------------------')
 
     return await this.FriendsService.message(req.user['userId'], Number(req.query['id']));
   }

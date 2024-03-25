@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { ChatData } from "src/Gateway/gateway.interface";
+import { ChatData, ConvData } from "src/Gateway/gateway.interface";
 import { prismaService } from "src/prisma/prisma.service";
 
 @Injectable()
@@ -464,10 +464,9 @@ export class FriendsService {
         lastMessajes.conv.forEach((conv) => {
           let orgConv = new ChatData();
   
-          orgConv.convId = conv.id;
           if (conv?.users[0]) {
             orgConv.id = conv.users[0].id;
-            orgConv.username = conv.users[0].userName;
+            orgConv.userName = conv.users[0].userName;
             orgConv.image = conv.users[0].image;
           }
           if (conv?.messages) {
@@ -493,17 +492,19 @@ export class FriendsService {
       }
   }
 
-  async message(userId: number, convId: number, isRoom :boolean = false) {
+  async message(userId: number, withUserId: number, isRoom :boolean = false) {
 
     let user;
 
-    console.log(userId, convId);
     try {
       if (!isRoom)
       {
-        user = await this.prisma.converstaion.findUnique({
+        user = await this.prisma.converstaion.findFirst({
           where: {
-            id: convId,
+            AND: [
+              {users: {some: {id: userId}}},
+              {users: {some: {id: withUserId}}},
+            ]
           },
           select: {
             users: {
@@ -530,8 +531,16 @@ export class FriendsService {
           },
         });
       }
-      console.log(user);
-      return (user);
+      const convData :ConvData = {
+        id: user.users[0].id,
+        image: user.users[0].image,
+        userName: user.users[0].userName,
+        messages: user.messages,
+      }
+      // console.log(convData);
+      // console.log(user);
+      // console.log('--------------------------')
+      return (convData);
     } catch (e) {
       return null;
     }

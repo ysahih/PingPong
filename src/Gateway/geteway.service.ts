@@ -317,7 +317,7 @@ export class GatewayService {
 
         if (conv?.users[0]) {
           orgConv.id = conv.users[0].id;
-          orgConv.username = conv.users[0].userName;
+          orgConv.userName = conv.users[0].userName;
           orgConv.image = conv.users[0].image;
         }
         if (conv?.messages) {
@@ -354,13 +354,16 @@ export class GatewayService {
     return sortedData;
   }
 
-  async message(userId: number, convId: number, isRoom :boolean = false) {
+  async message(userId: number, withUserId: number, isRoom :boolean = false) {
 
     if (!isRoom)
     {
-      const user = await this._prisma.converstaion.findUnique({
+      const user = await this._prisma.converstaion.findFirst({
         where: {
-          id: convId,
+          AND: [
+            {users: {some: {id: userId}}},
+            {users: {some: {id: withUserId}}},
+          ]
         },
         select: {
           users: {
