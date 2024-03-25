@@ -47,6 +47,7 @@ export class CreateRoom {
 
 export class ChatData {
 	id: number
+	convId :number
 	username: string
 	image: string
 	lastMessaeg: string

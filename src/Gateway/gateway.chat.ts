@@ -63,6 +63,8 @@ export class serverGateway
   // Authorization Part
   async handleConnection(client: Socket): Promise<void> {
 
+    // const mesj = await this._prisma.message(15, 7);
+
     try {
       const allToken = client.handshake.headers.cookie;
 

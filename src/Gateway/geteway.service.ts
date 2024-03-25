@@ -353,4 +353,40 @@ export class GatewayService {
     // return lastMessajes;
     return sortedData;
   }
+
+  async message(userId: number, convId: number, isRoom :boolean = false) {
+
+    if (!isRoom)
+    {
+      const user = await this._prisma.converstaion.findUnique({
+        where: {
+          id: convId,
+        },
+        select: {
+          users: {
+            where: {
+              NOT: {
+                id: userId,
+              },
+            },
+            select: {
+              id: true,
+              userName: true,
+              image: true,
+            },
+          },
+          messages: {
+            orderBy: {
+              createdAt: 'desc',
+            },
+            select: {
+              content: true,
+              userId: true,
+            },
+          },
+        },
+      });
+      console.log(user);
+    }
+  }
 }

@@ -417,6 +417,9 @@ export class FriendsService {
                 _count: "asc",
               },
             },
+            select: {
+              id: true,
+            },
             include: {
               users: {
                 where: {
@@ -461,6 +464,7 @@ export class FriendsService {
         lastMessajes.conv.forEach((conv) => {
           let orgConv = new ChatData();
   
+          orgConv.convId = conv.id;
           if (conv?.users[0]) {
             orgConv.id = conv.users[0].id;
             orgConv.username = conv.users[0].userName;
@@ -487,5 +491,49 @@ export class FriendsService {
       {
         return null
       }
+  }
+
+  async message(userId: number, convId: number, isRoom :boolean = false) {
+
+    let user;
+
+    console.log(userId, convId);
+    try {
+      if (!isRoom)
+      {
+        user = await this.prisma.converstaion.findUnique({
+          where: {
+            id: convId,
+          },
+          select: {
+            users: {
+              where: {
+                NOT: {
+                  id: userId,
+                },
+              },
+              select: {
+                id: true,
+                userName: true,
+                image: true,
+              },
+            },
+            messages: {
+              orderBy: {
+                createdAt: 'desc',
+              },
+              select: {
+                content: true,
+                userId: true,
+              },
+            },
+          },
+        });
+      }
+      console.log(user);
+      return (user);
+    } catch (e) {
+      return null;
+    }
   }
 }

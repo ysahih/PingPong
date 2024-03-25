@@ -82,4 +82,16 @@ export class UserController {
   async GetConversation(@Req() req : Request){
       return await this.FriendsService.Getconversation(req.user['userId']);
   }
+
+  @Get('messages')
+  @UseGuards(JwtAuthGuard)
+  async GetMessages(@Req() req :Request) {
+
+    console.log('--------------------------')
+    console.log(typeof req.query['id']);
+
+    console.log('--------------------------')
+
+    return await this.FriendsService.message(req.user['userId'], Number(req.query['id']));
+  }
 }
