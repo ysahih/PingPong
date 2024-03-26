@@ -1,3 +1,4 @@
+import ChatContext from "../context/chatContext";
 import "@/styles/userProfile/userFriend.css";
 import axios from "axios";
 import Image from "next/image";
@@ -6,6 +7,7 @@ import { FriendsType } from "./Dto";
 import ProfileDataContext from "../context/profilDataContext";
 import SocketContext from "../context/socket";
 import UserDataContext from "../context/context";
+
 
 interface friendsType {
   value: FriendsType;
@@ -29,7 +31,7 @@ interface friendsType {
 const Friend = (props: friendsType) => {
   const socket = useContext(SocketContext);
   const user = useContext(UserDataContext);
-
+  const context = useContext(ChatContext);
   const block = (id: number) => {
     socket?.emit("NewBlocked", { id: id, userId: user?.id });
   };
@@ -83,6 +85,7 @@ const Friend = (props: friendsType) => {
           height={24}
           property="true"
           alt="online"
+          onClick={()=>{context?.setChat(props.value.id)}}
           className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out"
         />
         <Image

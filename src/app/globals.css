@@ -394,6 +394,7 @@
 
     overflow: scroll;
     overflow-x: hidden;
+    
     height: calc(70vh - 120px);
     min-height: 370px;
 }
@@ -441,8 +442,14 @@
     margin-left: 5px;
 }
 
-.profilepic{
+.profilepics{
     margin-right: -14px;
+    width: 28px;
+    border-radius: 50%;
+}
+.profilepic{
+    border-radius: 50%;
+    width: 38px;
 }
 
 
@@ -482,20 +489,25 @@
     margin: 14px;
 }
 
+/* .msg {
+    background-color: red;
+    width: 100%;
+} */
 
 .messageInfo{
     margin-top: 16px;
+    min-width: 80px;
+    max-width: 200px;
 }
 
 .messageInfo p{
     font-family: Inter;
     font-size: 13px;
+    word-wrap: break-word;
     font-weight: 400;
     color: #8A99E9;
     margin-top: 8px;
 
-    
-    
 }
 
 .messageInfo h2{
@@ -1062,16 +1074,26 @@
    
 }
 
+
+
 .convoHolder{
     display: flex;
     flex-direction: column;
     padding: 20px;
     width: 100%;
-    overflow: auto;
+    overflow-y: scroll;
+    /* overflow: auto; */
     overflow-x: hidden;
+    /* scroll-snap-align: end; */
     height: calc(100vh - 310px);
+    /* height: 300px; */
 
 }
+
+/* .con{
+    display: flex;
+  flex-direction: column-reverse;
+} */
 
 .convoHolder p{
 
@@ -1079,6 +1101,7 @@
     font-size: 13px;
     font-weight: 400;
     color : white;
+    word-wrap: break-word;
 }
 
 .myMsg, .othersMsg{
