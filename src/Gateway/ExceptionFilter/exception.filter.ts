@@ -10,8 +10,8 @@ export class ExceptionHandler extends BaseWsExceptionFilter {
         const socket = host.switchToWs().getClient<Socket>();
 
         if ((exception) instanceof BadRequestException)
-            socket.send(exception.getResponse());
+            socket.emit('error', exception.getResponse());
         else
-            socket.send(exception.message)
+            socket.emit('error', exception.message);
     }
 }

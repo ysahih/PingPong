@@ -39,17 +39,16 @@ export class CreateRoom {
 	@IsString()
 	type		:ROOMTYPE
 
-	@IsNotEmpty()
+	// @IsNotEmpty()
 	@IsString()
 	password	?:string
 }
-
 
 export class ChatData {
 	id: number
 	userName: string
 	image: string
-	lastMessaeg: string
+	lastMessage: string
 	createdAt: Date
 	isOnline: boolean
 	isRead: boolean

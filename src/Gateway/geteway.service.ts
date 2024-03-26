@@ -321,7 +321,7 @@ export class GatewayService {
           orgConv.image = conv.users[0].image;
         }
         if (conv?.messages) {
-          orgConv.lastMessaeg = conv.messages[0].content;
+          orgConv.lastMessage = conv.messages[0].content;
           orgConv.createdAt = conv.messages[0].createdAt;
           if (conv?.messages[0].readBy) orgConv.isRead = true;
           else orgConv.isRead = false;

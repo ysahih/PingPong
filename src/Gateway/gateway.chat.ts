@@ -162,7 +162,11 @@ export class serverGateway
     try {
       // TODO: Handle if it is protected it should contain a password
       // Create a room record
+      console.log(payload);
       const newRoom = await this._prisma.createRoom(payload, payload.type);
+      this._server
+            .to(client.id)
+            .emit("create", `${payload.name} created succefully !`);
       // Add the room to the user's room array of Objects
       this._users.addNewRoom(payload.ownerId, newRoom, "OWNER");
       console.log(this._users.getUserById(payload.ownerId));
@@ -173,6 +177,7 @@ export class serverGateway
       // FIXME: I don't have to send errors to all client
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Means that the room already exist with that name
+        console.log('Errrrooooor !');
         if (e.code === "P2002")
           this._server
             .to(client.id)
