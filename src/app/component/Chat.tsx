@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useContext } from "react";
 import { ChatData } from "./Dto/Dto";
 import { Input } from "postcss";
-import { number } from "yup";
+import { array, number } from "yup";
 import axios from "axios";
 import SocketContext from "@/components/context/socket";
 import UserDataContext from "@/components/context/context";
@@ -29,7 +29,8 @@ interface Pics {
   }
   
 const Members: React.FC<Pics> = ({ chatdata }) => {
-    const members = chatdata?.slice(0, 3);
+
+    const members = chatdata?.length! > 3 ? chatdata?.slice(0, 3) : chatdata;
     return (
         <>
         <hr className="line"></hr>
@@ -41,13 +42,13 @@ const Members: React.FC<Pics> = ({ chatdata }) => {
             </div>
 
             <div className="profiles">
-                {members? members?.map((user: ChatData) => (
-                    <Image  className={members?.length > 1 ? "profilepics" : 'profilepics-mar'} 
+                {members && members.map((user: ChatData) => (
+                    <Image  className={members?.length > 1 ? "profilepics" : 'profilepics-mar'}
                             src={ user.image ? user.image : "./homeImages/memeber1.svg"} 
                             alt="member" 
                             key={user.convId}
                             width={28} height={20}/>
-                )) : null}
+                ))}
                 
             </div>
         </div>
@@ -129,7 +130,7 @@ const Message = ({handleMsgClick, user } : Props) =>{
 
                 <div className="messageInfo">
                     <h2 className="senderName">{user.userName}</h2>
-                    <p className="msg" >{user?.lastMessage?.length < 30 ? user?.lastMessage : user.lastMessage?.slice(0, 30) + "..."}</p>
+                    <p className="msg" >{user?.lastMessage?.length < 20 ? user?.lastMessage : user.lastMessage?.slice(0, 20) + "..."}</p>
                 </div>
             </div>
 
@@ -218,7 +219,7 @@ const Conversation = (props : ConvoProps) =>{
    
 
     const sendInput = (e: React.FormEvent<HTMLFormElement>) => {
-        
+
         e.preventDefault();
         if (Input.length > 0) {
           socket?.emit("directMessage", {
@@ -267,7 +268,6 @@ const Conversation = (props : ConvoProps) =>{
             const newMessage = { content: convodata.message, userId: props.userId};
             if(convodata.userId === props.userId)
                 appendMessage(newMessage);
-            // else()//send to other user
         });
         return () => {
             socket?.off("chat");
@@ -330,27 +330,23 @@ const Chat = () => {
     //     })
     // }
 
-     const appendChat = (newMessage: Object) => {
+    const appendChat = (newChatData: ChatData) => {
         setChatdata((prevConvo) => {
           if (prevConvo) {
-            const updatedConvo = {
-                ...prevConvo,
-                newMessage,
-            };
+            const updatedConvo = [...prevConvo, newChatData];
             return updatedConvo;
           }
-          return prevConvo;
+          return [newChatData];
         });
       };
+
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(process.env.NEST_API + '/user/conversation', {
                     withCredentials: true,
                 });
-                // console.log('=--------------=');
-                // console.log(response.data);
-                // console.log('=--------------=');
                 setChatdata(response.data);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -358,37 +354,21 @@ const Chat = () => {
         };
         fetchData();
         //listen
-        /*const modifiedEmployees: Employee[] = employees_data.map();*/
-        
         socket?.on("newConvo", (newChatData: ChatData) =>{
+        
             //if the conversation exists: 
-            // if (chatdata?.some( olddata => olddata.id === newChatData.id)){
-                //     //update the lastmesage(and its date)
-                //     setChatdata(chatdata?.map((chat: ChatData) => {
-                    //         if (chat.id === newChatData.id) {
-                        //           return { ...chat, };
-                        //         }
-                        //         return chat;
-                        //       })
-                        // }
-                        // // else
-                        //     appendChat(newChatData);
-                        // appenchat
-                        // console.log(Convo?.chat);
-                        // console.log(newChatData.id);
-                        // console.log(newChatData);
-                        // console.log(Convo?.chat);
-                        if (Convo?.chat === newChatData.id){
-                            setInConvo(newChatData.lastMessage);
-                            console.log("hello----------01")
-// 
-                        }
-                })
-                
-                return () => { socket?.off("newConvo") }
-            }, [Convo]);
-            
-            
+            if (chatdata?.some( olddata => olddata.id === newChatData.id)){
+                const updatedChatData = chatdata.filter(chat => chat.id !== newChatData.id);
+                setChatdata(updatedChatData);
+            }
+            appendChat(newChatData);
+            if (Convo?.chat === newChatData.id)
+                setInConvo(newChatData.lastMessage);
+            })
+
+            return () => { socket?.off("newConvo") }
+    }, [Convo]);
+
     return (
         <div className="chat">
             {Convo?.chat === 0 && <div className="">
@@ -398,7 +378,7 @@ const Chat = () => {
                 </div>
                
                 <div className="messagesHolder">
-                    {chatdata? chatdata?.map((user: ChatData) => (
+                    {chatdata && chatdata.length > 1 ? chatdata?.map((user: ChatData) => (
                         <Message key={user.id} handleMsgClick= {()=>Convo?.setChat(user.id)} user={user} userId={0}/>
                     )) : null}
                  </div>

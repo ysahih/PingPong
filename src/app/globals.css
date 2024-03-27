@@ -471,7 +471,7 @@
     width: 85%;
     min-width: 180px;
     max-width: 300px;
-    height: 100px;
+    height: 110px;
     background-color: var(--item-border-color);
     /* background-color: #0F1647; */
     border-top: 1px solid var(--border-top-color);
