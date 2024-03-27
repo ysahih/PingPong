@@ -42,11 +42,13 @@ const Members: React.FC<Pics> = ({ chatdata }) => {
 
             <div className="profiles">
                 {members? members?.map((user: ChatData) => (
-                    <Image className="profilepics" src={ user.image ? user.image : "./homeImages/memeber1.svg"} alt="member" width={28} height={20}/>
+                    <Image  className={members?.length > 1 ? "profilepics" : 'profilepics-mar'} 
+                            src={ user.image ? user.image : "./homeImages/memeber1.svg"} 
+                            alt="member" 
+                            key={user.convId}
+                            width={28} height={20}/>
                 )) : null}
-                {/*
-                    <Message key={user.id} handleMsgClick= {()=>Convo?.setChat(user.id)} user={user} userId={0}/>
-                <Image className="profilepic" src="./homeImages/memeber1.svg" alt="member" width={35} height={35}/> */}
+                
             </div>
         </div>
         </>
@@ -66,7 +68,10 @@ const UserOption = ( { className }: userOptionClass ) => {
             </div>
             <hr className="liney"></hr>
             <div className="clash">
-                <Image className="optionlogo" src="./homeImages/chat.svg" alt="logo" width={19} height={17}/>
+                <Image className="optionlogo" 
+                    src="./homeImages/chat.svg" 
+                    alt="logo" 
+                    width={19} height={17}/>
                 <p>Clash</p>
             </div>
         </div>
@@ -108,7 +113,7 @@ const More = ({user}: {user: ChatData})=> {
 
 
 
-const Message = ({handleMsgClick, user} : Props) =>{
+const Message = ({handleMsgClick, user } : Props) =>{
 
     const handleClick = ()=>{
         handleMsgClick(user.id);
@@ -133,28 +138,7 @@ const Message = ({handleMsgClick, user} : Props) =>{
     );
 }
 
-function ChatInput(): JSX.Element {
-    const [message, setMessage] = useState<string>('');
-  
-    const handleSubmit = (e : any): void => {
-      e.preventDefault();
-  
-      // Perform actions with the submitted message, e.g., send it to a chat server
-  
-      // Reset the input value
-      setMessage('');
-    };
-  
-    return (
-      <form onSubmit={handleSubmit}>
-        <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} />
-        <button type="submit">
-            <RiSendPlaneFill className="sendLogo" />
-        </button>
-       
-      </form>
-    );
-  }
+
 
   type Message = {
     content: string;
@@ -176,7 +160,7 @@ function Convo( props : convProps | undefined ) {
       if (scrollableDiv) {
         scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
       }
-    }, [scrollableDivRef.current?.innerHTML]);
+    }, [scrollableDivRef.current?.innerHTML, props?.messages]);
     return (
         <div className="convoHolder" ref={scrollableDivRef}>
 
@@ -192,9 +176,14 @@ function Convo( props : convProps | undefined ) {
   }
 
 
+  type ConvoProps = {
+    handleMsgClick: (value:number) => void;
+    userId : number;
+    inConvo: String;
+    handleConvo: () => void;
+};
 
-
-const Conversation = ({handleMsgClick, userId, user}: Props) =>{
+const Conversation = (props : ConvoProps) =>{
 
     
     const socket = useContext(SocketContext);
@@ -225,39 +214,46 @@ const Conversation = ({handleMsgClick, userId, user}: Props) =>{
           return prevConvo;
         });
       };
+      
+   
 
-    const sendInput = (e :any) => {
-        socket?.emit("directMessage", {
-            from: sender?.id,
-            to : userId,
-            message: Input
-        })
-        const newMessage = { content: Input, userId: sender?.id};
-        appendMessage(newMessage);
+    const sendInput = (e: React.FormEvent<HTMLFormElement>) => {
+        
         e.preventDefault();
-        setInput("");
-    }
+        if (Input.length > 0) {
+          socket?.emit("directMessage", {
+            from: sender?.id,
+            to: props.userId,
+            message: Input,
+          });
+      
+          const newMessage = { content: Input, userId: sender?.id };
+          appendMessage(newMessage);
+          setInput('');
+        
+        }
+      };
 
     const handleClick = ()=>{
-        handleMsgClick(0);
+        props.handleMsgClick(0);
     }
 
    
 
     useEffect(()=>{
-        
+        if (props.inConvo !== ''){
+            console.log("hi there: ----------")
+            appendMessage({content: props.inConvo, userId: props.userId})
+            props.handleConvo();
+        }
         const fetchConvo  = async () =>{
             try{
 
                 // const request = userId > 0 ? process.env.NEST_API + '/user/messages?id=' + userId.toString()
                 //                 : process.env.NEST_API + '/user/messages?roomName=' + roomName;
-                const response = await axios.get(process.env.NEST_API + '/user/messages?id=' + userId.toString(), {
+                const response = await axios.get(process.env.NEST_API + '/user/messages?id=' + props.userId.toString(), {
                     withCredentials: true,
                 });
-                // const convoData = response;//parse
-                
-                // console.log("-");
-                // console.log(response.data);
                 setConvo(response.data);
 
             } catch {
@@ -265,15 +261,18 @@ const Conversation = ({handleMsgClick, userId, user}: Props) =>{
             }
         }
         fetchConvo();
-        socket?.on("chat", (convodata) => {
-            console.log(convodata)
-            const newMessage = { content: convodata, userId: userId};
-            appendMessage(newMessage);
+        socket?.on("chat", (convodata : { userId : number, message : string}) => {
+            // console.log(convodata )
+
+            const newMessage = { content: convodata.message, userId: props.userId};
+            if(convodata.userId === props.userId)
+                appendMessage(newMessage);
+            // else()//send to other user
         });
         return () => {
             socket?.off("chat");
         }
-    }, [])
+    }, [props.inConvo])
     return (
         <div className="conversation">
             <div className="convo">
@@ -287,20 +286,17 @@ const Conversation = ({handleMsgClick, userId, user}: Props) =>{
 
                 <hr />
 
-                <Convo userId={userId} messages={convo?.messages as Message[]}/>
-                {/* <div className="convoHolder">
-                    {convo?.messages?.map((message, index) => (
-                        <div key={index} className={userId === message.userID ? "othersMsg" : "myMsg"}>
-                            <p>{message.content}</p>
-                        </div>
-                    ))}
-                 </div> */}
+                <Convo userId={props.userId} messages={convo?.messages as Message[]}/>
+            
             </div>
-            <div className="input-footer">
-                <input className="convoInput" placeholder="Send a Message..." onChange={(e) => setInput(e.target.value)}/>
-                <RiSendPlaneFill className="sendLogo" onClick={sendInput}/>
-                {/* <ChatInput/> */}
-            </div>
+            {/* <div className="input-footer"> */}
+                <form onSubmit={sendInput} className="input-footer">
+                  <input type="text" className="convoInput" placeholder="Send a Message..." onChange={(e) => setInput(e.target.value)}/>
+                  <button type="submit">
+                    <RiSendPlaneFill className="sendLogo" />
+                  </button>
+                </form>
+            {/* </div> */}
         </div>
     );
 }
@@ -319,11 +315,34 @@ const Chat = () => {
 
     const [chatdata, setChatdata] = useState<ChatData[] | null >(null);
     const socket = useContext(SocketContext);
-    // const [chat, setchat]  = useState(0);
     const Convo = useContext(ChatContext);
+    const [inConvo, setInConvo]  = useState<String>('');
+    
 
+    // const appendMessage = (newChat : Object) => {
+    //     setChatdata((prevChat) => {
+    //         if(prevChat){
+    //             const updatedChat = {
+    //                 ...prevChat, 
+                    
+    //             }
+    //         }
+    //     })
+    // }
+
+     const appendChat = (newMessage: Object) => {
+        setChatdata((prevConvo) => {
+          if (prevConvo) {
+            const updatedConvo = {
+                ...prevConvo,
+                newMessage,
+            };
+            return updatedConvo;
+          }
+          return prevConvo;
+        });
+      };
     useEffect(() => {
-
         const fetchData = async () => {
             try {
                 const response = await axios.get(process.env.NEST_API + '/user/conversation', {
@@ -339,14 +358,37 @@ const Chat = () => {
         };
         fetchData();
         //listen
-        socket?.on("newConvo", (newChatData) =>{
-            console.log("---hello there iam here!!");
-        })
-
-        return () => { socket?.off("newConvo") }
-    }, []);
-
-    
+        /*const modifiedEmployees: Employee[] = employees_data.map();*/
+        
+        socket?.on("newConvo", (newChatData: ChatData) =>{
+            //if the conversation exists: 
+            // if (chatdata?.some( olddata => olddata.id === newChatData.id)){
+                //     //update the lastmesage(and its date)
+                //     setChatdata(chatdata?.map((chat: ChatData) => {
+                    //         if (chat.id === newChatData.id) {
+                        //           return { ...chat, };
+                        //         }
+                        //         return chat;
+                        //       })
+                        // }
+                        // // else
+                        //     appendChat(newChatData);
+                        // appenchat
+                        // console.log(Convo?.chat);
+                        // console.log(newChatData.id);
+                        // console.log(newChatData);
+                        // console.log(Convo?.chat);
+                        if (Convo?.chat === newChatData.id){
+                            setInConvo(newChatData.lastMessage);
+                            console.log("hello----------01")
+// 
+                        }
+                })
+                
+                return () => { socket?.off("newConvo") }
+            }, [Convo]);
+            
+            
     return (
         <div className="chat">
             {Convo?.chat === 0 && <div className="">
@@ -361,7 +403,7 @@ const Chat = () => {
                     )) : null}
                  </div>
             </div>}
-            {Convo?.chat !== 0 && <Conversation handleMsgClick={()=>Convo?.setChat(0)} userId={Convo?.chat!} user={null!} />}
+            {Convo?.chat !== 0 && <Conversation handleMsgClick={()=>Convo?.setChat(0)} userId={Convo?.chat!} inConvo={inConvo} handleConvo={()=>{setInConvo('')}} />}
             
         </div>
     );

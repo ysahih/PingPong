@@ -447,6 +447,12 @@
     width: 28px;
     border-radius: 50%;
 }
+.profilepics-mar{
+    /* margin-right: 0px; */
+    border-radius: 50%;
+    width: 28px;
+
+}
 .profilepic{
     border-radius: 50%;
     width: 38px;
