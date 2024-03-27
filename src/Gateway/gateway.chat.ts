@@ -16,7 +16,7 @@ import {
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 import { UsersServices } from "./usersRooms/user.class";
-import { CreateRoom, JoinRoomDTO, MessageDTO } from "./gateway.interface";
+import { ChatData, CreateRoom, JoinRoomDTO, MessageDTO } from "./gateway.interface";
 import { RoomsServices } from "./usersRooms/room.class";
 import { Prisma } from "@prisma/client";
 import { ExceptionHandler } from "./ExceptionFilter/exception.filter";
@@ -147,9 +147,12 @@ export class serverGateway
     const toUser = this._users.getUserById(payload.to);
     // if is Online, send him a message to the 'chat' event
     if (toUser)
+    {
+      const lastMessage :ChatData = await this._prisma.uniqueConvo(payload.from, payload.to);
       toUser.socketId.forEach((socktId: string) =>
-        this._server.to(socktId).emit("chat", payload.message)
+        this._server.to(socktId).emit("newConvo", lastMessage)
       );
+    }
   }
 
   @UseFilters(ExceptionHandler)

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { flatten, Injectable } from "@nestjs/common";
 import { ROOMTYPE } from "@prisma/client";
 import {
   CreateRoom,
@@ -354,16 +354,14 @@ export class GatewayService {
     return sortedData;
   }
 
-  async message(userId: number, withUserId: number, isRoom :boolean = false) {
-
-    if (!isRoom)
-    {
+  async message(userId: number, withUserId: number, isRoom: boolean = false) {
+    if (!isRoom) {
       const user = await this._prisma.converstaion.findFirst({
         where: {
           AND: [
-            {users: {some: {id: userId}}},
-            {users: {some: {id: withUserId}}},
-          ]
+            { users: { some: { id: userId } } },
+            { users: { some: { id: withUserId } } },
+          ],
         },
         select: {
           users: {
@@ -380,7 +378,7 @@ export class GatewayService {
           },
           messages: {
             orderBy: {
-              createdAt: 'desc',
+              createdAt: "desc",
             },
             select: {
               content: true,
@@ -391,5 +389,53 @@ export class GatewayService {
       });
       console.log(user);
     }
+  }
+
+  async uniqueConvo(senderId: number, receiverId: number) {
+
+    const user = await this._prisma.converstaion.findFirst({
+      where: {
+        AND: [{ id: senderId }, { id: receiverId }],
+      },
+      include: {
+        users: {
+          where: {
+            NOT: {
+              id: receiverId,
+            },
+          },
+          select: {
+            id: true,
+            userName: true,
+            image: true,
+          },
+        },
+        messages: {
+          take: 1,
+          select: {
+            content: true,
+            createdAt: true,
+            userId: true,
+          },
+        },
+      },
+    });
+
+    // console.log(user);
+
+    const convo :ChatData = {
+      id: user.users[0].id,
+      userName: user.users[0].userName,
+      image: user.users[0].image,
+      lastMessage: user.messages[0].content,
+      createdAt: user.messages[0].createdAt,
+      isOnline: false,
+      isRead: false,
+      isRoom: false,
+    }
+
+    console.log(convo);
+
+    return (convo);
   }
 }

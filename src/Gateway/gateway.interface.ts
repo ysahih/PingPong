@@ -50,6 +50,7 @@ export class ChatData {
 	image: string
 	lastMessage: string
 	createdAt: Date
+	// TODO: Handle This
 	isOnline: boolean
 	isRead: boolean
 	isRoom: boolean
