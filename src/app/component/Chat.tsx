@@ -275,20 +275,18 @@ const Conversation = (props : ConvoProps) =>{
                     </div>
                     <Image className="go-back" src="./homeImages/goback.svg" onClick={handleClick} width={28} height={25} alt="back" />
                 </div>
-
                 <hr />
-
                 <Convo userId={props.userId} messages={convo?.messages as Message[]}/>
             
             </div>
-            {/* <div className="input-footer"> */}
-                <form onSubmit={sendInput} className="input-footer">
-                  <input ref={inputRef} type="text" className="convoInput" placeholder="Send a Message..." onChange={(e) => setInput(e.target.value)}/>
-                  <button type="submit" >
-                    <RiSendPlaneFill className="sendLogo" />
-                  </button>
-                </form>
-            {/* </div> */}
+
+              <form onSubmit={sendInput} className="input-footer">
+                <input ref={inputRef} type="text" className="convoInput" placeholder="Send a Message..." onChange={(e) => setInput(e.target.value)}/>
+                <button type="submit" >
+                  <RiSendPlaneFill className="sendLogo" />
+                </button>
+              </form>
+
         </div>
     );
 }
@@ -325,7 +323,7 @@ const Chat = () => {
     const appendChat = (newChatData: ChatData) => {
         setChatdata((prevConvo) => {
           if (prevConvo) {
-            const updatedConvo = [...prevConvo, newChatData];
+            const updatedConvo = [ newChatData, ...prevConvo ];
             return updatedConvo;
           }
           return [newChatData];
@@ -339,28 +337,32 @@ const Chat = () => {
                 const response = await axios.get(process.env.NEST_API + '/user/conversation', {
                     withCredentials: true,
                 });
-                setChatdata(response.data);
+                setChatdata([...response.data].reverse());
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         };
         fetchData();
-        //listen
+           //! when commiting new messages , the data fetched isn't sorted...!
+    }, []);
+
+    // listen
+    useEffect(() => {
+
         socket?.on("newConvo", (newChatData: ChatData) =>{
-        
             //if the conversation exists: 
-            if (chatdata?.some( olddata => olddata.id === newChatData.id)){
-                
-                const updatedChatData = chatdata.filter(chat => chat.id !== newChatData.id);
-                setChatdata(updatedChatData);
-            }
+            if (chatdata?.some( olddata => olddata.id === newChatData.id))
+                setChatdata(chatdata.filter(chat => chat.id !== newChatData.id));
             appendChat(newChatData);
+            // this logic gets it sorted when appending new conversations
+            
+            //if you are inside the convo we send the new message as props
             if (Convo?.chat === newChatData.id)
                 setInConvo(newChatData.lastMessage);
-            })
-
+        })
             return () => { socket?.off("newConvo") }
-    }, [Convo]);
+    }, [chatdata]);
+
 
     return (
         <div className="chat">
