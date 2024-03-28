@@ -191,18 +191,9 @@ const Conversation = (props : ConvoProps) =>{
     const sender  = useContext(UserDataContext);
     const [Input, setInput] = useState("");
     const [convo, setConvo] = useState<ConvoData | null>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
 
 
-    // const appendMessage = (newMessage: Object) => {
-    //     if (convo) {
-    //       const updatedConvo = {
-    //         ...convo,
-    //         messages: [...convo.messages, newMessage],
-    //       };
-
-    //       setConvo(updatedConvo);
-    //     }
-    //   };
     const appendMessage = (newMessage: Object) => {
         setConvo((prevConvo) => {
           if (prevConvo) {
@@ -218,7 +209,7 @@ const Conversation = (props : ConvoProps) =>{
       
    
 
-    const sendInput = (e: React.FormEvent<HTMLFormElement>) => {
+    const sendInput = (e: any) => {
 
         e.preventDefault();
         if (Input.length > 0) {
@@ -231,7 +222,8 @@ const Conversation = (props : ConvoProps) =>{
           const newMessage = { content: Input, userId: sender?.id };
           appendMessage(newMessage);
           setInput('');
-        
+          if (inputRef.current)
+            inputRef.current.value = '';
         }
       };
 
@@ -239,14 +231,9 @@ const Conversation = (props : ConvoProps) =>{
         props.handleMsgClick(0);
     }
 
-   
 
+   
     useEffect(()=>{
-        if (props.inConvo !== ''){
-            console.log("hi there: ----------")
-            appendMessage({content: props.inConvo, userId: props.userId})
-            props.handleConvo();
-        }
         const fetchConvo  = async () =>{
             try{
 
@@ -256,15 +243,12 @@ const Conversation = (props : ConvoProps) =>{
                     withCredentials: true,
                 });
                 setConvo(response.data);
-
             } catch {
                 console.log('Error Fetching data for all messages !');
             }
         }
         fetchConvo();
         socket?.on("chat", (convodata : { userId : number, message : string}) => {
-            // console.log(convodata )
-
             const newMessage = { content: convodata.message, userId: props.userId};
             if(convodata.userId === props.userId)
                 appendMessage(newMessage);
@@ -272,7 +256,15 @@ const Conversation = (props : ConvoProps) =>{
         return () => {
             socket?.off("chat");
         }
-    }, [props.inConvo])
+    }, []);
+
+    useEffect(()=>{
+        if (props.inConvo !== ''){
+            appendMessage({content: props.inConvo, userId: props.userId})
+            props.handleConvo();
+        }
+    }, [props.inConvo]);
+
     return (
         <div className="conversation">
             <div className="convo">
@@ -291,8 +283,8 @@ const Conversation = (props : ConvoProps) =>{
             </div>
             {/* <div className="input-footer"> */}
                 <form onSubmit={sendInput} className="input-footer">
-                  <input type="text" className="convoInput" placeholder="Send a Message..." onChange={(e) => setInput(e.target.value)}/>
-                  <button type="submit">
+                  <input ref={inputRef} type="text" className="convoInput" placeholder="Send a Message..." onChange={(e) => setInput(e.target.value)}/>
+                  <button type="submit" >
                     <RiSendPlaneFill className="sendLogo" />
                   </button>
                 </form>
@@ -358,6 +350,7 @@ const Chat = () => {
         
             //if the conversation exists: 
             if (chatdata?.some( olddata => olddata.id === newChatData.id)){
+                
                 const updatedChatData = chatdata.filter(chat => chat.id !== newChatData.id);
                 setChatdata(updatedChatData);
             }
