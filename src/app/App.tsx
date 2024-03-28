@@ -57,6 +57,7 @@ import { Carousel, Typography, Button, Switch } from "@material-tailwind/react";
 import ChatContext, { chatContext } from "@/components/context/chatContext";
 import RenderContext, { renderContext } from "@/components/context/render";
 import UserProfile from "@/components/userProfile";
+import ProfileOverlay from "./component/ProfileOverlay";
 
 
 const Tables = ()=>{
@@ -216,6 +217,7 @@ const Home = (props: { showPopup: boolean }) => {
 			{context?.render === "ranking" && <Ranking/>}
 			{context?.render === "search" && <Search/>}
 			{context?.render === "profile" && <UserProfile/>}
+			{context?.render === "profileOverly" && <ProfileOverlay/>}
 			{context?.render === "chat" && 
 				<div className="chatholder visible xl:invisible">
 					<Chat/>
