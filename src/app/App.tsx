@@ -58,7 +58,12 @@ import RenderContext, { renderContext } from "@/components/context/render";
 import UserProfile from "@/components/userProfile";
 
 
+
+
 const Tables = ()=>{
+
+	
+
 	return (
 		<Carousel 
 			placeholder="carousel"

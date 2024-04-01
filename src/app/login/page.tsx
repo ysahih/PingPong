@@ -1,5 +1,5 @@
 "use client";
-"use strict";
+// "use strict";
 import '@/styles/login/styles.css'
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';

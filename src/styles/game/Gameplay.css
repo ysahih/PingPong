@@ -1,0 +1,236 @@
+
+
+:root {
+    --cadercolor : #081041;
+    --playercolor:   #0064FB;
+    --tablecolor:  #1B266B;
+    --ballcolor:#00FFE0;
+    --gridcolor: #081041;
+}
+
+
+.score{
+ 
+    width: 350px;
+    height: 150px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    /* background-color: white; */
+    
+}
+
+
+@media (max-width: 520px) , (max-height: 800px)
+{
+    .score
+    {
+        width: 150px;
+        height: 70px;
+    }
+    
+}
+
+.result
+{
+  background-color: #0849a5;
+}
+
+.PlayerProfile
+{
+    width: 140px;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* background-color: var(--playercolor); */
+
+}
+
+
+@media (max-width: 520px) , (max-height: 800px)
+{
+    
+    .PlayerProfile 
+    {
+        width: 70px;
+        height: 60px;
+    }
+
+}
+
+
+
+
+.PlayerProfile p
+{
+    color: white;
+    font-size: 20px;
+    margin: 0;
+}
+
+@media  (max-width: 520px) , (max-height: 800px)
+{
+    .PlayerProfile p
+    {
+        font-size: 10px;
+    }
+
+}
+
+.scoredisplay
+{
+    width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+
+
+.scoredisplay p {
+    color: #1ECDF8;
+    font-size: 20px;
+
+}
+
+
+.leftscore  ,.rightscore
+{
+    background: #1B266B;
+    color: white;
+    width: 20px;
+    font-size: 20px;
+    text-align: center;
+  
+}
+
+
+.loader {
+    display: flex;
+  }
+  
+  .loader div {
+    
+    background-color: #8A99E9;
+    box-shadow: inset 2px 2px 10px 2D41AA;
+    border-radius: 100%;
+  
+  }
+
+
+.box-load1 {
+    animation: brighten1 1.2s infinite;
+  }
+  
+  .box-load2 {
+    animation: brighten2 1.2s infinite;
+   
+  }
+  
+  .box-load3 {
+    animation: brighten3 1.2s infinite;
+    
+  }
+  
+  @keyframes brighten1 {
+    100% {
+      background-color: #2D41AA;
+      box-shadow: none;
+    }
+  }
+
+  @keyframes brighten2 {
+    100% {
+      background-color: #8A99E9;
+      box-shadow: none;
+    }
+  }
+
+  @keyframes brighten3 {
+    100% {
+      background-color: #2A3570;
+      box-shadow: none;
+    }
+  }
+
+
+
+  .card {
+  
+ 
+ 
+  /* background: #C6C6D0; */
+  color: #212121;
+  
+}
+
+
+
+.border {
+    border: 1px solid transparent;
+  inset: 0;
+}
+
+.border line {
+  stroke-width: 4px;
+  stroke: #0064FB;
+  fill: none;
+  transition: .6s ease-in-out;
+}
+
+.border line.top,
+.border line.bottom {
+  stroke-dasharray: 590;
+}
+
+.border line.left,
+.border line.right {
+  stroke-dasharray: 400;
+}
+
+.border line.top {
+    animation: slideInTop 3s infinite;
+  }
+  
+  .border line.bottom {
+    animation: slideInBottom  3s infinite;
+  }
+  
+  .border line.left {
+    animation: slideInLeft  3s infinite;
+  }
+  
+  .border line.right {
+    animation: slideInRight  3s infinite;
+  }
+
+@keyframes slideInTop {  
+        100% {
+        transform: translateX(-1180px);
+        }
+  }
+  
+  @keyframes slideInBottom {
+    100% {
+      transform: translateX(1180px);
+    }
+    
+  }
+  
+  @keyframes slideInLeft {
+    100% {
+      transform: translateY(800px);
+    }
+    
+  }
+  
+  @keyframes slideInRight {
+    100% {
+      transform: translateY(-800px);
+    }
+    
+  }
+ 

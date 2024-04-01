@@ -1,6 +1,6 @@
 "use client";
-"use strict";
-import { useEffect, useState } from "react";
+// "use strict";
+import { use, useEffect, useState } from "react";
 import "../styles/login/landingPage.css";
 import axios from "axios";
 import UserDataContext, { UserData } from "@/components/context/context";
@@ -14,6 +14,12 @@ import ProfileDataContext, {
 import { FriendsType, InvitsType } from "@/components/userProfile/Dto";
 import io, { Socket } from "socket.io-client";
 import SocketContext from "@/components/context/socket";
+import Gameplay from "./Game/GamePages/Gameplay";
+import BouncingBall from "./Game/GamePages/Gameplay";
+import Gameresult from "./Game/GamePages/Gameresult";
+import Friends from "@/components/userProfile/Friends";
+import Navbar from "./component/Navbar";
+import { GameContext } from "./Game/Gamecontext/gamecontext";
 
 
 /*
@@ -93,6 +99,17 @@ const getBlocked = async (proes: PropessetBlockedData) => {
 };
 
 export default function landingPage() {
+
+
+  const [gamemode, setGamemode] = useState<string>("DarkValley");
+  const [gametype, settype] = useState<string>("random");
+  const [gamefiend, setgamefiend] = useState<number>(0);
+  const [rungame, setrungame] = useState<boolean>(true);
+
+  const stopGame = ()=> {
+      setrungame(false);
+  }
+
   const [data, setData] = useState<UserData | null>(null);
   const [checkTwoFactor, setCheckTwoFactor] = useState(
     data?.twoFaCheck || false
@@ -103,6 +120,18 @@ export default function landingPage() {
   const [Socket, setSocket] = useState<Socket | null>(null);
   const router = useRouter();
 
+
+  useEffect(() => {
+    
+      setTimeout(() => {
+        setGamemode("DarkValley");
+        settype("friend");
+        setgamefiend(0);
+        setrungame(true);
+      }, 3000);
+    }, [rungame]);
+
+
   useEffect(() => {
     // Check if the socket has already been initialized
     if (Socket) return;
@@ -112,6 +141,7 @@ export default function landingPage() {
         // autoConnect: true by default, so no need to explicitly call connect()
     });
   
+
     // Setup event listeners only once
     socket.on("connect", () => {
         console.log("socket connected::::::::::::::::::::::");
@@ -149,6 +179,7 @@ export default function landingPage() {
         setFriendsData((currentFriends) => currentFriends ? currentFriends.filter((friend: FriendsType) => friend.id !== data.id) : null);
     });
   
+    
     // Update the Socket state to ensure this effect runs only once
     setSocket(socket);
   
@@ -218,9 +249,6 @@ export default function landingPage() {
   
 
 
-  
-
-
   return (
     <>
       <UserDataContext.Provider value={data}>
@@ -228,15 +256,19 @@ export default function landingPage() {
           value={{ FriendsData, InvitsData, BlockedData }}
         >
         <SocketContext.Provider value={Socket}>
+          <GameContext.Provider value={{ setGamemode, settype, setgamefiend, setrungame }}>
           {data ? (
             checkTwoFactor ? (
-              <App />
+              // <App />
+              
+             rungame && <> <Navbar /> <Gameplay gamemode={gamemode} gametype={gametype} friend={gamefiend} stopGame={stopGame} /></>
             ) : (
               <VerifyTwoFa close={setCheckTwoFactor} />
             )
           ) : (
             <Loding />
           )}
+          </GameContext.Provider>
         </SocketContext.Provider>
         </ProfileDataContext.Provider>
       </UserDataContext.Provider>

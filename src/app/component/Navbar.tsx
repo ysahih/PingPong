@@ -3,6 +3,7 @@ import Profile from "./Profile";
 import { UserData } from "@/components/context/context";
 import { useContext } from "react";
 import UserDataContext from "@/components/context/context";
+import { GameContext } from "../Game/Gamecontext/gamecontext";
 
 const PhoneLogo = ()=>{}
 
@@ -26,12 +27,12 @@ const Notification = () =>{
 }
 
 const Invite = () => {
+    // const gameContext = useContext(GameContext);
     return (
         <div className="Gameinvite drift-animation">
             <div className="userprofile">
                 <Image src="./homeImages/memeber1.svg"  className="userpic" alt="image" width={34} height={34}/>
             </div>
-
             <div className="info">
                 <h2 className="username">Username</h2>
                 <p className="type">Dark Valley</p>
@@ -39,12 +40,11 @@ const Invite = () => {
 
             <div className="desicion ">
                 <Image src="./homeImages/Deny.svg" className="yes-no   " alt="image" width={24} height={24}/>
-                <Image src="./homeImages/Accept.svg" className="yes-no " alt="image" width={24} height={24}/>
+                <Image src="./homeImages/Accept.svg" className="yes-no " alt="image" width={24} height={24} />
             </div>
         </div>
     );
 }
-
 
 
 const Header = () =>{

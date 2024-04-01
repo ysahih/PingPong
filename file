@@ -1,0 +1,63 @@
+// if (!shouldRotate )
+        // {
+          console.log("11111")
+            const  rect = (e.y / window.innerHeight) * 100;
+            if (rect >= tablerect.top / window.innerHeight * 100 && rect <= tablerect.bottom / window.innerHeight * 100) {
+            adjustedRect.current = rect - (tablerect.top / window.innerHeight * 100);
+            adjustedRect.current = adjustedRect.current * 100 / (tablerect.height / window.innerHeight * 100);
+            position.current.stop = 1;
+              // if (isMouseDown.current)
+              // {
+                position.current.stop = 1;
+                p_y.current = adjustedRect.current;
+              // }
+            }
+        // }
+         
+        // else if (shouldRotate )
+        // {
+        //   console.log("222222")
+        //     const rect = (e.y / window.innerHi) * 100;
+        //     if (rect >= tablerect.left / window.innerWidth * 100 && rect <= tablerect.right / window.innerWidth * 100) {
+        //       adjustedRect.current = rect - (tablerect.left / window.innerWidth * 100);
+        //       adjustedRect.current = adjustedRect.current * 100 / (tablerect.width / window.innerWidth * 100);
+        //       position.current.stop = 1;
+        //         if (isMouseDown.current)
+        //         {
+        //           position.current.stop = 1;
+        //           p_y.current = adjustedRect.current;
+        //         }
+        //     }
+        // }
+    };
+  }
+
+    // const handleMouseDown = (e: MouseEvent) => {
+    //   // Check if the left mouse button was clicked
+    //   if (e.button === 0) {
+        
+    //     isMouseDown.current = true;
+       
+    //   }   
+    // };
+  
+    // const handleMouseUp = () => {
+    //   isMouseDown.current = false;
+    // };
+    // // Add event listeners
+    // document.addEventListener('mousedown', handleMouseDown);
+    // document.addEventListener('mousemove', handleMouseMove);
+    // document.addEventListener('mouseup', handleMouseUp);
+
+
+      const render = () => {
+        draw();  
+          Socket?.emit("game", { clientid: user?.id, player: { y: p_y.current }, moveball: position.current.stop ,player1score : position.current.player1score,player2score : position.current.player2score});
+        animationFrameId = window.requestAnimationFrame(render);
+      };
+      render();
+      return () => {
+        window.cancelAnimationFrame(animationFrameId);
+        // document.removeEventListener('mousedown', handleMouseDown);
+        document.removeEventListener('mousemove', handleMouseMove);
+        // document.removeEventListener('mouseup', handleMouseUp);
