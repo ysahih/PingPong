@@ -261,6 +261,23 @@ export class serverGateway
 	}
   }
 
+  @SubscribeMessage("DenyFriend")
+  async handleDenyFriend(@Body() Payload: { id: number; userId: number }) {
+    const targetFriend = await this.FriendsService.deleteFriendRequest(
+      Payload.userId,
+      Payload.id
+    );
+    if (targetFriend !== null) {
+      const SocketsTarget = this._users.getUserById(Payload.userId);
+      if (SocketsTarget) {
+        SocketsTarget.socketId.forEach((socktId: string) => {
+          this._server.to(socktId).emit("DeleteInvit", Payload.id);
+        });
+      }
+    }
+
+  }
+
   @SubscribeMessage("NewFriend")
   async handleAcceptFriend(@Body() Payload: { id: number; userId: number }) {
 	const targetFriend = await this.FriendsService.acceptFriendRequest(
@@ -291,7 +308,8 @@ export class serverGateway
 	  Payload.userId,
 	  Payload.id
 	);
-	if (targetFriend !== null) {
+  console.log("blocked", targetFriend);
+	if (!targetFriend) return
 	  const SocketsTarget = this._users.getUserById(Payload.id);
 	  if (SocketsTarget) {
 		SocketsTarget.socketId.forEach((socktId: string) => {
@@ -303,7 +321,6 @@ export class serverGateway
 		client.socketId.forEach((socktId: string) => {
 		  this._server.to(socktId).emit("NewBlocked", targetFriend);
 		});
-	  }
 	}
   }
 

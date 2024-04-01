@@ -262,7 +262,6 @@ export class authService {
         },
         data: {
           token: bool,
-          online: bool,
           twofaCheck: twoFa,
         },
       });
@@ -274,7 +273,6 @@ export class authService {
         },
         data: {
           token: bool,
-          online: bool,
         },
       });
     }
@@ -309,7 +307,6 @@ export class authService {
               lastName: last_name,
               image: image,
               token: true,
-              online: true,
             },
             select: {
               id: true,
