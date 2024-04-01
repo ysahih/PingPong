@@ -408,11 +408,12 @@
 
 .line{
     width : 80%;
-
     margin: 0px auto;
     border: 0.5px solid var(--item-border-color);
 }
-
+.convoHeader line{
+    width: 100%;
+}
 
 .chatmembers{
     display: flex;
@@ -975,10 +976,10 @@
     width: 90%;
     margin: 0px auto;
     margin-top: 20px;
-    border-radius: 20px;
+    /* border-radius: 20px; */
     height: calc(80vh);
     padding: 1px;
-    border-top: 1px solid var(--border-top-color);
+    /* border-top: 1px solid var(--border-top-color); */
     /* background-color: var(--item-border-color); */
 }
 
@@ -1046,11 +1047,13 @@
     margin: 0px auto;
 }
 
+
 .convoHeader{
     display: flex;
     justify-content: space-around;
-    margin-top: 20px;
     gap: 30px;
+    margin-top: 25px;
+    margin-bottom: 15px;
 
 }
 .sender-info h2{
@@ -1069,11 +1072,7 @@
     margin-right: 35px;
 }
 
-.convo hr{
-    width: 90%;
-    margin: 12px auto ;
-    border: 0.5px solid  var(--border-top-color);
-}
+
 
 .chatholder .convoHolder{
     height: calc(85vh - 180px);

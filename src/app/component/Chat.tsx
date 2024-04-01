@@ -44,11 +44,11 @@ const Members: React.FC<Pics> = ({ chatdata }) => {
             </div>
 
             <div className="profiles">
-                {members && members.map((user: ChatData) => (
+                {members && members.map((user: ChatData, index) => (
                     <Image  className={members?.length > 1 ? "profilepics" : 'profilepics-mar'}
                             src={ user.image ? user.image : "./homeImages/memeber1.svg"} 
                             alt="member" 
-                            key={user.convId}
+                            key={index}
                             width={28} height={20}/>
                 ))}
                 
@@ -117,9 +117,8 @@ const More = ({user}: {user: ChatData})=> {
 
 const Message = ({handleMsgClick, user } : Props) =>{
 
-    const handleClick = ()=>{
-        handleMsgClick(user.id);
-    }
+    console.log("--")
+    console.log(user.lastMessage);
 
     return (
         <div className="Message">
@@ -178,7 +177,6 @@ function Convo( props : convProps | undefined ) {
     handleMsgClick: (value:number) => void;
     userId : number;
     inConvo: String;
-    handleConvo: () => void;
 };
 
 const Conversation = (props : ConvoProps) =>{
@@ -189,8 +187,8 @@ const Conversation = (props : ConvoProps) =>{
     const [Input, setInput] = useState("");
     const [convo, setConvo] = useState<ConvoData | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
-    
     const render = useContext(RenderContext);
+    
     const appendMessage = (newMessage: Object) => {
         setConvo((prevConvo) => {
           if (prevConvo) {
@@ -245,34 +243,31 @@ const Conversation = (props : ConvoProps) =>{
             }
         }
         fetchConvo();
-        socket?.on("chat", (convodata : { userId : number, message : string}) => {
-            const newMessage = { content: convodata.message, userId: props.userId};
-            if(convodata.userId === props.userId)
-                appendMessage(newMessage);
-        });
-        return () => {
-            socket?.off("chat");
-        }
+    //     socket?.on("chat", (convodata : { userId : number, message : string}) => {
+    //         const newMessage = { content: convodata.message, userId: props.userId};
+    //         if(convodata.userId === props.userId)
+    //             appendMessage(newMessage);
+    //     });
+    //     return () => {
+    //         socket?.off("chat");
+    //     }
     }, []);
 
     useEffect(()=>{
-        if (props.inConvo !== ''){
             appendMessage({content: props.inConvo, userId: props.userId})
-            props.handleConvo();
-        }
     }, [props.inConvo]);
 
     return (
         <div className="conversation">
             <div className="convo">
                 <div className="convoHeader">
-                    <div className="sender-info" onClick={() => render?.setRender("profileOverly")}>
+                    <div className="sender-info  cursor-pointer" onClick={() => render?.setRender("profileOverly")}>
                         <Image className="profilepic" src={convo?.image ? convo.image : "./homeImages/memeber1.svg"} width={38} height={42} alt="photo"/>
                         <h2>{convo?.userName}</h2>
                     </div>
-                    <Image className="go-back" src="./homeImages/goback.svg" onClick={handleClick} width={28} height={25} alt="back" />
+                    <Image className="go-back cursor-pointer" src="./homeImages/goback.svg" onClick={handleClick} width={28} height={25} alt="back" />
                 </div>
-                <hr />
+                <hr className="line"/>
                 <Convo userId={props.userId} messages={convo?.messages as Message[]}/>
             
             </div>
@@ -313,10 +308,11 @@ const Chat = () => {
         setChatdata((prevConvo) => {
           if (prevConvo) {
             const updatedConvo = [ newChatData, ...prevConvo ];
+            console.log("--before")
             return updatedConvo;
-          }
-         
-          return [newChatData];
+        }
+        console.log("--after")
+        return [newChatData];
         });
       };
 
@@ -333,28 +329,26 @@ const Chat = () => {
             }
         };
         fetchData();
-           //! when commiting new messages , the data fetched isn't sorted...!
+            //! when commiting new messages , the data fetched isn't sorted...!
+            //if a user is blocked i should not recieve it from the back-end
     }, []);
 
     // listen
     useEffect(() => {
-
         socket?.on("newConvo", (newChatData: ChatData) =>{
             //if the conversation exists: 
-            
-            if (chatdata?.some( olddata => olddata.id === newChatData.id))
-                setChatdata(chatdata.filter(chat => chat.id !== newChatData.id));
-            appendChat(newChatData);
-            // this logic gets it sorted when appending new conversations
-            
-            //if you are inside the convo we pass the new message as props
+        if (chatdata?.some( olddata => olddata.id === newChatData.id))
+            setChatdata(chatdata.filter(chat => chat.id !== newChatData.id));
+        appendChat(newChatData);
+        // ^^ this logic gets it sorted when appending new conversations ^^ \\
+        console.log("----")
+        console.log(chatdata)
+        
+        //if you are inside the convo we pass the new message as props
             if (Convo?.chat === newChatData.id)
                 setInConvo(newChatData.lastMessage);
-                
-            console.log("hello----:")
-            console.log(chatdata)
         })
-        return () => { socket?.off("newConvo") }
+        return () => { socket?.off("newConvo")}
     }, [chatdata]);
 
 
@@ -367,12 +361,12 @@ const Chat = () => {
                 </div>
                
                 <div className="messagesHolder">
-                    {chatdata && chatdata.length > 1 ? chatdata?.map((user: ChatData) => (
-                        <Message key={user.id} handleMsgClick= {()=>Convo?.setChat(user.id)} user={user}/>
+                    {chatdata && chatdata.length > 1 ? chatdata?.map((user: ChatData, index) => (
+                        <Message key={index} handleMsgClick= {()=>Convo?.setChat(user.id)} user={user}/>
                     )) : null}
                  </div>
             </div>}
-            {Convo?.chat !== 0 && <Conversation handleMsgClick={()=>Convo?.setChat(0)} userId={Convo?.chat!} inConvo={inConvo} handleConvo={()=>{setInConvo('')}} />}
+            {Convo?.chat !== 0 && <Conversation handleMsgClick={()=>Convo?.setChat(0)} userId={Convo?.chat!} inConvo={inConvo}/>}
             
         </div>
     );
