@@ -190,15 +190,18 @@ const Conversation = (props : ConvoProps) =>{
     const render = useContext(RenderContext);
     
     const appendMessage = (newMessage: Object) => {
-        setConvo((prevConvo) => {
-          if (prevConvo) {
+        setConvo((prevConvo :any) => {
+          if (prevConvo?.messages) {
             const updatedConvo = {
               ...prevConvo,
               messages: [...prevConvo.messages, newMessage],
             };
             return updatedConvo;
           }
-          return prevConvo;
+          return ({
+            ...prevConvo, 
+            messages: [newMessage],
+          });
         });
       };
       
@@ -308,12 +311,14 @@ const Chat = () => {
         setChatdata((prevConvo) => {
           if (prevConvo) {
             const updatedConvo = [ newChatData, ...prevConvo ];
-            console.log("--before")
+            // console.log("--before")
             return updatedConvo;
         }
-        console.log("--after")
         return [newChatData];
-        });
+    });
+        console.log("00------00");
+        console.log(chatdata);
+
       };
 
 
@@ -341,8 +346,8 @@ const Chat = () => {
             setChatdata(chatdata.filter(chat => chat.id !== newChatData.id));
         appendChat(newChatData);
         // ^^ this logic gets it sorted when appending new conversations ^^ \\
-        console.log("----")
-        console.log(chatdata)
+        // console.log("----")
+        // console.log(chatdata)
         
         //if you are inside the convo we pass the new message as props
             if (Convo?.chat === newChatData.id)
@@ -361,7 +366,7 @@ const Chat = () => {
                 </div>
                
                 <div className="messagesHolder">
-                    {chatdata && chatdata.length > 1 ? chatdata?.map((user: ChatData, index) => (
+                    {chatdata && chatdata.length >= 1 ? chatdata?.map((user: ChatData, index) => (
                         <Message key={index} handleMsgClick= {()=>Convo?.setChat(user.id)} user={user}/>
                     )) : null}
                  </div>

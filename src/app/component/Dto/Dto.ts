@@ -15,5 +15,5 @@ export type ConvoData = {
     id : number,
     userName: String,
     image: String,
-    messages: Array <Object> 
+    messages?: Array <Object> 
 }
