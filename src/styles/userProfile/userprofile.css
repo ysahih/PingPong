@@ -28,7 +28,7 @@
 
 .profileFriends {
   border-top: 1px solid var(--item-border-color);
-  height: 340px;
+  min-height: 340px;
   border-radius: 10px;
   border: 1px, 0px, 0px, 0px;
   gap: 10px;

@@ -12,7 +12,8 @@ export type InvitsType = {
 export type FriendsType = {
     id: number,
     userName: string,
-    image: string
+    image: string,
+    online: boolean,
 };
 
 export type ProfileData = {

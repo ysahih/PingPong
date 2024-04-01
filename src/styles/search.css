@@ -1,0 +1,97 @@
+.SearchCard{
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center; */
+    align-items: center;
+    width: 180px;
+    height: 200px;
+    
+
+    /* padding: 10px; */
+    gap: 10px;
+    /* background: radial-gradient(
+        circle,
+        var(--item-border-color) 20%,
+        #040a2f 100%
+      ); */
+      /* background: #030824; */
+      /* background: #3d436423; */
+      background: var(--bg-color);
+      border-radius: 10px;
+      /* border-top: 1px solid var(--border-top-color); */
+      border: 1px solid #535c9131;
+      box-shadow: 5px 4px 10px 0px #00000040;
+}
+
+
+
+.SearchContainer{
+  padding-top: 30px;
+    margin-top: 20px;
+    width: 100%;
+    height: auto;
+    overflow: auto;
+    overflow-x: hidden;
+    display: grid ;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    /* padding: 10px; */
+    /* background: linear-gradient(
+        0deg,
+        #04092d 20%,
+        #000000 100%
+      ); */
+      /* background: radial-gradient(
+        circle,
+        var(--item-border-color) 20%,
+        #000106 100%
+      ); */
+    
+      /* border-radius: 10px; */
+      /* border-top: 1px solid var(--border-top-color);  */
+       /* box-shadow: 5px 4px 10px 0px #00000040; */
+}
+
+@media (max-width: 1355px) {
+    .SearchContainer{
+        /* grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); */
+        width: 600px;
+    }
+}
+
+@media (max-width: 650px) {
+    .SearchContainer{
+        width: 400px;
+    }
+}
+
+@media (max-width: 500px) {
+  .SearchCard{
+      width: 90%;
+      height: 190px;
+  }
+  .SearchContainer{
+    width: 90%;
+}
+}
+.search-card {
+    transition: transform 0.25s ease-in-out;
+}
+
+.search-card:hover {
+    transform: scale(1.05);
+    /* background: radial-gradient(
+        circle,
+        var(--item-border-color) 20%,
+        #040a2f 100%
+      ); */
+      border-radius: 10px;
+      /* border-top: 1px solid var(--border-top-color); */
+      box-shadow: 5px 4px 10px 0px #00000040;
+}
+
+.InputSearch{
+  padding: 5px;
+  border-radius: 10px;
+  border-top: 1px solid var(--border-top-color); 
+  /* box-shadow: 5px 4px 10px 0px #00000040; */
+}
