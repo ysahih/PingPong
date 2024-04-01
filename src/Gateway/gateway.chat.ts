@@ -162,10 +162,10 @@ export class serverGateway
     @ConnectedSocket() client: Socket,
     @Body() payload: CreateRoom
   ): Promise<void> {
+
     try {
       // TODO: Handle if it is protected it should contain a password
       // Create a room record
-      console.log(payload);
       const newRoom = await this._prisma.createRoom(payload, payload.type);
       this._server
             .to(client.id)

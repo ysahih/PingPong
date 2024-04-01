@@ -108,10 +108,12 @@ export class GatewayService {
   }
 
   async createRoom(payload: CreateRoom, roomType: ROOMTYPE) {
+
     const newRoom = await this._prisma.room.create({
       data: {
         name: payload.name,
         type: roomType,
+        image: payload.image ? payload.image: null,
         users: {
           create: {
             userRole: "OWNER",
@@ -395,7 +397,10 @@ export class GatewayService {
 
     const user = await this._prisma.converstaion.findFirst({
       where: {
-        AND: [{ id: senderId }, { id: receiverId }],
+        AND: [
+          {users: {some: {id: senderId}}},
+          {users: {some: {id: receiverId}}},
+        ],
       },
       include: {
         users: {
@@ -412,6 +417,9 @@ export class GatewayService {
         },
         messages: {
           take: 1,
+          orderBy: {
+            createdAt: 'desc',
+          },
           select: {
             content: true,
             createdAt: true,

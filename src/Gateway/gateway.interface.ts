@@ -1,5 +1,6 @@
 import { IsEnum, IsIn, IsInt, IsNotEmpty, IsString } from "@nestjs/class-validator"
 import { ROOMTYPE } from "@prisma/client"
+import { ValidateIf } from "class-validator"
 
 // Message Class
 export class MessageDTO {
@@ -39,9 +40,14 @@ export class CreateRoom {
 	@IsString()
 	type		:ROOMTYPE
 
-	// @IsNotEmpty()
+	// TODO: Check This
+	@ValidateIf(o => o.type === ROOMTYPE.PROTECTED)
+	@IsNotEmpty()
 	@IsString()
 	password	?:string
+
+	@IsString()
+	image		?:string
 }
 
 export class ChatData {
