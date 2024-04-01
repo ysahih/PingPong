@@ -18,6 +18,9 @@ import { JwtAuthGuard } from "./jwtStrategy/jwtguards";
 import { generateJwtToken } from "./jwtStrategy/jwtToken";
 import { FileInterceptor } from "@nestjs/platform-express";
 
+
+
+// check in bakend if the user already has 2fa enabled
 @Controller()
 export class authController {
   private readonly FrontEndUrl = process.env.FRONTEND_URL;
@@ -82,13 +85,11 @@ export class authController {
     const user = await this.authS.signin(req);
     if (user.error) response.status(400).json(user);
     else
-      response
-        .cookie("jwt", generateJwtToken(user.user), {
-          httpOnly: true,
-          secure: true,
-          sameSite: "none",
-        })
-        .send({ login: "login success !" });
+    response.cookie("jwt", generateJwtToken(user.user), {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production', // Use 'true' in production
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Use 'none' in production with 'secure: true'
+    }).send({ login: "login success !" });
   }
 
   @Post("signup")

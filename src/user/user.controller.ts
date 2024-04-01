@@ -73,8 +73,14 @@ export class UserController {
 
   @Get("search")
   @UseGuards(JwtAuthGuard)
-  async searchUser(@Query() userName: string) {
-    return await this.FriendsService.searchUser(userName["userName"]);
+  async searchUser(@Query() userName: string, @Req() req: Request){
+    return await this.FriendsService.searchUser(userName["userName"], req.user['userId']);
+  }
+
+  @Get("userProfile")
+  @UseGuards(JwtAuthGuard)
+  async searchUserById(@Query() id: string, @Req() req: Request){
+    return await this.FriendsService.searchUserById(parseInt(id['id']), req.user['userId']);
   }
 
   @Get('conversation')
@@ -91,4 +97,10 @@ export class UserController {
 
     return await this.FriendsService.message(req.user['userId'], Number(req.query['id']));
   }
+  @Get('getSentInvits')
+  @UseGuards(JwtAuthGuard)
+  async getSentInvits(@Req() req : Request){
+    return await this.FriendsService.getSentInvits(req.user['userId']);
+  }
+  
 }
