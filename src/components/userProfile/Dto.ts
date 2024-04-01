@@ -17,5 +17,12 @@ export type FriendsType = {
     online: boolean,
 };
 
-
+export type SentInvitsType = {
+    id: number,
+    receiver: {
+        id: number,
+        userName: string,
+        image: string
+    },
+};
 

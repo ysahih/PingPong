@@ -1,12 +1,13 @@
 import Image from "next/image";
 import Profile from "./Profile";
-import { useState } from "react";
+import { use, useState } from "react";
 import axios from "axios";
 import Router from "next/navigation";
 import { useRouter } from "next/navigation";
 import UserDataContext, { UserData } from "@/components/context/context";
 import { useContext } from "react";
 import RenderContext, { renderContext } from "@/components/context/render";
+import SocketContext from "@/components/context/socket";
 
 const Buttons = () => {
   const context: renderContext | null = useContext(RenderContext);
@@ -179,8 +180,11 @@ const PhoneButtons = () => {
 const Sidebar = (props: { showPopup: boolean}) => {
   const data: UserData | null = useContext(UserDataContext);
   const router = useRouter();
-
+  const socket = useContext(SocketContext);
+  
   async function Logout() {
+    
+    
     try {
       const res = await axios.get(process.env.NEST_API + "/logout", {
         headers: {
@@ -190,7 +194,7 @@ const Sidebar = (props: { showPopup: boolean}) => {
       });
       if (res.data) {
         // //console.log('Success:', data);
-
+        socket?.disconnect();
         router.push("/login");
       }
     } catch (error) {
