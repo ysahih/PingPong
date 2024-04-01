@@ -144,18 +144,27 @@ export default function landingPage() {
     
     socket.on("NewFriend", (data: FriendsType) => {
       if (data === undefined || !data) return;
-      console.log("NewFriend", data);
+      // if(FriendsData?.some((friend) => friend.id === data.id)) return;
+      // console.log("NewFriend", data);
       setFriendsData((currentFriends) => currentFriends ? [...currentFriends, data] : [data]);
       setInvitsData((currentInvits) => currentInvits ? currentInvits.filter((invit: InvitsType) => invit.sender.id !== data.id) : null);
     });
 
     socket.on("NewInvit", (data: InvitsType) => {
       console.log("NewInvit :", data);
+      if(InvitsData?.find((invit: InvitsType) => invit.sender.id === data.sender.id)) return;
       setInvitsData((currentInvits) => currentInvits ? [...currentInvits, data] : [data]);
     });
   
+    socket.on("DeleteInvit", (id: number) => {
+      console.log("DeleteInvit", id);
+      setInvitsData((currentInvits) => currentInvits ? currentInvits.filter((invit: InvitsType) => invit.sender.id !== id) : null);
+    });
+    
     socket.on("NewBlocked", (data: FriendsType) => {
-        console.log("NewBlocked", data);
+      // const isUserBlocked = BlockedData?.some((blocked: FriendsType) => blocked.id === data.id);
+      // if (isUserBlocked) return;
+      // console.log("NewBlocked", data, isUserBlocked);
         setBlockedData((currentBlocked) => currentBlocked ? [...currentBlocked, data] : [data]);
         setFriendsData((currentFriends) => currentFriends ? currentFriends.filter((friend: FriendsType) => friend.id !== data.id) : null);
     });

@@ -11,10 +11,7 @@ interface BlockedType {
   value: FriendsType;
 }
 
-const unblock = async (id: number) => {
-  
-  
-};
+
 
 const Block = (props: BlockedType) => {
   const socket = useContext(SocketContext);
@@ -63,10 +60,14 @@ const Blocked = () => {
 
   return (
     <>
-      {blocked &&
+      {blocked && blocked.length > 0 ?
         blocked.map((value) => {
           return <Block key={value.id} value={value} />;
-        })}
+        })
+      :
+        <div className="text-[#8A99E9] flex items-center justify-center w-[95%]">No blocked users</div>
+        
+      }
     </>
   );
 };
