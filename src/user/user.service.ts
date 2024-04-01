@@ -657,47 +657,98 @@ export class FriendsService {
   async message(userId: number, withUserId: number, isRoom :boolean = false) {
 
     let user;
+    let convData :ConvData;
 
     try {
       if (!isRoom)
       {
-        user = await this.prisma.converstaion.findFirst({
+        user = await this.prisma.user.findUnique({
           where: {
-            AND: [
-              {users: {some: {id: userId}}},
-              {users: {some: {id: withUserId}}},
-            ]
+            id: withUserId,
           },
           select: {
-            users: {
+            id: true,
+            userName: true,
+            image: true,
+            conv: {
               where: {
-                NOT: {
-                  id: userId,
-                },
-              },
-              select: {
-                id: true,
-                userName: true,
-                image: true,
-              },
-            },
-            messages: {
-              orderBy: {
-                createdAt: 'asc',
-              },
-              select: {
-                content: true,
-                userId: true,
+                AND: [
+                  {users: {some: {id: user}}},
+                  {users: {some: {id: withUserId}}},
+                ],
               },
             },
           },
         });
-      }
-      const convData :ConvData = {
-        id: user.users[0].id,
-        image: user.users[0].image,
-        userName: user.users[0].userName,
-        messages: user.messages,
+
+        if (user)
+        {
+          convData.id = user.id;
+          convData.userName = user.userName;
+          convData.image = user.image;
+        }
+
+        if (user?.conv)
+        {
+          const messages = await this.prisma.converstaion.findFirst({
+            where: {
+              AND: [
+                {users: {some: {id: userId}}},
+                {users: {some: {id: withUserId}}},
+              ]
+            },
+            select: {
+              messages: {
+                orderBy: {
+                  createdAt: 'asc',
+                },
+                select: {
+                  content: true,
+                  userId: true,
+                },
+              },
+            },
+          });
+
+          convData.messages = messages.messages;
+        }
+      //   user = await this.prisma.converstaion.findFirst({
+      //     where: {
+      //       AND: [
+      //         {users: {some: {id: userId}}},
+      //         {users: {some: {id: withUserId}}},
+      //       ]
+      //     },
+      //     select: {
+      //       users: {
+      //         where: {
+      //           NOT: {
+      //             id: userId,
+      //           },
+      //         },
+      //         select: {
+      //           id: true,
+      //           userName: true,
+      //           image: true,
+      //         },
+      //       },
+      //       messages: {
+      //         orderBy: {
+      //           createdAt: 'asc',
+      //         },
+      //         select: {
+      //           content: true,
+      //           userId: true,
+      //         },
+      //       },
+      //     },
+      //   });
+      // }
+      // const convData :ConvData = {
+      //   id: user.users[0].id,
+      //   image: user.users[0].image,
+      //   userName: user.users[0].userName,
+      //   messages: user.messages,
       }
       // console.log(convData);
       // console.log(user);
