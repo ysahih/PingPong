@@ -17,6 +17,7 @@ import { AuthGuard } from "@nestjs/passport";
 import { JwtAuthGuard } from "./jwtStrategy/jwtguards";
 import { generateJwtToken } from "./jwtStrategy/jwtToken";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { cloudinaryService } from "./cloudinary.service";
 
 
 
@@ -26,7 +27,7 @@ export class authController {
   private readonly FrontEndUrl = process.env.FRONTEND_URL;
   private readonly BackEndUrl = process.env.BACKEND_URL;
 
-  constructor(private authS: authService) {}
+  constructor(private authS: authService, private cloudinaryService: cloudinaryService) {}
 
   @Get("generate-2fa")
   @UseGuards(JwtAuthGuard)
@@ -173,8 +174,12 @@ export class authController {
     @Res() res: Response
   ) {
     try {
-      const fileBase64 = file.buffer.toString("base64");
-      const base64DataURI: string = `data:${file.mimetype};base64,${fileBase64}`;
+      console.log(file);
+      const ImgUrl = await this.cloudinaryService.uploadImage(file);
+      console.log('Imgae----------:  ', ImgUrl);
+      // const fileBase64 = file.buffer.toString("base64");
+      // const base64DataURI: string = `data:${file.mimetype};base64,${fileBase64}`;
+      const base64DataURI: string = ImgUrl;
       const user = await this.authS.Changedata(
         req.user["userId"],
         base64DataURI,
