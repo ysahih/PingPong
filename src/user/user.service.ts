@@ -710,7 +710,7 @@ export class FriendsService {
             },
           });
 
-          convData.messages = messages.messages;
+          convData.messages = messages ? messages.messages : [];
         }
       //   user = await this.prisma.converstaion.findFirst({
       //     where: {
