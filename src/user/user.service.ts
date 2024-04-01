@@ -657,7 +657,7 @@ export class FriendsService {
   async message(userId: number, withUserId: number, isRoom :boolean = false) {
 
     let user;
-    let convData :ConvData;
+    let convData = new ConvData();
 
     try {
       if (!isRoom)
