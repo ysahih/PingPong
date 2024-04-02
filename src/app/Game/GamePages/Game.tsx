@@ -1,7 +1,7 @@
 "use client";
 
 import { use, useContext, useEffect, useRef, useState } from "react";
-import { GameLodingProps, Gameresponse } from "../Gamecontext/gamecontext";
+import { GameContext, GameLodingProps, Gameresponse } from "../Gamecontext/gamecontext";
 import UserDataContext from "@/components/context/context";
 import SocketContext from "@/components/context/socket";
 import Image from "next/image";
@@ -9,7 +9,8 @@ import Gameresult from "./Gameresult";
 
 
 
-const Game : React.FC<{ playerporistion : string ,  lodingdata : GameLodingProps , gamemode :string  ,  stopGame : () => void} > = (props) => {
+const Game : React.FC<{}> = () => {
+  const game = useContext(GameContext );
   const canvasRef = useRef <HTMLCanvasElement>(null);
   const [gameover , setgameover] = useState<boolean>(false); 
   const Socket = useContext(SocketContext);
@@ -31,18 +32,17 @@ const Game : React.FC<{ playerporistion : string ,  lodingdata : GameLodingProps
   useEffect (() => {
     const updatePosition = (mydata: Gameresponse ) => {
       
-
-      if (props.playerporistion == "left")
+      if (game?.playerposition == "left")
       {
         // console.log(mydata);
-        // console.log(props.playerporistion);
+        // console.log(game?.playerporistion);
         position.current.ball =  mydata.ball;
         position.current.player1 = mydata.player1;
         position.current.player2 = mydata.player2;
         position.current.player1score = mydata.player1score;
         position.current.player2score = mydata.player2score;
       }
-      else if (props.playerporistion == "right")
+      else if (game?.playerposition == "right")
       {
         // console.log(mydata);
         // console.log(props.playerporistion);
@@ -218,13 +218,13 @@ useEffect(() => {
 
   return (
     <div>
-        {gameover && <Gameresult result = {scores.player1score > scores.player2score ? "You Win" : "You Lose"}  stopGame={props.stopGame} />}
+        {gameover && <Gameresult result = {scores.player1score > scores.player2score ? "You Win" : "You Lose"}/>}
         <div className="fixed  flex  justify-center items-center  w-[100vw] h-[100vh]">
           <div className="Gamecader flex  flex-col justify-center items-center   mt-5 " >
             <div className="score flex  justify-center items-center " id = "score">
               <div className="PlayerProfile sideleft">
-                < Image  className="rounded-full" src={ props .lodingdata.users[0].image}  width={40} height={40}  alt ="Player image" ></Image>
-                <p>{props.lodingdata.users[0].username}</p>
+                < Image  className="rounded-full" src={ game?.lodingdata.users[0].image || ""  }  width={40} height={40}  alt ="Player image" ></Image>
+                <p>{game?.lodingdata.users[0].username}</p>
               </div>
               <div  className="scoredisplay" id = "scoredisplay" >
                 <div className="leftscore" id = "leftscore">{position.current.player1score}
@@ -234,8 +234,8 @@ useEffect(() => {
                 </div>
               </div>
               <div className="PlayerProfile sideright">    
-                <Image  className="rounded-full" src={ props.lodingdata.users[1].image} width={40} height={40}  alt ="Player image" ></Image>
-                <p>{props.lodingdata.users[1].username}</p>
+                <Image  className="rounded-full" src={ game?.lodingdata.users[1].image || ""} width={40} height={40}  alt ="Player image" ></Image>
+                <p>{game?.lodingdata.users[1].username}</p>
               </div>
             </div>
             <div className="flex justify-center items-center" style = {{

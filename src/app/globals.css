@@ -72,9 +72,8 @@
     border-bottom: 1px solid var(--item-border-color);
     box-shadow: 5px 4px 10px 0px #02041D;
     position: fixed;
-    z-index: 10;
+    z-index: 30;
 }
-
 
 
 .logo{
@@ -212,8 +211,9 @@
     justify-content: space-between;
     position: fixed;
     align-items: center;
-    width: 300px;
-    min-height: 600px;
+    min-width: 302px;
+    max-width : 302px;
+    width: 485px;
     z-index: 3;
     height: calc(100%);
     background: var(--bg-color);
@@ -394,6 +394,7 @@
 
     overflow: scroll;
     overflow-x: hidden;
+    
     height: calc(70vh - 120px);
     min-height: 370px;
 }
@@ -407,11 +408,12 @@
 
 .line{
     width : 80%;
-
     margin: 0px auto;
     border: 0.5px solid var(--item-border-color);
 }
-
+.convoHeader line{
+    width: 100%;
+}
 
 .chatmembers{
     display: flex;
@@ -441,8 +443,20 @@
     margin-left: 5px;
 }
 
-.profilepic{
+.profilepics{
     margin-right: -14px;
+    width: 28px;
+    border-radius: 50%;
+}
+.profilepics-mar{
+    /* margin-right: 0px; */
+    border-radius: 50%;
+    width: 28px;
+
+}
+.profilepic{
+    border-radius: 50%;
+    width: 38px;
 }
 
 
@@ -458,7 +472,7 @@
     width: 85%;
     min-width: 180px;
     max-width: 300px;
-    height: 100px;
+    height: 110px;
     background-color: var(--item-border-color);
     /* background-color: #0F1647; */
     border-top: 1px solid var(--border-top-color);
@@ -482,20 +496,25 @@
     margin: 14px;
 }
 
+/* .msg {
+    background-color: red;
+    width: 100%;
+} */
 
 .messageInfo{
     margin-top: 16px;
+    min-width: 80px;
+    max-width: 200px;
 }
 
 .messageInfo p{
     font-family: Inter;
     font-size: 13px;
+    word-wrap: break-word;
     font-weight: 400;
     color: #8A99E9;
     margin-top: 8px;
 
-    
-    
 }
 
 .messageInfo h2{
@@ -957,10 +976,10 @@
     width: 90%;
     margin: 0px auto;
     margin-top: 20px;
-    border-radius: 20px;
+    /* border-radius: 20px; */
     height: calc(80vh);
     padding: 1px;
-    border-top: 1px solid var(--border-top-color);
+    /* border-top: 1px solid var(--border-top-color); */
     /* background-color: var(--item-border-color); */
 }
 
@@ -1028,11 +1047,13 @@
     margin: 0px auto;
 }
 
+
 .convoHeader{
     display: flex;
     justify-content: space-around;
-    margin-top: 20px;
     gap: 30px;
+    margin-top: 25px;
+    margin-bottom: 15px;
 
 }
 .sender-info h2{
@@ -1051,27 +1072,33 @@
     margin-right: 35px;
 }
 
-.convo hr{
-    width: 90%;
-    margin: 12px auto ;
-    border: 0.5px solid  var(--border-top-color);
-}
+
 
 .chatholder .convoHolder{
     height: calc(85vh - 180px);
    
 }
 
+
+
 .convoHolder{
     display: flex;
     flex-direction: column;
     padding: 20px;
     width: 100%;
-    overflow: auto;
+    overflow-y: scroll;
+    /* overflow: auto; */
     overflow-x: hidden;
+    /* scroll-snap-align: end; */
     height: calc(100vh - 310px);
+    /* height: 300px; */
 
 }
+
+/* .con{
+    display: flex;
+  flex-direction: column-reverse;
+} */
 
 .convoHolder p{
 
@@ -1079,6 +1106,7 @@
     font-size: 13px;
     font-weight: 400;
     color : white;
+    word-wrap: break-word;
 }
 
 .myMsg, .othersMsg{
@@ -1109,12 +1137,21 @@
 }
 /* media// */
 
-
+@media (max-height:559px) {
+    
+}
 @media (max-height: 559px) {
     .PhoneSidebar{
         position: static;
-        height: calc(100vh + 60px);
+        height: 200%;
+        min-height: 600px;
+        margin-top: 10px;
         gap: 50px;
+    }
+    .Sidebar {
+        height: calc(100vh + 94px);
+        min-height: 700px;
+        position: static;
     }
     .phonebuttons{
         margin-top: 70px;
@@ -1181,15 +1218,19 @@
 
 @media (max-width: 1800px){
     .logo{
-
         max-width: 200px;
         min-width: 200px;
+    }
+    .Sidebar{
+        max-width: 200px;
+        min-width: 200px;
+
     }
 
 }
 @media (max-width: 1000px){
+    
     .logo{
-
         max-width: 70px;
         min-width: 70px;
     }
@@ -1221,11 +1262,7 @@
 }
 
 
-@media (max-height:559px) {
-    .Sidebar {
-        position: static;
-    }
-}
+
 
 @media (max-width: 1800px){
     .sideButton{

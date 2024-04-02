@@ -28,10 +28,18 @@ export  interface GameResultProps {
   }
 
 export type GameContextType = {
+	lodingdata : GameLodingProps;
+	gamemode : string;
+	gametype : string;
+	gamefriend : number;
+	Isrunning : boolean;
+	playerposition : string;
+	setRunning : (running : boolean) => void;
 	setGamemode : (mode : string) => void;
-  settype : (type : string) => void;
-  setgamefiend : (friend : number) => void;
-  setrungame: (run : boolean) => void;
+	settype : (type : string) => void;
+  	setgamefriend : (friend : number) => void;
+	setlodingdata : (data : GameLodingProps) => void;
+	setplayerposition : (position : string) => void;
 }
 
 export const GameContext = createContext<GameContextType | null>(null);

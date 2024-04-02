@@ -19,7 +19,6 @@ import BouncingBall from "./Game/GamePages/Gameplay";
 import Gameresult from "./Game/GamePages/Gameresult";
 import Friends from "@/components/userProfile/Friends";
 import Navbar from "./component/Navbar";
-import { GameContext } from "./Game/Gamecontext/gamecontext";
 
 
 /*
@@ -101,15 +100,9 @@ const getBlocked = async (proes: PropessetBlockedData) => {
 export default function landingPage() {
 
 
-  const [gamemode, setGamemode] = useState<string>("DarkValley");
-  const [gametype, settype] = useState<string>("random");
-  const [gamefiend, setgamefiend] = useState<number>(0);
-  const [rungame, setrungame] = useState<boolean>(true);
+  
 
-  const stopGame = ()=> {
-      setrungame(false);
-  }
-
+ 
   const [data, setData] = useState<UserData | null>(null);
   const [checkTwoFactor, setCheckTwoFactor] = useState(
     data?.twoFaCheck || false
@@ -121,15 +114,6 @@ export default function landingPage() {
   const router = useRouter();
 
 
-  useEffect(() => {
-    
-      setTimeout(() => {
-        setGamemode("DarkValley");
-        settype("friend");
-        setgamefiend(0);
-        setrungame(true);
-      }, 3000);
-    }, [rungame]);
 
 
   useEffect(() => {
@@ -141,7 +125,17 @@ export default function landingPage() {
         // autoConnect: true by default, so no need to explicitly call connect()
     });
   
+    socket.on("online", (data: {id: number}) => {
+      console.log("online", data);
+      if(data)
+        setFriendsData((currentFriends) => currentFriends ? currentFriends.map((friend: FriendsType) => friend.id === data.id ? {...friend, online: true} : friend) : null);
+    });
 
+    socket.on("offline", (data: {id: number}) => { 
+      console.log("offline", data);
+      if(data)
+        setFriendsData((currentFriends) => currentFriends ? currentFriends.map((friend: FriendsType) => friend.id === data.id ? {...friend, online: false} : friend) : null);
+    });
     // Setup event listeners only once
     socket.on("connect", () => {
         console.log("socket connected::::::::::::::::::::::");
@@ -163,18 +157,27 @@ export default function landingPage() {
     
     socket.on("NewFriend", (data: FriendsType) => {
       if (data === undefined || !data) return;
-      console.log("NewFriend", data);
+      // if(FriendsData?.some((friend) => friend.id === data.id)) return;
+      // console.log("NewFriend", data);
       setFriendsData((currentFriends) => currentFriends ? [...currentFriends, data] : [data]);
       setInvitsData((currentInvits) => currentInvits ? currentInvits.filter((invit: InvitsType) => invit.sender.id !== data.id) : null);
     });
 
     socket.on("NewInvit", (data: InvitsType) => {
       console.log("NewInvit :", data);
+      if(InvitsData?.find((invit: InvitsType) => invit.sender.id === data.sender.id)) return;
       setInvitsData((currentInvits) => currentInvits ? [...currentInvits, data] : [data]);
     });
   
+    socket.on("DeleteInvit", (id: number) => {
+      console.log("DeleteInvit", id);
+      setInvitsData((currentInvits) => currentInvits ? currentInvits.filter((invit: InvitsType) => invit.sender.id !== id) : null);
+    });
+    
     socket.on("NewBlocked", (data: FriendsType) => {
-        console.log("NewBlocked", data);
+      // const isUserBlocked = BlockedData?.some((blocked: FriendsType) => blocked.id === data.id);
+      // if (isUserBlocked) return;
+      // console.log("NewBlocked", data, isUserBlocked);
         setBlockedData((currentBlocked) => currentBlocked ? [...currentBlocked, data] : [data]);
         setFriendsData((currentFriends) => currentFriends ? currentFriends.filter((friend: FriendsType) => friend.id !== data.id) : null);
     });
@@ -247,8 +250,6 @@ export default function landingPage() {
   // console.log("BlockedData:", BlockedData);
 
   
-
-
   return (
     <>
       <UserDataContext.Provider value={data}>
@@ -256,19 +257,18 @@ export default function landingPage() {
           value={{ FriendsData, InvitsData, BlockedData }}
         >
         <SocketContext.Provider value={Socket}>
-          <GameContext.Provider value={{ setGamemode, settype, setgamefiend, setrungame }}>
+          
           {data ? (
             checkTwoFactor ? (
-              // <App />
+              <App />
               
-             rungame && <> <Navbar /> <Gameplay gamemode={gamemode} gametype={gametype} friend={gamefiend} stopGame={stopGame} /></>
+          //    rungame && <> <Navbar /> <Gameplay gamemode={gamemode} gametype={gametype} friend={gamefiend} stopGame={stopGame} /></>
             ) : (
               <VerifyTwoFa close={setCheckTwoFactor} />
             )
           ) : (
             <Loding />
           )}
-          </GameContext.Provider>
         </SocketContext.Provider>
         </ProfileDataContext.Provider>
       </UserDataContext.Provider>

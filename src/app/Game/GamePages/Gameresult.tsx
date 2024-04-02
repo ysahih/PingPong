@@ -1,13 +1,34 @@
 import '@/app/globals.css'
+import RenderContext from '@/components/context/render';
 import "@/styles/game/Gameplay.css";
-import {  useEffect } from 'react';
+import {  useContext, useEffect } from 'react';
+import { GameContext } from '../Gamecontext/gamecontext';
+import UserDataContext from '@/components/context/context';
 
 
-const Gameresult : React.FC<{ result : string , stopGame : () => void} > = (props) => {
+const Gameresult : React.FC<{ result : string } > = (props) => {
+
+    const game = useContext(GameContext);
+    const render = useContext(RenderContext);
+    const user = useContext(UserDataContext );
 
   useEffect(() => {
       setTimeout(() => {
-        props.stopGame();
+        game?.setRunning(false);
+        game?.setlodingdata({
+          users  : [{
+            clientid : user?.id || -1 ,
+               image : user?.image || "no image",
+               username : user?.userName || "no name" ,
+                ingame : false
+      } ] ,
+          gameloding: true });   
+        game?.setplayerposition("");
+        game?.setGamemode("");
+        game?.settype("");
+        game?.setgamefriend(-1);
+
+        render?.setRender("home");
       }, 2000);
   }, []);
 

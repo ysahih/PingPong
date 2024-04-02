@@ -7,7 +7,7 @@ import '@/app/globals.css'
 import SocketContext from "@/components/context/socket";
 import UserDataContext from "@/components/context/context";
 import Game from "./Game";
-import { GameLodingProps, Userinfo } from "../Gamecontext/gamecontext";
+import { GameContext, GameLodingProps, Userinfo } from "../Gamecontext/gamecontext";
 
 
 const  PlayerReady : React.FC<{lodingdata : Userinfo } > = (props) => {
@@ -57,20 +57,12 @@ const GameLoding : React.FC<{lodingdata : GameLodingProps } > = ( props ) => {
   )
 }
 
-const Gameplay : React.FC<{ gamemode : string , gametype : string , friend : number  ,  stopGame : () => void }> = ( props ) => {
-
-    const [player, setplayer] = useState<number>(0);
+const Gameplay : React.FC<{  }> = ( ) => {
+    const game = useContext(GameContext);
     const user = useContext(UserDataContext);
     const socket = useContext(SocketContext);
-    var playerporistion = useRef<string>("");
-  const [lodingdata, setlodingdata] = useState<GameLodingProps>( {
-          users  : [{
-              clientid : user?.id || -1 ,
-                 image : user?.image || "no image",
-                 username : user?.userName || "no name" ,
-                  ingame : false 
-        } ] ,
-            gameloding: true });
+    
+  
     useEffect(() => 
     {
       const handlegameroom =(responsedata : { room  :{ users : Userinfo[]  , gameloding : boolean} , alreadymatch : boolean }) =>
@@ -79,27 +71,26 @@ const Gameplay : React.FC<{ gamemode : string , gametype : string , friend : num
         if ( responsedata && responsedata.room  && responsedata.room.users && responsedata.room.users.length == 2) 
         {
 
-          if (lodingdata && lodingdata.users.length < 2 && responsedata.room.users[0].clientid ==  user?.id )
+          if (game?.lodingdata && game?.lodingdata.users.length < 2 && responsedata.room.users[0].clientid ==  user?.id )
           {
             console.log("left");
-            playerporistion.current="left";
-            
+            game?.setplayerposition("left");
           }
-          else if  (lodingdata &&  lodingdata.users.length < 2  && responsedata.room.users[1].clientid == user?.id)
+          else if  (game?.lodingdata &&  game?.lodingdata.users.length < 2  && responsedata.room.users[1].clientid == user?.id)
           {
-            playerporistion.current="right";
+            game?.setplayerposition("right");
             console.log("right");
             var tmp = responsedata.room.users[0];
             responsedata.room.users[0] = responsedata.room.users[1];
             responsedata.room.users[1] = tmp;
           }
-          if (lodingdata.users.length < 2)
-          setlodingdata({users : responsedata.room.users,gameloding : true});
+          if (game?.lodingdata &&  game?.lodingdata.users.length  < 2)
+            game?.setlodingdata({users : responsedata.room.users,gameloding : true});
             if (responsedata && responsedata.alreadymatch)
-              setplayer(1);
+               game?.setRunning(true);
        }
       }
-      socket?.emit("RandomGameroom",   { userid : user?.id ,  soketid :socket?.id  , type : props.gametype , friend : props.friend}  );
+      socket?.emit("RandomGameroom",   { userid : user?.id ,  soketid :socket?.id  , type : game?.gametype , friend : game?.gamefriend}  );
       socket?.on("RandomGameroom", handlegameroom  )
 
       return () => {
@@ -107,17 +98,17 @@ const Gameplay : React.FC<{ gamemode : string , gametype : string , friend : num
       }
     } ,[socket]);
       useEffect(() => {
-        if (lodingdata && lodingdata.users.length == 2 )
+        if (game?.lodingdata && game?.lodingdata.users.length == 2 )
         {
           setTimeout(() => {
-            setplayer(1);
+            game?.setRunning(true);
           }, 3000);
         }
-      } ,  [lodingdata])
+      } ,  [game?.lodingdata])
     return ( 
         <div>
-          { player ==0  && <GameLoding lodingdata={lodingdata}  />} 
-          { player == 1 &&  <Game  playerporistion= {playerporistion.current}  lodingdata={lodingdata}  gamemode ={props.gamemode}   stopGame={props.stopGame}/>} 
+          { game?.Isrunning == false  && <GameLoding lodingdata={game.lodingdata}  />} 
+          { game?.Isrunning == true &&  <Game />} 
     </div>
      );
 }

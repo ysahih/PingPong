@@ -8,6 +8,8 @@ import CloseBtn from "./closebtn";
 import Switch from "react-switch";
 import UserFriends from "./userProfile/userProfile";
 import Awards from "./userProfile/Awards";
+import UpdateForm from "@/app/update/UpdateForm";
+import "@/styles/update/update.css";
 
 interface QrCodeProps {
   close: (val: boolean) => void;
@@ -229,24 +231,97 @@ const SettingsAnd2Fa = () => {
   const [disable2Fa, setDisable2Fa] = useState(false);
   const RefBtn = useRef(null);
 
+  const [imageSrc, setImageSrc] = useState(
+    context?.image ? context.image : "./defaultImg.svg"
+  );
+
+  const [file, setFile] = useState<File | null>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event?.target?.files?.[0];
+    setImageSrc(file ? URL.createObjectURL(file) : context?.image? context.image : imageSrc);
+    setFile(file || null);
+  };
   // if () set2FaStatus(true);
   const handleClick = () => {
     if (RefBtn.current) {
       (RefBtn.current as HTMLElement).click();
     }
   };
+
   return (
     <>
-      <Switch onChange={handleClick} checked={!!TwoFaStatus} />
-      <button
-        ref={RefBtn}
-        className="btn2Fa"
-        onClick={() => (TwoFaStatus ? setDisable2Fa(true) : setQrclose(true))}
-      >
-        {TwoFaStatus ? "Disable 2FA" : "Enable 2FA"}
-      </button>
-      {Qrclose && <QrCode close={setQrclose} towFa={set2FaStatus} />}
-      {disable2Fa && <Disable2Fa close={setDisable2Fa} twoFa={set2FaStatus} />}
+      <div>
+      <Image
+          className="float-right h-full   max-w-none overflow-hidden"
+          src="./iconsProfile/Vector.png"
+          width={202}
+          height={200}
+          alt="image"
+        />
+        <div className="p-4">
+          <h1 className="text-2xl text-blue-600 mb-2">Settings</h1>
+          <div className="flex flex-col sm:flex-row">
+            <div className="p-8">
+              <Image
+                className="rounded-[10px]"
+                src={imageSrc}
+                alt="Pongy"
+                width={100}
+                height={100}
+                priority={true}
+              />
+              <input
+                type="file"
+                id="ImageInput"
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+              />
+              <label htmlFor="ImageInput" className="update-botton mt-10">
+                Update
+              </label>
+            </div>
+
+            <div>
+
+              <div className="flex gap-8">
+                <div className=" flex flex-col gap-4 w-[120px]">
+                  <input className="rounded-2 " type="text" />
+                  <input type="text" />
+                  <input type="text" />
+                </div>
+                <div className="flex flex-col gap-4 w-[120px]">
+                  <input type="text" />
+                  <input type="text" />
+                  <input type="text" />
+                </div>
+              </div>
+
+
+              <h3 className="text-md text-gray-500 mt-6">
+                Enable or disable 2FA
+              </h3>
+              <div className="flex w-[100%] gap-4 justify-center mt-4">
+              <Switch onChange={handleClick} checked={!!TwoFaStatus} />
+              <button
+                ref={RefBtn}
+                className="btn2Fa"
+                onClick={() =>
+                  TwoFaStatus ? setDisable2Fa(true) : setQrclose(true)
+                }
+              >
+                {TwoFaStatus ? "Disable 2FA" : "Enable 2FA"}
+              </button>
+              {Qrclose && <QrCode close={setQrclose} towFa={set2FaStatus} />}
+              {disable2Fa && (
+                <Disable2Fa close={setDisable2Fa} twoFa={set2FaStatus} />
+              )}
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
     </>
   );
 };
