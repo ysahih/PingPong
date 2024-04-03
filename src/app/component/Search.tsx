@@ -20,8 +20,8 @@ import {
   InvitsType,
   SentInvitsType,
 } from "@/components/userProfile/Dto";
-import { Loding } from "../home/Loding";
 import Friends from "@/components/userProfile/Friends";
+import ChatContext from "@/components/context/chatContext";
 
 type UserProps = {
   id: number;
@@ -36,6 +36,7 @@ interface friendsType {
 const Friend = (props: friendsType) => {
   const socket = useContext(SocketContext);
   const user = useContext(UserDataContext);
+  const context = useContext(ChatContext);
   const [blocking, setBlocking] = useState<boolean>(false);
 
   const block = (id: number) => {
@@ -88,6 +89,9 @@ const Friend = (props: friendsType) => {
           width={23}
           height={24}
           property="true"
+          onClick={() => {
+            context?.setChat(props.value.id);
+          }}
           alt="online"
           className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out"
         />
@@ -242,6 +246,48 @@ const User = (props: UserProps) => {
   );
 };
 
+const SentInvits = (props: { invit: SentInvitsType }) => {
+  const invit: SentInvitsType = props.invit;
+  const user = useContext(UserDataContext);
+  const [cenceled, setCenceled] = useState<boolean>(false);
+
+  const socket = useContext(SocketContext);
+  return (
+    <div className="search-card SearchCard  text-white mb-2">
+      <div className="relative">
+        <div
+          className="mt-2 inline-block rounded-full overflow-hidden border-2 border-transparent shadow-lg w-[80px] h-[80px]"
+          style={{ outline: ".2px solid #535C91" }}
+        >
+          <Image
+            className="bg-cover bg-center w-[80px] h-[80px]"
+            src={invit?.receiver?.image || "./defaultImg.svg"}
+            width={60}
+            height={60}
+            alt="user"
+          />
+        </div>
+      </div>
+      <div className="mt-[-10px]">
+        <h3 className="text-[16px]">{invit.receiver.userName}</h3>
+        <p className="text-center text-[#8A99E9] text-[12px]">#12</p>
+      </div>
+      <div
+        className="mt-[6px] rounded-2 cursor-pointer bg-white p-1"
+        onClick={() => {
+          socket?.emit("DeleteFriend", {
+            id: invit.receiver.id,
+            userId: user?.id,
+          });
+          setCenceled(true);
+        }}
+      >
+        <p className=" text-[#8A99E9] text-[14px]"> {cenceled? 'canceled' : 'cancel Invitation'}</p>
+      </div>
+    </div>
+  );
+};
+
 const Search = () => {
   const [users, setUsers] = useState<UserProps[]>([]);
   const [userName, setUserName] = useState<string>("");
@@ -285,7 +331,13 @@ const Search = () => {
       if (inFriends || inInvits || inUsers || inSentInvit) {
         setUserNotFound(false);
       }
-      if (!inFriends && !inInvits && !inUsers && !inSentInvit && userName.length > 0) {
+      if (
+        !inFriends &&
+        !inInvits &&
+        !inUsers &&
+        !inSentInvit &&
+        userName.length > 0
+      ) {
         setUserNotFound(true);
       }
     }
@@ -318,7 +370,7 @@ const Search = () => {
       }
     };
     search();
-  }, [userName]);
+  }, [userName, friends]);
 
   return (
     <div className="search flex flex-col items-center w-full p-2 pt-8">
@@ -328,7 +380,7 @@ const Search = () => {
           type="search"
           placeholder="Search"
           className=" bg-transparent border-none focus:border-none focus:outline-none w-[240px] h-[40px] text-white text-[16px]"
-          onChange={(e) => setTimeout(() => setUserName(e.target.value), 500)}
+          onChange={(e) => setTimeout(() => setUserName(e.target.value.trim()), 800)}
         />
       </div>
       <div className="SearchContainer">
@@ -354,44 +406,19 @@ const Search = () => {
         </>
 
         <>
-          {!isLoading &&
-            sentInvits &&
-            sentInvits.length &&
+          {!isLoading && sentInvits && sentInvits.length ? (
             sentInvits?.map((invit: SentInvitsType) => {
               return (
-                invit?.receiver?.userName
+                invit.receiver.userName
                   .toLowerCase()
-                  .startsWith(userName?.toLowerCase()) && (
-                  <div className="search-card SearchCard  text-white mb-2">
-                    <div className="relative">
-                      <div
-                        className="mt-2 inline-block rounded-full overflow-hidden border-2 border-transparent shadow-lg w-[80px] h-[80px]"
-                        style={{ outline: ".2px solid #535C91" }}
-                      >
-                        <Image
-                          className="bg-cover bg-center w-[80px] h-[80px]"
-                          src={invit?.receiver?.image || "./defaultImg.svg"}
-                          width={60}
-                          height={60}
-                          alt="user"
-                        />
-                      </div>
-                    </div>
-                    <div className="mt-[-10px]">
-                      <h3 className="text-[16px]">{invit.receiver.userName}</h3>
-                      <p className="text-center text-[#8A99E9] text-[12px]">
-                        #12
-                      </p>
-                    </div>
-                    <div className="mt-[10px] rounded-2 cursor-pointer">
-                      <p className="text-[#8A99E9] text-[14px]">
-                        Cancel Invitation
-                      </p>
-                    </div>
-                  </div>
+                  .startsWith(userName.toLowerCase()) && (
+                  <SentInvits key={invit.id} invit={invit} />
                 )
               );
-            })}
+            })
+          ) : (
+            <></>
+          )}
         </>
 
         {isLoading ? (
