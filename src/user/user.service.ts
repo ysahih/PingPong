@@ -319,6 +319,74 @@ export class FriendsService {
     }
   }
 
+  async getNotifications(UserId: number) {
+    try {
+      const Notifications = await this.prisma.user.findUnique({
+        where: {
+          id: UserId,
+        },
+        select: {
+          notifications: {
+            select: {
+              id: true,
+              content: true,
+              createdAt: true,
+              image: true,
+              userName: true,
+              seen: true,
+            },
+            orderBy: {
+              createdAt: "desc",
+            },
+          },
+        },
+      });
+      return Notifications;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async newNotification(UserId: number,  userName: string, image: string, content: string) {
+    try {
+      const notification = await this.prisma.notification.create({
+        data: {
+          userId: UserId,
+          content: content,
+          image: image,
+          userName: userName,
+        },
+        select: {
+          id: true,
+          content: true,
+          createdAt: true,
+          image: true,
+          userName: true,
+          seen: true,
+        },
+      });
+      return notification;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async NotificationsSeen(UserId: number) {
+    try {
+      const notifications = await this.prisma.notification.updateMany({
+        where: {
+          userId: UserId,
+        },
+        data: {
+          seen: true,
+        },
+      });
+      return notifications;
+    } catch (e) {
+      return null;
+    }
+  }
+
   async acceptFriendRequest(UserId: number, TargetId: number): Promise<any> {
     try {
       const check = await this.checkFriendRequest(UserId, TargetId);
@@ -491,6 +559,9 @@ export class FriendsService {
 
   async deleteFriendRequest(UserId: number, TargetId: number) {
     try {
+      const check = await this.checkFriendRequest(UserId, TargetId);
+      if (!check || check.accepted || check.blocked) 
+        return null;
       const friends = await this.prisma.friendRequest.deleteMany({
         where: {
           OR: [

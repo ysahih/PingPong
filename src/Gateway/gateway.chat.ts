@@ -256,6 +256,7 @@ export class serverGateway
 	);
 	
 	if (targetFriend) {
+    const notifications = await this.FriendsService.newNotification(Payload.id, targetFriend.sender.userName, targetFriend.sender.image, "sent you a friend request");
 	  const newInvit: Invitation = {
 		id: targetFriend.id,
 		sender: {
@@ -268,6 +269,7 @@ export class serverGateway
 	  if (Sockets) {
 		Sockets.socketId.forEach((socktId: string) => {
 		  this._server.to(socktId).emit("NewInvit", newInvit);
+      notifications && this._server.to(socktId).emit("Notification", notifications);
 		});
 		console.log(" newInvet from :", targetFriend.sender);
 	  }
@@ -280,6 +282,7 @@ export class serverGateway
       Payload.userId,
       Payload.id
     );
+    console.log("deny : ", targetFriend, Payload.id, Payload.userId);
     if (targetFriend !== null) {
       const SocketsTarget = this._users.getUserById(Payload.userId);
       if (SocketsTarget) {
@@ -291,6 +294,23 @@ export class serverGateway
 
   }
 
+  @SubscribeMessage("DeleteFriend")
+  async handleDeleteFriend(@Body() Payload: { id: number; userId: number }) {
+    const targetFriend = await this.FriendsService.deleteFriendRequest(
+      Payload.id,
+      Payload.userId,
+    );
+    console.log("deny : ", targetFriend, Payload.id, Payload.userId);
+    if (targetFriend !== null) {
+      const SocketsTarget = this._users.getUserById(Payload.id);
+      if (SocketsTarget) {
+        SocketsTarget.socketId.forEach((socktId: string) => {
+          this._server.to(socktId).emit("DeleteInvit", Payload.userId);
+        });
+      }
+    }
+  }
+
   @SubscribeMessage("NewFriend")
   async handleAcceptFriend(@Body() Payload: { id: number; userId: number }) {
 	const targetFriend = await this.FriendsService.acceptFriendRequest(
@@ -298,16 +318,20 @@ export class serverGateway
 	  Payload.id
 	);
 	if (targetFriend !== null) {
+    const notifications = await this.FriendsService.newNotification(Payload.id, targetFriend.sender.userName, targetFriend.sender.image, "accepted your friend request");
+
 	  const SocketsTarget = this._users.getUserById(Payload.id);
 	  if (SocketsTarget) {
 		SocketsTarget.socketId.forEach((socktId: string) => {
 		  this._server.to(socktId).emit("NewFriend", targetFriend.sender);
+      notifications && this._server.to(socktId).emit("Notification", notifications);
 		});
 	  }
 	  const client = this._users.getUserById(Payload.userId);
 	  if (client) {
 		client.socketId.forEach((socktId: string) => {
 		  this._server.to(socktId).emit("NewFriend", targetFriend.reciever);
+      
 		});
 	  }
 	}
