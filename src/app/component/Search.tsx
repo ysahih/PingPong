@@ -44,7 +44,7 @@ const Friend = (props: friendsType) => {
   };
 
   return (
-    <div className="search-card SearchCard  text-white">
+    <div className="search-card SearchCard  text-white mb-2">
       <div className="relative">
         {props.value.online && (
           <>
@@ -127,7 +127,7 @@ const Invit = (props: InvitProps) => {
   const [deny, setDeny] = useState<boolean>(false);
 
   return (
-    <div key={values.id} className="search-card SearchCard  text-white">
+    <div key={values.id} className="search-card SearchCard  text-white mb-2">
       <div className="relative">
         <div
           className="mt-2 inline-block rounded-full overflow-hidden border-2 border-transparent shadow-lg w-[80px] h-[80px]"
@@ -273,7 +273,7 @@ const SentInvits = (props: { invit: SentInvitsType }) => {
         <p className="text-center text-[#8A99E9] text-[12px]">#12</p>
       </div>
       <div
-        className="mt-[6px] rounded-2 cursor-pointer bg-white p-1"
+        className="mt-[6px] cursor-pointer CancelBtn"
         onClick={() => {
           socket?.emit("DeleteFriend", {
             id: invit.receiver.id,
@@ -282,7 +282,7 @@ const SentInvits = (props: { invit: SentInvitsType }) => {
           setCenceled(true);
         }}
       >
-        <p className=" text-[#8A99E9] text-[14px]"> {cenceled? 'canceled' : 'cancel Invitation'}</p>
+        <p className=" text-[#8A99E9] text-[14px] "> {cenceled? 'canceled' : 'cancel Invitation'}</p>
       </div>
     </div>
   );
