@@ -7,6 +7,7 @@ import {
 } from "@nestjs/common";
 import {
   ConnectedSocket,
+  MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
   OnGatewayInit,
@@ -25,6 +26,7 @@ import * as jwt from "jsonwebtoken";
 import { FriendsService } from "src/user/user.service";
 
 import { Message } from "@prisma/client";
+import { RoomInfo, datagame, gameSocket, userinfo } from "./gateway.gameclasses";
 
 type Invitation = {
   id: number;
@@ -381,6 +383,125 @@ export class serverGateway
 	  }
 	}
   }
+
+  public  gameRooms : datagame = new datagame();
+		private roomOccupancy: { [room: string]: RoomInfo } = {};
+		@SubscribeMessage('RandomGameroom')
+    	async  handleJoinRome(@ConnectedSocket () client: Socket , @Body() lodingdata: {userid : number , soketid : string , type : string , friendid : number} ):Promise<void> {
+				console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+				let user: userinfo ;
+				try {
+					const base = await this._prisma.userInfogame(lodingdata.userid);
+					user = {clientid: lodingdata.userid, image: base.image, username: base.userName , ingame: false}
+				} catch (error) {
+					console.error("Error fetching user info:", error);
+				}
+				let curentroom = this.gameRooms.searcheClientRoom(lodingdata.userid) ;
+				console.log(1);
+				if ( !curentroom )
+				{
+					curentroom = this.gameRooms.findEmptyRoom(lodingdata.type , lodingdata.userid);
+					try{
+					if (!curentroom)
+					{
+						console.log(2);
+						curentroom = lodingdata.soketid;	
+						this.gameRooms.addRoom(lodingdata.soketid, user , lodingdata.type , lodingdata.friendid);	
+					}
+					else
+					{
+						console.log(3);
+						this.gameRooms.addUser(curentroom, user);
+					}
+					}
+					catch (error) {
+						console.error("Error fetching user info:", error);
+					}
+				}
+				// join game
+				else  if ( curentroom && (this.gameRooms.checkRoomsize(curentroom) === 2 ))
+				{ 
+					console.log(4);
+					client.join(curentroom);
+					this._server.to(curentroom).emit('RandomGameroom',{ room: this.gameRooms.rooms[curentroom] , alreadymatch: true});
+					return ;
+				}
+				// join game
+				client.join(curentroom);
+				if ( curentroom && (this.gameRooms.checkRoomsize(curentroom) === 2 ))
+				{
+					console.log(5);
+					this._server.to(curentroom).emit('RandomGameroom' ,{ room: this.gameRooms.rooms[curentroom] , alreadymatch: false });
+				}
+				console.log("---------------------------------------");		
+			}
+
+			@SubscribeMessage('game')
+			async Game(@ConnectedSocket() client: Socket, @MessageBody() mydata: gameSocket ) {	
+			console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.");
+			var room = this.gameRooms.searcheClientRoom(mydata.clientid);
+
+			if (!room)
+			{
+				console.log("room not found");
+				return ;
+			}
+			client.join(room);
+			this.gameRooms.movePlayer(room, mydata.clientid, mydata.player.y);
+			if (mydata.player1score + mydata.player2score != this.gameRooms.game[room].player1score + this.gameRooms.game[room].player2score)
+			{
+				mydata.moveball = 0;
+				return ;
+			}
+			this.gameRooms.setmoveball(room, mydata.moveball);
+			if (!this.gameRooms.gameIntervals[room]) {
+				this.gameRooms.gameIntervals[room] = setInterval(async () => {
+					
+					if (this.gameRooms.game[room].player1score == 7 ||  this.gameRooms.game[room].player2score == 7)
+					{
+						this.gameRooms.clearIntervals(room);
+						this.gameRooms.DeleteRoom(room);
+						this.gameRooms.Deletegame(room);
+						return ;
+					}			
+					this.gameRooms.updateBall(room);
+					if (this.gameRooms.score(room))
+					{
+						if (this.gameRooms.game[room].player1score < 7 &&  this.gameRooms.game[room].player2score < 7)
+						this.gameRooms.newRound(room);
+						else 
+						this.gameRooms.setendgame(room);
+					}
+					mydata.moveball = this.gameRooms.getmoveball(room);
+					this._server.to(room).emit('game', {
+						player1: this.gameRooms.game[room].player1.y,
+						player2: this.gameRooms.game[room].player2.y,
+						player1score: this.gameRooms.game[room].player1score,
+						player2score: this.gameRooms.game[room].player2score,
+						ball: this.gameRooms.game[room].ball,
+						stop: mydata.moveball,
+						gameover: this.gameRooms.game[room].gameover
+					});
+
+					try {
+					// console.log("user0" , await this._prisma.userInfogame(this.gameRooms.rooms[room].users[0].clientid));
+					// console.log("user1" , await this._prisma.userInfogame(this.gameRooms.rooms[room].users[1].clientid));
+					}
+					catch (error) {
+						console.error("Error fetching user info:", error);
+					}
+			console.log("----------------------------------------------------");
+			} , 15)}
+		}
+
+		@SubscribeMessage('Gameover')
+		async Gameover(@ConnectedSocket() client: Socket, @MessageBody () mydata: { clientid: number }) {	
+
+			
+		}
+
+
+
   /**
    * end of functions :by essadike
    */

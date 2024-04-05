@@ -446,4 +446,20 @@ export class GatewayService {
 
     return (convo);
   }
+  
+  async userInfogame(id: number) {
+
+		const user = await this._prisma.user.findUnique({
+			where: {
+				id: id,
+			},
+			select: {
+				id: true,
+				userName: true,
+				image: true,
+			}
+		});
+		return (user);
+	}
+
 }
