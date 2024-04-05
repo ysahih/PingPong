@@ -109,7 +109,7 @@ const Notification = () =>{
                     notificationList.map((data) => (
                        
                         <div className={data.seen? 'bg-[#23233efc] notificationList' : 'notificationList bg-[#1B1A55]'} key={data.id}>
-                            <Image src={data.image} className="rounded-full" alt="image" width={34} height={34}/>
+                            <Image src={data?.image || "./defaultImg.svg"} className="rounded-full" alt="image" width={34} height={34}/>
                             <p className="infoNtf"> <span className='userNameSpan'>{data.userName} </span>{data.content}</p>
                             <p className="text-[12px]  absolute mt-[40px] ml-[180px]">{timeAgo?.format(new Date(data.createdAt))}</p>
                         </div>

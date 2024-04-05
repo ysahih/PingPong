@@ -60,7 +60,7 @@ const Friend = (props: friendsType) => {
         >
           <Image
             className="bg-cover bg-center w-[80px] h-[80px]"
-            src={props.value.image}
+            src={props?.value?.image || "./defaultImg.svg"}
             width={60}
             height={60}
             alt="user"
@@ -135,7 +135,7 @@ const Invit = (props: InvitProps) => {
         >
           <Image
             className="bg-cover bg-center w-[80px] h-[80px]"
-            src={values.sender.image}
+            src={values?.sender?.image || "./defaultImg.svg"}
             width={60}
             height={60}
             alt="user"
@@ -218,7 +218,7 @@ const User = (props: UserProps) => {
   return (
     <div className="search-card SearchCard  text-white mb-2">
       <Image
-        src={props.image || "./defaultImg.svg"}
+        src={props?.image || "./defaultImg.svg"}
         alt="profile"
         width={80}
         height={80}
