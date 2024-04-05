@@ -34,27 +34,12 @@
     overflow-x: hidden;
     display: grid ;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    /* padding: 10px; */
-    /* background: linear-gradient(
-        0deg,
-        #04092d 20%,
-        #000000 100%
-      ); */
-      /* background: radial-gradient(
-        circle,
-        var(--item-border-color) 20%,
-        #000106 100%
-      ); */
-    
-      /* border-radius: 10px; */
-      /* border-top: 1px solid var(--border-top-color);  */
-       /* box-shadow: 5px 4px 10px 0px #00000040; */
 }
 
 @media (max-width: 1355px) {
     .SearchContainer{
-        /* grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); */
-        width: 600px;
+        width: 100%;
+        max-width: 600px;
     }
 }
 
@@ -186,4 +171,14 @@
   font-size: 16px;
   font-weight: 200;
   color: rgb(255, 255, 255);
+}
+
+.CancelBtn{
+  background: #1B266B;
+  color: var(--bg-color);
+  border: none;
+  border-radius: 10px;
+  padding: 5px 10px;
+  font-size: 14px;
+  border-top: 1px solid var(--border-top-color);
 }

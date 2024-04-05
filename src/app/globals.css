@@ -73,6 +73,7 @@
     width: 100%;
     border-bottom: 1px solid var(--item-border-color);
     box-shadow: 5px 4px 10px 0px #02041D;
+    /* box-shadow: 5px 4px 10px 0px #33365b; */
     position: fixed;
     z-index: 30;
 }
@@ -221,6 +222,7 @@
     background: var(--bg-color);
     border-right: 1px solid var(--item-border-color);
     box-shadow: 5px 0px 10px 0px #00000040;
+
    
 }
 
@@ -339,7 +341,7 @@
     min-height: 700px;
     background: var(--bg-color);
     border-left: 1px solid var(--item-border-color);
-    box-shadow: -5px 4px 10px 0px #00000040;
+    /* box-shadow: -5px 4px 10px 0px #00000040; */
     transition: opacity 0.3s ease;
 
     /* position: fixed; */
@@ -701,7 +703,7 @@
     flex-direction: column;
     justify-content: center;
     gap: 7%;
-    box-shadow: 5px 4px 10px 0px #00000040;
+    /* box-shadow: 5px 4px 10px 0px #00000040; */
 }
 
 .darkRow, .LightRow{
@@ -926,7 +928,7 @@
     max-height: 80vh;
     border-top: 1px solid var(--item-border-color);
     border-radius: 12px;
-    box-shadow: 5px 4px 10px 0px #00000040;
+    /* box-shadow: 5px 4px 10px 0px #00000040; */
   
 }
 
@@ -966,7 +968,7 @@
     max-height: 80vh;
     border-top: 1px solid var(--item-border-color);
     border-radius: 12px;
-    box-shadow: 5px 4px 10px 0px #00000040;
+    /* box-shadow: 5px 4px 10px 0px #00000040; */
  
 }
 
