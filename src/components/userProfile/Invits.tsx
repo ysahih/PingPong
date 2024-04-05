@@ -1,7 +1,6 @@
 import "@/styles/userProfile/userFriend.css";
-import axios from "axios";
 import Image from "next/image";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { InvitsType } from "./Dto";
 import ProfileDataContext from "../context/profilDataContext";
 import SocketContext from "../context/socket";
@@ -30,7 +29,7 @@ const Invit = (props: InvitProps) => {
         >
           <Image
             className="bg-cover bg-center w-full h-full"
-            src={values?.sender?.image || "./GamePlayImages/GamePlayerProfile.svg"}
+            src={values?.sender?.image || "./defaultImg.svg"}
             width={60}
             height={60}
             alt="user"

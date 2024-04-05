@@ -25,7 +25,7 @@ const Block = (props: BlockedType) => {
         >
           <Image
             className="bg-cover bg-center w-full h-full"
-            src={props.value.image}
+            src={props?.value?.image || "./defaultImg.svg"}
             width={60}
             height={60}
             alt="user"

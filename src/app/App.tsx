@@ -61,7 +61,7 @@ import SocketContext from "@/components/context/socket";
 
 const Tables = () => {
   return (
-    <Carousel placeholder="carousel" className="tables rounded-lg">
+    <Carousel placeholder="carousel" className="tables rounded-lg z-10">
       <div className=" darktable relative h-1/2 w-full">
         <Image
           src="./homeImages/darkvalley.svg"

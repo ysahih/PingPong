@@ -95,3 +95,95 @@
   border-top: 1px solid var(--border-top-color); 
   /* box-shadow: 5px 4px 10px 0px #00000040; */
 }
+
+
+/* Notifcation */
+
+.NtfContainer{
+  font-family: Inter;
+  font-weight: 100;
+
+  /* top: 0;
+  right: 0; */
+  color: rgba(240, 235, 235, 0.84);
+  width: 300px;
+  margin-left:  -130px;
+  margin-top: 10px;
+  height: auto;
+  display: flex;
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 14px;
+  padding: 10px;
+  background: #061937b3;
+  border-radius: 10px;
+  /* border-top: 1px solid var(--border-top-color);  */
+  box-shadow: 5px 4px 10px 0px #00000040;
+  z-index: 1000;
+}
+
+.notificationList{
+  z-index: 1000;
+
+  display: flex;
+  font-size: 14px;
+  word-spacing: 2px;
+  font-weight: 200;
+  
+  /* justify-content: center; */
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  /* background: #1B1A55; */
+  border-radius: 10px;
+  border-top: 1px solid var(--border-color); 
+  /* box-shadow: 5px 4px 10px 0px #5f5d5d40; */
+}
+.infoNtf{
+  font-size: 14px;
+}
+
+@media (max-width: 720px) {
+  .NtfContainer{
+    /* width: 60%; */
+    margin-left: -200px;
+  }
+  .notificationList{
+    font-size: 12px;
+  }
+  
+}
+.NtfIcon{
+  border-radius:50%;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #1B266B;
+  border: 2px solid var(--bg-color);
+  outline: 2px solid#1B266B;
+}
+
+.NumNotf{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 14px;
+  width:  24px;
+  height: 24px;
+  background: #1B266B;
+  border-radius: 50%;
+  border: 2px solid var(--bg-color);
+  color: var(--bg-color);
+}
+
+.userNameSpan{
+  font-size: 16px;
+  font-weight: 200;
+  color: rgb(255, 255, 255);
+}

@@ -177,6 +177,7 @@ function Convo( props : convProps | undefined ) {
     handleMsgClick: (value:number) => void;
     userId : number;
     inConvo: String;
+    handleConvo : () => void;
 };
 
 const Conversation = (props : ConvoProps) =>{
@@ -227,6 +228,7 @@ const Conversation = (props : ConvoProps) =>{
 
     const handleClick = ()=>{
         props.handleMsgClick(0);
+
     }
 
 
@@ -257,7 +259,9 @@ const Conversation = (props : ConvoProps) =>{
     }, []);
 
     useEffect(()=>{
+        if(props.inConvo)
             appendMessage({content: props.inConvo, userId: props.userId})
+        props.handleConvo();
     }, [props.inConvo]);
 
     return (
@@ -315,11 +319,8 @@ const Chat = () => {
             return updatedConvo;
         }
         return [newChatData];
-    });
-        console.log("00------00");
-        console.log(chatdata);
-
-      };
+        });
+    };
 
 
     useEffect(() => {
@@ -350,9 +351,11 @@ const Chat = () => {
         // console.log(chatdata)
         
         //if you are inside the convo we pass the new message as props
+
             if (Convo?.chat === newChatData.id)
                 setInConvo(newChatData.lastMessage);
-        })
+        
+            })
         return () => { socket?.off("newConvo")}
     }, [chatdata]);
 
@@ -366,12 +369,12 @@ const Chat = () => {
                 </div>
                
                 <div className="messagesHolder">
-                    {chatdata && chatdata.length >= 1 ? chatdata?.map((user: ChatData, index) => (
+                    {chatdata ? chatdata.map((user: ChatData, index) => (
                         <Message key={index} handleMsgClick= {()=>Convo?.setChat(user.id)} user={user}/>
                     )) : null}
                  </div>
             </div>}
-            {Convo?.chat !== 0 && <Conversation handleMsgClick={()=>Convo?.setChat(0)} userId={Convo?.chat!} inConvo={inConvo}/>}
+            {Convo?.chat !== 0 && <Conversation handleMsgClick={()=>Convo?.setChat(0)} userId={Convo?.chat!} inConvo={inConvo} handleConvo={() =>{setInConvo("")}} />}
             
         </div>
     );

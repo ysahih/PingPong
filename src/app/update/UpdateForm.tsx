@@ -39,7 +39,7 @@ const UpdateForm = (props: UpdateFormProps) => {
             const response = await axios.put(process.env.NEST_API + '/update', formData, 
             {
                 headers: {
-                    'Accept': 'form-data',
+                    'Content-Type': 'multipart/form-data',
                 },
                 withCredentials: true
             });
