@@ -35,7 +35,7 @@
 //     </>;
 // }
 
-import { useContext, useEffect, useRef, useState } from "react";
+import { use, useContext, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Navbar from "./component/Navbar";
 import Ranking from "./component/Ranking";
@@ -55,8 +55,9 @@ import RenderContext, { renderContext } from "@/components/context/render";
 import UserProfile from "@/components/userProfile";
 import ProfileOverlay from "./component/ProfileOverlay";
 import Gameplay from "./Game/GamePages/Gameplay";
-import { GameContext, GameLodingProps } from "./Game/Gamecontext/gamecontext";
+import { GameContext, GameLodingProps, NotificationContext } from "./Game/Gamecontext/gamecontext";
 import UserDataContext from "@/components/context/context";
+import SocketContext from "@/components/context/socket";
 
 const Tables = () => {
   return (
@@ -197,23 +198,7 @@ const BackGround = () => {
 
 const Home = (props: { showPopup: boolean }) => {
 
-  const [gamemode, setGamemode] = useState<string>("DarkValley");
-  const [gametype, settype] = useState<string>("random");
-  // random , friend , ai
-  const [gamefriend, setgamefriend] = useState<number>(-1);
-  //  -1 , friendid
-  const [Isrunning, setRunning] = useState<boolean>(false);
-  const [playerposition , setplayerposition] = useState<string>("");
-  const user = useContext(UserDataContext );
-  const [lodingdata, setlodingdata] = useState<GameLodingProps>( {
-    users  : [{
-      clientid : user?.id || -1 ,
-         image : user?.image || "no image",
-         username : user?.userName || "no name" ,
-          ingame : false
-} ] ,
-    gameloding: true });
- 
+
 	const context : renderContext | null = useContext(RenderContext);
 	return (
 		<div className={props.showPopup ? 'home-margin homepage' : 'homepage'}>
@@ -221,9 +206,7 @@ const Home = (props: { showPopup: boolean }) => {
 				<Tables/>
 				<Statistics/>
 			</div>}
-      <GameContext.Provider value={{ lodingdata ,  gamemode , gametype , gamefriend , Isrunning  , playerposition, setRunning , setGamemode , settype , setgamefriend , setlodingdata , setplayerposition}}>
-			{context?.render === "games" && <Gameplay />}
-			{/* {context?.render === "games" && <Games />} */}
+			{context?.render === "games" && <Games />}
 			{context?.render === "ranking" && <Ranking/>}
 			{context?.render === "search" && <Search/>}
 			{context?.render === "profile" && <UserProfile/>}
@@ -232,13 +215,14 @@ const Home = (props: { showPopup: boolean }) => {
 				<div className="chatholder visible xl:invisible">
 					<Chat/>
 				</div> }
-        </GameContext.Provider>
 		</div>
   )
   };
   
 const Body = () => {
   const [showPopup, setShowPopup] = useState(true);
+
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -292,13 +276,35 @@ const Body = () => {
 
 export default function App() {
   const [render, setRender] = useState("home");
+  const gamecontext = useContext(GameContext);
+
+  const [gamemode, setGamemode] = useState<string>("Dark Valley");
+  const [gametype, settype] = useState<string>("random");
+  // random , friend , ai
+  const [gamefriend, setgamefriend] = useState<number>(-1);
+  //  -1 , friendid
+  const [Isrunning, setRunning] = useState<boolean>(false);
+  const [playerposition , setplayerposition] = useState<string>("");
+  const user = useContext(UserDataContext );
+  const [lodingdata, setlodingdata] = useState<GameLodingProps>( {
+    users  : [{
+      clientid : user?.id || -1 ,
+         image : user?.image || "no image",
+         username : user?.userName || "no name" ,
+          ingame : false
+} ] ,
+    gameloding: true });
+
 
   return (
     <RenderContext.Provider value={{ render, setRender }}>
+    <GameContext.Provider value={{ lodingdata ,  gamemode , gametype , gamefriend , Isrunning  , playerposition, setRunning , setGamemode , settype , setgamefriend , setlodingdata , setplayerposition}}>
       <div>
         <Navbar />
-        <Body />
+        {render == "playGame" && <Gameplay />}
+       { render != "playGame" && <Body />}
       </div>
+      </GameContext.Provider>
     </RenderContext.Provider>
   );
 }

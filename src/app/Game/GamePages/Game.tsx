@@ -26,12 +26,13 @@ const Game : React.FC<{}> = () => {
   const [dimensions, setDimensions] = useState({ width: (window.innerWidth * 0.6), height: window.innerHeight * 0.4 });
 
 
-
+  
   var bodie = {p_Width: dimensions.width  * 0.011, p_Height: dimensions.height * 0.17 , b_Width: dimensions.width * 0.01 };
+  var color  = { background : game?.gamemode == "Frozen Arena" ? "#0064FB" : "#1B266B"  , player: game?.gamemode == "Frozen Arena" ? "#1B266B" : "#0064FB",  grid : game?.gamemode == "Frozen Arena" ? "#1ECDF8" : "#081041" ,ball: "#00FFE0"}
   const position = useRef<Gameresponse >({player1: 50, player2: 50, player1score: 0, player2score: 0, ball: { x: 50, y: 50 } , stop : 0 , gameover : false});
   useEffect (() => {
     const updatePosition = (mydata: Gameresponse ) => {
-      
+      console.log(mydata);
       if (game?.playerposition == "left")
       {
         // console.log(mydata);
@@ -106,9 +107,11 @@ useEffect(() => {
     if (context) {
       let animationFrameId: number;
       const draw = () => {
-        context.fillStyle = "#1B266B"; 
+
+
+        context.fillStyle = color.background ; 
         context.fillRect(0, 0, dimensions.width, dimensions.height); 
-        context.fillStyle = "#0064FB"; 
+        context.fillStyle = color.player ; 
         context.fillRect(
           dimensions.width * 0.05, 
           dimensions.height * p_y.current / 100 - bodie.p_Height / 2, 
@@ -121,14 +124,14 @@ useEffect(() => {
             bodie.p_Width, 
             bodie.p_Height
             );
-            context.fillStyle = "#081041"
+            context.fillStyle = color.grid ;
             context.fillRect(dimensions.width * 0.495 ,
               dimensions.height * 0.05 ,
               dimensions.width * 0.01 ,
               dimensions.height * 0.9 )
             
             context.beginPath();
-            context.fillStyle = "#00FFE0"; 
+            context.fillStyle = color.ball; 
             context.arc(
                 dimensions.width * position.current.ball.x / 100, 
                 dimensions.height * position.current.ball.y / 100, 

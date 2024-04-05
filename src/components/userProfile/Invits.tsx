@@ -30,7 +30,7 @@ const Invit = (props: InvitProps) => {
         >
           <Image
             className="bg-cover bg-center w-full h-full"
-            src={values.sender.image}
+            src={values?.sender?.image || "./GamePlayImages/GamePlayerProfile.svg"}
             width={60}
             height={60}
             alt="user"
@@ -98,8 +98,8 @@ const Invit = (props: InvitProps) => {
 const Invits = () => {
   // const [Invits, setInvits] = useState<InvitsType[] | null>(null);
 
-  const Invits = useContext(ProfileDataContext)?.InvitsData;
-
+  const Invits = useContext(ProfileDataContext)?.InvitsData || null;
+  console.log(Invits);
   return (
     <>
       {Invits && Invits.length > 0 ?

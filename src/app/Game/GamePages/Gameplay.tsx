@@ -8,6 +8,7 @@ import SocketContext from "@/components/context/socket";
 import UserDataContext from "@/components/context/context";
 import Game from "./Game";
 import { GameContext, GameLodingProps, Userinfo } from "../Gamecontext/gamecontext";
+import RenderContext from "@/components/context/render";
 
 
 const  PlayerReady : React.FC<{lodingdata : Userinfo } > = (props) => {
@@ -61,8 +62,35 @@ const Gameplay : React.FC<{  }> = ( ) => {
     const game = useContext(GameContext);
     const user = useContext(UserDataContext);
     const socket = useContext(SocketContext);
-    
-  
+    const render = useContext(RenderContext);
+    useEffect(() => {
+      console.log('game :',game);
+      const handlcheck = () => {
+      if (game?.lodingdata && game?.lodingdata.users.length < 2)
+      {
+          console.log("gameloding" , game?.lodingdata.users.length);
+          game?.setRunning(false);
+          game?.setlodingdata({
+          users  : [{
+            clientid : user?.id || -1 ,
+               image : user?.image || "no image",
+               username : user?.userName || "no name" ,
+                ingame : false
+          } ] ,
+        gameloding: true });   
+        game?.setplayerposition("");
+        game?.setGamemode("");
+        game?.settype("");
+        game?.setgamefriend(-1);
+        socket?.emit("endGame" , { clientid: user?.id })
+        render?.setRender("home");
+      }
+      }
+      const gametimeout = setTimeout(handlcheck, 5000 ); 
+      return () => {
+        clearTimeout(gametimeout);
+      }
+    }, [game?.lodingdata])
     useEffect(() => 
     {
       const handlegameroom =(responsedata : { room  :{ users : Userinfo[]  , gameloding : boolean} , alreadymatch : boolean }) =>
@@ -90,11 +118,16 @@ const Gameplay : React.FC<{  }> = ( ) => {
                game?.setRunning(true);
        }
       }
-      socket?.emit("RandomGameroom",   { userid : user?.id ,  soketid :socket?.id  , type : game?.gametype , friend : game?.gamefriend}  );
-      socket?.on("RandomGameroom", handlegameroom  )
 
+      const gamematch = () => {
+        socket?.emit("RandomGameroom",   { userid : user?.id ,  soketid :socket?.id  , type : game?.gametype , mode : game?.gamemode , friend : game?.gamefriend}  );
+        socket?.on("RandomGameroom", handlegameroom  )
+
+      }
+      const timematch = setTimeout(gamematch, 1000);
       return () => {
         socket?.off("RandomGameroom", handlegameroom);
+        clearTimeout(timematch);
       }
     } ,[socket]);
       useEffect(() => {

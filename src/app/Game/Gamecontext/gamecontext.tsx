@@ -1,4 +1,5 @@
 import { createContext } from 'react';
+import { string } from 'yup';
 
 export  type GameLodingProps = 
 {
@@ -27,19 +28,33 @@ export  interface GameResultProps {
 	runGame: boolean;
   }
 
-export type GameContextType = {
-	lodingdata : GameLodingProps;
-	gamemode : string;
-	gametype : string;
-	gamefriend : number;
-	Isrunning : boolean;
-	playerposition : string;
-	setRunning : (running : boolean) => void;
-	setGamemode : (mode : string) => void;
-	settype : (type : string) => void;
-  	setgamefriend : (friend : number) => void;
-	setlodingdata : (data : GameLodingProps) => void;
-	setplayerposition : (position : string) => void;
-}
+  export type GameContextType = {
+	lodingdata: GameLodingProps;
+	gamemode: string;
+	gametype: string;
+	gamefriend: number;
+	Isrunning: boolean;
+	playerposition: string;
+	setRunning: (running: boolean) => void;
+	setGamemode: (mode: string) => void;
+	settype: (type: string) => void;
+	setgamefriend: (friend: number) => void;
+	setlodingdata: (data: GameLodingProps) => void;
+	setplayerposition: (position: string) => void;
+  };
+
+
+  
+
+
+
 
 export const GameContext = createContext<GameContextType | null>(null);
+
+export type NotificationContextType = {
+	invitationSenderID : string;
+	username: string;
+	userimage: string;
+	message: string;
+}
+export const NotificationContext = createContext<NotificationContextType | null>(null);

@@ -8,13 +8,14 @@ import ProfileDataContext from "../context/profilDataContext";
 import SocketContext from "../context/socket";
 import UserDataContext from "../context/context";
 import RenderContext from "../context/render";
+import Game from "@/app/Game/GamePages/Game";
+import { GameContext } from "@/app/Game/Gamecontext/gamecontext";
 // import RenderContext from "../context/render";
 
 
 interface friendsType {
   value: FriendsType;
 }
-
 
 // const block = async (id: number) => {
 //   try {
@@ -43,6 +44,12 @@ const Friend = (props: friendsType) => {
   const block = (id: number) => {
     socket?.emit("NewBlocked", { id: id, userId: user?.id });
   };
+  const game = useContext(GameContext);
+  
+  const sendGame = (id: number ) => {
+    socket?.emit("SendGameInvite", {  invitationSenderID: user?.id , mode : "friend", friendId: id});
+  }
+
 
   return (
     <div className="FriendsPh min-w-[190px] h-[230px] bg-[#040A2F] mr-[15px] flex flex-col items-center">
@@ -79,6 +86,15 @@ const Friend = (props: friendsType) => {
           width={28}
           height={28}
           property="true"
+          onClick={()=>{
+            game?.setGamemode("friend")
+            game?.settype("friend");
+            game?.setgamefriend(props.value.id);
+            console.log("send game1 " ,game?.gametype , "33")
+            sendGame(props.value.id);
+            console.log("send game " , props.value.id , user?.id);
+            render?.setRender("playGame");
+          }}
           alt="online"
         />
         <Image
@@ -90,7 +106,6 @@ const Friend = (props: friendsType) => {
           onClick={()=>{
             context?.setChat(props.value.id);
             render?.setRender("chat");
-          
           }}
           className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out"
         />

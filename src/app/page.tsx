@@ -245,6 +245,7 @@ export default function landingPage() {
     };
   }, []);
 
+  
   // console.log("FriendsData:", FriendsData);
   // console.log("InvitsData:", InvitsData);
   // console.log("BlockedData:", BlockedData);
