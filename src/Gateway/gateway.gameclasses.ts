@@ -30,7 +30,7 @@ export type GameBack = {
 }
 
 export type userinfo = { clientid: number , image : string , username : string , ingame : boolean}
-export type RoomInfo = {users: userinfo[],gameloding: boolean  , type : string , friendid : number};
+export type RoomInfo = {users: userinfo[],gameloding: boolean  , type : string , mode : string, friendid : number};
 
 
 export class datagame {
@@ -133,7 +133,7 @@ export class datagame {
 			{			
 				this.game[room].ball.direction.x = - this.game[room].ball.direction.x ;
 			}
-			else if ( this.game[room].ball.direction.x > 0 && this.game[room].ball.x > 50 && (this.game[room].ball.x + 1 >=  this.game[room].player2.x) && this.game[room].ball.x - 1 <= this.game[room].player2.x + 1.1 && (this.game[room].ball.y - 1 >= this.game[room].player2.y -9.5 ) && (this.game[room].ball.y + 1 <= this.game[room].player2.y + 9.5))
+			else if ( this.game[room].ball.direction.x > 0 && this.game[room].ball.x > 50 && (this.game[room].ball.x + 1 >=  this.game[room].player2.x ) && this.game[room].ball.x - 1 <= this.game[room].player2.x + 1.1 && (this.game[room].ball.y - 1 >= this.game[room].player2.y -9.5 ) && (this.game[room].ball.y + 1 <= this.game[room].player2.y + 9.5))
 			{
 				this.game[room].ball.direction.x = - this.game[room].ball.direction.x ;
 			}
@@ -163,8 +163,10 @@ export class datagame {
 			}
 			return false;
 		}
-	addRoom(roomname  : string,  data : userinfo , type : string , friendid : number){
-		this.rooms[roomname] = { users: [data], gameloding: true , type : type , friendid : friendid};
+	addRoom( data : userinfo , type : string ,mode : string , friendid : number){
+		const { v4: uuidv4 } = require('uuid');
+		const roomname = uuidv4();
+		this.rooms[roomname] = { users: [data], gameloding: true , type : type  , mode : mode , friendid : friendid};
 		this.initgame(roomname);
 		if (type === "ai")
 		{
@@ -190,10 +192,19 @@ export class datagame {
 		}
 		return null
 	}
-	findEmptyRoom (type : string , clientid : number)
+	searchefriendRoom(friendid : number)
 	{
 		for (const room in this.rooms) {
-			if (this.rooms[room].users.length < 2 && this.rooms[room].type === type && type != "ai" && type != "friend")
+			if (this.rooms[room].type === "friend" && this.rooms[room].friendid === friendid)
+			return room;
+		}
+		return null
+	}
+
+	findEmptyRoom (type : string , clientid : number , mode : string)
+	{
+		for (const room in this.rooms) {
+			if (this.rooms[room].users.length < 2 && this.rooms[room].type === type && mode === mode && type != "ai" && type != "friend")
 			{
 				return room;
 			}
@@ -204,6 +215,10 @@ export class datagame {
 		}
 		return null
 	}
+
+	getRoomsLength(): number {
+    return Object.keys(this.rooms).length;
+  }
 }
 
 export type UserData = {
