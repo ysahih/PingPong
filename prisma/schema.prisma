@@ -35,6 +35,7 @@ model User {
   friends         Friends[]       @relation("Friends")
   friendsReceived Friends[]       @relation("friendsReceived")
   seenMsj         ReadBy[]
+  notifications   Notification[] 
   @@map("Users")
 }
 
@@ -48,6 +49,18 @@ model Friends {
   friendsReceivid  Int?
   @@unique([userId, friendsReceivid ])
   @@map("Friends")
+}
+
+model Notification {
+  id        Int       @id @default(autoincrement())
+  createdAt DateTime  @default(now())
+  user      User?      @relation(fields: [userId], references: [id])
+  userId    Int?
+  image     String?  @default("https://res.cloudinary.com/dkkgmzpqd/image/upload/v1626820134/default-user-image.jpg")
+  userName  String
+  content   String
+  seen      Boolean   @default(false)
+  @@map("Notifications")
 }
 
 // model Message {

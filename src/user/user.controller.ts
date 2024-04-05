@@ -3,6 +3,7 @@ import {
   Get,
   Patch,
   Post,
+  Put,
   Query,
   Req,
   UseGuards,
@@ -103,4 +104,15 @@ export class UserController {
     return await this.FriendsService.getSentInvits(req.user['userId']);
   }
   
+  @Get('Notifications')
+  @UseGuards(JwtAuthGuard)
+  async getNotifications(@Req() req : Request){
+    return await this.FriendsService.getNotifications(req.user['userId']);
+  }
+
+  @Get('NotificationsSeen')
+  @UseGuards(JwtAuthGuard)
+  async NotificationsSeen(@Req() req : Request){
+    return await this.FriendsService.NotificationsSeen(req.user['userId']);
+  }
 }
