@@ -30,7 +30,7 @@ const Invit = (props: InvitProps) => {
         >
           <Image
             className="bg-cover bg-center w-full h-full"
-            src={values.sender.image}
+            src={values?.sender?.image || "./defaultImg.svg"}
             width={60}
             height={60}
             alt="user"
