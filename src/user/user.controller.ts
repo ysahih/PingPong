@@ -6,15 +6,21 @@ import {
   Put,
   Query,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
 import { FriendsService } from "./user.service";
 import { JwtAuthGuard } from "src/authentication/jwtStrategy/jwtguards";
 import { Request } from "express";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { Prisma, ROOMTYPE } from "@prisma/client";
+import { cloudinaryService } from "src/authentication/cloudinary.service";
+import * as argon from 'argon2'
 
 @Controller("user")
 export class UserController {
-  constructor(private FriendsService: FriendsService) {}
+  constructor(private FriendsService: FriendsService, private cloud :cloudinaryService) {}
 
   @Post("sendinvit")
   @UseGuards(JwtAuthGuard)
@@ -115,4 +121,32 @@ export class UserController {
   async NotificationsSeen(@Req() req : Request){
     return await this.FriendsService.NotificationsSeen(req.user['userId']);
   }
+
+  @Post('createRoom')
+  @UseInterceptors(FileInterceptor("file"))
+  @UseGuards(JwtAuthGuard)
+  async CreateRoom( @UploadedFile() file: Express.Multer.File, @Req() req :Request) :Promise<{status :number, message :string}> {
+
+    const { name, type, password } : {name :string, type :ROOMTYPE, password :string} = req.body;
+
+    if (!name || !type || (type === ROOMTYPE.PROTECTED && !password))
+      return {status: 0, message: 'Invalid data !'};
+
+  try {
+    const imgUrl = await this.cloud.uploadImage(file);
+    const hashedPassword = password ? await argon.hash(password) : null;
+
+    await this.FriendsService.createRoom(parseInt(req.user["userId"]), name, type, hashedPassword, imgUrl);
+    return {status: 1, message: 'Room Created !'};
+
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === "P2002")
+          return {status: 0, message: 'Room name already exists !'};
+      }
+      else
+      return {status: 0, message: 'Room did not created !'}
+    }
+  }
+
 }

@@ -1,6 +1,6 @@
 import { IsEnum, IsIn, IsInt, IsNotEmpty, IsString } from "@nestjs/class-validator"
-import { ROOMTYPE } from "@prisma/client"
-import { ValidateIf } from "class-validator"
+import { ROLE, ROOMTYPE } from "@prisma/client"
+import { IsBoolean, IsOptional, ValidateIf } from "class-validator"
 
 // Message Class
 export class MessageDTO {
@@ -50,6 +50,29 @@ export class CreateRoom {
 	image		?:string
 }
 
+export class UpdateStatusRoom {
+
+	@IsNotEmpty()
+	@IsString()
+	userName	:string
+
+	@IsInt()
+	userId	:number
+
+	@IsInt()
+	roomId	:number
+
+	@IsOptional()
+	@IsNotEmpty()
+	@IsEnum(ROLE)
+	@IsString()
+	role	?:ROLE
+
+	@IsOptional()
+	@IsBoolean()
+	isMuted	?:boolean
+}
+
 export class ChatData {
 	id: number
 	userName: string
@@ -72,4 +95,13 @@ export class ConvData {
 	userName :string
 	image :string
 	messages :Messages[]
+}
+
+export class RoomUsers {
+	userId		:number
+	roomId		:number
+	userName	:string
+	image		:string
+	isMuted		:boolean
+	role		:ROLE
 }

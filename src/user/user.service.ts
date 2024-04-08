@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { ChatData, ConvData } from "src/Gateway/gateway.interface";
+import { ROLE, ROOMTYPE } from "@prisma/client";
+import { ChatData, ConvData, RoomUsers } from "src/Gateway/gateway.interface";
 import { prismaService } from "src/prisma/prisma.service";
 
 @Injectable()
@@ -828,5 +829,92 @@ export class FriendsService {
     } catch (e) {
       return null;
     }
+  }
+
+  async createRoom(userId: number, name: string, type: ROOMTYPE, password: string, fileURL: string) {
+    const newRoom = await this.prisma.room.create({
+      data: {
+        name: name,
+        type: type,
+        password: password && type === ROOMTYPE.PROTECTED ? password : null,
+        image: fileURL || null,
+        users: {
+          create: {
+            userRole: "OWNER",
+            userId: userId,
+          },
+        },
+      },
+    });
+
+    return newRoom;
+  }
+
+  async roomUsers(roomName :string) {
+
+    const users = await this.prisma.room.findMany({
+      where: {
+        name: roomName,
+      },
+      select: {
+        id: true,
+        users: {
+          select: {
+            userRole: true,
+            isMuted: true,
+            user: {
+              select: {
+                id: true,
+                userName: true,
+                image: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // console.log(JSON.stringify(users, null, 2));
+
+    if (users)
+    {
+      const orgUsers :RoomUsers[] = users[0].users.map(user => <RoomUsers>{
+        roomId: users[0].id,
+        userId: user.user.id,
+        userName: user.user.userName,
+        image: user.user.image,
+        isMuted: user.isMuted,
+        role: user.userRole,
+      });
+
+      console.log(orgUsers);
+
+      orgUsers.sort((user1, user2) => {
+        const role = {'OWNER': 0, 'ADMIN': 1, 'USER': 2};
+
+        return role[user1.role] - role[user2.role];
+      });
+
+      console.log(orgUsers);
+
+      return (orgUsers);
+    }
+    return (null);
+  }
+
+  async userState(roomId :number, role: ROLE, isMuted :boolean, userId :number) {
+
+    await this.prisma.userRoom.update({
+      where: {
+        userId_roomId: {
+          userId: userId,
+          roomId: roomId,
+        },
+      },
+      data: {
+        userRole: role,
+        isMuted: isMuted,
+      }
+    });
   }
 }

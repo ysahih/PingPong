@@ -17,7 +17,7 @@ import {
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 import { UsersServices } from "./usersRooms/user.class";
-import { ChatData, CreateRoom, JoinRoomDTO, MessageDTO } from "./gateway.interface";
+import { ChatData, CreateRoom, JoinRoomDTO, MessageDTO, UpdateStatusRoom } from "./gateway.interface";
 import { RoomsServices } from "./usersRooms/room.class";
 import { Prisma } from "@prisma/client";
 import { ExceptionHandler } from "./ExceptionFilter/exception.filter";
@@ -239,6 +239,15 @@ export class serverGateway
           );
     }
   }
+
+  @UseFilters(ExceptionHandler)
+  @UsePipes(ValidationPipe)
+  @SubscribeMessage('userStatusInRoom')
+  handleUserStatusInRoom(@Body() payload :UpdateStatusRoom) {
+
+    console.log(payload);
+  }
+
    /**
    * handle friends request : by essadike
    */

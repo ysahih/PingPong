@@ -1,6 +1,4 @@
 import { Injectable } from "@nestjs/common";
-import { User } from "./UserRoom.interface";
-import { PrismaService } from "GatewayServer/src/PrismaService/prisma.service";
 import { Socket } from "socket.io";
 import { Room } from "./UserRoom.interface";
 

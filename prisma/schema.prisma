@@ -36,6 +36,7 @@ model User {
   friendsReceived Friends[]       @relation("friendsReceived")
   seenMsj         ReadBy[]
   notifications   Notification[] 
+  bannedFrom      Room[]
   @@map("Users")
 }
 
@@ -133,6 +134,7 @@ model Room {
 
     users    UserRoom[]
     messages Message[]
+    banned    User[]
 
     // lastMsjAt DateTime
 }
@@ -175,6 +177,7 @@ model UserRoom {
     roomId   Int
     userRole ROLE     @default(USER)
     joinedAt DateTime @default(now())
+    isMuted   Boolean @default(false)
 
     // isRead Boolean
 
