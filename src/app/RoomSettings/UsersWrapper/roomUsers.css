@@ -1,0 +1,43 @@
+
+.room__users__wrapper {
+    /* margin: 150px auto 0; */
+    height: 400px;
+    width: 100%;
+    background-color: #070F2B;
+    border-top: solid 2px #1B266B;
+    border-radius: 20px;
+}
+
+.room__users__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.room__users____top--header {
+    /* background-color: inherit; */
+	color: #8A99E9;
+	font-family: "Lalezar";
+	/* font-size: 50px; */
+	font-size: 32px;
+	margin: 20px 40px;
+	width: fit-content;
+}
+
+.room__users____top--settings {
+    display: flex;
+    flex-flow: row;
+    margin-right: 40px;
+    gap: 10px;
+}
+
+.room__users {
+    width: 95%;
+    height: 290px;
+    margin: 0 auto;
+    display: flex;
+    flex-flow: row;
+    gap: 20px;
+    overflow-x: scroll;
+    /* scroll-snap-type: x mandatory; */
+}

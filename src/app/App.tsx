@@ -54,6 +54,8 @@ import ChatContext, { chatContext } from "@/components/context/chatContext";
 import RenderContext, { renderContext } from "@/components/context/render";
 import UserProfile from "@/components/userProfile";
 import ProfileOverlay from "./component/ProfileOverlay";
+import CreateRoom from "./createRoom/createRoom";
+import RoomSettings from "./RoomSettings/roomSettings";
 
 const Tables = () => {
   return (
@@ -197,8 +199,10 @@ const Home = (props: { showPopup: boolean }) => {
 	return (
 		<div className={props.showPopup ? 'home-margin homepage' : 'homepage'}>
 			{context?.render === "home" && <div className="home">
-				<Tables/>
-				<Statistics/>
+				{/* <Tables/>
+				<Statistics/> */}
+        {/* <CreateRoom /> */}
+        <RoomSettings />
 			</div>}
 			{context?.render === "games" && <Games />}
 			{context?.render === "ranking" && <Ranking/>}
