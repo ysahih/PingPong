@@ -1,6 +1,8 @@
 import {
+  Body,
   Controller,
   Get,
+  Param,
   Patch,
   Post,
   Put,
@@ -14,7 +16,7 @@ import { FriendsService } from "./user.service";
 import { JwtAuthGuard } from "src/authentication/jwtStrategy/jwtguards";
 import { Request } from "express";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { Prisma, ROOMTYPE } from "@prisma/client";
+import { Prisma, ROLE, ROOMTYPE } from "@prisma/client";
 import { cloudinaryService } from "src/authentication/cloudinary.service";
 import * as argon from 'argon2'
 
@@ -147,6 +149,29 @@ export class UserController {
       else
       return {status: 0, message: 'Room did not created !'}
     }
+  }
+
+  @Post('userStatus')
+  @UseGuards(JwtAuthGuard)
+  async userStatus(@Body('role') role :ROLE, @Body('isMuted') isMuted :boolean, @Body('roomId') roomId :number, @Body('userId') userId :number) {
+
+    try {
+
+      await this.FriendsService.userState(roomId, role, isMuted, userId);
+      return ({status : true});
+
+    } catch (e) {
+
+      return ({status : false});
+
+    }
+  }
+  
+  @Get('roomUsers/:roomName')
+  @UseGuards(JwtAuthGuard)
+  async RoomUser (@Param('roomName') roomName :string) {
+
+    return await this.FriendsService.roomUsers(roomName);
   }
 
 }
