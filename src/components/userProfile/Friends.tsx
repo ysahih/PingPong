@@ -99,15 +99,20 @@ const Friend = (props: friendsType) => {
         />
         <Image
           src="./iconsProfile/Chat_solid.svg"
-          width={23}
+          width={24}
           height={24}
           property="true"
-          alt="online"
-          onClick={()=>{
+          onClick={() => {
             context?.setChat(props.value.id);
-            render?.setRender("chat");
           }}
-          className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out"
+          alt="online"
+          className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[24px] min-h-[24px]"
+          style={{
+            width: 'auto',
+            height: 'auto',
+            maxWidth: '24px',
+            maxHeight: '24px',
+          }}
         />
         <Image
           onClick={() => {

@@ -12,7 +12,13 @@ export type UserData = {
     online   : Boolean,
     twoFa    : Boolean,
     twoFaCheck: Boolean,
+    setImage: (image: string) => void;
+    setUserName: (userName: string) => void;
+    setFirstName: (firstName: string) => void;
+    setLastName: (lastName: string) => void;
+    setEmail: (email: string) => void;
 }
+
 
 const UserDataContext = React.createContext<UserData | null>(null);
 

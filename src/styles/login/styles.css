@@ -223,6 +223,8 @@
 }
 
 .logoImg{
+    height: auto;
+    width: auto;
     transition: all .9s ease;
 }
 
@@ -286,7 +288,7 @@
     }
     .logoImg{
         width: 38px;
-    
+        height: auto;
     }
 
     /* .logoName{

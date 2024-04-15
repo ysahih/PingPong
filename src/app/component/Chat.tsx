@@ -125,7 +125,7 @@ const Message = ({handleMsgClick, user } : Props) =>{
 
             <div className="chatData" onClick={()=>{handleMsgClick(user.id)}}>
                 <div className="picture">
-                    <Image className="profilepic" src={user.image? user.image : "./homeImages/memeber1.svg"} alt="member" width={48} height={40}/>
+                    <Image className="profilepic" src={user?.image? user.image : "./homeImages/memeber1.svg"} alt="member" width={48} height={40}/>
                 </div>
 
                 <div className="messageInfo">
@@ -352,12 +352,16 @@ const Chat = () => {
         
         //if you are inside the convo we pass the new message as props
 
-            if (Convo?.chat === newChatData.id)
+        console.log(newChatData.id)
+        console.log("----")
+        console.log(Convo?.chat)
+            if (Convo?.chat === newChatData.id){
                 setInConvo(newChatData.lastMessage);
+            }
         
             })
         return () => { socket?.off("newConvo")}
-    }, [chatdata]);
+    }, [chatdata, Convo?.chat]);
 
 
     return (

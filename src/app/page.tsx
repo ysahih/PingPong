@@ -19,6 +19,7 @@ import BouncingBall from "./Game/GamePages/Gameplay";
 import Gameresult from "./Game/GamePages/Gameresult";
 import Friends from "@/components/userProfile/Friends";
 import Navbar from "./component/Navbar";
+import axiosApi from "@/components/signComonents/api";
 
 
 /*
@@ -99,10 +100,6 @@ const getBlocked = async (proes: PropessetBlockedData) => {
 
 export default function landingPage() {
 
-
-  
-
- 
   const [data, setData] = useState<UserData | null>(null);
   const [checkTwoFactor, setCheckTwoFactor] = useState(
     data?.twoFaCheck || false
@@ -113,7 +110,21 @@ export default function landingPage() {
   const [Socket, setSocket] = useState<Socket | null>(null);
   const router = useRouter();
 
-
+  const setImage = (image: string) => {
+    setData((currentData) => (currentData ? { ...currentData, image } : null));
+  }
+  const setUserName = (userName: string) => {
+    setData((currentData) => (currentData ? { ...currentData, userName } : null));
+  }
+  const setFirstName = (firstName: string) => {
+    setData((currentData) => (currentData ? { ...currentData, firstName } : null));
+  }
+  const setLastName = (lastName: string) => {
+    setData((currentData) => (currentData ? { ...currentData, lastName } : null));
+  }
+  const setEmail = (email: string) => {
+    setData((currentData) => (currentData ? { ...currentData, email } : null));
+  }
 
 
   useEffect(() => {
@@ -200,7 +211,7 @@ export default function landingPage() {
       const getdata = async () => {
         try {
           const ApiUrl = process.env.NEST_API;
-          const res = await axios.get(ApiUrl + "/profile", {
+          const res = await axiosApi.get(ApiUrl + "/profile", {
             headers: {
               "Content-Type": "application/json",
             },
@@ -215,12 +226,34 @@ export default function landingPage() {
           ) {
             router.push("/login");
           } else if (res.data.twoFa === true) {
-            setData(res.data);
+            const data : UserData = res.data;
+            data.setEmail = setEmail;
+            data.setImage = setImage;
+            data.setUserName = setUserName;
+            data.setFirstName = setFirstName;
+            data.setLastName = setLastName;
+
+            setData(data);
             setCheckTwoFactor(res.data.twofaCheck);
           } else if (res.data.twoFa === false) {
-            setData(res.data);
+            const data : UserData = res.data;
+            data.setEmail = setEmail;
+            data.setImage = setImage;
+            data.setUserName = setUserName;
+            data.setFirstName = setFirstName;
+            data.setLastName = setLastName;
+            setData(data);
             setCheckTwoFactor(true);
-          } else setData(res.data);
+          } else 
+          {
+            const data : UserData = res.data;
+            data.setEmail = setEmail;
+            data.setImage = setImage;
+            data.setUserName = setUserName;
+            data.setFirstName = setFirstName;
+            data.setLastName = setLastName;
+            setData(data);
+          }
           console.log("Data:", res.data, data);
         } catch (error) {
           // console.log('Error:', error);

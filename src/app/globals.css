@@ -78,14 +78,21 @@
     z-index: 30;
 }
 
+.Pongy{
+    width:106px;
+    height: 36px;
+}
+
 
 .logo{
     display: flex;
     justify-content: center;
+    align-items: center;
     gap : 5%;
-    min-width: 302px;
     width: 485px;
+    min-width: 302px;
     max-width : 302px;
+
     z-index: 3;
     background-color: var(--bg-color);
     border-right: 1px solid var(--item-border-color);
@@ -197,9 +204,13 @@
 
 .logoutIcon{
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
+.logoutimage{
 
+    width: 26px;
+    height: 30px;
+}
 
 /* !!!Sidebar */
 /* .side-holder{
@@ -1215,7 +1226,6 @@
 
 @media (max-width: 1000px){
     .Pongy{
-
         display: none;
     }
 }

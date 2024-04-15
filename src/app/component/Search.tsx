@@ -22,6 +22,7 @@ import {
 } from "@/components/userProfile/Dto";
 import Friends from "@/components/userProfile/Friends";
 import ChatContext from "@/components/context/chatContext";
+import axiosApi from "@/components/signComonents/api";
 
 type UserProps = {
   id: number;
@@ -86,14 +87,20 @@ const Friend = (props: friendsType) => {
         />
         <Image
           src="./iconsProfile/Chat_solid.svg"
-          width={23}
+          width={24}
           height={24}
           property="true"
           onClick={() => {
             context?.setChat(props.value.id);
           }}
           alt="online"
-          className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out"
+          className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[24px] min-h-[24px]"
+          style={{
+            width: 'auto',
+            height: 'auto',
+            maxWidth: '24px',
+            maxHeight: '24px',
+          }}
         />
         <Image
           onClick={() => {
@@ -235,7 +242,7 @@ const User = (props: UserProps) => {
         </div>
       ) : (
         <IoMdPersonAdd
-          className="w-[30px] h-[30px] mt-[10px] cursor-pointer"
+          className="w-[30px] h-[30px] mt-[10px] cursor-pointer  hover:scale-[120%] transition-all duration-300 ease-in-out"
           onClick={() => {
             socket?.emit("NewInvit", { id: props.id, userId: user?.id });
             setSent(true);
@@ -347,7 +354,7 @@ const Search = () => {
     setIsLoading(true);
     const search = async () => {
       try {
-        const dataSearch = await axios.get(
+        const dataSearch = await axiosApi.get(
           process.env.NEST_API + "/user/search?userName=" + userName,
           {
             withCredentials: true,
@@ -390,7 +397,7 @@ const Search = () => {
             return (
               friend.userName
                 .toLowerCase()
-                .startsWith(userName.toLowerCase()) && <Friend value={friend} />
+                .startsWith(userName.toLowerCase()) && <Friend key={friend.id} value={friend} />
             );
           })}
         </>
@@ -400,7 +407,7 @@ const Search = () => {
             return (
               invit.sender.userName
                 .toLowerCase()
-                .startsWith(userName.toLowerCase()) && <Invit value={invit} />
+                .startsWith(userName.toLowerCase()) && <Invit key={invit.id} value={invit} />
             );
           })}
         </>
@@ -426,12 +433,12 @@ const Search = () => {
         ) : (
           <>
             {users.map(
-              (user) =>
+              (user, index) =>
                 user.userName
                   .toLowerCase()
                   .startsWith(userName.toLowerCase()) && (
                   <User
-                    key={user.id}
+                    key={index}
                     id={user.id}
                     image={user.image}
                     userName={user.userName}

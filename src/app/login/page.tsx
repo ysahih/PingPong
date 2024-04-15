@@ -9,6 +9,7 @@ import UpdateUserData from '@/components/context/update.context';
 import Login from './login';
 import Update from '../update/Update';
 import '@/app/globals.css'
+import axiosApi from '@/components/signComonents/api';
 
 
 function main()
@@ -24,7 +25,7 @@ function main()
             try {
                 const ApiUrl: string | undefined =  process.env.NEST_API;
                 //console.log('ApiUrl:', ApiUrl , process.env);
-                const res = await axios.get(ApiUrl + '/profile',
+                const res = await axiosApi.get(ApiUrl + '/profile',
                 {
                     headers: {
                         'Content-Type': 'application/json',

@@ -221,13 +221,17 @@ const Sidebar = (props: { showPopup: boolean}) => {
 
      {props.showPopup && <div className="PhoneSidebar drift-animation" >
         <PhoneButtons />
-        <div className="logoutIcon" onClick={Logout}>
+        <div className="logoutIcon" onClick={Logout} style={{
+              width: "auto",
+              height: "auto",
+            }}>
           <Image
-            className=""
+            className="logoutimage"
             src="./homeImages/logouticon.svg"
             alt="logo"
             width={26}
-            height={18}
+            height={30}
+            
           />
         </div>
       </div>}

@@ -122,6 +122,7 @@
   align-items: center;
   gap: 10px;
   padding: 10px;
+  padding-bottom: 15px;
   /* background: #1B1A55; */
   border-radius: 10px;
   border-top: 1px solid var(--border-color); 
@@ -164,7 +165,7 @@
   background: #1B266B;
   border-radius: 50%;
   border: 2px solid var(--bg-color);
-  color: var(--bg-color);
+  /* color: var(--bg-color); */
 }
 
 .userNameSpan{

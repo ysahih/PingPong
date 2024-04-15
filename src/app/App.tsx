@@ -68,6 +68,7 @@ const Tables = () => {
           alt="image 1"
           width={200}
           height={100}
+          priority={true}
           className="h-full w-full object-cover"
         />
         <div className="playdarknow absolute inset-0 grid h-full w-full place-items-center ">

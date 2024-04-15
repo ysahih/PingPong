@@ -1,7 +1,7 @@
 import "@/styles/userProfile/userprofile.css";
 import Image from "next/image";
 import { useContext, useEffect, useRef, useState } from "react";
-import UserDataContext from "./context/context";
+import UserDataContext, { UserData } from "./context/context";
 import axios from "axios";
 import AuthCode from "react-auth-code-input";
 import CloseBtn from "./closebtn";
@@ -10,6 +10,13 @@ import UserFriends from "./userProfile/userProfile";
 import Awards from "./userProfile/Awards";
 import UpdateForm from "@/app/update/UpdateForm";
 import "@/styles/update/update.css";
+import { FaUserFriends } from "react-icons/fa";
+import { MdOutlineBlock } from "react-icons/md";
+import { MdGroupAdd } from "react-icons/md";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import SecurityIcon from "@mui/icons-material/Security";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import ProfileDataContext from "./context/profilDataContext";
 
 interface QrCodeProps {
   close: (val: boolean) => void;
@@ -230,6 +237,9 @@ const SettingsAnd2Fa = () => {
   const [TwoFaStatus, set2FaStatus] = useState(context?.twoFa);
   const [disable2Fa, setDisable2Fa] = useState(false);
   const RefBtn = useRef(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const [stateClick, setStateClick] = useState(0);
 
   const [imageSrc, setImageSrc] = useState(
     context?.image ? context.image : "./defaultImg.svg"
@@ -239,19 +249,198 @@ const SettingsAnd2Fa = () => {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event?.target?.files?.[0];
-    setImageSrc(file ? URL.createObjectURL(file) : context?.image? context.image : imageSrc);
+    setImageSrc(
+      file
+        ? URL.createObjectURL(file)
+        : context?.image
+        ? context.image
+        : imageSrc
+    );
     setFile(file || null);
   };
-  // if () set2FaStatus(true);
+
   const handleClick = () => {
     if (RefBtn.current) {
       (RefBtn.current as HTMLElement).click();
     }
   };
 
+  async function SendImg() {
+    if (file) {
+      const formData = new FormData();
+      formData.append("image", file);
+      const res = await axios.post(
+        process.env.NEST_API + "/updateImage",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        }
+      );
+      if (res?.data != "error") context?.setImage(res.data);
+      console.log(res.data);
+    }
+  }
+
   return (
     <>
-      <div>
+      <div className="containerUserFriends relative z-10">
+        <Image
+          className=" min-h-[104%] absolute  max-w-none overflow-hidden mt-[-15px] z-[-1] left-[100%] transform translate-x-[-100%]"
+          src="./iconsProfile/Vector.png"
+          width={240}
+          height={260}
+          priority={true}
+        
+          alt="image"
+          style={{
+            maxWidth: "100%",
+            height: "auto",
+            width: "auto",
+          
+          }}
+        />
+        <h1 className="text-2xl text-white ml-4 mt-[15px]">Settings</h1>
+        <div className="flex p-[20px] pt-[20px] gap-4 sm:gap-1 ">
+          <div
+            className={`cursor-pointer  pr-[5%] text-[25px] text-[#8A99E9] flex justify-center items-center text-center gap-2 hover:scale-[110%] transition-all duration-300 ease-in-out ${
+              stateClick !== 0 ? "opacity-25" : ""
+            }`}
+            onClick={() => {
+              setStateClick(0);
+              scrollContainerRef.current?.scrollTo({ left: 0 });
+            }}
+          >
+            {/* <FaUserFriends className="min-w-[25px] min-h-[25px]"/> */}
+            <AccountCircleIcon className="min-w-[25px] min-h-[25px]" />
+            <span className="mt-[4px] hidden sm:block">Picture</span>
+          </div>
+          <div
+            className={`cursor-pointer pr-[5%] text-[24px] text-[#8A99E9] flex justify-center items-center text-center gap-2 hover:scale-[110%] transition-all duration-300 ease-in-out ${
+              stateClick !== 1 ? "opacity-25" : ""
+            }`}
+            onClick={() => {
+              setStateClick(1);
+              scrollContainerRef.current?.scrollTo({ left: 0 });
+            }}
+          >
+            {/* <MdOutlineBlock className="min-w-[25px] min-h-[25px]" /> */}
+            <ManageAccountsIcon className="min-w-[25px] min-h-[25px]" />
+            <span className="mt-[4px] hidden sm:block">Info</span>
+          </div>
+          <div
+            className={`cursor-pointer pr-[5%] text-[24px] text-[#8A99E9] flex justify-center items-center text-center gap-2 hover:scale-[110%] transition-all duration-300 ease-in-out ${
+              stateClick !== 2 ? "opacity-25" : ""
+            }`}
+            onClick={() => {
+              setStateClick(2);
+              scrollContainerRef.current?.scrollTo({ left: 0 });
+            }}
+          >
+            {/* <MdGroupAdd className="min-w-[25px] min-h-[25px]"/> */}
+            <SecurityIcon className="min-w-[25px] min-h-[25px]" />
+            <span className=" mt-[4px] hidden sm:block">Security</span>
+          </div>
+        </div>
+
+        <div className="m-[10px] pl-[20px] h-[250px] flex mt-[-35px]">
+          {stateClick === 0 && (
+            <div className="flex gap-4 w-[100%]  items-center">
+              <label htmlFor="ImageInput">
+                <Image
+                  className="cursor-pointer rounded-[10px] border-2 border-gray-300 w-[140px] h-[140px]"
+                  src={imageSrc}
+                  alt="Pongy"
+                  width={140}
+                  height={140}
+                  priority={true}
+                />
+              </label>
+              <input
+                type="file"
+                id="ImageInput"
+                onInput={handleFileChange}
+                style={{ display: "none" }}
+              />
+              <div>
+                <label
+                  htmlFor="ImageInput"
+                  className="update-botton  w-[100px] h-[40px]"
+                >
+                  Update
+                </label>
+                <button
+                  className="update-botton  w-[100px] h-[40px]"
+                  onSubmit={SendImg}
+                  onClick={() => SendImg()}
+                  type="submit"
+                >
+                  submit
+                </button>
+              </div>
+            </div>
+          )}
+          {stateClick === 1 && (
+            <form
+              className="flex flex-col gap-4 w-[100%]  justify-center"
+              action=""
+            >
+              <input
+                type="text"
+                className="w-[200px] text-black"
+                placeholder="First Name"
+              />
+              <input
+                type="text"
+                className="w-[200px] text-black"
+                placeholder="last Name"
+              />
+              <input
+                type="text"
+                className="w-[200px] text-black"
+                placeholder="user Name"
+              />
+              <input
+                type="password"
+                className="w-[200px] text-black"
+                placeholder="password"
+              />
+              <button
+                type="submit"
+                className="update-botton  w-[100px] h-[40px]"
+              >
+                submit
+              </button>
+            </form>
+          )}
+          {stateClick === 2 && (
+            <div className="flex w-[100%] gap-4 mt-4">
+              <h3 className="text-md text-gray-500 mt-6">
+                Enable or disable 2FA
+              </h3>
+              <div className="flex gap-4 justify-center mt-4">
+              <Switch onChange={handleClick} checked={!!TwoFaStatus} />
+              <button
+                ref={RefBtn}
+                className="btn2Fa"
+                onClick={() =>
+                  TwoFaStatus ? setDisable2Fa(true) : setQrclose(true)
+                }
+              >
+                {TwoFaStatus ? "Disable 2FA" : "Enable 2FA"}
+              </button>
+              {Qrclose && <QrCode close={setQrclose} towFa={set2FaStatus} />}
+              {disable2Fa && (
+                <Disable2Fa close={setDisable2Fa} twoFa={set2FaStatus} />
+              )}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+      {/* <div>
       <Image
           className="float-right h-full   max-w-none overflow-hidden"
           src="./iconsProfile/Vector.png"
@@ -321,7 +510,7 @@ const SettingsAnd2Fa = () => {
           </div>
         </div>
         
-      </div>
+      </div> */}
     </>
   );
 };

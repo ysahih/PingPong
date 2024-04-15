@@ -3,6 +3,7 @@ import axios from "axios";
 import { useContext, useEffect, useRef, useState } from "react";
 import UpdateUserData from "@/components/context/update.context";
 import { useRouter } from "next/navigation";
+import axiosApi from "./api";
 
 export default function Signin() {
 
@@ -26,7 +27,7 @@ export default function Signin() {
                 password: (document.getElementsByName("Password")[0] as HTMLInputElement).value
             };
             try {
-                const response = await axios.post(process.env.NEST_API + '/signin', JSON.stringify(data) , {
+                const response = await axiosApi.post(process.env.NEST_API + '/signin', JSON.stringify(data) , {
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -45,6 +46,7 @@ export default function Signin() {
                 }
             } catch (error) {
                 setError(true);
+                
             }
         }
         signin();

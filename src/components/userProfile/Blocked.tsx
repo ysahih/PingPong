@@ -36,17 +36,23 @@ const Block = (props: BlockedType) => {
         <h3 className="text-[16px]">{props.value.userName}</h3>
         <p className="text-center text-[#8A99E9] text-[12px]">#12</p>
       </div>
-      <div className="flex items-center justify-center  w-[100%] gap-4 mt-12">
+      <div className="flex items-center justify-center  w-[100%] gap-4 mt-10 h-[28px]">
         <Image
           onClick={() => {
             socket?.emit("UnBlocked", { id : props.value.id , userId: user?.id});
           }}
-          className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out"
+          className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[28px] min-h-[28px]"
           src="./iconsProfile/unblock.svg"
-          width={25}
-          height={25}
+          width={28}
+          height={28}
           property="true"
           alt="online"
+          style={{
+            width: 'auto',
+            height: 'auto',
+            maxHeight:'100%',
+            maxWidth:'100%'
+          }}
         />
       </div>
     </div>

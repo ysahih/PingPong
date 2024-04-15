@@ -2,9 +2,9 @@
 export type ChatData = {
     id : number,
     convId: number,
-    userName: String,
-    image: String,
-    lastMessage: String,
+    userName: string,
+    image: string,
+    lastMessage: string,
     isOnline: Boolean,
     isRead: Boolean,
     isRoom: Boolean,
@@ -13,7 +13,7 @@ export type ChatData = {
 
 export type ConvoData = {
     id : number,
-    userName: String,
-    image: String,
+    userName: string,
+    image: string,
     messages?: Array <Object> 
 }
