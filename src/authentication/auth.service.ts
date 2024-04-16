@@ -325,6 +325,22 @@ export class authService {
     }
   }
 
+  async updateImage(id: number, image: string) {
+    try {
+      const user = await this.prism.user.update({
+        where: {
+          id,
+        },
+        data: {
+          image: image,
+        },
+      });
+      return user;
+    } catch (error) {
+      return { error: error };
+    }
+  }
+
   async signin(req: LoginData) {
     try {
       const user = await this.prism.user.findFirst({

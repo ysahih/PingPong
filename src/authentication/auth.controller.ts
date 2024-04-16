@@ -18,6 +18,7 @@ import { JwtAuthGuard } from "./jwtStrategy/jwtguards";
 import { generateJwtToken } from "./jwtStrategy/jwtToken";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { cloudinaryService } from "./cloudinary.service";
+import { IntraAuthGuard } from "./intraStrategy/intraGuard";
 
 
 
@@ -84,12 +85,12 @@ export class authController {
   async loginn(@Body() req: LoginData, @Res() response: Response) {
     // console.log(req);
     const user = await this.authS.signin(req);
-    if (user.error) response.status(400).json(user);
+    if (user.error) response.status(200).json(user);
     else
     response.cookie("jwt", generateJwtToken(user.user), {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production', // Use 'true' in production
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Use 'none' in production with 'secure: true'
+      sameSite: "lax", // Use 'none' in production with 'secure: true'
     }).send({ login: "login success !" });
   }
 
@@ -102,8 +103,8 @@ export class authController {
       response
         .cookie("jwt", generateJwtToken(user.data), {
           httpOnly: true,
-          secure: true,
-          sameSite: "none",
+          secure: process.env.NODE_ENV === 'production', // Use 'true' in production
+          sameSite: "lax",
         })
         .send(user.data);
   }
@@ -115,20 +116,21 @@ export class authController {
       .cookie("jwt", req.user["jwt"], {
         httpOnly: true,
         secure: true,
-        sameSite: "none",
+        sameSite: "lax",
       })
       .redirect(this.FrontEndUrl);
   }
 
   @Get("api/auth/intra")
-  @UseGuards(AuthGuard("intra"))
+  // @UseGuards(AuthGuard("intra"))
+  @UseGuards(IntraAuthGuard)
   intraLogin(@Req() request: Request, @Res() response: Response) {
     try {
       response
         .cookie("jwt", request.user, {
           httpOnly: true,
           secure: true,
-          sameSite: "none",
+          sameSite: "lax",
         })
         .redirect(this.FrontEndUrl);
     } catch (error) {
@@ -156,8 +158,8 @@ export class authController {
     res
       .clearCookie("jwt", {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
+          secure: process.env.NODE_ENV === 'production', // Use 'true' in production
+          sameSite: "lax",
       })
       .send({ logout: "logout success !" });
   }
@@ -174,7 +176,8 @@ export class authController {
     @Res() res: Response
   ) {
     try {
-      console.log(file);
+      // console.log(file);
+      if (!file) throw new Error("file is required");
       const ImgUrl = await this.cloudinaryService.uploadImage(file);
       console.log('Imgae----------:  ', ImgUrl);
       // const fileBase64 = file.buffer.toString("base64");
@@ -199,7 +202,7 @@ export class authController {
           .cookie("jwt", generateJwtToken(data), {
             httpOnly: true,
             secure: true,
-            sameSite: "none",
+            sameSite: "lax",
           })
           .send("ok");
       }
@@ -223,10 +226,32 @@ export class authController {
           .cookie("jwt", generateJwtToken(data), {
             httpOnly: true,
             secure: true,
-            sameSite: "none",
+            sameSite: "lax",
           })
           .send("ok");
       }
     }
   }
+
+  @Post('updateImage')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('image'))
+  async updateImage(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: Request,
+    @Res() res: Response
+  ) {
+    try {
+      console.log(file);
+      const ImgUrl = await this.cloudinaryService.uploadImage(file);
+      if (!ImgUrl) res.send('error');
+      const user = await this.authS.updateImage(req.user['userId'], ImgUrl);
+      console.log(user);
+      if (user)
+      res.send(ImgUrl);
+    } catch (error) {
+      res.status(400).json({ error: 'image is required' });
+    }
+  }
+
 }
