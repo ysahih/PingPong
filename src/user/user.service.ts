@@ -672,6 +672,7 @@ export class FriendsService {
                 },
                 take: 1,
                 select: {
+                  // TODO: Take one message
                   content: true,
                   createdAt: true,
                   userId: true,
@@ -827,6 +828,54 @@ export class FriendsService {
       return (convData);
     } catch (e) {
       return null;
+    }
+  }
+
+  async updateRead(userId :number, withUserId :number) {
+
+    try {
+      const msj = await this.prisma.converstaion.findFirst({
+        where: {
+          AND: [
+            {users: {some: {id: userId}}},
+            {users: {some: {id: withUserId}}},
+          ],
+        },
+        select: {
+          messages: {
+            orderBy: {
+              id: 'desc',
+            },
+            take: 1,
+            select: {
+              readBy: {
+                select: {
+                  id: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (msj)
+      {
+        await this.prisma.readBy.update({
+          where: {
+            id: msj.messages[0].readBy.id,
+          },
+          data: {
+            users: {
+              connect: {
+                id: withUserId,
+              },
+            },
+          },
+        });
+    }
+
+    } catch (e) {
+      return (null);
     }
   }
 }

@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Patch,
@@ -94,10 +95,9 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async GetMessages(@Req() req :Request) {
 
-    // console.log('--------------------------')
-
     return await this.FriendsService.message(req.user['userId'], Number(req.query['id']));
   }
+
   @Get('getSentInvits')
   @UseGuards(JwtAuthGuard)
   async getSentInvits(@Req() req : Request){
@@ -114,5 +114,12 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async NotificationsSeen(@Req() req : Request){
     return await this.FriendsService.NotificationsSeen(req.user['userId']);
+  }
+
+  @Post("updateRead")
+  @UseGuards(JwtAuthGuard)
+  async updateRead(@Req() request :Request, @Body('convo') withUserId :number) {
+
+    await this.FriendsService.updateRead(request.user['userId'], withUserId);
   }
 }
