@@ -26,8 +26,33 @@ CREATE TABLE "Users" (
 );
 
 -- CreateTable
+CREATE TABLE "Friends" (
+    "id" SERIAL NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "userId" INTEGER,
+    "friendsReceivid" INTEGER,
+
+    CONSTRAINT "Friends_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Notifications" (
+    "id" SERIAL NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" INTEGER,
+    "image" TEXT DEFAULT 'https://res.cloudinary.com/dkkgmzpqd/image/upload/v1626820134/default-user-image.jpg',
+    "userName" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
+    "seen" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "Notifications_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "FriendRequests" (
     "id" SERIAL NOT NULL,
+    "blockedById" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "senderId" INTEGER,
@@ -60,8 +85,18 @@ CREATE TABLE "Room" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "type" "ROOMTYPE" NOT NULL DEFAULT 'PUBLIC',
+    "password" TEXT,
+    "image" TEXT,
 
     CONSTRAINT "Room_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ReadBy" (
+    "id" SERIAL NOT NULL,
+    "messsageId" INTEGER NOT NULL,
+
+    CONSTRAINT "ReadBy_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -83,6 +118,7 @@ CREATE TABLE "UserRoom" (
     "roomId" INTEGER NOT NULL,
     "userRole" "ROLE" NOT NULL DEFAULT 'USER',
     "joinedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "isMuted" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "UserRoom_pkey" PRIMARY KEY ("id")
 );
@@ -99,6 +135,18 @@ CREATE TABLE "_ConverstaionToUser" (
     "B" INTEGER NOT NULL
 );
 
+-- CreateTable
+CREATE TABLE "_RoomToUser" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "_ReadByToUser" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Users_userName_key" ON "Users"("userName");
 
@@ -106,10 +154,16 @@ CREATE UNIQUE INDEX "Users_userName_key" ON "Users"("userName");
 CREATE UNIQUE INDEX "Users_email_key" ON "Users"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Friends_userId_friendsReceivid_key" ON "Friends"("userId", "friendsReceivid");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "FriendRequests_senderId_receiverId_key" ON "FriendRequests"("senderId", "receiverId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Room_name_key" ON "Room"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ReadBy_messsageId_key" ON "ReadBy"("messsageId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "UserRoom_userId_roomId_key" ON "UserRoom"("userId", "roomId");
@@ -126,11 +180,35 @@ CREATE UNIQUE INDEX "_ConverstaionToUser_AB_unique" ON "_ConverstaionToUser"("A"
 -- CreateIndex
 CREATE INDEX "_ConverstaionToUser_B_index" ON "_ConverstaionToUser"("B");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "_RoomToUser_AB_unique" ON "_RoomToUser"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_RoomToUser_B_index" ON "_RoomToUser"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_ReadByToUser_AB_unique" ON "_ReadByToUser"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_ReadByToUser_B_index" ON "_ReadByToUser"("B");
+
+-- AddForeignKey
+ALTER TABLE "Friends" ADD CONSTRAINT "Friends_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Friends" ADD CONSTRAINT "Friends_friendsReceivid_fkey" FOREIGN KEY ("friendsReceivid") REFERENCES "Users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Notifications" ADD CONSTRAINT "Notifications_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
 -- AddForeignKey
 ALTER TABLE "FriendRequests" ADD CONSTRAINT "FriendRequests_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "Users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "FriendRequests" ADD CONSTRAINT "FriendRequests_receiverId_fkey" FOREIGN KEY ("receiverId") REFERENCES "Users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ReadBy" ADD CONSTRAINT "ReadBy_messsageId_fkey" FOREIGN KEY ("messsageId") REFERENCES "Message"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Message" ADD CONSTRAINT "Message_roomId_fkey" FOREIGN KEY ("roomId") REFERENCES "Room"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -158,3 +236,15 @@ ALTER TABLE "_ConverstaionToUser" ADD CONSTRAINT "_ConverstaionToUser_A_fkey" FO
 
 -- AddForeignKey
 ALTER TABLE "_ConverstaionToUser" ADD CONSTRAINT "_ConverstaionToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_RoomToUser" ADD CONSTRAINT "_RoomToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "Room"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_RoomToUser" ADD CONSTRAINT "_RoomToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_ReadByToUser" ADD CONSTRAINT "_ReadByToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "ReadBy"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_ReadByToUser" ADD CONSTRAINT "_ReadByToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

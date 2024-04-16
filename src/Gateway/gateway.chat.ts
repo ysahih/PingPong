@@ -246,6 +246,10 @@ export class serverGateway
   handleUserStatusInRoom(@Body() payload :UpdateStatusRoom) {
 
     console.log(payload);
+    const user = this._users.getUserById(payload.userId);
+    console.log(user);
+    if (user)
+      user.socketId.forEach((socketId :string) => this._server.to(socketId).emit("UpdateStatus", payload));
   }
 
    /**

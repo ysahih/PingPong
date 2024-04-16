@@ -665,6 +665,7 @@ export class FriendsService {
                   id: true,
                   userName: true,
                   image: true,
+                  online: true,
                 },
               },
               messages: {
@@ -876,7 +877,7 @@ export class FriendsService {
 
     // console.log(JSON.stringify(users, null, 2));
 
-    if (users)
+    if (users.length)
     {
       const orgUsers :RoomUsers[] = users[0].users.map(user => <RoomUsers>{
         roomId: users[0].id,
