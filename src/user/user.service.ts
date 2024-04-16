@@ -858,6 +858,8 @@ export class FriendsService {
         },
       });
 
+      console.log(JSON.stringify(msj, null, 2));
+      console.log(userId, withUserId);
       if (msj)
       {
         await this.prisma.readBy.update({
