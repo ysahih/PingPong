@@ -664,6 +664,7 @@ export class FriendsService {
                   id: true,
                   userName: true,
                   image: true,
+                  online: true,
                 },
               },
               messages: {
@@ -702,20 +703,26 @@ export class FriendsService {
             orgConv.id = conv.users[0].id;
             orgConv.userName = conv.users[0].userName;
             orgConv.image = conv.users[0].image;
+            orgConv.isOnline = conv.users[0].online,
           }
           if (conv?.messages) {
             orgConv.lastMessage = conv.messages[0].content;
             orgConv.createdAt = conv.messages[0].createdAt;
-            if (conv?.messages[0].readBy) orgConv.isRead = true;
-            else orgConv.isRead = false;
+            if (conv?.messages[0].readBy)
+              orgConv.isRead = true;
+            else
+              orgConv.isRead = false;
             orgConv.isRoom = false;
             // FIXME: This is should be handled
-            orgConv.isOnline = orgConv.isRead;
           }
-          if (orgConv) sortedData.push(orgConv);
+          if (orgConv)
+            sortedData.push(orgConv);
         });
       }
   
+      sortedData.sort((user1, user2) => {
+        return (user1.createdAt.getTime() - user2.createdAt.getTime());
+      })
       // console.log(sortedData);
 
       return sortedData;
