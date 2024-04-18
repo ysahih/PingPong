@@ -1,6 +1,6 @@
 import { IsEnum, IsIn, IsInt, IsNotEmpty, IsString } from "@nestjs/class-validator"
 import { ROOMTYPE } from "@prisma/client"
-import { ValidateIf } from "class-validator"
+import { IsDate, ValidateIf } from "class-validator"
 
 // Message Class
 export class MessageDTO {
@@ -14,6 +14,10 @@ export class MessageDTO {
 	@IsNotEmpty()
 	@IsString()
 	message	:string
+
+	@IsNotEmpty()
+	@IsDate()
+	createdAt :Date
 }
 
 // Join room class
@@ -65,6 +69,7 @@ export class ChatData {
 export class Messages {
 	content :string
 	userId :number
+	createdAt: Date
 }
 
 export class ConvData {

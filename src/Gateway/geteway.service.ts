@@ -80,6 +80,7 @@ export class GatewayService {
           create: {
             content: payload.message,
             userId: payload.from,
+            createdAt: payload.createdAt,
             readBy: {
               create: { users: { connect: { id: payload.from } } },
             },
@@ -101,6 +102,7 @@ export class GatewayService {
           create: {
             content: payload.message,
             userId: payload.from,
+            createdAt: payload.createdAt,
           },
         },
       },

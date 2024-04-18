@@ -777,6 +777,7 @@ export class FriendsService {
                 select: {
                   content: true,
                   userId: true,
+                  createdAt: true,
                 },
               },
             },
