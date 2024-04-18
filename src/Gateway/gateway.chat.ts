@@ -243,13 +243,14 @@ export class serverGateway
   @UseFilters(ExceptionHandler)
   @UsePipes(ValidationPipe)
   @SubscribeMessage('userStatusInRoom')
-  handleUserStatusInRoom(@Body() payload :UpdateStatusRoom) {
+  handleUserStatusInRoom(@ConnectedSocket() client: Socket, @Body() payload :UpdateStatusRoom) {
 
     console.log(payload);
     const user = this._users.getUserById(payload.userId);
     console.log(user);
-    if (user)
-      user.socketId.forEach((socketId :string) => this._server.to(socketId).emit("UpdateStatus", payload));
+    client.to(payload.roomName).emit("UpdateStatus", payload);
+    // if (user)
+    //   user.socketId.forEach((socketId :string) => this._server.to(socketId).emit("UpdateStatus", payload));
   }
 
    /**

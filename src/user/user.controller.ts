@@ -155,13 +155,11 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async userStatus(@Body('role') role :ROLE, @Body('isMuted') isMuted :boolean, @Body('roomId') roomId :number, @Body('userId') userId :number) {
 
+    console.log("isMted:", isMuted);
     try {
-
       await this.FriendsService.userState(roomId, role, isMuted, userId);
       return ({status : true});
-
     } catch (e) {
-
       return ({status : false});
 
     }

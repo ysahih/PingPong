@@ -55,9 +55,13 @@ export class UpdateStatusRoom {
 	@IsNotEmpty()
 	@IsString()
 	userName	:string
-
+	
 	@IsInt()
 	userId	:number
+
+	@IsNotEmpty()
+	@IsString()
+	roomName	:string
 
 	@IsInt()
 	roomId	:number
