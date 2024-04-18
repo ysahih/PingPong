@@ -703,7 +703,7 @@ export class FriendsService {
             orgConv.id = conv.users[0].id;
             orgConv.userName = conv.users[0].userName;
             orgConv.image = conv.users[0].image;
-            orgConv.isOnline = conv.users[0].online,
+            orgConv.isOnline = conv.users[0].online;
           }
           if (conv?.messages) {
             orgConv.lastMessage = conv.messages[0].content;
