@@ -31,6 +31,8 @@ const Header = () =>{
 interface Pics {
     chatdata: ChatData[] | null;
   }
+
+
   
 const Members: React.FC<Pics> = ({ chatdata }) => {
 
@@ -224,8 +226,7 @@ const Conversation = (props : ConvoProps) =>{
         props.handleMsgClick(0);
     }
 
-
-   
+    //fetch http data
     useEffect(()=>{
         const fetchConvo  = async () =>{
             try{
@@ -244,13 +245,14 @@ const Conversation = (props : ConvoProps) =>{
         
     }, [props.userId]);
 
+    //appending new messages that are passed as props 
     useEffect(()=>{
         if (props.inConvo?.content)
             appendMessage({content: props.inConvo.content, userId: props.inConvo.senderID, createdAt: props.inConvo.createdAt})
         props.handleConvo();
     }, [props.inConvo?.content]);
 
-
+    
     const handleTyping = (e: any) => {
         socket?.emit("typing", {
             from: sender?.id,
@@ -260,10 +262,10 @@ const Conversation = (props : ConvoProps) =>{
     }
 
     useEffect(()=>{
-        socket?.on("isTyping", (from: number)=>{
-            if (from === props.userId){
+        socket?.on("isTyping", (from: number) => {
+            if (from === props.userId) {
                 setTyping(true);
-                setTimeout(()=>{
+                setTimeout( () => {
                     setTyping(false);
                 }, 2000);
             }
@@ -271,7 +273,8 @@ const Conversation = (props : ConvoProps) =>{
         return ()=>{
             socket?.off("isTyping");
         }
-    }, []);
+    }, []) ;
+
     return (
         <div className="conversation">
             <div className="convo">
@@ -318,10 +321,6 @@ const Chat = () => {
     const socket = useContext(SocketContext);
     const Convo = useContext(ChatContext);
     const [inConvo, setInConvo]  = useState<Message>();
-    //TODO: change the render state when clicking on the username.
-    
-
-
 
     const appendChat = (newChatData: ChatData) => {
         setChatdata((prevConvo) => {
@@ -332,7 +331,6 @@ const Chat = () => {
         return [newChatData];
         });
     };
-
 
     useEffect(() => {
         const fetchData = async () => {
@@ -346,7 +344,6 @@ const Chat = () => {
             }
         };
         fetchData();
-            //! when commiting new messages , the data fetched isn't sorted...!
             //if a user is blocked i should not recieve it from the back-end
     }, []);
 
@@ -358,9 +355,6 @@ const Chat = () => {
             if (chatdata?.some( olddata => olddata.id === newChatData.id))
                 setChatdata(chatdata.filter(chat => chat.id !== newChatData.id));
             appendChat(newChatData);
-            // console.log("-----")
-            // console.log(newChatData)
-            // console.log("-----")
         // ^^ this logic gets it sorted when appending new conversations ^^ \\
         
         // if you are inside the convo we pass the new message as props

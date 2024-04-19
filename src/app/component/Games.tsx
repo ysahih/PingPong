@@ -12,10 +12,11 @@ const Games = () => {
     return (
 
       <div className="Games">
+      <div className="gameContainer">
 
           <div className="darkRow">
 
-            <div className="darktable">
+            <div className="gameTable">
                 <Image src="./homeImages/darktable.svg" alt="table" width={200} height={200}/>
             </div>
 
@@ -40,7 +41,7 @@ const Games = () => {
           <div className="LightRow">
 
             <div className="tabledescribtion">
-                <h2> Frozen Arena</h2>
+                <h2>Frozen Arena</h2>
                 <p>Play in a Light environment and get Frozen</p>
                 <p>Arena's achievement</p>
                 <button className="Playbutton" onClick={ 
@@ -56,12 +57,16 @@ const Games = () => {
                 } >Play</button>
             </div>
 
-            <div className="Lighttable">
+            <div className="gameTable">
                 <Image src="./homeImages/lighttable.svg" alt="table" width={200} height={200}/>
             </div>
           </div>
 
           <div className="robot">
+
+          <div className="gameTable">
+                <Image src="./homeImages/lighttable.svg" alt="table" width={200} height={200}/>
+          </div>
 
             <div className="tabledescribtion">
                 <h2>ROBOT</h2>
@@ -79,11 +84,9 @@ const Games = () => {
                 } >Play</button>
             </div>
 
-            <div className="robotImage">
-                <Image src="./homeImages/lighttable.svg" alt="table" width={200} height={200}/>
-            </div>
           </div>
 
+      </div>
       </div>
     )
   }
