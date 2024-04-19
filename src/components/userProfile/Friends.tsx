@@ -50,6 +50,10 @@ const Friend = (props: friendsType) => {
     socket?.emit("SendGameInvite", {  invitationSenderID: user?.id , mode : "friend", friendId: id});
   }
 
+  // function handleChat (){
+  //   if (window.innerWidth <= 1139)
+    
+  // }
 
   return (
     <div className="FriendsPh min-w-[190px] h-[230px] bg-[#040A2F] mr-[15px] flex flex-col items-center">
@@ -104,6 +108,7 @@ const Friend = (props: friendsType) => {
           property="true"
           onClick={() => {
             context?.setChat(props.value.id);
+            // handleChat();
           }}
           alt="online"
           className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[24px] min-h-[24px]"

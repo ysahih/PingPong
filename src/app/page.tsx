@@ -20,6 +20,7 @@ import Gameresult from "./Game/GamePages/Gameresult";
 import Friends from "@/components/userProfile/Friends";
 import Navbar from "./component/Navbar";
 import axiosApi from "@/components/signComonents/api";
+import { ChatData } from "./component/Dto/Dto";
 
 
 /*
@@ -155,6 +156,10 @@ export default function landingPage() {
     socket.on("disconnect", () => {
       console.log("socket disconnected::::::::::::::::::::::");
     });
+
+    // socket?.on("newConvo", (newChatData: ChatData) => {
+    //   console.log(newChatData);
+    // })
 
     socket.on("DeleteFriend", (id : number) => {
       console.log("DeleteFriend", id);

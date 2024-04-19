@@ -15,7 +15,9 @@ import { ConvoData } from "./Dto/Dto";
 import { send } from "process";
 import RenderContext, { renderContext } from "@/components/context/render";
 import { render } from "react-dom";
-
+import { Message } from "./Dto/Dto";
+import TimeAgo from "javascript-time-ago";
+import { getTimeAgo } from "./timeAgo";
 
 const Header = () =>{
     return(
@@ -80,6 +82,8 @@ const UserOption = ( { className }: userOptionClass ) => {
         </div>
     );
 }
+
+
 type Props = {
     handleMsgClick: (value:number) => void;
     user : ChatData;
@@ -89,16 +93,14 @@ const More = ({user}: {user: ChatData})=> {
 
     const [showMsgOption, setShowMsgOption] = useState(false);
     
-    const chatDate = new Date(user.createdAt);
-    const currentDate = new Date();
-    let formattedDate;
-    if (chatDate.toDateString() === currentDate.toDateString()) {
-      const hours = chatDate.getHours();
-      const minutes = chatDate.getMinutes();
-      formattedDate = `${hours< 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
-    } else {
-      formattedDate = chatDate.toLocaleDateString();
-    }
+    const [timeAgo, setTimeAgo] = useState<TimeAgo | null>(null);
+  
+    useEffect(() => {
+      setTimeAgo(getTimeAgo());
+      return () => {
+        setTimeAgo(null);
+      };
+    }, []);
 
     const handleMsgOption = () => {
       setShowMsgOption(!showMsgOption);
@@ -106,9 +108,11 @@ const More = ({user}: {user: ChatData})=> {
 
     return (
         <div className="more">
-            <Image className="dots" onClick={handleMsgOption} src="./homeImages/dots.svg" alt="member" width={16} height={16}/>
+            <div className="dotscontainer" onClick={handleMsgOption}>
+                <Image className="dots" src="./homeImages/dots.svg" alt="member" width={16} height={16}/>
+            </div>
             <UserOption className={showMsgOption ? '' : 'invisible'} />
-            <p className="date">{formattedDate}</p>
+            <p className="date">{timeAgo?.format(new Date(user.createdAt))}</p>
         </div>
     );
 }
@@ -117,8 +121,7 @@ const More = ({user}: {user: ChatData})=> {
 
 const Message = ({handleMsgClick, user } : Props) =>{
 
-    console.log("--")
-    console.log(user.lastMessage);
+   
 
     return (
         <div className="Message">
@@ -141,55 +144,41 @@ const Message = ({handleMsgClick, user } : Props) =>{
 
 
 
-  type Message = {
-    content: string;
-    userId: number;
-  };
-  
-  interface convProps {
-    messages: Message[];
-    userId: number;
-  }
-
-function Convo( props : convProps | undefined ) {
-    const scrollableDivRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-      const scrollableDiv = scrollableDivRef.current;
-      if (scrollableDiv) {
-        scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
-      }
-    }, [scrollableDivRef.current?.innerHTML, props?.messages]);
-    
-    return (
-        <div className="convoHolder" ref={scrollableDivRef}>
-            {props?.messages?.map((message, index) => (
-                <div key={index} className={props.userId === message.userId ? "othersMsg" : "myMsg"}>
-                    <p>{message.content}</p>
-                </div>
-            ))} 
-        </div>
-    );
-  }
-
+ 
 
   type ConvoProps = {
     handleMsgClick: (value:number) => void;
-    userId : number;
-    inConvo: String;
+    inConvo: Message;
+    userId: number;
     handleConvo : () => void;
 };
 
 const Conversation = (props : ConvoProps) =>{
 
-    
     const socket = useContext(SocketContext);
     const sender  = useContext(UserDataContext);
     const [Input, setInput] = useState("");
     const [convo, setConvo] = useState<ConvoData | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const render = useContext(RenderContext);
-    
+    const scrollableDivRef = useRef<HTMLDivElement>(null);
+    const [timeAgo, setTimeAgo] = useState<TimeAgo | null>(null);
+  
+    useEffect(() => {
+      setTimeAgo(getTimeAgo());
+      return () => {
+        setTimeAgo(null);
+      };
+    }, []);
+
+    useEffect(() => {
+      const scrollableDiv = scrollableDivRef.current;
+      if (scrollableDiv)
+        scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
+      
+    });
+
+
     const appendMessage = (newMessage: Object) => {
         setConvo((prevConvo :any) => {
           if (prevConvo?.messages) {
@@ -212,13 +201,17 @@ const Conversation = (props : ConvoProps) =>{
 
         e.preventDefault();
         if (Input.length > 0) {
-          socket?.emit("directMessage", {
-            from: sender?.id,
-            to: props.userId,
-            message: Input,
-          });
+
+            setTimeout(() => {
+            socket?.emit("directMessage", {
+                from: sender?.id,
+                to: props.userId,
+                message: Input,
+                createdAt: new Date(Date.now()),
+            });
+        }, 100);
       
-          const newMessage = { content: Input, userId: sender?.id };
+          const newMessage = { content: Input, userId: sender?.id, createdAt: Date.now()};
           appendMessage(newMessage);
           setInput('');
           if (inputRef.current)
@@ -228,7 +221,6 @@ const Conversation = (props : ConvoProps) =>{
 
     const handleClick = ()=>{
         props.handleMsgClick(0);
-
     }
 
 
@@ -248,21 +240,14 @@ const Conversation = (props : ConvoProps) =>{
             }
         }
         fetchConvo();
-    //     socket?.on("chat", (convodata : { userId : number, message : string}) => {
-    //         const newMessage = { content: convodata.message, userId: props.userId};
-    //         if(convodata.userId === props.userId)
-    //             appendMessage(newMessage);
-    //     });
-    //     return () => {
-    //         socket?.off("chat");
-    //     }
-    }, []);
+        
+    }, [props.userId]);
 
     useEffect(()=>{
-        if(props.inConvo)
-            appendMessage({content: props.inConvo, userId: props.userId})
+        if (props.inConvo?.content)
+            appendMessage({content: props.inConvo.content, userId: props.inConvo.senderID, createdAt: props.inConvo.createdAt})
         props.handleConvo();
-    }, [props.inConvo]);
+    }, [props.inConvo?.content]);
 
     return (
         <div className="conversation">
@@ -275,7 +260,17 @@ const Conversation = (props : ConvoProps) =>{
                     <Image className="go-back cursor-pointer" src="./homeImages/goback.svg" onClick={handleClick} width={28} height={25} alt="back" />
                 </div>
                 <hr className="line"/>
-                <Convo userId={props.userId} messages={convo?.messages as Message[]}/>
+                
+             <div className="convoHolder" ref={scrollableDivRef}>
+                    {convo?.messages?.map((message: any, index: number) => (
+                        <div  key={index} className={props.userId === message.userId ? "othersMsg" : "myMsg"}>
+                            <p className={`sentAt ${props.userId === message.userId ? "othersDate" : "myDate"}`}>{timeAgo?.format(new Date(message.createdAt))}</p>
+                            <div className={props.userId === message.userId ? "othersContent" : "myContent"}>
+                                <p className="msgContent">{message?.content}</p>
+                            </div>
+                        </div>
+                    ))} 
+                </div>
             
             </div>
 
@@ -291,21 +286,12 @@ const Conversation = (props : ConvoProps) =>{
 }
 
 
-
-/*
-import React, { useState } from 'react';
-
-
-
-export default ChatInput;
- */
-
 const Chat = () => {
 
     const [chatdata, setChatdata] = useState<ChatData[] | null >(null);
     const socket = useContext(SocketContext);
     const Convo = useContext(ChatContext);
-    const [inConvo, setInConvo]  = useState<String>('');
+    const [inConvo, setInConvo]  = useState<Message>();
     //TODO: change the render state when clicking on the username.
     
 
@@ -315,7 +301,6 @@ const Chat = () => {
         setChatdata((prevConvo) => {
           if (prevConvo) {
             const updatedConvo = [ newChatData, ...prevConvo ];
-            // console.log("--before")
             return updatedConvo;
         }
         return [newChatData];
@@ -341,25 +326,22 @@ const Chat = () => {
 
     // listen
     useEffect(() => {
-        socket?.on("newConvo", (newChatData: ChatData) =>{
-            //if the conversation exists: 
-        if (chatdata?.some( olddata => olddata.id === newChatData.id))
-            setChatdata(chatdata.filter(chat => chat.id !== newChatData.id));
-        appendChat(newChatData);
+        socket?.on("newConvo", (newChatData: ChatData) => {
+            
+            // if the conversation exists:
+            if (chatdata?.some( olddata => olddata.id === newChatData.id))
+                setChatdata(chatdata.filter(chat => chat.id !== newChatData.id));
+            appendChat(newChatData);
+            // console.log("-----")
+            // console.log(newChatData)
+            // console.log("-----")
         // ^^ this logic gets it sorted when appending new conversations ^^ \\
-        // console.log("----")
-        // console.log(chatdata)
         
-        //if you are inside the convo we pass the new message as props
-
-        console.log(newChatData.id)
-        console.log("----")
-        console.log(Convo?.chat)
-            if (Convo?.chat === newChatData.id){
-                setInConvo(newChatData.lastMessage);
-            }
-        
-            })
+        // if you are inside the convo we pass the new message as props
+            if (Convo?.chat === newChatData.id)
+                setInConvo({content: newChatData.lastMessage, createdAt: newChatData.createdAt, senderID: newChatData.id});
+            
+        })
         return () => { socket?.off("newConvo")}
     }, [chatdata, Convo?.chat]);
 
@@ -378,7 +360,7 @@ const Chat = () => {
                     )) : null}
                  </div>
             </div>}
-            {Convo?.chat !== 0 && <Conversation handleMsgClick={()=>Convo?.setChat(0)} userId={Convo?.chat!} inConvo={inConvo} handleConvo={() =>{setInConvo("")}} />}
+            {Convo?.chat !== 0 && <Conversation handleMsgClick={()=>Convo?.setChat(0)} userId={Convo?.chat!} handleConvo={()=>setInConvo({content: "", createdAt: new Date(), senderID: 0})} inConvo={inConvo!} />}
             
         </div>
     );

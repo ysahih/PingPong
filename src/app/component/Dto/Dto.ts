@@ -1,4 +1,10 @@
 
+export interface Message {
+    content: String;
+    senderID: number;
+    createdAt: Date;
+}
+
 export type ChatData = {
     id : number,
     convId: number,
@@ -11,9 +17,12 @@ export type ChatData = {
     createdAt: Date
 }
 
+
+
 export type ConvoData = {
     id : number,
     userName: string,
     image: string,
-    messages?: Array <Object> 
+    messages?: Array <Message>
 }
+

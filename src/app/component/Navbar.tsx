@@ -70,9 +70,9 @@ const Notification = () => {
     []
   );
   const socket = useContext(SocketContext);
-  const [timeAgo, setTimeAgo] = useState<TimeAgo | null>(null);
   const [numberNotf, setNumberNotf] = useState<number>(0);
-
+  const [timeAgo, setTimeAgo] = useState<TimeAgo | null>(null);
+  
   useEffect(() => {
     setTimeAgo(getTimeAgo());
     // No need for cleanup to set to null, but you can keep it if it suits your use case
