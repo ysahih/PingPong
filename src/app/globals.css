@@ -389,7 +389,7 @@
     max-width: 800px;
     background: var(--bg-color);
     height: 78vh;
-    /* min-height: 900px; */
+    min-height: 400px;
     max-height: 78vh;
     border-top: 1px solid var(--item-border-color);
     border-radius: 12px;
@@ -399,13 +399,13 @@
 .messagesHolder{
     overflow: scroll;
     overflow-x: hidden;
-    height: calc(70vh - 140px);
+    height: calc(70vh - 120px);
     /* min-height: 300px; */
 }
 
 .chatdiv .convoHolder{
-    height: 78vh;
-    max-height: 78vh;
+    height: calc(78vh + 30px);
+    max-height: calc(78vh + 30px);
 }
 
 .line{
@@ -1144,7 +1144,7 @@
     }
     .Sidebar {
         height: calc(100vh);
-        min-height: 920px;
+        min-height: 700px;
         position: static;
     }
     .phonebuttons{
