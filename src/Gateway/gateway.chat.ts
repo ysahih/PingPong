@@ -239,6 +239,22 @@ export class serverGateway
           );
     }
   }
+  
+  @UseFilters(ExceptionHandler)
+  @UsePipes(ValidationPipe)
+  @SubscribeMessage("typing")
+  async handleTyping(
+    @ConnectedSocket() client: Socket,
+    @Body() data: {from: number, to: number}
+  ): Promise<void> {
+
+    const to = this._users.getUserById(data.to).socketId;
+
+    to.forEach((socketId :string) => {
+      this._server.to(socketId).emit("typing", {from: data.from});
+    });
+  }
+
    /**
    * handle friends request : by essadike
    */
