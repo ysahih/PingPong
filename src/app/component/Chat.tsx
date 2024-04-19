@@ -163,6 +163,7 @@ const Conversation = (props : ConvoProps) =>{
     const render = useContext(RenderContext);
     const scrollableDivRef = useRef<HTMLDivElement>(null);
     const [timeAgo, setTimeAgo] = useState<TimeAgo | null>(null);
+    const [typing, setTyping] = useState<Boolean> (false);
   
     useEffect(() => {
       setTimeAgo(getTimeAgo());
@@ -249,13 +250,38 @@ const Conversation = (props : ConvoProps) =>{
         props.handleConvo();
     }, [props.inConvo?.content]);
 
+
+    const handleTyping = (e: any) => {
+        socket?.emit("typing", {
+            from: sender?.id,
+            to: props.userId,
+        })
+        setInput(e.target.value);
+    }
+
+    useEffect(()=>{
+        socket?.on("isTyping", (from: number)=>{
+            if (from === props.userId){
+                setTyping(true);
+                setTimeout(()=>{
+                    setTyping(false);
+                }, 2000);
+            }
+        })
+        return ()=>{
+            socket?.off("isTyping");
+        }
+    }, []);
     return (
         <div className="conversation">
             <div className="convo">
                 <div className="convoHeader">
                     <div className="sender-info  cursor-pointer" onClick={() => render?.setRender("profileOverly")}>
                         <Image className="profilepic" src={convo?.image ? convo.image : "./homeImages/memeber1.svg"} width={38} height={42} alt="photo"/>
-                        <h2>{convo?.userName}</h2>
+                        <div>
+                            <h2>{convo?.userName}</h2>
+                            <p className="typing">{typing ? 'Typing...' : 'online'}</p>
+                        </div>
                     </div>
                     <Image className="go-back cursor-pointer" src="./homeImages/goback.svg" onClick={handleClick} width={28} height={25} alt="back" />
                 </div>
@@ -275,7 +301,7 @@ const Conversation = (props : ConvoProps) =>{
             </div>
 
               <form onSubmit={sendInput} className="input-footer">
-                <input ref={inputRef} type="text" className="convoInput" placeholder="Send a Message..." onChange={(e) => setInput(e.target.value)}/>
+                <input ref={inputRef} type="text" className="convoInput" placeholder="Send a Message..." onChange={handleTyping}/>
                 <button type="submit" >
                   <RiSendPlaneFill className="sendLogo" />
                 </button>

@@ -61,6 +61,29 @@ const Games = () => {
             </div>
           </div>
 
+          <div className="robot">
+
+            <div className="tabledescribtion">
+                <h2>ROBOT</h2>
+                <p>Play against the robot and get</p>
+                <p>a champion</p>
+                <button className="Playbutton" onClick={ 
+                  ()=>{      
+                      // game?.setRunning(false);
+                      // game?.setGamemode("Frozen Arena");
+                      // game?.settype("random");
+                      // game?.setgamefriend(-1);
+                      // render?.setRender("playGame");
+                  }
+                
+                } >Play</button>
+            </div>
+
+            <div className="robotImage">
+                <Image src="./homeImages/lighttable.svg" alt="table" width={200} height={200}/>
+            </div>
+          </div>
+
       </div>
     )
   }
