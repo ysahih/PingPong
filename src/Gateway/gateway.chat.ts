@@ -126,6 +126,7 @@ export class serverGateway
   ): Promise<void> {
     
 
+    console.log(payload);
     // TODO: When A user send a message at that sended user to read status
 
     // Get sender User Infos
@@ -148,10 +149,10 @@ export class serverGateway
 
           if (toUser)
           {
-            this._prisma.uniqueConvo(payload.from, payload.to)
+            this._prisma.uniqueConvo(payload.from, payload.to, payload.message)
             .then((data) => {
               toUser.socketId.forEach((socktId: string) =>
-                this._server.to(socktId).emit("newConvo", data.lastMessage)
+                this._server.to(socktId).emit("newConvo", data)
               );
             });
           }
@@ -164,13 +165,12 @@ export class serverGateway
       // await this._prisma.updateConversation(isExist.id, payload);
       this._prisma.updateConversation(isExist.id, payload)
       .then(() => {
-
         if (toUser)
         {
-          this._prisma.uniqueConvo(payload.from, payload.to)
+          this._prisma.uniqueConvo(payload.from, payload.to, payload.message)
           .then((data) => {
             toUser.socketId.forEach((socktId: string) =>
-              this._server.to(socktId).emit("newConvo", data.lastMessage)
+              this._server.to(socktId).emit("newConvo", data)
             );
           });
         }

@@ -395,7 +395,7 @@ export class GatewayService {
     }
   }
 
-  async uniqueConvo(senderId: number, receiverId: number) {
+  async uniqueConvo(senderId: number, receiverId: number, message: string) {
 
     const user = await this._prisma.converstaion.findFirst({
       where: {
@@ -437,14 +437,14 @@ export class GatewayService {
       id: user.users[0].id,
       userName: user.users[0].userName,
       image: user.users[0].image,
-      lastMessage: user.messages[0].content,
+      lastMessage: message,
       createdAt: user.messages[0].createdAt,
       isOnline: false,
       isRead: false,
       isRoom: false,
     }
 
-    console.log(convo);
+    // console.log(convo);
 
     return (convo);
   }
