@@ -1,6 +1,6 @@
 import { IsEnum, IsIn, IsInt, IsNotEmpty, IsString } from "@nestjs/class-validator"
 import { ROOMTYPE } from "@prisma/client"
-import { IsDate, ValidateIf } from "class-validator"
+import { IsDate, IsDateString, ValidateIf } from "class-validator"
 
 // Message Class
 export class MessageDTO {
@@ -16,7 +16,7 @@ export class MessageDTO {
 	message	:string
 
 	@IsNotEmpty()
-	@IsDate()
+	@IsDateString()
 	createdAt :Date
 }
 
