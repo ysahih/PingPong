@@ -888,15 +888,11 @@ export class FriendsService {
         role: user.userRole,
       });
 
-      console.log(orgUsers);
-
       orgUsers.sort((user1, user2) => {
         const role = {'OWNER': 0, 'ADMIN': 1, 'USER': 2};
 
         return role[user1.role] - role[user2.role];
       });
-
-      console.log(orgUsers);
 
       return (orgUsers);
     }
@@ -917,5 +913,40 @@ export class FriendsService {
         isMuted: isMuted,
       }
     });
+  }
+
+  async getRooms() {
+
+    try {
+      const rooms = await this.prisma.room.findMany({
+        select: {
+          id: true,
+          name: true,
+          type: true,
+          image: true,
+          users: {
+            select: {
+              id: true,
+            }
+          }
+        },
+      });
+
+      const sortedRooms = rooms.sort((room1, room2) => {
+        return -(room1.users.length - room2.users.length);
+      });
+
+      return sortedRooms.map((room) => {
+        return {
+          id: room.id,
+          name: room.name,
+          image: room.image,
+          type: room.type
+        };
+      });
+
+    } catch (e) {
+      return [];
+    }
   }
 }

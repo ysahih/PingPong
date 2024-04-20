@@ -167,9 +167,16 @@ export class UserController {
   
   @Get('roomUsers/:roomName')
   @UseGuards(JwtAuthGuard)
-  async RoomUser (@Param('roomName') roomName :string) {
+  async RoomUser(@Param('roomName') roomName :string) {
 
     return await this.FriendsService.roomUsers(roomName);
+  }
+
+  @Get('getRooms')
+  @UseGuards(JwtAuthGuard)
+  async getRooms() {
+
+    return await this.FriendsService.getRooms();
   }
 
 }
