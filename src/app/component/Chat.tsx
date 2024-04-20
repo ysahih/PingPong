@@ -152,6 +152,7 @@ const Message = ({handleMsgClick, user } : Props) =>{
     handleMsgClick: (value:number) => void;
     inConvo: Message;
     userId: number;
+    updateChat: (newChatData: ChatData) =>void
     handleConvo : () => void;
 };
 
@@ -202,10 +203,21 @@ const Conversation = (props : ConvoProps) =>{
                 message: Input,
                 createdAt: new Date(Date.now()),
             });
-        }, 100);
+        }, 1000);
       
           const newMessage = { content: Input, userId: sender?.id, createdAt: Date.now()};
           appendMessage(newMessage);
+          
+
+          props.updateChat({id: props.userId,
+                            userName: convo?.userName!,
+                            image: convo?.image!,
+                            lastMessage: Input,
+                            isOnline: false, // will be added
+                            isRead: false, //will be removed
+                            isRoom: false,
+                            createdAt: new Date()
+            });
           setInput('');
           if (inputRef.current)
             inputRef.current.value = '';
@@ -339,20 +351,23 @@ const Chat = () => {
             //if a user is blocked i should not recieve it from the back-end
     }, []);
 
+
+    const updateChat = (newChatData: ChatData) =>{
+        
+        // if the conversation exists:
+        // ^^ this logic gets it sorted when appending new conversations ^^ \\
+        if (chatdata?.some( olddata => olddata.id === newChatData.id))
+                setChatdata(chatdata.filter(chat => chat.id !== newChatData.id));
+            appendChat(newChatData);
+    }
     // listen
     useEffect(() => {
         socket?.on("newConvo", (newChatData: ChatData) => {
+            updateChat(newChatData);
             
-            // if the conversation exists:
-            if (chatdata?.some( olddata => olddata.id === newChatData.id))
-                setChatdata(chatdata.filter(chat => chat.id !== newChatData.id));
-            appendChat(newChatData);
-        // ^^ this logic gets it sorted when appending new conversations ^^ \\
-        
-        // if you are inside the convo we pass the new message as props
+            // if you are inside the convo we pass the new message as props
             if (Convo?.chat === newChatData.id)
                 setInConvo({content: newChatData.lastMessage, createdAt: newChatData.createdAt, senderID: newChatData.id});
-            
         })
         return () => { socket?.off("newConvo")}
     }, [chatdata, Convo?.chat]);
@@ -372,7 +387,7 @@ const Chat = () => {
                     )) : null}
                  </div>
             </div>}
-            {Convo?.chat !== 0 && <Conversation handleMsgClick={()=>Convo?.setChat(0)} userId={Convo?.chat!} handleConvo={()=>setInConvo({content: "", createdAt: new Date(), senderID: 0})} inConvo={inConvo!} />}
+            {Convo?.chat !== 0 && <Conversation updateChat={updateChat} handleMsgClick={()=>Convo?.setChat(0)} userId={Convo?.chat!} handleConvo={()=>setInConvo({content: "", createdAt: new Date(), senderID: 0})} inConvo={inConvo!} />}
             
         </div>
     );

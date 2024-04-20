@@ -7,7 +7,6 @@ export interface Message {
 
 export type ChatData = {
     id : number,
-    convId: number,
     userName: string,
     image: string,
     lastMessage: string,
