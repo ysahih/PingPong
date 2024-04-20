@@ -166,13 +166,6 @@ const Conversation = (props : ConvoProps) =>{
     const scrollableDivRef = useRef<HTMLDivElement>(null);
     const [timeAgo, setTimeAgo] = useState<TimeAgo | null>(null);
     const [typing, setTyping] = useState<Boolean> (false);
-  
-    useEffect(() => {
-      setTimeAgo(getTimeAgo());
-      return () => {
-        setTimeAgo(null);
-      };
-    }, []);
 
     useEffect(() => {
       const scrollableDiv = scrollableDivRef.current;
@@ -180,7 +173,6 @@ const Conversation = (props : ConvoProps) =>{
         scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
       
     });
-
 
     const appendMessage = (newMessage: Object) => {
         setConvo((prevConvo :any) => {
@@ -197,8 +189,6 @@ const Conversation = (props : ConvoProps) =>{
           });
         });
       };
-      
-   
 
     const sendInput = (e: any) => {
 
@@ -270,9 +260,11 @@ const Conversation = (props : ConvoProps) =>{
                 }, 2000);
             }
         })
-        return ()=>{
+        setTimeAgo(getTimeAgo());
+        return () => {
             socket?.off("isTyping");
-        }
+              setTimeAgo(null);
+        };
     }, []) ;
 
     return (

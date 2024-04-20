@@ -65,7 +65,7 @@ const Games = () => {
           <div className="robot">
 
           <div className="gameTable">
-                <Image src="./homeImages/lighttable.svg" alt="table" width={200} height={200}/>
+                <Image src="./homeImages/robot.svg" alt="table" width={90} height={60}/>
           </div>
 
             <div className="tabledescribtion">
