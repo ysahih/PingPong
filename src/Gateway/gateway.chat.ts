@@ -133,29 +133,57 @@ export class serverGateway
     // Check if already there's that conversation
     const isExist = fromUser.DirectChat.find(
       (conv) => conv.toUserId === payload.to
-    );
+      );
+
+      // Check if the receiver user is online between the _users
+      const toUser = this._users.getUserById(payload.to);
 
     if (!isExist) {
       console.log("Conversation does not Exist !");
       // If dosn't exist create new record
-      const newConv = await this._prisma.createConversation(payload);
+      // const newConv = await this._prisma.createConversation(payload);
+      this._prisma.createConversation(payload)
+        .then((data) => {
+          this._users.addNewConversation(payload, data.id);
+
+          if (toUser)
+          {
+            this._prisma.uniqueConvo(payload.from, payload.to)
+            .then((data) => {
+              toUser.socketId.forEach((socktId: string) =>
+                this._server.to(socktId).emit("newConvo", data.lastMessage)
+              );
+            });
+          }
+        });
       // ADD conversation ID for USER1 and USER2
-      this._users.addNewConversation(payload, newConv.id);
+      // this._users.addNewConversation(payload, newConv.id);
     } else {
       console.log("Conversation Exists !");
       // If Exist Just add the message at the conversation ID
-      await this._prisma.updateConversation(isExist.id, payload);
+      // await this._prisma.updateConversation(isExist.id, payload);
+      this._prisma.updateConversation(isExist.id, payload)
+      .then(() => {
+
+        if (toUser)
+        {
+          this._prisma.uniqueConvo(payload.from, payload.to)
+          .then((data) => {
+            toUser.socketId.forEach((socktId: string) =>
+              this._server.to(socktId).emit("newConvo", data.lastMessage)
+            );
+          });
+        }
+      });
     }
-    // Check if the receiver user is online between the _users
-    const toUser = this._users.getUserById(payload.to);
     // if is Online, send him a message to the 'chat' event
-    if (toUser)
-    {
-      const lastMessage :ChatData = await this._prisma.uniqueConvo(payload.from, payload.to);
-      toUser.socketId.forEach((socktId: string) =>
-        this._server.to(socktId).emit("newConvo", lastMessage)
-      );
-    }
+    // if (toUser)
+    // {
+    //   const lastMessage :ChatData = await this._prisma.uniqueConvo(payload.from, payload.to);
+    //   toUser.socketId.forEach((socktId: string) =>
+    //     this._server.to(socktId).emit("newConvo", lastMessage)
+    //   );
+    // }
   }
 
   @UseFilters(ExceptionHandler)
