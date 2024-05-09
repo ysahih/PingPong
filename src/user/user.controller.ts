@@ -1,17 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Patch,
-  Post,
-  Put,
-  Query,
-  Req,
-  UploadedFile,
-  UseGuards,
-  UseInterceptors,
-} from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, Query, Req, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { FriendsService } from "./user.service";
 import { JwtAuthGuard } from "src/authentication/jwtStrategy/jwtguards";
 import { Request } from "express";
@@ -131,52 +118,107 @@ export class UserController {
 
     const { name, type, password } : {name :string, type :ROOMTYPE, password :string} = req.body;
 
-    if (!name || !type || (type === ROOMTYPE.PROTECTED && !password))
+    console.log("Name:", name);
+    console.log("Type:", type);
+    console.log("Password:", password);
+
+    console.log("File:", file);
+
+    if (!name || (type === ROOMTYPE.PROTECTED && !password))
       return {status: 0, message: 'Invalid data !'};
 
-  try {
-    const imgUrl = await this.cloud.uploadImage(file);
-    const hashedPassword = password ? await argon.hash(password) : null;
+  // try {
+  //   const hashedPassword = (password && type === ROOMTYPE.PROTECTED) ? await argon.hash(password) : null;
+  //   if (password && !hashedPassword)
+  //     return {status: 0, message: 'Room did not create !'}
 
-    await this.FriendsService.createRoom(parseInt(req.user["userId"]), name, type, hashedPassword, imgUrl);
-    return {status: 1, message: 'Room Created !'};
+  //   const imgUrl = await this.cloud.uploadImage(file);
 
-    } catch (e) {
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        if (e.code === "P2002")
-          return {status: 0, message: 'Room name already exists !'};
-      }
-      else
-      return {status: 0, message: 'Room did not created !'}
-    }
+  //   await this.FriendsService.createRoom(parseInt(req.user["userId"]), name, type, hashedPassword, imgUrl);
+  //   return {status: 1, message: 'Room Created !'};
+
+  //   } catch (e) {
+  //     if (e instanceof Prisma.PrismaClientKnownRequestError) {
+  //       if (e.code === "P2002")
+  //         return {status: 0, message: 'Room name already exists !'};
+  //     }
+  //     else
+  //       return {status: 0, message: 'Room did not create !'}
+  //   }
+    return {status: 0, message: 'huh'};
   }
 
   @Post('userStatus')
   @UseGuards(JwtAuthGuard)
-  async userStatus(@Body('role') role :ROLE, @Body('isMuted') isMuted :boolean, @Body('roomId') roomId :number, @Body('userId') userId :number) {
+  async userStatus(@Body('role') role :ROLE, @Body('isMuted') isMuted :boolean, @Body('roomId') roomId :number, @Body('userId') userId :number, @Req() request :Request) {
 
-    console.log("isMted:", isMuted);
     try {
-      await this.FriendsService.userState(roomId, role, isMuted, userId);
+      await this.FriendsService.userState(request.user['userId'], roomId, role, isMuted, userId);
       return ({status : true});
     } catch (e) {
       return ({status : false});
 
     }
   }
-  
+
   @Get('roomUsers/:roomName')
   @UseGuards(JwtAuthGuard)
-  async RoomUser(@Param('roomName') roomName :string) {
+  async RoomUser(@Param('roomName') roomName :string, @Req() request :Request) {
 
-    return await this.FriendsService.roomUsers(roomName);
+    return await this.FriendsService.roomUsers(request.user['userId'], roomName);
   }
 
   @Get('getRooms')
   @UseGuards(JwtAuthGuard)
-  async getRooms() {
+  async getRooms(@Req() request :Request) {
 
-    return await this.FriendsService.getRooms();
+    return await this.FriendsService.getRooms(request.user['userId']);
   }
 
+  @Post('joinRoom')
+  @UseGuards(JwtAuthGuard)
+  async joinRoom(@Body('id') id: number, @Req() request :Request , @Body('password') password ?:string) {
+
+    return await this.FriendsService.joinRoom(request.user['userId'], id, password);
+  }
+
+  @Post('kickBanRoom')
+  @UseGuards(JwtAuthGuard)
+  async handleKickUser(@Req() request :Request, @Body('userId') userId :number, @Body('roomId') roomId :number, @Body('ban') ban :boolean) {
+
+    return await this.FriendsService.kickUserFromRoom(request.user['userId'], userId, roomId, ban);
+  }
+
+  @Post('updateRoom')
+  @UseInterceptors(FileInterceptor("file"))
+  @UseGuards(JwtAuthGuard)
+  async handleUpdateRoom(@UploadedFile() file: Express.Multer.File, @Req() request :Request) {
+
+    const { name, newName, type, password} : {name :string, newName :string, type :ROOMTYPE, password :string} = request.body;
+
+    if (!name || (type === ROOMTYPE.PROTECTED && !password))
+      return {status: 0, message: 'Invalid data !'};
+
+      if (password)
+        var hashedPass = await argon.hash(password);
+    // const hashedPass = (password && type === ROOMTYPE.PROTECTED) ? await argon.hash(password) : null;
+
+    if (password && !hashedPass)
+      return {status: 0, message: 'Something wrong !'};
+
+    if (file)
+      var imgUrl :string = await this.cloud.uploadImage(file);
+
+    return this.FriendsService.updateRoom(request.user['userId'], name, newName, type, imgUrl, hashedPass);
+  }
+
+  @Get('getRoom/:name')
+  @UseGuards(JwtAuthGuard)
+  async hadnleRoom(@Param('name') name :string) {
+    try {
+      return await this.FriendsService.getRoom(name);
+    } catch (e) {
+      return null;
+    }
+  }
 }

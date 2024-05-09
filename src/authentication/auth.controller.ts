@@ -23,6 +23,7 @@ import { cloudinaryService } from "./cloudinary.service";
 
 // check in bakend if the user already has 2fa enabled
 @Controller()
+
 export class authController {
   private readonly FrontEndUrl = process.env.FRONTEND_URL;
   private readonly BackEndUrl = process.env.BACKEND_URL;

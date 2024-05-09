@@ -1,3 +1,5 @@
+import { ROLE, ROOMTYPE } from "@prisma/client"
+import { IsEnum, IsInt, IsNotEmpty, IsString } from "class-validator"
 
 // User Inetface
 export class User {
@@ -27,11 +29,22 @@ export class User {
 // }
 
 // Room Interface
-export interface Room {
+export class Room {
+
+	@IsInt()
 	id			:number
+
+	@IsNotEmpty()
+	@IsString()
 	name		:string
-	UserRole	:'OWNER' | 'ADMIN' | 'USER',
-	type		:'PUBLIC' | 'PROTECTED' | 'PRIVATE'
+	// UserRole	:'OWNER' | 'ADMIN' | 'USER',
+	// type		:'PUBLIC' | 'PROTECTED' | 'PRIVATE'
+
+	@IsEnum(ROLE)
+	UserRole	:ROLE
+
+	@IsEnum(ROOMTYPE)
+	type		:ROOMTYPE
 }
 
 // Converstion Interface

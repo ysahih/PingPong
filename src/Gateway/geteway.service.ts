@@ -126,17 +126,46 @@ export class GatewayService {
     return newRoom;
   }
 
-  async findRoom(id: number) {
+  async findRoom(id: number, userId: number) {
+    console.log(id, userId);
     const foundedRoom = await this._prisma.room.findUnique({
       where: {
         id: id,
       },
-      select: {
-        id: true,
-        name: true,
-        type: true,
+      // select: {
+      //   id: true,
+      //   name: true,
+      //   type: true,
+      //   users: {
+      //     select: {
+      //       user: {
+      //         select: {
+      //           id: true,
+      //         }
+      //       }
+      //     }
+      //   }
+      // },
+      include : {
+        users: {
+          where: {
+            user: {
+              id: userId,
+            },
+          },
+          select: {
+            user: {
+              select: {
+                userName: true,
+                image: true,
+              },
+            },
+          },
+        },
       },
     });
+
+    console.log(JSON.stringify(foundedRoom, null, 2));
 
     return foundedRoom;
   }
