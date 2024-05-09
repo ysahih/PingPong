@@ -8,6 +8,16 @@
     border-radius: 20px;
 }
 
+.room__users__header {
+    background-color: inherit;
+	color: #8A99E9;
+	font-family: "Lalezar";
+	/* font-size: 50px; */
+	font-size: 32px;
+	margin: 20px 40px;
+	width: fit-content;
+}
+
 .room__users__top {
     display: flex;
     align-items: center;
@@ -31,6 +41,46 @@
     gap: 10px;
 }
 
+.room__users__btn--wrapper {
+    width: 31px;
+    height: 31px;
+}
+
+.room__users__btn--wrapper > button {
+    height: 30px;
+    width: 30px;
+}
+
+.room__users__btn--wrapper:hover > button {
+    height: 31px;
+    width: 31px;
+    opacity: .8;
+}
+
+.url--leave {
+    background-image: url('../../../../public/RoomSettings/leaveRoom.svg') !important;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    background-size: 100% 100%;
+}
+
+.url--delete {
+    background-image: url('../../../../public/RoomSettings/deleteRoom.svg') !important;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    background-size: 100% 100%;
+}
+
+.url--update {
+    background-image: url('../../../../public/RoomSettings/roomSettings.svg') !important;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    background-size: 100% 100%;
+}
+
 .room__users {
     width: 95%;
     height: 290px;
@@ -40,4 +90,28 @@
     gap: 20px;
     overflow-x: scroll;
     /* scroll-snap-type: x mandatory; */
+}
+
+.room__user__btn--animation {
+    animation: roll .4s ease-in;
+}
+
+@keyframes roll {
+    0% {
+        transform: rotate(0deg);
+        width: 30px;
+        height: 30px;
+    }
+    100% {
+        transform: rotate(180deg);
+        width: 31px;
+        height: 31px;
+    }
+}
+
+@media (max-width: 522px) {
+    
+    .room__users__header {
+        font-size: 30px;
+    }
 }

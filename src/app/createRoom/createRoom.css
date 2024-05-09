@@ -168,7 +168,7 @@ input[type="file"] {
 @media (max-width: 522px) {
 
 	.createRoom {
-		height: 700px;
+		height: 670px;
 	}
 
 	.createRoom__wrapper {
@@ -178,7 +178,9 @@ input[type="file"] {
 	}
 
 	.createRoom__header {
-		font-size: 6.5vw;
+		/* font-size: 6.5vw; */
+		font-size: 20px;
+		margin: 20px 30px;
 	}
 
 	.createRoom__picture {
@@ -200,7 +202,7 @@ input[type="file"] {
 		/* margin-top: 5px; */
 		font-size: 4vw;
 	}
-	
+
 	.createRoom__type__wrapper {
 		flex-flow: row wrap;
 		justify-content: space-around;

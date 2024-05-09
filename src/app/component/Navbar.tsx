@@ -74,7 +74,7 @@ const Notification = () =>{
             )
             const data:  NotificationType[] = res.data.notifications;
             setNotificationList(data);
-            setNumberNotf(data.filter((data) => !data.seen).length);
+            setNumberNotf(data?.filter((data) => !data.seen).length);
         }
         fetchNotification();
 

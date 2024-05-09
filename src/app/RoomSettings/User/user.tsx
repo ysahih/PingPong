@@ -1,130 +1,173 @@
 import "./user.css";
 import Image from "next/image";
 import defaultPic from "@/../public/RoomSettings/DefaultUserPic.svg";
-import kickUser from "@/../public/RoomSettings/kickUsers.svg";
-import banUser from "@/../public/RoomSettings/BanUsers.svg";
+import loading from "@/../public/RoomSettings/loadingRed.svg"
 import { Dispatch, SetStateAction, useContext, useEffect, useState } from "react";
 import { FormControlLabel, FormGroup } from "@mui/material";
 import OverSwitch from "../Switch/switch";
 import SocketContext from "@/components/context/socket";
 import axios from "axios";
+import { RoomUsers } from "../interfaces";
 
-export interface RoomUsers {
-    userId      :number
-    roomId      :number
-	userName	:string
-	image		:string
-	isMuted		:boolean
-	role		: 'OWNER' | 'ADMIN' | 'USER'
-}
-
-const User :React.FC<{user :RoomUsers, curUser :RoomUsers | undefined, name :string, updateUsers :Dispatch<SetStateAction<RoomUsers[]>>}> = (userProp) => {
+const User :React.FC<{user :RoomUsers, curUser :RoomUsers | null, name :string, updateUsers :Dispatch<SetStateAction<RoomUsers[]>>, updateCurUser :Dispatch<SetStateAction<RoomUsers | null>>}> = (userProp) => {
 
     const [user, setUser] = useState<RoomUsers>(userProp.user);
     const [disableAdmin, setDisableAdmin] = useState<boolean>(false);
     const [disableMute, setDisableMute] = useState<boolean>(false);
+    const [disableKick, setDisableKick] = useState<boolean>(false);
+    const [disableBan, setDisableBan] = useState<boolean>(false);
     const curUser = userProp.curUser;
     const socket = useContext(SocketContext);
 
     useEffect(() => {
-        console.log('Rerendering at' , user.userName);
-    });
+        setUser(userProp.user);
+    }, [userProp.user]);
 
-    const handleAdmin = async () => {
+    const handleStatus = async (action :'role' | 'mute') => {
 
-        setUser((user :RoomUsers) => {
-            return {...user, role: user.role === 'ADMIN' ? 'USER' : 'ADMIN'}
-        });
+        action === 'role' ? setDisableAdmin(true) : setDisableMute(true);
+        
+        const newUser = {
+            ...user,
+            role: action === 'role' ? user.role === 'ADMIN' ? 'USER' : 'ADMIN' : user.role,
+            isMuted: action === 'mute' ? !user.isMuted : user.isMuted,
+        };
 
-        setDisableAdmin(true);
+        setUser(newUser);
+
         const response = await axios.post(process.env.NEST_API + '/user/userStatus' ,{
             roomId: user.roomId,
             userId: user.userId,
-            role: user.role === 'ADMIN' ? 'USER' : 'ADMIN',
-            isMuted: user.isMuted,
-        },
-        {
+            role: newUser.role,
+            isMuted: newUser.isMuted,
+        },{
             withCredentials: true,
         });
 
-        setDisableAdmin(false);
+        console.log("Response:", response.data);
 
-        if (!response.data.status) {
-
-            setUser((user :RoomUsers) => {
-                return {...user, role: user.role === 'ADMIN' ? 'USER' : 'ADMIN'}
+        if (response.data.status) {
+            socket?.emit('userStatusInRoom', {
+                fromId: curUser?.userId,
+                userName: newUser.userName,
+                userId: newUser.userId,
+                roomName: userProp.name,
+                roomId: newUser.roomId,
+                role: newUser.role,
+                isMuted: newUser.isMuted
             });
         }
         else {
-
-            userProp.updateUsers(users => users.map(updateUser => {
-
-                    if (updateUser.userName === user.userName)
-                        updateUser.role = user.role === 'ADMIN' ? 'USER' : 'ADMIN';
-                    return updateUser;
-                })
-                .sort((user1, user2) => {
-
-                    const role = {'OWNER': 0, 'ADMIN': 1, 'USER': 2};
-                    return role[user1.role] - role[user2.role];
-                })
-            );
-
-            socket?.emit('userStatusInRoom', {userName: user.userName, userId: user.userId, roomId: user.roomId, role: user.role === 'ADMIN' ? 'USER' : 'ADMIN'});
+            setUser(user);
         }
 
+        action === 'role' ? setDisableAdmin(false) : setDisableMute(false);
     }
 
-    const handleMute = async () => {
-        setUser((user :RoomUsers) => {
-            return {...user, isMuted: !user.isMuted}
-        });
+    const handleKick = async (action :'kick' | 'ban') => {
 
-        setDisableMute(true);
-        const response = await axios.post(process.env.NEST_API + '/user/userStatus' ,{
-            roomId: user.roomId,
+        action === 'kick' ? setDisableKick(!disableKick) : setDisableBan(!disableBan);
+
+        const response = await axios.post(process.env.NEST_API + '/user/kickBanRoom', {
             userId: user.userId,
-            role: user.role,
-            isMuted: !user.isMuted,
-        },
-        {
+            roomId: user.roomId,
+            ban: action === 'ban',
+        }, {
             withCredentials: true,
         });
 
-        setDisableMute(false);
+        if (response.data.status) {
+        // if (true) {
+            // Delete the user from the array of users
+            userProp.updateUsers((allUsers) => allUsers.filter(indiv => indiv.userName !== user.userName));
 
-        if (!response.data.status)
-        {
-            setUser((user :RoomUsers) => {
-                return {...user, isMuted: !user.isMuted}
+            // Emit to all the users in the roo that this user is deleted !
+            socket?.emit("userOut", {
+                adminId: curUser?.userId,
+                userId: user.userId,
+                roomId: user.roomId,
+                roomName: userProp.name,
             });
         }
-    }
 
-    const handleKick = () => {
-        console.log('Kicked !');
+        action === 'kick' ? setDisableKick(disableKick) : setDisableBan(disableBan);
     }
 
     return (
         <div className={user.userName === curUser?.userName ? "wrapper--current" : "wrapper"}>
-            <Image src={user.image ? user.image : defaultPic.src} width={75} height={75} alt="user pic" className="user__profile--pic" />
+            <div className="user__profile--pic--wrapper">
+                <Image src={user.image ? user.image : defaultPic.src} width={75} height={75} alt="user pic" className="user__profile--pic" />
+            </div>
             <p className="user__profile--username">{user.userName}</p>
             <p className="user__profile--role">{user.role}</p>
+
+            {/* TODO: Add a mute sign if the user was muted */}
+
             {
-                (curUser?.role === 'OWNER' || curUser?.role === 'ADMIN') && user.role !== 'OWNER' ?
-                <FormGroup className="user__profile--role--settings">
-                    <FormControlLabel control={<OverSwitch size="small" />} label={"Admin"} checked={user.role === 'ADMIN'} className="user__profile--role" onChange={handleAdmin} disabled={disableAdmin} />
-                    <FormControlLabel control={<OverSwitch size="small" />} label={"Mute"} checked={user.isMuted} className="user__profile--role" onChange={handleMute} disabled={disableMute}/>
-                </FormGroup>
-                :null
+                curUser?.role === 'OWNER' && user.role !== 'OWNER' &&
+                <>
+                    <FormGroup className="user__profile--role--settings">
+                        <FormControlLabel control={<OverSwitch size="small" name="switch" id={user.userName + "1"} />} label={"Admin"} checked={user.role === 'ADMIN'} className="user__profile--role" onChange={() => handleStatus('role')} disabled={disableAdmin} />
+                        <FormControlLabel control={<OverSwitch size="small" name="switch" id={user.userName + "2"} />} label={"Mute"} checked={user.isMuted} className="user__profile--role" onChange={() => handleStatus('mute')} disabled={disableMute}/>
+                    </FormGroup>
+
+                    <div className="user__profile--settings">
+
+                        {/* <div className="user__profile--btn--wrapper">
+                            <Image ref={kickImg} className={disablKick ? "user__profile--btn--clicked" : "user__profile--btn"} src={kickUser.src} width={20} height={20} alt="Kick user svg" onClick={handleKick}/>
+                        </div>
+
+                        <div className="user__profile--btn--wrapper">
+                            <Image className="user__profile--btn" src={banUser.src} width={20} height={20} alt="Ban user svg" />
+                        </div> */}
+                        {/* <div className="user__profile--btn--wrapper"> */}
+                            {/* <button type={!disablKick ? "submit" : "button"} className={!disablKick ? "user__profile--btn--enabled" : "user__profile--btn--disabled"} onClick={handleKick}></button> */}
+                            {
+                                !disableKick ?
+                                <button type="submit" className="user__profile--btn--enabled url--kick" onClick={() => handleKick('kick')}></button> :
+                                <Image src={loading} width={20} height={20} className="user__profile--loading" alt="Loading logo"/>
+                                // <button type="button" className="user__profile--btn--disabled url--kick"></button>
+                            }
+                            {
+                                !disableBan ? 
+                                <button type="submit" className="user__profile--btn--enabled url--ban" onClick={() => handleKick('ban')}></button> :
+                                <Image src={loading} width={20} height={20} className="user__profile--loading" alt="Loading logo"/>
+                            }
+                        {/* </div> */}
+
+                    </div>
+                </>
             }
             {
-                (curUser?.role === 'OWNER' || curUser?.role === 'ADMIN') && user.role !== 'OWNER' ?
-                <div className="user__profile--settings">
-                    <Image src={kickUser.src} width={20} height={20} alt="Kick user svg" onClick={handleKick}/>
-                    <Image src={banUser.src} width={20} height={20} alt="Ban user svg" />
-                </div>
-                :null
+                curUser?.role === 'ADMIN' && user.role === 'USER' &&
+                <>
+                    <FormGroup className="user__profile--role--settings">
+                        <FormControlLabel control={<OverSwitch size="small" name="switch" id={user.userName + "1"} />} label={"Admin"} className="user__profile--role" onChange={() => handleStatus('role')} disabled={disableAdmin} />
+                        <FormControlLabel control={<OverSwitch size="small" name="switch" id={user.userName + "2"} />} label={"Mute"} checked={user.isMuted} className="user__profile--role" onChange={() => handleStatus('mute')} disabled={disableMute}/>
+                    </FormGroup>
+
+                    <div className="user__profile--settings">
+
+                        {/* <div className="user__profile--btn--wrapper">
+                            <Image className="user__profile--btn" src={kickUser.src} width={20} height={20} alt="Kick user svg" onClick={handleKick}/>
+                        </div>
+
+                        <div className="user__profile--btn--wrapper">
+                            <Image className="user__profile--btn" src={banUser.src} width={20} height={20} alt="Ban user svg" />
+                        </div> */}
+
+                            {
+                                !disableKick ?
+                                <button type="submit" className="user__profile--btn--enabled url--kick" onClick={() => handleKick('kick')}></button> :
+                                <Image src={loading} width={20} height={20} className="user__profile--loading" alt="Loading logo"/>
+                            }
+                            {
+                                !disableBan ? 
+                                <button type="submit" className="user__profile--btn--enabled url--ban" onClick={() => handleKick('ban')}></button> :
+                                <Image src={loading} width={20} height={20} className="user__profile--loading" alt="Loading logo"/>
+                            }
+                    </div>
+                </>
             }
         </div>
     );

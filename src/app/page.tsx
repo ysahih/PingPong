@@ -142,6 +142,10 @@ export default function landingPage() {
       setBlockedData((currentBlocked) => currentBlocked ? currentBlocked.filter((blocked: FriendsType) => blocked.id !== id) : null);
     });
     
+    socket.on('newConvo', (pylod:any) => {
+      console.log('msg: ', pylod)
+    })
+
     socket.on("NewFriend", (data: FriendsType) => {
       if (data === undefined || !data) return;
       // if(FriendsData?.some((friend) => friend.id === data.id)) return;

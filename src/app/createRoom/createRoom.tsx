@@ -5,26 +5,14 @@ import * as yup from 'yup'
 import Image from "next/image";
 import pic from '@/../public/createRoom/GroupChat.svg'
 import axios from "axios";
-
-enum ROOMTYPE {
-	PRIVATE = 'PRIVATE',
-	PUBLIC = 'PUBLIC',
-	PROTECTED = 'PROTECTED'
-}
-
-interface RoomFormat {
-	name		:string
-	type		:ROOMTYPE
-	password	:string
-	error		:string
-}
+import { RoomFormat, ROOMTYPE } from "./interfaces";
 
 const CreateRoom = () => {
 
 	const [selcType, setSelType] = useState<ROOMTYPE>(ROOMTYPE.PRIVATE);
 	const [create, setCreate] = useState<string>('');
 	const [error, setError] = useState<string>('');
-	const [image, setImage] = useState<string>('')
+	const [image, setImage] = useState<string>('');
 	const [file, setFile] = useState<File | null>(null)
 	const [creating, setCreating] = useState<boolean>(false);
 
@@ -77,6 +65,7 @@ const CreateRoom = () => {
 			const createRoom = async () => {
 
 				const formData = new FormData();
+
 				if (file)
 					formData.append("file", file);
 
@@ -103,7 +92,7 @@ const CreateRoom = () => {
 			createRoom();
 		},
 		validationSchema: yup.object().shape({
-			name : yup.string().transform(value => value.trim()).required('Required !').min(4, 'Too short !').max(10, 'Too long !'),
+			name : yup.string().transform(value => value.trim()).matches(/^[a-zA-Z0-9]*$/, 'Only alphanumeric').required('Required !').min(4, 'Too short !').max(10, 'Too long !'),
 
 			type: yup.string().oneOf(Object.values(ROOMTYPE)),
 
@@ -116,7 +105,7 @@ const CreateRoom = () => {
 			error: yup.string().notRequired(),
 		})
 	});
-	
+
 	return (
 		<div className="createRoom">
 
@@ -129,50 +118,51 @@ const CreateRoom = () => {
 					<Image src={image ? image : pic.src} height={70} width={70} alt="Group_image" className="createRoom__image" />
 
 					<label htmlFor="file" className="createRoom__input--file">Image</label>
-					<input id="file" type="file" accept="image/*" onChange={handleFileChange}/>
+					<input id="file" name="file" type="file" accept="image/*" onChange={handleFileChange} />
 
 				</div>
 
 				<form className="createRoom__form" onSubmit={formik.handleSubmit}>
 
-					<div className="createRoom__input--wrapper">
+					<div id="div2" className="createRoom__input--wrapper">
 						<input type="text" name="name" id="name" placeholder="Name" className="createRoom__input" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.name} />
 						<p className="createRoom__formik__check">{formik.touched.name && formik.errors.name ? formik.errors.name : null}</p>
 					</div>
 
-					<div className="createRoom__type__wrapper">
+					<div id="div3" className="createRoom__type__wrapper">
 
-					<button
-					type="button"
-					className={selcType === ROOMTYPE.PRIVATE ? "createRoom__type--pressed" : "createRoom__type"}
-					onClick={(e) => handleOnClick(ROOMTYPE.PRIVATE, e)}>
-						Private
-					</button>
+						<button id="div4"
+						type="button"
+						className={selcType === ROOMTYPE.PRIVATE ? "createRoom__type--pressed" : "createRoom__type"}
+						onClick={(e) => handleOnClick(ROOMTYPE.PRIVATE, e)}>
+							Private
+						</button>
 
-					<button
-					type="button"
-					className={selcType === ROOMTYPE.PUBLIC ? "createRoom__type--pressed" : "createRoom__type"}
-					onClick={(e) => handleOnClick(ROOMTYPE.PUBLIC, e)}>
-						Public
-					</button>
+						<button
+						type="button"
+						className={selcType === ROOMTYPE.PUBLIC ? "createRoom__type--pressed" : "createRoom__type"}
+						onClick={(e) => handleOnClick(ROOMTYPE.PUBLIC, e)}>
+							Public
+						</button>
 
-					<button
-					type="button"
-					className={selcType === ROOMTYPE.PROTECTED ? "createRoom__type--pressed" : "createRoom__type"}
-					onClick={(e) => handleOnClick(ROOMTYPE.PROTECTED, e)}>
-						Protected
-					</button>
+						<button
+						type="button"
+						className={selcType === ROOMTYPE.PROTECTED ? "createRoom__type--pressed" : "createRoom__type"}
+						onClick={(e) => handleOnClick(ROOMTYPE.PROTECTED, e)}>
+							Protected
+						</button>
 
 					</div>
 
 					{selcType === ROOMTYPE.PROTECTED ? 
-						<div className="createRoom__input--wrapper">
+						<div id="div1" className="createRoom__input--wrapper">
 							<input type="password" name="password" id="password" placeholder="Password" className="createRoom__input" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.password} />
-							<p className="createRoom__formik__check">{formik.touched.password && formik.errors.password ? formik.errors.password : null}</p>
+							<p className="createRoom__formik__check">{formik.touched.password && formik.errors.password ? formik.errors.password : <></>}</p>
 						</div>
-					: null}
+					: <></>}
 
-					{error ? <p className="createRoom__response--error">{error}</p> : <p className="createRoom__response--create">{create}</p>}
+					{error ? <p className="createRoom__response--error">{error}</p> : <></>}
+					{create ? <p className="createRoom__response--create">{create}</p> : <></>}
 
 					{creating ? <button type="button" className="createRoom__btn">Creating...</button> : <button type="submit" className="createRoom__btn">Create</button>}
 

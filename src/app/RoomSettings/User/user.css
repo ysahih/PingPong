@@ -1,5 +1,4 @@
 
-
 .wrapper {
     width: 250px;
     height: 270px;
@@ -10,8 +9,8 @@
     flex-shrink: 0;
     flex-flow: column;
     align-items: center;
-    cursor: pointer;
-    transition: all .3s;
+    /* cursor: pointer; */
+    transition: all .2s;
     /* scroll-snap-align: center; */
 }
 
@@ -25,26 +24,35 @@
     flex-shrink: 0;
     flex-flow: column nowrap;
     align-items: center;
-    cursor: pointer;
-    transition: all .3s;
+    /* cursor: pointer; */
+    transition: all .2s;
 }
 
 .wrapper:hover, .wrapper--current:hover {
-    border-top: solid 2px #9a957d;
+    border-top: solid 3px #5d69a2;
 }
 
-.wrapper--current .user__profile--pic, .wrapper .user__profile--pic {
-    border: solid 2px #1B266B;
+.user__profile--pic--wrapper {
+    min-width: 75px;
+    min-height: 75px;
     margin: 15px 0 5px;
+}
+
+/* .user__profile--pic { */
+.user__profile--pic--wrapper > img {
+    border: solid 2px #1B266B;
     padding: 2px;
     border-radius: 50%;
-    transition: all .3s;
+    transition: all .2s;
     min-width: 75px !important;
     min-height: 75px !important;
+    max-width: 75px !important;
+    max-height: 75px !important;
 }
 
+
 .wrapper:hover .user__profile--pic, .wrapper--current:hover .user__profile--pic {
-    border: solid 3px #9a957d;
+    border: solid 3px #5d69a2;
 }
 
 .user__profile--username {
@@ -67,5 +75,127 @@
     display: flex;
     flex-flow: row;
     gap: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    align-items: center;
+}
+
+/* .user__profile--btn--wrapper {
+    cursor: pointer !important;
+} */
+
+/* .user__profile--btn--wrapper {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all .2s ease-in-out;
+}
+
+.user__profile--btn {
+    min-width: 20px;
+    min-height: 20px;
+    cursor: pointer !important;
+    opacity: 0.8;
+}
+
+.user__profile--btn:hover {
+    min-width: 22px;
+    min-height: 22px;
+    cursor: pointer !important;
+    opacity: 1;
+}
+
+.user__profile--btn--clicked {
+    min-width: 20px;
+    min-height: 20px;
+    cursor: pointer !important;
+    opacity: 0.5;
+} */
+
+/* .user__profile--btn--wrapper {
+    width: 22px;
+    height: 22px;
+    background-image: url('../../../../public/RoomSettings/kickUsers.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    opacity: .8;
+} */
+
+/* .user__profile--btn--wrapper:hover {
+    width: 23px;
+    height: 23px;
+    opacity: 1;
+} */
+
+/* .user__profile--btn--clicked {
+    width: 22px;
+    height: 22px;
+    background-image: url('../../../../public/RoomSettings/kickUsers.svg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    opacity: .5;
+} */
+
+.url--kick {
+    background-image: url('../../../../public/RoomSettings/kickUsers.svg') !important;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    background-size: 100% 100%;
+}
+
+.url--ban {
+    background-image: url('../../../../public/RoomSettings/BanUsers.svg') !important;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    background-size: 100% 100%;
+}
+
+.user__profile--btn--enabled {
+    width: 22px;
+    height: 22px;
+    border: none;
+    opacity: 1;
+}
+
+.user__profile--btn--enabled:hover {
+    width: 23px;
+    height: 23px;
+    opacity: .8;
+}
+
+.user__profile--btn--disabled {
+    width: 22px;
+    height: 22px;
+    opacity: .5;
+}
+
+.user__profile--loading {
+    /* min-width: 15px !important;
+    min-height: 15px !important;
+    max-width: 15px !important;
+    max-height: 15px !important; */
+    width: 15px;
+    height: 15px;
+    animation: loading 1s ease-in-out infinite;
+}
+
+@keyframes loading {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@media screen {
+
+    .user__profile--role--settings span {
+        font-size: 17px !important;
+    }
 }

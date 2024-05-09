@@ -56,6 +56,7 @@ import UserProfile from "@/components/userProfile";
 import ProfileOverlay from "./component/ProfileOverlay";
 import CreateRoom from "./createRoom/createRoom";
 import RoomSettings from "./RoomSettings/roomSettings";
+import JoinRoom from "./joinRoom/joinRoom";
 
 const Tables = () => {
   return (
@@ -196,13 +197,18 @@ const BackGround = () => {
 
 const Home = (props: { showPopup: boolean }) => {
 	const context : renderContext | null = useContext(RenderContext);
+  const [choice, setChoice] = useState<number>(0);
 	return (
 		<div className={props.showPopup ? 'home-margin homepage' : 'homepage'}>
 			{context?.render === "home" && <div className="home">
 				{/* <Tables/>
 				<Statistics/> */}
-        {/* <CreateRoom /> */}
-        <RoomSettings />
+        {/* <button onClick={() => setChoice(() => 0)} style={{position:"absolute", marginLeft: "200px", backgroundColor:"white"}}> RoomSettings </button>
+        <button onClick={() => setChoice(() => 1)} style={{position:"absolute", marginLeft: "400px", backgroundColor:"white"}}> JoinRoom </button>
+        <button onClick={() => setChoice(() => 2)} style={{position:"absolute", marginLeft: "300px", backgroundColor:"white"}}> CreateRoom </button> */}
+        {!choice && <RoomSettings name={"keepItUp"}/>}
+        {choice === 1 && <JoinRoom />}
+        {choice === 2 && <CreateRoom />}
 			</div>}
 			{context?.render === "games" && <Games />}
 			{context?.render === "ranking" && <Ranking/>}
@@ -211,7 +217,7 @@ const Home = (props: { showPopup: boolean }) => {
 			{context?.render === "profileOverly" && <ProfileOverlay/>}
 			{context?.render === "chat" && 
 				<div className="chatholder visible xl:invisible">
-					<Chat/>
+					{/* <Chat/> */}
 				</div> }
 		</div>
   )
