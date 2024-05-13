@@ -100,3 +100,32 @@
   animation-iteration-count: infinite;
   animation-play-state: running;
 }
+
+.FormInput{
+  width: 286px;
+  min-height: 35px;
+  border-radius: 10px;
+  border: transparent;
+  background:  rgb(8, 16, 65,0);
+  border-top: 0.5px solid #0064FB;
+  background: linear-gradient(0deg, #081041, #081041),
+  linear-gradient(0deg, #0064FB, #0064FB);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 14px;
+  letter-spacing: 0em;
+  text-align: left;
+  padding-left: 15px;
+  color: #959DC8;
+}
+
+@media (max-width: 440px) {
+  .formClass{
+    align-items: center;
+    margin-left: -10px;
+
+  }
+  .FormInput{
+    width: 90%;
+  }
+}

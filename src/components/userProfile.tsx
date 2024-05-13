@@ -17,6 +17,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SecurityIcon from "@mui/icons-material/Security";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import ProfileDataContext from "./context/profilDataContext";
+import Info from "./userProfile/updateInfo";
 
 interface QrCodeProps {
   close: (val: boolean) => void;
@@ -345,7 +346,7 @@ const SettingsAnd2Fa = () => {
           </div>
         </div>
 
-        <div className="m-[10px] pl-[20px] h-[250px] flex mt-[-35px]">
+        <div className="m-[10px] pl-[20px] h-[322px] flex mt-[-35px]">
           {stateClick === 0 && (
             <div className="flex gap-4 w-[100%]  items-center">
               <label htmlFor="ImageInput">
@@ -383,37 +384,7 @@ const SettingsAnd2Fa = () => {
             </div>
           )}
           {stateClick === 1 && (
-            <form
-              className="flex flex-col gap-4 w-[100%]  justify-center"
-              action=""
-            >
-              <input
-                type="text"
-                className="w-[200px] text-black"
-                placeholder="First Name"
-              />
-              <input
-                type="text"
-                className="w-[200px] text-black"
-                placeholder="last Name"
-              />
-              <input
-                type="text"
-                className="w-[200px] text-black"
-                placeholder="user Name"
-              />
-              <input
-                type="password"
-                className="w-[200px] text-black"
-                placeholder="password"
-              />
-              <button
-                type="submit"
-                className="update-botton  w-[100px] h-[40px]"
-              >
-                submit
-              </button>
-            </form>
+            <Info />
           )}
           {stateClick === 2 && (
             <div className="flex w-[100%] gap-4 mt-4">
@@ -440,77 +411,6 @@ const SettingsAnd2Fa = () => {
           )}
         </div>
       </div>
-      {/* <div>
-      <Image
-          className="float-right h-full   max-w-none overflow-hidden"
-          src="./iconsProfile/Vector.png"
-          width={202}
-          height={200}
-          alt="image"
-        />
-        <div className="p-4">
-          <h1 className="text-2xl text-blue-600 mb-2">Settings</h1>
-          <div className="flex flex-col sm:flex-row">
-            <div className="p-8">
-              <Image
-                className="rounded-[10px]"
-                src={imageSrc}
-                alt="Pongy"
-                width={100}
-                height={100}
-                priority={true}
-              />
-              <input
-                type="file"
-                id="ImageInput"
-                onChange={handleFileChange}
-                style={{ display: "none" }}
-              />
-              <label htmlFor="ImageInput" className="update-botton mt-10">
-                Update
-              </label>
-            </div>
-
-            <div>
-
-              <div className="flex gap-8">
-                <div className=" flex flex-col gap-4 w-[120px]">
-                  <input className="rounded-2 " type="text" />
-                  <input type="text" />
-                  <input type="text" />
-                </div>
-                <div className="flex flex-col gap-4 w-[120px]">
-                  <input type="text" />
-                  <input type="text" />
-                  <input type="text" />
-                </div>
-              </div>
-
-
-              <h3 className="text-md text-gray-500 mt-6">
-                Enable or disable 2FA
-              </h3>
-              <div className="flex w-[100%] gap-4 justify-center mt-4">
-              <Switch onChange={handleClick} checked={!!TwoFaStatus} />
-              <button
-                ref={RefBtn}
-                className="btn2Fa"
-                onClick={() =>
-                  TwoFaStatus ? setDisable2Fa(true) : setQrclose(true)
-                }
-              >
-                {TwoFaStatus ? "Disable 2FA" : "Enable 2FA"}
-              </button>
-              {Qrclose && <QrCode close={setQrclose} towFa={set2FaStatus} />}
-              {disable2Fa && (
-                <Disable2Fa close={setDisable2Fa} twoFa={set2FaStatus} />
-              )}
-              </div>
-            </div>
-          </div>
-        </div>
-        
-      </div> */}
     </>
   );
 };

@@ -21,7 +21,7 @@ import Friends from "@/components/userProfile/Friends";
 import Navbar from "./component/Navbar";
 import axiosApi from "@/components/signComonents/api";
 
-
+// import { useRouter } from 'next/router';
 /*
   * if u need to use the socket in the app component, you can use the SocketContext to get
   * the socket instance like this:
@@ -203,7 +203,7 @@ export default function landingPage() {
     };
   }, []); // Removed Socket from dependency array
 
-
+ 
   useEffect(() => {
     
 
@@ -226,35 +226,18 @@ export default function landingPage() {
           ) {
             router.push("/login");
           } else if (res.data.twoFa === true) {
-            const data : UserData = res.data;
-            data.setEmail = setEmail;
-            data.setImage = setImage;
-            data.setUserName = setUserName;
-            data.setFirstName = setFirstName;
-            data.setLastName = setLastName;
-
-            setData(data);
             setCheckTwoFactor(res.data.twofaCheck);
           } else if (res.data.twoFa === false) {
-            const data : UserData = res.data;
-            data.setEmail = setEmail;
-            data.setImage = setImage;
-            data.setUserName = setUserName;
-            data.setFirstName = setFirstName;
-            data.setLastName = setLastName;
-            setData(data);
             setCheckTwoFactor(true);
-          } else 
-          {
-            const data : UserData = res.data;
-            data.setEmail = setEmail;
-            data.setImage = setImage;
-            data.setUserName = setUserName;
-            data.setFirstName = setFirstName;
-            data.setLastName = setLastName;
-            setData(data);
           }
-          console.log("Data:", res.data, data);
+          const data : UserData = res.data;
+          data.setEmail = setEmail;
+          data.setImage = setImage;
+          data.setUserName = setUserName;
+          data.setFirstName = setFirstName;
+          data.setLastName = setLastName;
+          setData(data);
+          // console.log("Data:", res.data, data);
         } catch (error) {
           // console.log('Error:', error);
           router.push("/login");
@@ -278,7 +261,6 @@ export default function landingPage() {
     };
   }, []);
 
-  
   // console.log("FriendsData:", FriendsData);
   // console.log("InvitsData:", InvitsData);
   // console.log("BlockedData:", BlockedData);

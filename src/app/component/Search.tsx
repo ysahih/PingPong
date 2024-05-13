@@ -385,6 +385,7 @@ const Search = () => {
         <CiSearch className="w-[30px] h-[30px] text-white" />
         <input
           type="search"
+          name="search"
           placeholder="Search"
           className=" bg-transparent border-none focus:border-none focus:outline-none w-[240px] h-[40px] text-white text-[16px]"
           onChange={(e) => setTimeout(() => setUserName(e.target.value.trim()), 800)}
@@ -392,7 +393,7 @@ const Search = () => {
       </div>
       <div className="SearchContainer">
         <>
-          {friends?.FriendsData?.map((friend) => {
+          {friends && friends?.FriendsData?.map((friend) => {
             // console.log("friend ----", friend);
             return (
               friend.userName

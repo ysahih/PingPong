@@ -126,8 +126,8 @@ const Notification = () => {
           NotificationsSeen();
         }}
       >
-        <div className="absolute text-white ml-[30px] mt-[-4px] rounded-full NumNotf">
-          {numberNotf > 100 ? "99+" : `${numberNotf || "0"}`}
+        <div className="absolute ml-[30px] rounded-full NumNotf">
+          {numberNotf > 100 ? "99+" : `${ numberNotf|| "0"}`}
         </div>
         <div className="NtfIcon">
           <Image
