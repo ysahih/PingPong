@@ -446,7 +446,7 @@ export class GatewayService {
 
     return (convo);
   }
-  
+
   async userInfogame(id: number) {
 
 		const user = await this._prisma.user.findUnique({
@@ -457,6 +457,7 @@ export class GatewayService {
 				id: true,
 				userName: true,
 				image: true,
+        level: true,
 			}
 		});
 		return (user);

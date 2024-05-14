@@ -35,8 +35,20 @@ model User {
   friends         Friends[]       @relation("Friends")
   friendsReceived Friends[]       @relation("friendsReceived")
   seenMsj         ReadBy[]
-  notifications   Notification[] 
+  notifications   Notification[]
+  history         History[]
+  level          Float             @default(0)
+  lossCounter    Int           @default(0) 
+  winCounter    Int           @default(0) 
   @@map("Users")
+}
+
+model History {
+  id Int @id() @default(autoincrement())
+  user1 User @relation(fields: [userId], references: [id])
+  userId Int
+  opponentId Int
+  result String
 }
 
 model Friends {

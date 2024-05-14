@@ -1,3 +1,5 @@
+import { exit } from "process"
+
 export type gameSocket = { 
 	clientid: number ,
 	player : {y: number},
@@ -5,6 +7,7 @@ export type gameSocket = {
 	player1score : number ,
 	player2score : number 
 }
+
 
 export type Gameresponse = { 
 	player1 : number  ,
@@ -15,10 +18,7 @@ export type Gameresponse = {
 	stop : number ,
 	gameover : boolean} 
 		
-export type player = {
-		opponent : string,
-		result : string
-}
+
 	
 export type GameBack = {
 	player1 : { x: number , y: number } ,
@@ -26,10 +26,12 @@ export type GameBack = {
 	player1score : number ,
 	player2score : number,
 	ball : { x: number , y: number  , direction : {x : number , y : number } , stop : number } ,
-	gameover : boolean
+	gameover : boolean,
+	iscollision : boolean,
+	colormode : number
 }
 
-export type userinfo = { clientid: number , image : string , username : string , ingame : boolean}
+export type userinfo = { clientid: number , image : string , username : string , ingame : boolean , level : number}
 export type RoomInfo = {users: userinfo[],gameloding: boolean  , type : string , mode : string, friendid : number};
 
 
@@ -39,7 +41,7 @@ export class datagame {
 	public framemove : number ;
 	public rooms : { [key: string]: RoomInfo} ;
 	public game : { [key: string]: GameBack } ;
-	public players : { [key: string]: player } ;
+
 	public gameIntervals: { [room: string]: NodeJS.Timer };
 
 	constructor ()
@@ -48,24 +50,29 @@ export class datagame {
 		this.angle = 0;
 		this.rooms = {};
 		this.game = {};
-		this.players = {};
 		this.gameIntervals = {};
 	}
-
+		updatelevel( room : string , clientid : number )
+		{
+			for (const user of this.rooms[room].users)
+			{
+				if (user.clientid === clientid)
+				{
+					if (user.level  < 99)
+					user.level  += (100 - user.level ) /  (100); 
+					if (user.level  == 99)
+					user.level  += 0.02;
+					let formattedNumber: string = user.level.toFixed(2);
+					user.level = parseFloat(formattedNumber);
+				}
+			}
+		}
 		clearIntervals(room :string): void
 		{ 
 			clearInterval(this.gameIntervals[room] as unknown as number);
 			delete this.gameIntervals[room];
 		}
-		searchePlayerHistory(clientid : number)
-		{
-			return this.players[clientid];
-		}
-		
-		addPlayergame(clientid : number , opponent : string , result : string)
-		{
-			this.players[clientid] =({  opponent : opponent ,  result : result });
-		}
+
 		DeleteRoom(room : string)
 		{
 			delete this.rooms[room];
@@ -100,12 +107,14 @@ export class datagame {
 				player1score : 0,
 				player2score : 0,
 				ball : { 
-					x: 50 ,
+					x: 50,
 					 y: 50 ,
 					direction : {x : Math.cos(this.framemove) , y : Math.sin(this.framemove)},
 					stop : 0,
 				},
-				gameover : false
+				gameover : false,
+				iscollision : false,
+				colormode : 0
 			}
 		}
 		newRound(room : string)
@@ -118,24 +127,71 @@ export class datagame {
 			else
 				this.angle = - Math.PI / 4;
 			this.framemove = Math.random() * Math.PI / 2 + this.angle ;
-			this.game[room].ball.direction = {x : Math.cos(this.framemove)  , y : Math.sin(this.framemove)  };	
+			this.game[room].ball.direction = {x : Math.cos(this.framemove)  , y : Math.sin(this.framemove)  };
+			this.game[room].iscollision = false;
+			this.game[room].colormode = 0;		
 		}
+
+
+		ballcollision(room : string , player : number)
+		{
+			this.game[room].iscollision = true;
+			let speed =  Math.abs(this.game[room].ball.direction.x) + Math.abs(this.game[room].ball.direction.y);
+			// console.log("speed" , speed);
+			if (player === 1)
+			{	
+				let base =  this.game[room].ball.y - this.game[room].player1.y ;
+				let angle = base / 9.5 * 1.2;
+				// console.log("base" , base)
+				// console.log("angle" , angle);
+				if (angle / speed > 0.7)
+					angle = 0.7 * speed;
+					// console.log("angle2" , angle);
+				this.game[room].ball.direction.y =  angle;
+				this.game[room].ball.direction.x = speed - Math.abs(angle)  + (0.05);
+				// console.log("speedx" , this.game[room].ball.direction.x);
+			}
+			else if (player === 2)
+			{
+				let base =  this.game[room].ball.y - this.game[room].player2.y ;
+				let angle = base / 9.5 * 1.2;
+				// console.log("base" , base);
+				// console.log("angle" , angle);
+				if (angle / speed > 0.7)
+					angle = 0.7 * speed;
+					// console.log("angle2" , angle);
+				this.game[room].ball.direction.y =   angle;
+				this.game[room].ball.direction.x = (speed - Math.abs(angle)) * (-1)- (0.05);
+				// console.log("speedx" , this.game[room].ball.direction.x);
+			}
+			let speed1 =  Math.abs(this.game[room].ball.direction.x) + Math.abs(this.game[room].ball.direction.y);
+			if (Math.abs( this.game[room].ball.direction.y) + 1 >=  Math.abs(this.game[room].ball.direction.x))
+				this.game[room].colormode = 0;
+			else
+				this.game[room].colormode = 1;
+			console.log("Y" , this.game[room].ball.direction.y);
+			console.log("X" , this.game[room].ball.direction.x);
+			console.log("colormode" , this.game[room].colormode);
+		}
+
 		updateBall(room : string)
 		{
-			const colitionrandomx = this.game[room].ball.direction.x * Math.random();
-			const colitionrandomy = this.game[room].ball.direction.y * Math.random();
+			this.game[room].iscollision = false;
 			if (this.game[room].ball.stop === 0)
 			return ;      
 			if (this.game[room].ball.y + 1 >= 100 || this.game[room].ball.y - 1 <= 0)
 				this.game[room].ball.direction.y = - this.game[room].ball.direction.y 
 
-			if ( this.game[room].ball.direction.x <= 0 && this.game[room].ball.x <= 50 && (this.game[room].ball.x - 1 <=  this.game[room].player1.x + 1.1 && this.game[room].ball.x + 1 >= this.game[room].player1.x ) && (this.game[room].ball.y - 1 >= this.game[room].player1.y - 9.5 ) && (this.game[room].ball.y + 1 <= this.game[room].player1.y + 9.5))
+			else if ( this.game[room].ball.direction.x <= 0 && this.game[room].ball.x <= 50 && (this.game[room].ball.x - 1 <=  this.game[room].player1.x + 1.1 && this.game[room].ball.x + 1 >= this.game[room].player1.x ) && (this.game[room].ball.y - 1 >= this.game[room].player1.y - 9.5 ) && (this.game[room].ball.y + 1 <= this.game[room].player1.y + 9.5))
 			{			
-				this.game[room].ball.direction.x = - this.game[room].ball.direction.x ;
+				// this.game[room].ball.direction.x = - this.game[room].ball.direction.x ;
+				this.ballcollision(room , 1);
+
 			}
 			else if ( this.game[room].ball.direction.x > 0 && this.game[room].ball.x > 50 && (this.game[room].ball.x + 1 >=  this.game[room].player2.x ) && this.game[room].ball.x - 1 <= this.game[room].player2.x + 1.1 && (this.game[room].ball.y - 1 >= this.game[room].player2.y -9.5 ) && (this.game[room].ball.y + 1 <= this.game[room].player2.y + 9.5))
 			{
-				this.game[room].ball.direction.x = - this.game[room].ball.direction.x ;
+				this.ballcollision(room , 2);
+				// this.game[room].ball.direction.x = - this.game[room].ball.direction.x ;
 			}
 				this.game[room].ball.y += this.game[room].ball.direction.y ;
 				this.game[room].ball.x += this.game[room].ball.direction.x ;
@@ -170,7 +226,7 @@ export class datagame {
 		this.initgame(roomname);
 		if (type === "ai")
 		{
-			this.addUser(roomname, {clientid: -1, image: "ai", username: "ai", ingame: false});
+			this.addUser(roomname, {clientid: -1, image: "ai", username: "ai", ingame: false , level : 100});
 		}
 	}
 	addUser(roomname : string, user :userinfo ){
@@ -215,22 +271,7 @@ export class datagame {
 		}
 		return null
 	}
-
 	getRoomsLength(): number {
     return Object.keys(this.rooms).length;
   }
-}
-
-export type UserData = {
-    id       : number,
-    createdAt: Date,
-    updatedAt: Date,
-    userName : string,
-    email    : string,
-    image    : string,
-    firstName: string,
-    lastName : string,
-    online   : Boolean,
-    twoFa    : Boolean,
-    twoFaCheck: Boolean,
 }

@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { ChatData, ConvData } from "src/Gateway/gateway.interface";
+import { use } from "passport";
+import { ChatData, ConvData, History } from "src/Gateway/gateway.interface";
 import { prismaService } from "src/prisma/prisma.service";
 
 @Injectable()
@@ -825,6 +826,176 @@ export class FriendsService {
       // console.log(user);
       // console.log('--------------------------')
       return (convData);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async updateResult(userId :number, opponentId: number, result :string, level ?:number) {
+
+    try {
+      if (result)
+      {
+        if (result == "L")
+         { await this.prisma.user.update({
+          where:{
+            id: userId,
+          },
+          data:{
+            lossCounter:{
+              increment: 1,
+            }
+          }
+        })
+      }else{
+        await this.prisma.user.update({
+          where:{
+            id: userId,
+          },
+          data:{
+            winCounter:{
+              increment: 1,
+            }
+          }
+        })
+      }
+        await this.prisma.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            history: {
+              create: {
+                result: result,
+                opponentId: opponentId,
+              },
+            },
+          },
+        });
+      }
+
+      if (level) {
+        await this.prisma.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            level: level,
+          },
+        });
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async getRankingHistory(id: number){
+    try {
+      const users = await this.prisma.user.findMany({
+        take: 10,
+        orderBy: {
+            level: 'desc' // This will order the users by level in descending order
+        },
+        select:{
+          userName: true,
+          image: true,
+          level: true,
+          winCounter: true,
+          lossCounter: true,
+        }
+    });
+
+      const User = await this.prisma.user.findUnique({
+        where:{
+          id: id
+        },
+        select:{
+          userName: true,
+          image: true,
+          level: true,
+          winCounter: true,
+          lossCounter: true,
+        }
+      })
+      if (!User) return null;
+      const rank = await this.prisma.user.count({
+        where: {
+          level: {
+            gt: User.level // Count users with level greater than the user's level
+          }
+        }
+      });
+
+      users.forEach((user, index) => {
+        if (user.userName === User.userName)
+          user['rank'] = index + 1;
+      });
+      if (rank + 1 > 10)
+        users.push(User);
+      users.forEach((user, index) => {
+        if (user.userName === User.userName)
+          user['rank'] = rank + 1;
+        else 
+          user['rank'] = index + 1;
+      }
+      );
+      return users;
+  }
+    catch(e){
+      return null
+    }
+  }
+
+  async getHistory(userId :number) {
+
+    try {
+      const result = await this.prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+        select: {
+          history: {
+            orderBy: {
+              id: 'desc',
+            },
+            select: {
+              result: true,
+              opponentId: true,
+            },
+          },
+        },
+
+      });
+
+      console.log("Result:", result);
+      if (result?.history?.length)
+      {
+        const newResultPromise = result.history.map(async (res) : Promise<History> => {
+          const user = await this.prisma.user.findUnique({
+            where: {
+              id: res.opponentId,
+            },
+            select: {
+              userName: true,
+              image: true,
+              level: true,
+            },
+          });
+
+          return {
+            userName: user.userName,
+            image: user.image,
+            result: res.result,
+            level: user.level,
+          }
+        });
+
+        const newResult = await Promise.all(newResultPromise);
+        console.log("NewResult:", newResult);
+        return newResult;    
+      }
+
+      return result;
     } catch (e) {
       return null;
     }

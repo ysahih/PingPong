@@ -73,3 +73,10 @@ export class ConvData {
 	image :string
 	messages :Messages[]
 }
+
+export interface History {
+	userName: string
+	image: string
+	result: string
+	level: number
+}

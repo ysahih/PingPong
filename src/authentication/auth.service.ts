@@ -246,6 +246,7 @@ export class authService {
         await this.ValidateToken(id, true, undefined);
         delete user.hash;
       }
+      console.log(user);
       if (user && !user.token) return null;
       return user || null;
     } catch (error) {

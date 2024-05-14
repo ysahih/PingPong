@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Users" ADD COLUMN     "lossCounter" BIGINT NOT NULL DEFAULT 0,
+ADD COLUMN     "winCounter" BIGINT NOT NULL DEFAULT 0;

@@ -115,4 +115,17 @@ export class UserController {
   async NotificationsSeen(@Req() req : Request){
     return await this.FriendsService.NotificationsSeen(req.user['userId']);
   }
+
+  @Get('history')
+  @UseGuards(JwtAuthGuard)
+  async getHistory(@Req() req : Request){
+    return await this.FriendsService.getHistory(req.user['userId']);
+  }
+
+  @Get('rankingHistory')
+  @UseGuards(JwtAuthGuard)
+  async getRanking(@Req() req: Request){
+    return await this.FriendsService.getRankingHistory(req.user['userId']);
+
+  }
 }

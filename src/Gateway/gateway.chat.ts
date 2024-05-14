@@ -24,9 +24,8 @@ import { ExceptionHandler } from "./ExceptionFilter/exception.filter";
 import { GatewayService } from "./geteway.service";
 import * as jwt from "jsonwebtoken";
 import { FriendsService } from "src/user/user.service";
-
 import { Message } from "@prisma/client";
-import { RoomInfo, datagame, gameSocket, userinfo } from "./gateway.gameclasses";
+import { datagame, gameSocket, userinfo } from "./gateway.gameclasses";
 import { exit } from "process";
 
 type Invitation = {
@@ -109,11 +108,9 @@ export class serverGateway
     );
 	if (id < 0) return;
     const allSockets = this._users.getAllSocketsIds();
-
     allSockets.forEach((sokcetId: string) =>
       this._server.to(sokcetId).emit("offline", { id: id })
     );
-
 	await this.FriendsService.Online(id, false);
   }
 
@@ -398,6 +395,8 @@ export class serverGateway
   }
 
 
+
+
   public  gameRooms : datagame = new datagame();
 		@SubscribeMessage('RandomGameroom')
     	async  handleJoinRome(@ConnectedSocket () client: Socket , @Body() lodingdata: {userid : number , soketid : string , type : string , friendid : number , mode : string} ):Promise<void> {
@@ -405,7 +404,7 @@ export class serverGateway
 				let user: userinfo ;
 				try {
 					const base = await this._prisma.userInfogame(lodingdata.userid);
-					user = {clientid: lodingdata.userid, image: base.image, username: base.userName , ingame: false}
+					user = {clientid: lodingdata.userid, image: base.image, username: base.userName , ingame: false , level : base.level}
 				} catch (error) {
 					console.error("Error fetching user info:", error);
 				}
@@ -447,8 +446,8 @@ export class serverGateway
 					console.log(5);
 					this._server.to(curentroom).emit('RandomGameroom' ,{ room: this.gameRooms.rooms[curentroom] , alreadymatch: false });
 				}
-			
 			}
+
 
 			@SubscribeMessage('game')
 			async Game(@ConnectedSocket() client: Socket, @MessageBody() mydata: gameSocket ) {	
@@ -468,8 +467,10 @@ export class serverGateway
 				return ;
 			}
 			this.gameRooms.setmoveball(room, mydata.moveball);
-			if (!this.gameRooms.gameIntervals[room]) {
-       
+			if (!this.gameRooms.gameIntervals[room]) 
+      {
+        console.log("create interval");
+        let isGameOverHandled = false;
 				this.gameRooms.gameIntervals[room] = setInterval(async () => {
           if(!this.gameRooms.game[room])
           {
@@ -477,38 +478,59 @@ export class serverGateway
             // console.log("game not found");
             return ;
           }
-					if (this.gameRooms.game[room].player1score == 7 ||  this.gameRooms.game[room].player2score == 7)
+					if ((this.gameRooms.game[room].player1score >= 7 ||  this.gameRooms.game[room].player2score >= 7) && isGameOverHandled == false)
 					{
-            
+            isGameOverHandled = true;
+            this.gameRooms.newRound(room);
+            this.gameRooms.setmoveball(room, 0);
+            const user1 = this.gameRooms.rooms[room].users[0].clientid;
+            const user2 = this.gameRooms.rooms[room].users[1].clientid;
+            if (this.gameRooms.game[room].player1score == 7 && this.gameRooms.rooms[room].type != "ai")
+            {
+              this.gameRooms.updatelevel(room , user1)
+              const level =  this.gameRooms.rooms[room].users[0].level  
+              await this.FriendsService.updateResult(user1, user2, "W"  , level);
+              await this.FriendsService.updateResult(user2, user1, "L"  );
+            }
+            else if ( this.gameRooms.rooms[room].type != "ai")
+            {
+              this.gameRooms.updatelevel(room , user2)
+              const level =  this.gameRooms.rooms[room].users[1].level          
+              await this.FriendsService.updateResult(user1, user2, "L" );
+              await this.FriendsService.updateResult(user2, user1, "W" , level );
+            }
 						this.gameRooms.clearIntervals(room);
 						this.gameRooms.DeleteRoom(room);
 						this.gameRooms.Deletegame(room);
             this.deleteRoom(room);
-						return ;
-					}			
-					this.gameRooms.updateBall(room);
-					if (this.gameRooms.score(room))
-					{
-						if (this.gameRooms.game[room].player1score < 7 &&  this.gameRooms.game[room].player2score < 7)
-						this.gameRooms.newRound(room);
-						else 
-						this.gameRooms.setendgame(room);
 					}
-					mydata.moveball = this.gameRooms.getmoveball(room);
-					this._server.to(room).emit('game', {
-						player1: this.gameRooms.game[room].player1.y,
-						player2: this.gameRooms.game[room].player2.y,
-						player1score: this.gameRooms.game[room].player1score,
-						player2score: this.gameRooms.game[room].player2score,
-						ball: this.gameRooms.game[room].ball,
-						stop: mydata.moveball,
-						gameover: this.gameRooms.game[room].gameover
-					});
-
-
-			} , 15)}
+          else if (this.gameRooms.game[room].player1score < 7 &&  this.gameRooms.game[room].player2score < 7)
+          {
+            this.gameRooms.updateBall(room);
+            if (this.gameRooms.score(room))
+            {
+              if (this.gameRooms.game[room].player1score < 7 &&  this.gameRooms.game[room].player2score < 7)
+              this.gameRooms.newRound(room);
+              else 
+              this.gameRooms.setendgame(room);
+            }
+            mydata.moveball = this.gameRooms.getmoveball(room);
+            this._server.to(room).emit('game', 
+            {
+              player1: this.gameRooms.game[room].player1.y,
+              player2: this.gameRooms.game[room].player2.y,
+              player1score: this.gameRooms.game[room].player1score,
+              player2score: this.gameRooms.game[room].player2score,
+              ball: this.gameRooms.game[room].ball,
+              stop: mydata.moveball,
+              gameover: this.gameRooms.game[room].gameover,
+              iscollision: this.gameRooms.game[room].iscollision,
+              colormode: this.gameRooms.game[room].colormode,
+            });
+          }
+			} , 15)
+    }
 		}
-
 
 
 
@@ -518,7 +540,7 @@ export class serverGateway
       let user: userinfo ;
 				try {
 					const base = await this._prisma.userInfogame(mydata.clientID );
-					user = {clientid: mydata.clientID , image: base.image, username: base.userName , ingame: false}
+					user = {clientid: mydata.clientID , image: base.image, username: base.userName , ingame: false , level : base.level}
 				} catch (error) {
 					console.error("Error fetching user info:", error);
 				}
@@ -553,7 +575,6 @@ export class serverGateway
 		}
 
 
-
     @SubscribeMessage('endGame')
 		async endGame(@ConnectedSocket() client: Socket, @MessageBody () mydata: { clientid: number }) {	
       var room = this.gameRooms.searcheClientRoom(mydata.clientid);
@@ -561,6 +582,7 @@ export class serverGateway
       {
         return ;
       }
+      
       this.gameRooms.DeleteRoom(room);
       this.gameRooms.Deletegame(room);
       this.deleteRoom(room);
@@ -570,10 +592,11 @@ export class serverGateway
 		async SendGameInvite(@ConnectedSocket() client: Socket, @MessageBody () mydata: { invitationSenderID: number , mode : string ,friendId : number }) {	
      
       const SocketsTarget = this._users.getUserById(mydata.friendId);
+      console.log("SendGameInvite", mydata);
       let user: userinfo ;
       try {
 					const base = await this._prisma.userInfogame(mydata.invitationSenderID);
-					user = {clientid: mydata.invitationSenderID, image: base.image, username: base.userName , ingame: false}
+					user = {clientid: mydata.invitationSenderID, image: base.image, username: base.userName , ingame: false , level : base.level}
 				} catch (error) {
 					console.error("Error fetching user info:", error);
           return;
@@ -584,7 +607,7 @@ export class serverGateway
         let curentroom = this.gameRooms.searcheClientRoom(mydata.invitationSenderID);
         if( !curentroom &&!friendroon)
         {
-            this.gameRooms.addRoom( {clientid : mydata.invitationSenderID, image: user.image, username: user.username , ingame: false} , mydata.mode , "friend" , mydata.friendId);
+            this.gameRooms.addRoom( {clientid : mydata.invitationSenderID, image: user.image, username: user.username , ingame: false , level : user.level } , mydata.mode , "friend" , mydata.friendId);
             SocketsTarget.socketId.forEach((socktId: string) => 
             {
               this._server.to(socktId).emit("gameInvitation", {  invitationSenderID  : mydata.invitationSenderID , username : user.username , userimage : user.image  , message : "game invitation from" , mode : mydata.mode });
@@ -592,6 +615,4 @@ export class serverGateway
           }
       }
     }
-
-  
 }
