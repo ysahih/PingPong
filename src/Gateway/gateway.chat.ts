@@ -17,7 +17,7 @@ import {
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 import { UsersServices } from "./usersRooms/user.class";
-import { ChatData, CreateRoom, JoinRoomDTO, MessageDTO } from "./gateway.interface";
+import { ChatData, CreateRoom, JoinRoomDTO, MessageDTO, UpdateStatusRoom, UserOutDTO } from "./gateway.interface";
 import { RoomsServices } from "./usersRooms/room.class";
 import { Prisma } from "@prisma/client";
 import { ExceptionHandler } from "./ExceptionFilter/exception.filter";
@@ -117,13 +117,9 @@ export class serverGateway
   @UseFilters(ExceptionHandler)
   @UsePipes(ValidationPipe)
   @SubscribeMessage("directMessage")
-  async handleDirectMessage(
-    @ConnectedSocket() client: Socket,
-    @Body() payload: MessageDTO
-  ): Promise<void> {
-    
+  async handleDirectMessage(@ConnectedSocket() client: Socket, @Body() payload: MessageDTO): Promise<void> {
 
-    // TODO: When A user send a message at that sended user to read status
+    // TODO: I HAVE TO CHECK IF THE USER BLOKCED
 
     // Get sender User Infos
     const fromUser = this._users.getUserById(payload.from);
@@ -155,88 +151,129 @@ export class serverGateway
     }
   }
 
-  @UseFilters(ExceptionHandler)
-  @UsePipes(ValidationPipe)
-  @SubscribeMessage("createRoom")
-  async handleCreateRoom(
-    @ConnectedSocket() client: Socket,
-    @Body() payload: CreateRoom
-  ): Promise<void> {
+  // @UseFilters(ExceptionHandler)
+  // @UsePipes(ValidationPipe)
+  // @SubscribeMessage("createRoom")
+  // async handleCreateRoom(
+  //   @ConnectedSocket() client: Socket,
+  //   @Body() payload: CreateRoom
+  // ): Promise<void> {
 
-    try {
-      // TODO: Handle if it is protected it should contain a password
-      // Create a room record
-      const newRoom = await this._prisma.createRoom(payload, payload.type);
-      this._server
-            .to(client.id)
-            .emit("create", `${payload.name} created succefully !`);
-      // Add the room to the user's room array of Objects
-      this._users.addNewRoom(payload.ownerId, newRoom, "OWNER");
-      // console.log(this._users.getUserById(payload.ownerId));
+  //   try {
+  //     // TODO: Handle if it is protected it should contain a password
+  //     // Create a room record
+  //     const newRoom = await this._prisma.createRoom(payload, payload.type);
+  //     this._server
+  //           .to(client.id)
+  //           .emit("create", `${payload.name} created succefully !`);
+  //     // Add the room to the user's room array of Objects
+  //     // this._users.addNewRoom(payload.ownerId, newRoom, "OWNER");
+  //     console.log(this._users.getUserById(payload.ownerId));
 
-      // Check Execption
-    } catch (e) {
-      // If it's From prisma
-      // FIXME: I don't have to send errors to all client
-      if (e instanceof Prisma.PrismaClientKnownRequestError) {
-        // Means that the room already exist with that name
-        // console.log('Errrrooooor !');
-        if (e.code === "P2002")
-          this._server
-            .to(client.id)
-            .emit("error", `${payload.name} already exists !`);
-      }
-      // Something else happened
-      else
-        this._server
-          .to(client.id)
-          .emit("error", `${payload.name} Room creation failed !`);
-    }
-  }
+  //     // Check Execption
+  //   } catch (e) {
+  //     // If it's From prisma
+  //     // FIXME: I don't have to send errors to all client
+  //     if (e instanceof Prisma.PrismaClientKnownRequestError) {
+  //       // Means that the room already exist with that name
+  //       console.log('Errrrooooor !');
+  //       if (e.code === "P2002")
+  //         this._server
+  //           .to(client.id)
+  //           .emit("error", `${payload.name} already exists !`);
+  //     }
+  //     // Something else happened
+  //     else
+  //       this._server
+  //         .to(client.id)
+  //         .emit("error", `${payload.name} Room creation failed !`);
+  //   }
+  // }
 
   // TODO: Check Banned
   @UseFilters(ExceptionHandler)
   @UsePipes(ValidationPipe)
   @SubscribeMessage("joinRoom")
-  async handleJoinRoom(
-    @ConnectedSocket() client: Socket,
-    @Body() payload: JoinRoomDTO
-  ): Promise<void> {
-    // Check if the room Exists
-    const foundedRoom = await this._prisma.findRoom(payload.roomId);
+  async handleJoinRoom(@ConnectedSocket() client :Socket, @Body() payload: JoinRoomDTO): Promise<void> {
 
-    try {
-      // If exists just Join it
-      if (foundedRoom) {
-        await this._prisma.joinRoom(foundedRoom.id, payload);
-        // Add that room to the user's room array of Objects
-        this._users.addNewRoom(payload.userId, foundedRoom);
-        // Join the virtual room at the server
-        client.join(foundedRoom.name);
-        console.log(this._users.getUserById(payload.userId));
-      } else {
-        // If doesn't exist just inform the user
-        this._server
-          .to(client.id)
-          .emit("error", `Room with ${payload.roomId}:ID not found !`);
-      }
-    } catch (e) {
-      // This exeception throws when the user is already there
-      if (e.code === "P2002")
-        this._server
-          .to(client.id)
-          .emit("error", `User with ${payload.userId}:ID already exists !`);
-      // Something else happened
-      else
-        this._server
-          .to(client.id)
-          .emit(
-            "error",
-            `User with ${payload.userId}:ID can't join the room !`
-          );
+    console.log("Payload:", payload);
+    console.log(this._users.getUserById(payload.userId));
+    // Check if the room already exists in the map
+    if (this._users.getUserById(payload.userId).rooms.findIndex(room => room.name === payload.room.name) >= 0)
+      return ;
+
+    // Check if the room Exists in DB
+    const foundedRoom = await this._prisma.findRoom(payload.room.id, payload.userId);
+
+    console.log("Founded:", JSON.stringify(foundedRoom, null, 2));
+
+    // Brodcast that there's a new user in the room and add it the it's room data
+    if (foundedRoom.users.length) {
+
+      // TODO: I have to emit all users in the room to say that there's an new user
+      console.log("Entered!");
+      
+      this._users.addNewRoom(payload.userId, payload.room);
+      
+      this._users.getUserById(payload.userId).socketId?.forEach(socketId => {
+        this._server.sockets.sockets.get(socketId).join(payload.room.name);
+      });
+
+      client.to(payload.room.name).emit("newJoin", {
+          userId: payload.userId,
+          roomId: foundedRoom.id,
+          userName: foundedRoom.users[0].user.userName,
+          roomName: foundedRoom.name,
+          image: foundedRoom.users[0].user.image,
+          isMuted: false,
+          role: 'USER',
+      });
+      // this._rooms.connectToRoom(this._server, this._users.getUserById(payload.userId).socketId, payload.room.name);
     }
   }
-   /**
+
+  @UseFilters(ExceptionHandler)
+  @UsePipes(ValidationPipe)
+  @SubscribeMessage('userStatusInRoom')
+  handleUserStatusInRoom(@ConnectedSocket() client: Socket, @Body() payload :UpdateStatusRoom) {
+
+    // Check if the User who made changes is in the room an return the data
+    const UserInRoom = this._users.getUserById(payload.fromId).rooms.find((room) => room.id === payload.roomId);
+
+    // Check if the user has the Admin role
+    if (UserInRoom && UserInRoom.UserRole !== 'USER')
+      client.to(payload.roomName).emit("UpdateStatus", payload);
+  }
+
+  @UseFilters(ExceptionHandler)
+  @UsePipes(ValidationPipe)
+  @SubscribeMessage('userOut')
+  async handleUserOut(@ConnectedSocket() client :Socket, @Body() payload :UserOutDTO) {
+
+    const user = this._users.getUserById(payload.userId);
+    const adminRoom = this._users.getUserById(payload.adminId).rooms.find((room) => payload.roomId === room.id);
+    const room = await this._prisma.findRoom(payload.roomId, payload.userId);
+
+    // Check if the user is really isn't the room again and if the admin is connected
+    if (!room?.users?.length && adminRoom && adminRoom.UserRole !== 'USER') {
+
+      client.to(payload.roomName).emit('kickBanUser', {roomName: payload.roomName, userId: payload.userId});
+
+      if (user) {
+        // Make all the sockets of the client leave
+        user.socketId.forEach((socketId) => {
+            this._server.sockets.sockets.get(socketId).leave(payload.roomName);
+        });
+        // Remove the room from the user data
+        user.rooms.splice(user.rooms.findIndex((room) => room.id === payload.roomId), 1);
+        // client.leave(payload.roomName);
+      }
+
+      console.log("NewData:", this._users.getUserById(payload.userId));
+    }
+  }
+
+  /**
    * handle friends request : by essadike
    */
 
@@ -251,7 +288,7 @@ export class serverGateway
 	  Payload.userId,
 	  Payload.id
 	);
-	
+
 	if (targetFriend) {
     const notifications = await this.FriendsService.newNotification(Payload.id, targetFriend.sender.userName, targetFriend.sender.image, "sent you a friend request");
 	  const newInvit: Invitation = {

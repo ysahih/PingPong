@@ -1,7 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { use } from "passport";
-import { ChatData, ConvData, History } from "src/Gateway/gateway.interface";
+import { ChatData, ConvData, History, RoomUsers } from "src/Gateway/gateway.interface";
+import { ROLE, Room, ROOMTYPE } from "@prisma/client";
 import { prismaService } from "src/prisma/prisma.service";
+import * as argon from "argon2"
 
 @Injectable()
 export class FriendsService {
@@ -665,6 +667,7 @@ export class FriendsService {
                   id: true,
                   userName: true,
                   image: true,
+                  online: true,
                 },
               },
               messages: {
@@ -1000,5 +1003,425 @@ export class FriendsService {
     } catch (e) {
       return null;
     }
+  }
+  async createRoom(userId: number, name: string, type: ROOMTYPE, password: string, fileURL: string) {
+    const newRoom = await this.prisma.room.create({
+      data: {
+        name: name,
+        type: type,
+        password: password && type === ROOMTYPE.PROTECTED ? password : null,
+        image: fileURL || null,
+        users: {
+          create: {
+            userRole: "OWNER",
+            userId: userId,
+          },
+        },
+      },
+    });
+
+    return newRoom;
+  }
+
+  async roomUsers(userId :number, roomName :string) {
+    
+    try {
+      const user = await this.prisma.room.findUnique({
+        where: {
+          name: roomName,
+        },
+        include: {
+          users: {
+            where: {
+              userId: userId,
+            },
+            select: {
+              userId: true,
+            }
+          },
+        }
+      });
+
+      if (!user.users.length)
+        throw new Error('This user is not in the room');
+
+      const users = await this.prisma.room.findMany({
+        where: {
+          name: roomName,
+        },
+        select: {
+          id: true,
+          type: true,
+          image: true,
+          users: {
+            select: {
+              userRole: true,
+              isMuted: true,
+              user: {
+                select: {
+                  id: true,
+                  userName: true,
+                  image: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      // console.log(JSON.stringify(users[0], null, 2));
+
+      if (users.length)
+      {
+        const orgUsers :RoomUsers[] = users[0].users.map(user => <RoomUsers>{
+          roomId: users[0].id,
+          userId: user.user.id,
+          userName: user.user.userName,
+          image: user.user.image,
+          isMuted: user.isMuted,
+          role: user.userRole,
+        });
+
+        orgUsers.sort((user1, user2) => {
+          const role = {'OWNER': 0, 'ADMIN': 1, 'USER': 2};
+
+          return role[user1.role] - role[user2.role];
+        });
+
+        const readyData = {
+          id: users[0].id,
+          type: users[0].type,
+          image: users[0].image,
+          users: orgUsers,
+        }
+        return (readyData);
+      }
+      return null;
+    }
+    catch (e) {
+      console.log(e.message);
+      return (null);
+    }
+  }
+
+  async userState(curUser :number, roomId :number, role: ROLE, isMuted :boolean, userId :number) {
+
+    const checkCurUser = await this.prisma.userRoom.findUnique({
+      where: {
+        userId_roomId: {
+          userId: curUser,
+          roomId: roomId,
+        }
+      },
+      select: {
+        userRole: true,
+      }
+    });
+
+    const checkUser = await this.prisma.userRoom.findUnique({
+      where: {
+        userId_roomId: {
+          userId: userId,
+          roomId: roomId,
+        }
+      },
+      select: {
+        userRole: true,
+      }
+    });
+
+    console.log(checkCurUser);
+
+    // if (!(checkCurUser && (checkCurUser.userRole === 'OWNER' || checkCurUser.userRole === 'ADMIN')))
+    //   throw new Error('This user has no privileges !');
+
+    // If both users aren't there
+    // If curUser is User
+    // If curUser ADMIN and User is Owner
+
+    if (!curUser || !checkUser || checkCurUser.userRole === 'USER' || checkUser.userRole === 'OWNER')
+      throw new Error('This user can not set privileges !');
+
+    await this.prisma.userRoom.update({
+      where: {
+        userId_roomId: {
+          userId: userId,
+          roomId: roomId,
+        },
+      },
+      data: {
+        userRole: role,
+        isMuted: isMuted,
+      }
+    });
+  }
+
+  async getRooms(id: number) {
+
+    try {
+      const rooms = await this.prisma.room.findMany({
+        where: {
+          NOT: {
+            OR: [
+              {users: {some: {userId: id}}},
+              {type: 'PRIVATE'},
+              {banned: {some: {id: id}}},
+            ]
+          }
+        },
+        select: {
+          id: true,
+          name: true,
+          type: true,
+          image: true,
+          users: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      });
+
+      const sortedRooms = rooms.sort((room1, room2) => {
+        return -(room1.users.length - room2.users.length);
+      });
+
+      return sortedRooms.map((room) => {
+        return {
+          id: room.id,
+          name: room.name,
+          image: room.image,
+          type: room.type
+        };
+      });
+
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async joinRoom(id :number, roomId :number, password ?:string) {
+    
+    try {
+      const user = await this.prisma.room.findUnique({
+        where: {
+          id: roomId,
+        },
+        include: {
+          banned: {
+            where: {
+              id: id,
+            },
+            select: {
+              id: true,
+            }
+          },
+        },
+      });
+
+      // console.log(JSON.stringify(user, null, 2));
+
+      if (user && user?.banned?.length)
+        throw new Error('This user is banned !');
+
+    var isPassword :boolean = true;
+
+      const room = await this.prisma.room.findUnique({
+        where: {
+            id: roomId,
+        },
+        include: {
+          users: {
+            select: {
+              user: {
+                select: {
+                  id: true,
+                }
+              }
+            }
+          },
+        },
+      });
+
+      const exist = room?.users?.findIndex((user) => user.user.id === id);
+
+      if (room && exist < 0) {
+
+        if (room.type === ROOMTYPE.PROTECTED)
+          isPassword = await argon.verify(room.password, password);
+
+        if (isPassword)
+        {
+          const joinedRoom = await this.prisma.userRoom.create({
+            data: {
+              userId: id,
+              roomId: roomId,
+            }
+          });
+          return (joinedRoom);
+        }
+        return 'Incorect password';
+      }
+
+      return null;
+
+    } catch (e) {
+      // console.log(e);
+      return null;
+    }
+  }
+
+  async kickUserFromRoom(adminId :number, userId :number, roomId :number, ban :boolean) {
+
+    try {
+      const adminInRoom = await this.prisma.userRoom.findUnique({
+        where: {
+          userId_roomId: {
+            userId: adminId,
+            roomId: roomId,
+          }
+        },
+        select: {
+          userRole: true,
+        }
+      });
+
+      const userInRoom = await this.prisma.userRoom.findUnique({
+        where: {
+          userId_roomId: {
+            userId: userId,
+            roomId: roomId,
+          }
+        },
+        select: {
+          userRole: true,
+        }
+      });
+
+      // Who want to make change has to be Owner or Admin
+      // If he want to be admin then the other user should be USER
+      if (adminInRoom && userInRoom && (adminInRoom.userRole === 'OWNER' || (adminInRoom.userRole === 'ADMIN' && userInRoom.userRole === 'USER'))) {
+
+        await this.prisma.userRoom.delete({
+          where: {
+            userId_roomId: {
+              userId: userId,
+              roomId: roomId,
+            },
+          },
+        });
+
+        if (ban) {
+          await this.prisma.room.update({
+            where: {
+              id: roomId,
+            },
+            data: {
+              banned: {
+                connect: [
+                  {id: userId},
+                ],
+              },
+            },
+          });
+          // await this.prisma.room.update({
+          //   where: {
+          //     id: roomId,
+          //   },
+          //   data: {
+          //     banned: {
+          //       create: [
+          //         {id: userId},
+          //       ]
+          //     }
+          //   }
+          // });
+        }
+
+        return {status: 1, message: 'user kicked !'};
+      }
+      
+      return {status: 0, message: `You don't have privileges !`};
+    } catch (e) {
+      return {status: 0, message: `User didn't get kicked !`};
+    }
+  }
+
+  async updateRoom(userId :number, name :string, newName ?:string, type ?:ROOMTYPE, url ?:string, password ?:string) {
+
+    // TODO: I have to delete the OLD picture
+
+    try {
+      const room = await this.prisma.room.findUnique({
+        where: {
+          name: name,
+        },
+        include: {
+          users: {
+            where: {
+              userId: userId,
+            },
+            select: {
+              userRole: true,
+              user: {
+                select: {
+                  userName: true,
+                },
+              },
+            },
+          },
+        },
+      });
+
+      console.log("Room:", JSON.stringify(room, null, 2));
+
+      if (room && room?.users[0]?.userRole === 'OWNER') {
+
+        const obj :{name ?:string, type ?:ROOMTYPE, password ?:string, image ?:string} = {};
+
+        if (newName)
+          obj.name = newName;
+        if (type)
+          obj.type = type;
+        if (type === ROOMTYPE.PROTECTED && password)
+          obj.password = password;
+        else
+          obj.password = null;
+        if (url)
+          obj.image = url;
+
+        console.log("Object:", obj);
+
+          const data = await this.prisma.room.update({
+            where: {
+              name: name,
+            },
+            data: {
+              ...obj,
+              // name: name,
+              // type: type,
+              // password: password || null,
+              // image: url || null,
+            },
+          });
+
+          return {status: 1, message: 'Room updated successfully!', data: data};
+      }
+      return {status: 0, message: "This user does not have privileges !"};
+    } catch (e) {
+      return {status: 0, message: 'Something wrong !'};
+    }
+  }
+
+  async getRoom(name :string) {
+
+    return await this.prisma.room.findUnique({
+      where: {
+        name: name,
+      },
+      select: {
+        type: true,
+      }
+    });
   }
 }

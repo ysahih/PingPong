@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { Conversations, User } from "./UserRoom.interface";
 import { Socket } from "socket.io";
 import { Room } from "./UserRoom.interface";
-import { MessageDTO } from "../gateway.interface";
+import { MessageDTO, RoomDTO } from "../gateway.interface";
 import { ROLE } from "@prisma/client";
 
 @Injectable()
@@ -16,11 +16,7 @@ export class UsersServices {
   }
 
   // Add the user to the map and connected to the rooms
-  addUser(
-    socket: Socket,
-    user: User,
-    cb: (socket: Socket, rooms: Room[]) => void
-  ) {
+  addUser(socket: Socket, user: User, cb: (socket: Socket, rooms: Room[]) => void) {
     if (this._users.has(user.id)) {
       this._users.get(user.id).socketId.push(socket.id);
       console.log(`${user.username}:ID already Exists!`);
@@ -40,9 +36,7 @@ export class UsersServices {
   }
 
   // Find socketId's user and return a Promise with that userId and index od socket at the sockets array
-  async findUserSocket(
-    socketId: string
-  ): Promise<{ id: number; index: number } | null> {
+  async findUserSocket(socketId: string): Promise<{ id: number; index: number } | null> {
     for (const user of this._users.values()) {
       const index = user.socketId.indexOf(socketId);
       if (index != -1) return { id: user.id, index: index };
@@ -125,13 +119,15 @@ export class UsersServices {
   }
 
   // Add room data at the user's map element
-  addNewRoom(userId: number, room: any, userRole?: ROLE): void {
-    this._users.get(userId).rooms.push({
-      id: room.id,
-      name: room.name,
-      type: room.type,
-      UserRole: userRole || "USER",
-    });
+  addNewRoom(userId: number, room: Room, userRole?: ROLE): void {
+    // this._users.get(userId).rooms.push({
+    //   id: room.id,
+    //   name: room.name,
+    //   type: room.type,
+    //   UserRole: userRole || "USER",
+    // });
+
+    this._users.get(userId).rooms.push(room);
 
     console.log("Room Updates:");
     console.log(this._users.get(userId));

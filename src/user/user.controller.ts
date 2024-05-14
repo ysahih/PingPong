@@ -2,12 +2,15 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Patch,
   Post,
   Put,
   Query,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
 import { FriendsService } from "./user.service";
 import { JwtAuthGuard } from "src/authentication/jwtStrategy/jwtguards";
@@ -15,10 +18,14 @@ import { Request } from "express";
 import { IsString } from "class-validator";
 import { validate } from 'class-validator';
 import { upadateInfo } from "src/authentication/dto/form";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { Prisma, ROLE, ROOMTYPE } from "@prisma/client";
+import { cloudinaryService } from "src/authentication/cloudinary.service";
+import * as argon from 'argon2'
 
 @Controller("user")
 export class UserController {
-  constructor(private FriendsService: FriendsService) {}
+  constructor(private FriendsService: FriendsService, private cloud :cloudinaryService) {}
 
   @Post("sendinvit")
   @UseGuards(JwtAuthGuard)
@@ -155,5 +162,125 @@ export class UserController {
     const userName = user.userName;
     // this.FriendsService.updateInfo(req.user['userId'], id['id'])
     return { "g": "success" };
+  }
+
+  @Post('createRoom')
+  @UseInterceptors(FileInterceptor("file"))
+  @UseGuards(JwtAuthGuard)
+  async CreateRoom( @UploadedFile() file: Express.Multer.File, @Req() req :Request) :Promise<{status :number, message :string}> {
+
+    const { name, type, password } : {name :string, type :ROOMTYPE, password :string} = req.body;
+
+    console.log("Name:", name);
+    console.log("Type:", type);
+    console.log("Password:", password);
+
+    console.log("File:", file);
+
+    if (!name || (type === ROOMTYPE.PROTECTED && !password))
+      return {status: 0, message: 'Invalid data !'};
+
+  // try {
+  //   const hashedPassword = (password && type === ROOMTYPE.PROTECTED) ? await argon.hash(password) : null;
+  //   if (password && !hashedPassword)
+  //     return {status: 0, message: 'Room did not create !'}
+
+  //   const imgUrl = await this.cloud.uploadImage(file);
+
+  //   await this.FriendsService.createRoom(parseInt(req.user["userId"]), name, type, hashedPassword, imgUrl);
+  //   return {status: 1, message: 'Room Created !'};
+
+  //   } catch (e) {
+  //     if (e instanceof Prisma.PrismaClientKnownRequestError) {
+  //       if (e.code === "P2002")
+  //         return {status: 0, message: 'Room name already exists !'};
+  //     }
+  //     else
+  //       return {status: 0, message: 'Room did not create !'}
+  //   }
+    return {status: 0, message: 'huh'};
+  }
+
+  @Post('userStatus')
+  @UseGuards(JwtAuthGuard)
+  async userStatus(@Body('role') role :ROLE, @Body('isMuted') isMuted :boolean, @Body('roomId') roomId :number, @Body('userId') userId :number, @Req() request :Request) {
+
+    try {
+      await this.FriendsService.userState(request.user['userId'], roomId, role, isMuted, userId);
+      return ({status : true});
+    } catch (e) {
+      return ({status : false});
+
+    }
+  }
+
+  @Get('roomUsers/:roomName')
+  @UseGuards(JwtAuthGuard)
+  async RoomUser(@Param('roomName') roomName :string, @Req() request :Request) {
+
+    return await this.FriendsService.roomUsers(request.user['userId'], roomName);
+  }
+
+  @Get('getRooms')
+  @UseGuards(JwtAuthGuard)
+  async getRooms(@Req() request :Request) {
+
+    return await this.FriendsService.getRooms(request.user['userId']);
+  }
+
+  @Post('joinRoom')
+  @UseGuards(JwtAuthGuard)
+  async joinRoom(@Body('id') id: number, @Req() request :Request , @Body('password') password ?:string) {
+
+    return await this.FriendsService.joinRoom(request.user['userId'], id, password);
+  }
+
+  @Post('kickBanRoom')
+  @UseGuards(JwtAuthGuard)
+  async handleKickUser(@Req() request :Request, @Body('userId') userId :number, @Body('roomId') roomId :number, @Body('ban') ban :boolean) {
+
+    return await this.FriendsService.kickUserFromRoom(request.user['userId'], userId, roomId, ban);
+  }
+
+  @Post('updateRoom')
+  @UseInterceptors(FileInterceptor("file"))
+  @UseGuards(JwtAuthGuard)
+  async handleUpdateRoom(@UploadedFile() file: Express.Multer.File, @Req() request :Request) {
+
+    const { name, newName, type, password} : {name :string, newName :string, type :ROOMTYPE, password :string} = request.body;
+
+    console.log('------------------------------------------------------------------------------\n');
+    console.log("name:", name);
+    console.log("newName:", newName);
+    console.log("type:", type);
+    console.log("password:", password);
+    console.log('file:', file);
+
+    if (!name || (type === ROOMTYPE.PROTECTED && !password))
+      return {status: 0, message: 'Invalid data !'};
+
+    if (password)
+        var hashedPass = await argon.hash(password);
+      // const hashedPass = (password && type === ROOMTYPE.PROTECTED) ? await argon.hash(password) : null;
+
+      if (password && !hashedPass)
+        return {status: 0, message: 'Something wrong !'};
+
+    if (file)
+      var imgUrl :string = await this.cloud.uploadImage(file);
+
+    console.log('------------------------------------------------------------------------------\n');
+
+    return this.FriendsService.updateRoom(request.user['userId'], name, newName, type, imgUrl, hashedPass);
+  }
+
+  @Get('getRoom/:name')
+  @UseGuards(JwtAuthGuard)
+  async hadnleRoom(@Param('name') name :string) {
+    try {
+      return await this.FriendsService.getRoom(name);
+    } catch (e) {
+      return null;
+    }
   }
 }
