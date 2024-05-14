@@ -1,9 +1,8 @@
 "use client";
 
-import "@/styles/game/Gameplay.css";
 import { use, useContext, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import '@/app/globals.css'
+// import '@/app/globals.css'
 import SocketContext from "@/components/context/socket";
 import UserDataContext from "@/components/context/context";
 import Game from "./Game";
@@ -16,10 +15,18 @@ const  PlayerReady : React.FC<{lodingdata : Userinfo } > = (props) => {
   return (
     <div className=" w-[100px] h-[60px]      flex flex-col justify-center items-center   " >
       <div  className="  w-[40px] h-[60px] " >
-        <Image  className="rounded-full"  src={  user?.image || "./GamePlayImages/GamePlayerProfile.svg" }width={70} height={70}  alt ="Player image" ></Image>
+        <Image  className="rounded-full"  src={  user?.image || "./GamePlayImages/GamePlayerProfile.svg" }width={70} height={70}  alt ="Player image"
+          style={
+            {
+             width: 40,  
+              height: 40,
+              borderRadius: "50%"
+            }
+          }
+        ></Image>
       </div>
       <p  className="text-white text-[10px]  md:text-[15px] text-center   " >{user?.username}</p>
-      <p  className="text-white  text-[10px]  md:text-[12px] text-center "> lv10</p>
+      <p  className="text-white  text-[10px]  md:text-[12px] text-center "> lv{user?.level}</p>
     </div>
   )
 }
@@ -34,11 +41,10 @@ const PlayerLoding = ( ) => {
   )
 }
 
-
 const GameLoding : React.FC<{lodingdata : GameLodingProps } > = ( props ) => {
   return (
     <div className="flex items-center justify-center  min-h-screen">
-      <div className="w-[200px] h-[300px]  md:w-[700px] md:h-[600px]  bg-[#070F2B] flex  items-center flex-col pt-9 ">
+      <div className="w-[200px] h-[160px]  md:w-[600px] md:h-[450px] rounded-[15px]  md:rounded-[20px] bg-[#070F2B] flex  items-center flex-col pt-2 pl-6 md:pt-6 pr-6 ">
         <p  className="text-[#8A99E9]  text-[20px]  md:text-[40px]    "  ></p>
         <div className="card  w-[200px] h-[140px]  md:w-[590px] md:h-[400px] " >
             <svg height="100%" width="100%" viewBox="0 0 590 400" className="border " >
@@ -64,18 +70,18 @@ const Gameplay : React.FC<{  }> = ( ) => {
     const socket = useContext(SocketContext);
     const render = useContext(RenderContext);
     useEffect(() => {
-      console.log('game :',game);
+      
       const handlcheck = () => {
       if (game?.lodingdata && game?.lodingdata.users.length < 2)
       {
-          console.log("gameloding" , game?.lodingdata.users.length);
           game?.setRunning(false);
           game?.setlodingdata({
           users  : [{
             clientid : user?.id || -1 ,
                image : user?.image || "no image",
                username : user?.userName || "no name" ,
-                ingame : false
+                ingame : false,
+                level : user?.level || 0
           } ] ,
         gameloding: true });   
         game?.setplayerposition("");
@@ -95,19 +101,19 @@ const Gameplay : React.FC<{  }> = ( ) => {
     {
       const handlegameroom =(responsedata : { room  :{ users : Userinfo[]  , gameloding : boolean} , alreadymatch : boolean }) =>
       {
-        console.log(responsedata);
+     
         if ( responsedata && responsedata.room  && responsedata.room.users && responsedata.room.users.length == 2) 
         {
 
           if (game?.lodingdata && game?.lodingdata.users.length < 2 && responsedata.room.users[0].clientid ==  user?.id )
           {
-            console.log("left");
+            
             game?.setplayerposition("left");
           }
           else if  (game?.lodingdata &&  game?.lodingdata.users.length < 2  && responsedata.room.users[1].clientid == user?.id)
           {
             game?.setplayerposition("right");
-            console.log("right");
+            
             var tmp = responsedata.room.users[0];
             responsedata.room.users[0] = responsedata.room.users[1];
             responsedata.room.users[1] = tmp;

@@ -7,7 +7,7 @@ export  type GameLodingProps =
     gameloding: boolean 
 };
 
-export    type Userinfo = { clientid: number , image : string , username : string , ingame : boolean }
+export    type Userinfo = { clientid: number , image : string , username : string , ingame : boolean , level : number}
 
 
 
@@ -18,7 +18,9 @@ export type Gameresponse = {
 	player2score : number ,
 	ball :{ x: number , y: number },
 	stop : number,
-	gameover : boolean
+	gameover : boolean,
+	iscollision : boolean,
+	colormode : number,
  }
 
 
@@ -27,6 +29,7 @@ export  interface GameResultProps {
 	scores: { player1score: number; player2score: number };
 	runGame: boolean;
   }
+
 
   export type GameContextType = {
 	lodingdata: GameLodingProps;

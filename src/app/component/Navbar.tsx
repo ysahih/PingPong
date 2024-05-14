@@ -210,23 +210,21 @@ const Invite = () => {
   const user = useContext(UserDataContext);
   useEffect(() => {
     const resetgame = () => {
-      game?.setRunning(false);
-      game?.setlodingdata({
-        users: [
-          {
-            clientid: user?.id || -1,
-            image: user?.image || "no image",
-            username: user?.userName || "no name",
-            ingame: false,
-          },
-        ],
-        gameloding: true,
-      });
-      game?.setplayerposition("");
-      game?.setGamemode("");
-      game?.settype("");
-      game?.setgamefriend(-1);
-    };
+        game?.setRunning(false);
+        game?.setlodingdata({
+          users  : [{
+            clientid : user?.id || -1 ,
+               image : user?.image || "no image",
+               username : user?.userName || "no name" ,
+                ingame : false,
+                level : user?.level || 0
+      } ] ,
+          gameloding: true });   
+        game?.setplayerposition("");
+        game?.setGamemode("");
+        game?.settype("");
+        game?.setgamefriend(-1);
+    }
 
     const HandelNotification = () => {
       socket?.on("gameInvitation", (data) => {
@@ -263,65 +261,42 @@ const Invite = () => {
     };
   }, [socket]);
 
-  return (
-    <>
-      {display && (
-        <div className="Gameinvite drift-animation">
-          <div className="userprofile">
-            <Image
-              src={notification.userimage}
-              className="userpic"
-              alt="image"
-              width={34}
-              height={34}
-            />
-          </div>
-          <div className="info">
-            <h2 className="username">{notification.username}</h2>
-            <p className="type">{notification.message}</p>
-          </div>
-          {displayChoise && (
-            <div className="desicion ">
-              <Image
-                src="./homeImages/Deny.svg"
-                className="yes-no   "
-                alt="image"
-                width={24}
-                height={24}
-                onClick={() => {
-                  socket?.emit("gameInvitation", {
-                    clientID: user?.id,
-                    invitationSenderID: notification.invitationSenderID,
-                    response: false,
-                  });
-                  setDisplay(false);
-                }}
-              />
-              <Image
-                src="./homeImages/Accept.svg"
-                className="yes-no "
-                alt="image"
-                width={24}
-                height={24}
-                onClick={() => {
-                  socket?.emit("gameInvitation", {
-                    clientID: user?.id,
-                    invitationSenderID: notification.invitationSenderID,
-                    response: true,
-                  });
-                  game?.setGamemode(notification.mode);
-                  game?.settype("friend");
-                  render?.setRender("playGame");
-                  setDisplay(false);
-                }}
-              />
+    return (
+        <>
+        {
+                display &&
+            <div className="Gameinvite drift-animation">
+                <div className="userprofile">
+                    <Image src={notification.userimage}  className="userpic" alt="image" width={34} height={34}/>
+                </div>
+                <div className="info">
+                    <h2 className="username">{notification.username}</h2>
+                    <p className="type">{notification.message}</p>
+                </div>
+                {
+                        displayChoise &&  <div className="desicion ">
+                        <Image src="./homeImages/Deny.svg" className="yes-no   " alt="image" width={24} height={24}  onClick={() =>
+                        { 
+                            socket?.emit("gameInvitation", { clientID : user?.id ,  invitationSenderID: notification.invitationSenderID , response: false});
+                            setDisplay(false);
+                        } 
+                        } />
+                        <Image src="./homeImages/Accept.svg" className="yes-no " alt="image" width={24} height={24} onClick={() =>
+                            {
+                                socket?.emit("gameInvitation", {  clientID : user?.id , invitationSenderID: notification.invitationSenderID , response: true});
+                                game?.setGamemode(notification.mode);
+                                game?.settype("friend");
+                                render?.setRender("playGame");
+                                setDisplay(false);
+                            }
+                        } />
+                    </div>
+                }
             </div>
-          )}
-        </div>
-      )}
-    </>
-  );
-};
+        }
+        </>
+    );
+}
 
 const Header = () => {
   const data: UserData | null = useContext(UserDataContext);
