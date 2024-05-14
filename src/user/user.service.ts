@@ -1192,12 +1192,17 @@ export class FriendsService {
             },
             select: {
               userRole: true,
+              user: {
+                select: {
+                  userName: true,
+                },
+              },
             },
-          }
-        }
+          },
+        },
       });
 
-      // console.log(room);
+      console.log("Room:", JSON.stringify(room, null, 2));
 
       if (room && room?.users[0]?.userRole === 'OWNER') {
 
@@ -1216,8 +1221,7 @@ export class FriendsService {
 
         console.log("Object:", obj);
 
-        // if (room.users[0].userRole !== 'USER') {
-          await this.prisma.room.update({
+          const data = await this.prisma.room.update({
             where: {
               name: name,
             },
@@ -1230,11 +1234,9 @@ export class FriendsService {
             },
           });
 
-          return {status: 1, message: 'Room updated successfully!'};
-        // }
+          return {status: 1, message: 'Room updated successfully!', data: data};
       }
       return {status: 0, message: "This user does not have privileges !"};
-      // return {status: 0, message: 'Something wrong !'};
     } catch (e) {
       return {status: 0, message: 'Something wrong !'};
     }

@@ -196,18 +196,27 @@ export class UserController {
 
     const { name, newName, type, password} : {name :string, newName :string, type :ROOMTYPE, password :string} = request.body;
 
+    console.log('------------------------------------------------------------------------------\n');
+    console.log("name:", name);
+    console.log("newName:", newName);
+    console.log("type:", type);
+    console.log("password:", password);
+    console.log('file:', file);
+
     if (!name || (type === ROOMTYPE.PROTECTED && !password))
       return {status: 0, message: 'Invalid data !'};
 
-      if (password)
+    if (password)
         var hashedPass = await argon.hash(password);
-    // const hashedPass = (password && type === ROOMTYPE.PROTECTED) ? await argon.hash(password) : null;
+      // const hashedPass = (password && type === ROOMTYPE.PROTECTED) ? await argon.hash(password) : null;
 
-    if (password && !hashedPass)
-      return {status: 0, message: 'Something wrong !'};
+      if (password && !hashedPass)
+        return {status: 0, message: 'Something wrong !'};
 
     if (file)
       var imgUrl :string = await this.cloud.uploadImage(file);
+
+    console.log('------------------------------------------------------------------------------\n');
 
     return this.FriendsService.updateRoom(request.user['userId'], name, newName, type, imgUrl, hashedPass);
   }
