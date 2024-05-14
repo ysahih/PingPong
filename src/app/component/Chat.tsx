@@ -264,8 +264,10 @@ const Conversation = (props : ConvoProps) =>{
     }
 
     useEffect(()=>{
-        socket?.on("isTyping", (from: number) => {
-            if (from === props.userId) {
+        socket?.on("isTyping", (payload : {from: number}) => {
+
+            if (payload.from === props.userId) {
+
                 setTyping(true);
                 setTimeout( () => {
                     setTyping(false);
@@ -297,7 +299,7 @@ const Conversation = (props : ConvoProps) =>{
              <div className="convoHolder" ref={scrollableDivRef}>
                     {convo?.messages?.map((message: any, index: number) => (
                         <div  key={index} className={props.userId === message.userId ? "othersMsg" : "myMsg"}>
-                            <p className={`sentAt ${props.userId === message.userId ? "othersDate" : "myDate"}`}>{timeAgo?.format(new Date(message.createdAt))}</p>
+                            <p className={`sentAt ${props.userId === message.userId ? "othersDate" : "myDate"}`}>{timeAgo?.format(new Date(Date.now()))}</p>
                             <div className={props.userId === message.userId ? "othersContent" : "myContent"}>
                                 <p className="msgContent">{message?.content}</p>
                             </div>

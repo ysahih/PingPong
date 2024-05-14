@@ -1,0 +1,50 @@
+
+.joinRoom__warpper {
+	margin: 150px auto 40px;
+	background-color: #070F2B;
+	width: 80%;
+	max-width: 800px;
+	height: 80vh;
+	border-style: none;
+	border-radius: 20px;
+	border-top: solid 2px #1B266B;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+}
+
+.joinRoom__search {
+    width: 40%;
+    height: 50px;
+    margin: 30px;
+}
+
+.joinRoom__rooms--wrapper {
+    width: 80%;
+    /* height: 70%; */
+    padding: 10px;
+    margin: 40px auto 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 1rem;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.joinRoom__message {
+    font-size: 15px;
+    color: #8A99E9;
+    font-family: 'Inter', cursive;
+}
+
+@media (max-width: 1158px) {
+    .joinRoom--rooms--wrapper {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    }
+}
+
+/* @media (max-width: 665px) {
+    .joinRoom--rooms--wrapper {
+        grid-template-columns: repeat(auto-fill, minmax(30px, 1fr));
+    }
+} */

@@ -58,6 +58,9 @@ import Gameplay from "./Game/GamePages/Gameplay";
 import { GameContext, GameLodingProps, NotificationContext } from "./Game/Gamecontext/gamecontext";
 import UserDataContext from "@/components/context/context";
 import SocketContext from "@/components/context/socket";
+import CreateRoom from "./createRoom/createRoom";
+import RoomSettings from "./RoomSettings/roomSettings";
+import JoinRoom from "./joinRoom/joinRoom";
 
 const Tables = () => {
   return (
@@ -227,28 +230,34 @@ const BackGround = () => {
 };
 
 const Home = (props: { showPopup: boolean }) => {
-
-
-	const context : renderContext | null = useContext(RenderContext);
-	return (
-		<div className={props.showPopup ? 'home-margin homepage' : 'homepage'}>
-			{context?.render === "home" && <div className="home">
-				<Tables/>
+  const context: renderContext | null = useContext(RenderContext);
+  const [choice, setChoice] = useState<number>(1);
+  return (
+    <div className={props.showPopup ? "home-margin homepage" : "homepage"}>
+      {context?.render === "home" && (
+        <div className="home">
+          <Tables/>
 				<Statistics/>
-			</div>}
-			{context?.render === "games" && <Games />}
-			{context?.render === "ranking" && <Ranking/>}
-			{context?.render === "search" && <Search/>}
-			{context?.render === "profile" && <UserProfile/>}
-			{context?.render === "profileOverly" && <ProfileOverlay/>}
-			{context?.render === "chat" && 
-				<div className="chatholder visible xl:invisible">
-					<Chat/>
-				</div> }
-		</div>
-  )
-  };
-  
+          {/* <button onClick={() => setChoice(() => 0)} style={{position:"absolute", marginLeft: "200px", backgroundColor:"white"}}> RoomSettings </button>
+        <button onClick={() => setChoice(() => 1)} style={{position:"absolute", marginLeft: "400px", backgroundColor:"white"}}> JoinRoom </button>
+        <button onClick={() => setChoice(() => 2)} style={{position:"absolute", marginLeft: "300px", backgroundColor:"white"}}> CreateRoom </button> */}
+          {/* {!choice && <RoomSettings name={"keepItUp"} />}
+          {choice === 1 && <JoinRoom />}
+          {choice === 2 && <CreateRoom />} */}
+        </div>
+      )}
+      {context?.render === "games" && <Games />}
+      {context?.render === "ranking" && <Ranking />}
+      {context?.render === "search" && <Search />}
+      {context?.render === "profile" && <UserProfile />}
+      {context?.render === "profileOverly" && <ProfileOverlay />}
+      {context?.render === "chat" && (
+        <div className="chatholder visible xl:invisible">{/* <Chat/> */}</div>
+      )}
+    </div>
+  );
+};
+
 const Body = () => {
   const [showPopup, setShowPopup] = useState(true);
 
@@ -267,42 +276,45 @@ const Body = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-	
-	useEffect(() => {
-		const handleResize = () => {
-		  if (window.innerWidth <= 768)
-			setShowPopup(false);
-		   else 
-			setShowPopup(true);
-		};
-	  
-		handleResize();
-	  
-		window.addEventListener('resize', handleResize);
-	  
-		return () => window.removeEventListener('resize', handleResize);
-		
-	  }, []);
-	
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) setShowPopup(false);
+      else setShowPopup(true);
+    };
 
-	const [chat, setChat] = useState(0);
+    handleResize();
 
-	return (
-		<ChatContext.Provider value={{chat, setChat}}>
+    window.addEventListener("resize", handleResize);
 
-			<div className="body">
-				<Sidebar showPopup={showPopup}  />
-				<div className= "absolute cursor-pointer w-[80px] h-[50px] ml-[20px] text-white mt-[60px] flex items-center justify-center z-20 hidden PopupBtn" onClick={ () => {setShowPopup(!showPopup)}}>
-					<FiChevronsRight className= {` w-[30px] h-[30px] ${showPopup? 'retation180' : 'retation0'}`}/>
-				</div>
-				<Home showPopup={showPopup}/>
-				<div className="chatdiv hidden xl:block">
-					<Chat/>
-				</div>
-			</div>
-		</ChatContext.Provider>
-  	);
-}
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const [chat, setChat] = useState(0);
+
+  return (
+    <ChatContext.Provider value={{ chat, setChat }}>
+      <div className="body">
+        <Sidebar showPopup={showPopup} />
+        <div
+          className="absolute cursor-pointer w-[80px] h-[50px] ml-[20px] text-white mt-[60px] flex items-center justify-center z-20 hidden PopupBtn"
+          onClick={() => {
+            setShowPopup(!showPopup);
+          }}
+        >
+          <FiChevronsRight
+            className={` w-[30px] h-[30px] ${
+              showPopup ? "retation180" : "retation0"
+            }`}
+          />
+        </div>
+        <Home showPopup={showPopup} />
+        <div className="chatdiv hidden xl:block">
+          <Chat />
+        </div>
+      </div>
+    </ChatContext.Provider>
+  );
+};
 
 export default function App() {
   // const gamecontext = useContext(GameContext);

@@ -97,7 +97,50 @@ const Notification = () => {
         process.env.NEST_API + "/user/Notifications",
         {
           withCredentials: true,
+      });
+    const [notificationList, setNotificationList] = useState<NotificationType[]>([]);
+    const socket = useContext(SocketContext);
+    const [timeAgo, setTimeAgo] = useState<TimeAgo | null>(null);
+    const [numberNotf, setNumberNotf] = useState<number>(0);
+
+    useEffect(() => {
+        setTimeAgo(getTimeAgo());
+        // No need for cleanup to set to null, but you can keep it if it suits your use case
+        return () => {
+          setTimeAgo(null);
+        };
+   }, []);
+
+   const NotificationsSeen = async () => {
+        const res = await axios.get(process.env.NEST_API + "/user/NotificationsSeen" , {
+            withCredentials: true,
+            }
+        )
+        // setNotificationList(data);
+        
+   }
+
+    useEffect(() => {
+        
+        async function fetchNotification() {
+            const res = await axios.get(process.env.NEST_API + "/user/Notifications", {
+                withCredentials: true,
+                }
+            )
+            const data:  NotificationType[] = res.data.notifications;
+            setNotificationList(data);
+            setNumberNotf(data?.filter((data) => !data.seen).length);
         }
+        fetchNotification();
+
+        socket?.on("Notification", (data: NotificationType) => {
+            setNotificationList((prev) =>prev.length? [data,  ...prev ]: [data]);
+            setNumberNotf((prev) => prev + 1);
+        });
+        return () => {
+            socket?.off("Notification");
+        }
+      }
       );
       const data: NotificationType[] = res.data.notifications;
       setNotificationList(data);
