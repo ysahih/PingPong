@@ -42,3 +42,9 @@
         grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     }
 }
+
+/* @media (max-width: 665px) {
+    .joinRoom--rooms--wrapper {
+        grid-template-columns: repeat(auto-fill, minmax(30px, 1fr));
+    }
+} */

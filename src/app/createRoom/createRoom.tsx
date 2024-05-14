@@ -7,6 +7,7 @@ import pic from '@/../public/createRoom/GroupChat.svg'
 import axios from "axios";
 import { RoomFormat, ROOMTYPE } from "./interfaces";
 
+
 const CreateRoom = () => {
 
 	const [selcType, setSelType] = useState<ROOMTYPE>(ROOMTYPE.PRIVATE);
@@ -21,6 +22,8 @@ const CreateRoom = () => {
 
 		ROOMTYPE[selcType] === type ? e.preventDefault() : setSelType(type);
 		formik.values.type = type;
+		if (type !== ROOMTYPE.PROTECTED)
+			formik.values.password = '';
 	}
 
 	// Select Room Pic
@@ -117,7 +120,7 @@ const CreateRoom = () => {
 
 					<Image src={image ? image : pic.src} height={70} width={70} alt="Group_image" className="createRoom__image" />
 
-					<label htmlFor="file" className="createRoom__input--file">Image</label>
+					<label htmlFor="file" className="createRoom__input--file">Add</label>
 					<input id="file" name="file" type="file" accept="image/*" onChange={handleFileChange} />
 
 				</div>

@@ -11,3 +11,10 @@ export interface RoomFormat {
 	password	:string
 	error		:string
 }
+
+export interface RoomFormatUpdate {
+	name		:string
+	type		:ROOMTYPE | null
+	password	:string
+	error		:string
+}
