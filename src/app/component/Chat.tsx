@@ -1,3 +1,4 @@
+"use client";
 // import Head from "next/head";
 import { RiSendPlaneFill } from "react-icons/ri";
 import { use, useEffect, useRef, useState } from "react";

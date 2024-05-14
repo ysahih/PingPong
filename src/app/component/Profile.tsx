@@ -1,6 +1,9 @@
+"use client";
 import RenderContext, { renderContext } from "@/components/context/render";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useContext } from "react";
+
 
 interface Src {
   src: string | undefined;
@@ -8,11 +11,12 @@ interface Src {
 }
 
 const Profile = (props: Src) => {
-  const context: renderContext | null = useContext(RenderContext);
+  // const context: renderContext | null = useContext(RenderContext);
+  const router = useRouter();
   return (
     <div
       className={props.sidBar? 'w-[70px] h-[70px] cursor-pointer mt-[-65px] NtfIconSide':  "NtfIcon cursor-pointer ml-1"}
-      onClick={() => context?.setRender("profile")}
+      onClick={() => router.push("/Profile")}
     >
       <Image
         src={props.src ? props.src : "./homeImages/memeber1.svg"}

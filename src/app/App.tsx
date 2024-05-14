@@ -1,40 +1,3 @@
-// import UserDataContext, { UserData } from "@/components/context/context";
-// import {useContext } from "react";
-// import Image from "next/image";
-// import { useRouter } from "next/navigation";
-// import axios from "axios";
-
-// export default function Home() {
-//
-//     const router = useRouter();
-
-//
-
-//     return <>
-
-//         <div>
-
-//             <h1>Home</h1>
-//             <div>
-//                 <h1>{data?.userName}</h1>
-//                 <h1>{data?.email}</h1>
-//                 <h1>{data?.online.toString()}</h1>
-//                 <Image
-//                     src={data?.image?.toString() ?? './defaultImg.svg'}
-//                     alt="profile"
-//                     priority={true}
-//                     width={100}
-//                     height={100}
-//                     style={{
-//                         maxWidth: "100%",
-//                         height: "auto"
-//                     }} />
-//             </div>
-//             <button onClick={() => {Logout()}}></button>
-//         </div>
-//     </>;
-// }
-
 import { use, useContext, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Navbar from "./component/Navbar";
@@ -55,14 +18,18 @@ import RenderContext, { renderContext } from "@/components/context/render";
 import UserProfile from "@/components/userProfile";
 import ProfileOverlay from "./component/ProfileOverlay";
 import Gameplay from "./Game/GamePages/Gameplay";
-import { GameContext, GameLodingProps, NotificationContext } from "./Game/Gamecontext/gamecontext";
+import {
+  GameContext,
+  GameLodingProps,
+  NotificationContext,
+} from "./Game/Gamecontext/gamecontext";
 import UserDataContext from "@/components/context/context";
 import SocketContext from "@/components/context/socket";
 import CreateRoom from "./createRoom/createRoom";
 import RoomSettings from "./RoomSettings/roomSettings";
 import JoinRoom from "./joinRoom/joinRoom";
 
-const Tables = () => {
+export const Tables = () => {
   return (
     <Carousel placeholder="carousel" className="tables rounded-lg z-10">
       <div className=" darktable relative h-1/2 w-full">
@@ -121,9 +88,7 @@ const Tables = () => {
   );
 };
 
-const Match :React.FC<{user: History}> = (props) => {
-
-  // console.log("Props:", props);
+const Match: React.FC<{ user: History }> = (props) => {
 
   return (
     <div className="match">
@@ -147,14 +112,13 @@ const Match :React.FC<{user: History}> = (props) => {
 };
 
 interface History {
-	userName: string
-	image: string
-	result: string
-	level: number
+  userName: string;
+  image: string;
+  result: string;
+  level: number;
 }
 
-const Statistics = () => {
-
+export const Statistics = () => {
   const [history, setHistory] = useState<History[]>([]);
   useEffect(() => {
     const histories = async () => {
@@ -162,9 +126,8 @@ const Statistics = () => {
         withCredentials: true,
       });
       console.log("History:", response.data);
-      if (response.data)
-        setHistory(response.data);
-    }
+      if (response.data) setHistory(response.data);
+    };
     histories();
   }, []);
 
@@ -190,11 +153,10 @@ const Statistics = () => {
           </div>
         </div>
         <div className="matches">
-          {
-           Array.isArray(history) && history.map((user: History, idx: number) => {
-              return <Match key={user.userName + idx} user={user}/>;
-            })
-          }
+          {Array.isArray(history) &&
+            history.map((user: History, idx: number) => {
+              return <Match key={user.userName + idx} user={user} />;
+            })}
           {/* <Match />
           <Match />
           <Match />
@@ -211,39 +173,28 @@ const Statistics = () => {
   );
 };
 
-const BackGround = () => {
-  return (
-    <div className="bg">
-      <Image
-        src="./homeImages/Backgroundimage.svg"
-        alt="background"
-        priority={true}
-        fill
-        className="bgimage"
-        sizes="100vw"
-        style={{
-          objectFit: "cover",
-        }}
-      />
-    </div>
-  );
-};
 
-const Home = (props: { showPopup: boolean }) => {
+const Home = ({
+  children,
+  showPopup,
+}: {
+  children: React.ReactNode;
+  showPopup: boolean;
+}) => {
   const context: renderContext | null = useContext(RenderContext);
   const [choice, setChoice] = useState<number>(1);
   return (
-    <div className={props.showPopup ? "home-margin homepage" : "homepage"}>
-      {context?.render === "home" && (
+    <div className={showPopup ? "home-margin homepage" : "homepage"}>
+      {/* <button onClick={() => setChoice(() => 0)} style={{position:"absolute", marginLeft: "200px", backgroundColor:"white"}}> RoomSettings </button>
+    <button onClick={() => setChoice(() => 1)} style={{position:"absolute", marginLeft: "400px", backgroundColor:"white"}}> JoinRoom </button>
+    <button onClick={() => setChoice(() => 2)} style={{position:"absolute", marginLeft: "300px", backgroundColor:"white"}}> CreateRoom </button> */}
+      {/* {!choice && <RoomSettings name={"keepItUp"} />}
+      {choice === 1 && <JoinRoom />}
+      {choice === 2 && <CreateRoom />} */}
+      {/* {context?.render === "home" && (
         <div className="home">
-          <Tables/>
-				<Statistics/>
-          {/* <button onClick={() => setChoice(() => 0)} style={{position:"absolute", marginLeft: "200px", backgroundColor:"white"}}> RoomSettings </button>
-        <button onClick={() => setChoice(() => 1)} style={{position:"absolute", marginLeft: "400px", backgroundColor:"white"}}> JoinRoom </button>
-        <button onClick={() => setChoice(() => 2)} style={{position:"absolute", marginLeft: "300px", backgroundColor:"white"}}> CreateRoom </button> */}
-          {/* {!choice && <RoomSettings name={"keepItUp"} />}
-          {choice === 1 && <JoinRoom />}
-          {choice === 2 && <CreateRoom />} */}
+          <Tables />
+          <Statistics />
         </div>
       )}
       {context?.render === "games" && <Games />}
@@ -252,16 +203,15 @@ const Home = (props: { showPopup: boolean }) => {
       {context?.render === "profile" && <UserProfile />}
       {context?.render === "profileOverly" && <ProfileOverlay />}
       {context?.render === "chat" && (
-        <div className="chatholder visible xl:invisible">{/* <Chat/> */}</div>
-      )}
+        <div className="chatholder visible xl:invisible">{/* }</div>
+      )} */}
+      {children}
     </div>
   );
 };
 
-const Body = () => {
+const Body = ({ children }: { children: React.ReactNode }) => {
   const [showPopup, setShowPopup] = useState(true);
-
-
 
   useEffect(() => {
     const handleResize = () => {
@@ -307,7 +257,7 @@ const Body = () => {
             }`}
           />
         </div>
-        <Home showPopup={showPopup} />
+        <Home showPopup={showPopup}>{children}</Home>
         <div className="chatdiv hidden xl:block">
           <Chat />
         </div>
@@ -316,34 +266,52 @@ const Body = () => {
   );
 };
 
-export default function App() {
+export default function App({ children }: { children: React.ReactNode }) {
   // const gamecontext = useContext(GameContext);
   const [render, setRender] = useState("home");
   const [gamemode, setGamemode] = useState<string>("Dark Valley");
   const [gametype, settype] = useState<string>("random");
   const [gamefriend, setgamefriend] = useState<number>(-1);
   const [Isrunning, setRunning] = useState<boolean>(false);
-  const [playerposition , setplayerposition] = useState<string>("");
-  const user = useContext(UserDataContext );
-  const [lodingdata, setlodingdata] = useState<GameLodingProps>( {
-    users  : [{
-      clientid : user?.id || -1 ,
-         image : user?.image || "no image",
-         username : user?.userName || "no name" ,
-          ingame : false,
-          level : user?.level || 0
-} ] ,
-    gameloding: true });
+  const [playerposition, setplayerposition] = useState<string>("");
+  const user = useContext(UserDataContext);
+  const [lodingdata, setlodingdata] = useState<GameLodingProps>({
+    users: [
+      {
+        clientid: user?.id || -1,
+        image: user?.image || "no image",
+        username: user?.userName || "no name",
+        ingame: false,
+        level: user?.level || 0,
+      },
+    ],
+    gameloding: true,
+  });
   console.log("lodingdata");
 
   return (
     <RenderContext.Provider value={{ render, setRender }}>
-    <GameContext.Provider value={{ lodingdata ,  gamemode , gametype , gamefriend , Isrunning  , playerposition, setRunning , setGamemode , settype , setgamefriend , setlodingdata , setplayerposition}}>
-      <div>
-        <Navbar />
-        {render == "playGame" && <Gameplay />}
-       { render != "playGame" && <Body />}
-      </div>
+      <GameContext.Provider
+        value={{
+          lodingdata,
+          gamemode,
+          gametype,
+          gamefriend,
+          Isrunning,
+          playerposition,
+          setRunning,
+          setGamemode,
+          settype,
+          setgamefriend,
+          setlodingdata,
+          setplayerposition,
+        }}
+      >
+        <div>
+          <Navbar />
+          {render == "playGame" && <Gameplay />}
+          {render != "playGame" && <Body>{children}</Body>}
+        </div>
       </GameContext.Provider>
     </RenderContext.Provider>
   );

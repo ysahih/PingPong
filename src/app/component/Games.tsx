@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image"
 import { GameContext } from "../Game/Gamecontext/gamecontext";
 import { useContext } from "react";

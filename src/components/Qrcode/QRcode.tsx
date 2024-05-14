@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import axios from "axios";
 import { HtmlContext } from "next/dist/server/future/route-modules/app-page/vendored/contexts/entrypoints";
 import { useRouter } from "next/navigation";
+import "@/styles/userProfile/userprofile.css";
 
 interface VerifyTwoFaProps {
   close: (val: boolean) => void;

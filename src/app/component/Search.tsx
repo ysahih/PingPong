@@ -1,3 +1,4 @@
+"use client";
 import { CiSearch } from "react-icons/ci";
 import { IoMdPersonAdd } from "react-icons/io";
 import Image from "next/image";

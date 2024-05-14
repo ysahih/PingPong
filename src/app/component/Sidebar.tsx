@@ -11,14 +11,16 @@ import SocketContext from "@/components/context/socket";
 
 const Buttons = () => {
   const context: renderContext | null = useContext(RenderContext);
-
+  const router = useRouter();
   return (
     <div className="buttons">
       <div
         className={`sideButton ${
           context?.render === "home" ? "activeChatButton" : ""
         }`}
-        onClick={() => context?.setRender("home")}
+        onClick={() => {context?.setRender("home")
+        router.push("/")
+      }}
       >
         <Image
           className="icon"
@@ -34,7 +36,9 @@ const Buttons = () => {
         className={`sideButton ${
           context?.render === "games" ? "activeChatButton" : ""
         }`}
-        onClick={() => context?.setRender("games")}
+        onClick={() => {context?.setRender("games")
+        router.push("/Game")
+      }}
       >
         <Image
           className="icon"
@@ -50,7 +54,9 @@ const Buttons = () => {
         className={`sideButton ${
           context?.render === "ranking" ? "activeChatButton" : ""
         }`}
-        onClick={() => context?.setRender("ranking")}
+        onClick={() => {context?.setRender("ranking")
+        router.push("/Ranking")
+      }}
       >
         <Image
           className="icon"
@@ -66,7 +72,9 @@ const Buttons = () => {
         className={`sideButton ${
           context?.render === "search" ? "activeChatButton" : ""
         }`}
-        onClick={() => context?.setRender("search")}
+        onClick={() => {context?.setRender("search")
+        router.push("/Search")
+      }}
       >
         <Image
           className="icon"

@@ -1,3 +1,4 @@
+"use client";
 import "@/styles/userProfile/userprofile.css";
 import Image from "next/image";
 import { useContext, useEffect, useRef, useState } from "react";

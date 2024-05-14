@@ -1,3 +1,4 @@
+"use client";
 import Awards from "@/components/userProfile/Awards";
 
 import "@/styles/userProfile/userprofile.css";

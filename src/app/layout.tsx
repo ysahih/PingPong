@@ -1,7 +1,7 @@
 import BackGround from "@/components/bg";
 import "@/styles/login/loding.css";
 import "@/styles/login/landingPage.css";
-
+import Check from "./check";
 
 export const metadata = {
   title: "PONGy",
@@ -9,11 +9,14 @@ export const metadata = {
 };
 
 export default function RootLayout({children}: {children?: React.ReactNode}) {
+  
   return (
     <html lang="en">
       <body>
         <BackGround />
-        {children}
+        <Check>
+          {children}
+        </Check>
       </body>
     </html>
   );
