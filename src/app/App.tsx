@@ -202,14 +202,14 @@ const Home = (props: { showPopup: boolean }) => {
     <div className={props.showPopup ? "home-margin homepage" : "homepage"}>
       {context?.render === "home" && (
         <div className="home">
-          {/* <Tables/>
-				<Statistics/> */}
+          <Tables/>
+				<Statistics/>
           {/* <button onClick={() => setChoice(() => 0)} style={{position:"absolute", marginLeft: "200px", backgroundColor:"white"}}> RoomSettings </button>
         <button onClick={() => setChoice(() => 1)} style={{position:"absolute", marginLeft: "400px", backgroundColor:"white"}}> JoinRoom </button>
         <button onClick={() => setChoice(() => 2)} style={{position:"absolute", marginLeft: "300px", backgroundColor:"white"}}> CreateRoom </button> */}
-          {!choice && <RoomSettings name={"keepItUp"} />}
+          {/* {!choice && <RoomSettings name={"keepItUp"} />}
           {choice === 1 && <JoinRoom />}
-          {choice === 2 && <CreateRoom />}
+          {choice === 2 && <CreateRoom />} */}
         </div>
       )}
       {context?.render === "games" && <Games />}
