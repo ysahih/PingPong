@@ -117,29 +117,53 @@ const Tables = () => {
   );
 };
 
-const Match = () => {
+const Match :React.FC<{user: History}> = (props) => {
+
+  // console.log("Props:", props);
+
   return (
     <div className="match">
       <div className="opponent">
         <Image
-          src="./homeImages/member0.svg"
+          src={props.user?.image || "@/public/defaultImg.svg"}
           alt="profile"
           width={26}
           height={26}
         />
-        <p>UcefSahih</p>
+        <p>{props.user.userName}</p>
       </div>
       <div className="level">
-        <p> 10 </p>
+        <p>{props.user.level}</p>
       </div>
       <div className="w-l">
-        <p> W </p>
+        <p> {props.user.result} </p>
       </div>
     </div>
   );
 };
 
+interface History {
+	userName: string
+	image: string
+	result: string
+	level: number
+}
+
 const Statistics = () => {
+
+  const [history, setHistory] = useState<History[]>([]);
+  useEffect(() => {
+    const histories = async () => {
+      const response = await axios.get(process.env.NEST_API + "/user/history", {
+        withCredentials: true,
+      });
+      console.log("History:", response.data);
+      if (response.data)
+        setHistory(response.data);
+    }
+    histories();
+  }, []);
+
   return (
     <>
       <div className="statistics-line flex items-center">
@@ -162,6 +186,12 @@ const Statistics = () => {
           </div>
         </div>
         <div className="matches">
+          {
+           Array.isArray(history) && history.map((user: History, idx: number) => {
+              return <Match key={user.userName + idx} user={user}/>;
+            })
+          }
+          {/* <Match />
           <Match />
           <Match />
           <Match />
@@ -170,8 +200,7 @@ const Statistics = () => {
           <Match />
           <Match />
           <Match />
-          <Match />
-          <Match />
+          <Match /> */}
         </div>
       </div>
     </>
@@ -275,14 +304,11 @@ const Body = () => {
 }
 
 export default function App() {
+  // const gamecontext = useContext(GameContext);
   const [render, setRender] = useState("home");
-  const gamecontext = useContext(GameContext);
-
   const [gamemode, setGamemode] = useState<string>("Dark Valley");
   const [gametype, settype] = useState<string>("random");
-  // random , friend , ai
   const [gamefriend, setgamefriend] = useState<number>(-1);
-  //  -1 , friendid
   const [Isrunning, setRunning] = useState<boolean>(false);
   const [playerposition , setplayerposition] = useState<string>("");
   const user = useContext(UserDataContext );
@@ -291,10 +317,11 @@ export default function App() {
       clientid : user?.id || -1 ,
          image : user?.image || "no image",
          username : user?.userName || "no name" ,
-          ingame : false
+          ingame : false,
+          level : user?.level || 0
 } ] ,
     gameloding: true });
-
+  console.log("lodingdata");
 
   return (
     <RenderContext.Provider value={{ render, setRender }}>

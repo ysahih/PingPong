@@ -117,8 +117,8 @@ const More = ({user}: {user: ChatData})=> {
 
 const Message = ({handleMsgClick, user } : Props) =>{
 
-    console.log("--")
-    console.log(user.lastMessage);
+    // console.log("--")
+    // console.log(user.lastMessage);
 
     return (
         <div className="Message">

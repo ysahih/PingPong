@@ -12,6 +12,7 @@ export type UserData = {
     online   : Boolean,
     twoFa    : Boolean,
     twoFaCheck: Boolean,
+    level    : number,
 }
 
 const UserDataContext = React.createContext<UserData | null>(null);

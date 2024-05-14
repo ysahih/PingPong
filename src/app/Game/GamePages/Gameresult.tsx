@@ -1,4 +1,4 @@
-import '@/app/globals.css'
+// import '@/app/globals.css'
 import RenderContext from '@/components/context/render';
 import "@/styles/game/Gameplay.css";
 import {  useContext, useEffect } from 'react';
@@ -20,7 +20,8 @@ const Gameresult : React.FC<{ result : string } > = (props) => {
             clientid : user?.id || -1 ,
                image : user?.image || "no image",
                username : user?.userName || "no name" ,
-                ingame : false
+                ingame : false,
+                level : user?.level || 0
       } ] ,
           gameloding: true });   
         game?.setplayerposition("");
@@ -48,28 +49,3 @@ const Gameresult : React.FC<{ result : string } > = (props) => {
 
 export default Gameresult;
 
-
-
-//   import '@/app/globals.css'
-// import "@/styles/game/Gameplay.css";
-// import { useEffect } from 'react';
-// import toast, { Toaster } from 'react-hot-toast';
-
-
-// const Gameresult : React.FC<{ result : string , rungame : boolean} > = (props) => {
-
-
-  
-
-//   useEffect(() => {
-//     // Call the toast function here
-//     toast.success(props.result);
-//   }, []); 
-//     return (   
-//       <div>
-//         <Toaster/>
-//       </div>
-//     )
-//   }
-
-//   export default Gameresult;

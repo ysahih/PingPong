@@ -145,7 +145,8 @@ const socket  = useContext(SocketContext );
             clientid : user?.id || -1 ,
                image : user?.image || "no image",
                username : user?.userName || "no name" ,
-                ingame : false
+                ingame : false,
+                level : user?.level || 0
       } ] ,
           gameloding: true });   
         game?.setplayerposition("");
@@ -245,7 +246,7 @@ const Header = () =>{
             </div>
             
             <div className="rightBar ">
-               <Notification  />
+                <Notification  />
                 <Profile src={data?.image}/>
                 
                 <h2 className="hidden md:block "> {data?.userName}</h2>
