@@ -98,10 +98,9 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async GetMessages(@Req() req :Request) {
 
-    // console.log('--------------------------')
-
     return await this.FriendsService.message(req.user['userId'], Number(req.query['id']));
   }
+
   @Get('getSentInvits')
   @UseGuards(JwtAuthGuard)
   async getSentInvits(@Req() req : Request){
