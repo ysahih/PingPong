@@ -21,7 +21,7 @@ export class  cloudinaryService {
             } else if (file.buffer) { // File is in memory
               const uploadResponse = await new Promise((resolve, reject) => {
                 const stream = cloudinary.uploader.upload_stream(
-                  { resource_type: 'auto', folder: 'ProfileImages'},
+                  { resource_type: 'image', folder: 'ProfileImages'},
                   (error, result) => {
                     if (error) reject(error);
                     else resolve(result);

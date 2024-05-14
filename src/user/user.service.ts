@@ -673,6 +673,7 @@ export class FriendsService {
                 },
                 take: 1,
                 select: {
+                  // TODO: Take one message
                   content: true,
                   createdAt: true,
                   userId: true,
