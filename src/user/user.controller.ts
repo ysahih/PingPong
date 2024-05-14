@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Patch,
@@ -11,6 +12,9 @@ import {
 import { FriendsService } from "./user.service";
 import { JwtAuthGuard } from "src/authentication/jwtStrategy/jwtguards";
 import { Request } from "express";
+import { IsString } from "class-validator";
+import { validate } from 'class-validator';
+import { upadateInfo } from "src/authentication/dto/form";
 
 @Controller("user")
 export class UserController {
@@ -114,5 +118,31 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async NotificationsSeen(@Req() req : Request){
     return await this.FriendsService.NotificationsSeen(req.user['userId']);
+  }
+
+  @Post('/updateInfo')
+  @UseGuards(JwtAuthGuard)
+  async updateInfo(@Req() req : Request, @Body() user :  {
+    userName: string,
+    firstName:  string,
+    lastName: string,
+    password: string,
+  }){
+    console.log('user ::', user);
+
+    try {
+      const userr = new upadateInfo();
+      userr.userName = user.userName;
+      userr.fullName = user.firstName + ' ' + user.lastName;
+      userr.password = user.password;
+      const errors = await validate(userr);
+      console.log('userr ::', errors);
+    } catch (e) {
+      console.log('error ::', e);
+    }
+
+    const userName = user.userName;
+    // this.FriendsService.updateInfo(req.user['userId'], id['id'])
+    return { "g": "success" };
   }
 }
