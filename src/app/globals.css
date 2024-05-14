@@ -142,7 +142,7 @@
 }
 
 .profileimage, .profilecenter{
-    margin-bottom: -45px;
+    /* margin-bottom: -45px; */
 }
 
 
@@ -241,23 +241,6 @@
 
 .buttons{
     margin-top: 100px;
-
-}
-
-.logout .Username{
-    margin-top: 50px;;
-}
-
-.logout .profile .profilecenter{
-    width: 70px;
-    height: 70px;
-    margin-bottom: -65px;
-}
-
-.logout .profile .profileimage{
-    width: 60px;
-    height: 60px;
-    /* margin-bottom: -60px; */
 }
 
 
@@ -1430,4 +1413,20 @@
     .chatholder .convo{
         margin: 0px 20px; 
     }       
+}
+
+
+
+
+
+/* ranking style
+
+*/
+
+.RankBlock p
+{
+    font-family: inter;
+    font-size: 12px;
+    font-weight: 500;
+    color: #FFFFFF;
 }

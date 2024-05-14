@@ -207,9 +207,9 @@ const Sidebar = (props: { showPopup: boolean}) => {
       <div className="Sidebar drift-animation">
         <Buttons />
         <div className="logout">
-          <Profile src={data?.image} />
+          <Profile src={data?.image} sidBar/>
 
-          <h2 className="Username">{data?.userName}</h2>
+          <h2 className="Username mb-[10px]">{data?.userName}</h2>
 
           <div className="logoutSection">
             <button className="logoutbutton" onClick={Logout}>

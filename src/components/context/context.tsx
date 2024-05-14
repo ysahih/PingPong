@@ -17,6 +17,7 @@ export type UserData = {
     setFirstName: (firstName: string) => void;
     setLastName: (lastName: string) => void;
     setEmail: (email: string) => void;
+    level    : number,
 }
 
 

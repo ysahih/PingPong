@@ -1,26 +1,33 @@
-
 import RenderContext, { renderContext } from "@/components/context/render";
 import Image from "next/image";
 import { useContext } from "react";
 
 interface Src {
-    src: string | undefined;
+  src: string | undefined;
+  sidBar?: boolean;
 }
 
-const Profile = (props: Src)=>{
-    const context : renderContext | null = useContext(RenderContext);
-    return (
-        <div className="profile" onClick={ () => context?.setRender("profile")}>
-            <Image  src="./homeImages/Ell.svg" className="profilecenter" alt="logo" width={48} height={48}/>
-            <Image src={props.src? props.src: "./homeImages/memeber1.svg"}
-                         className="profileimage" alt="image" style={
-                        {
-                            borderRadius: "50%",
-                            objectFit: "cover",
-                        }
-                    } width={42} height={42} priority={true}/>
-        </div>
-    );
-}
+const Profile = (props: Src) => {
+  const context: renderContext | null = useContext(RenderContext);
+  return (
+    <div
+      className={props.sidBar? 'w-[70px] h-[70px] cursor-pointer mt-[-65px] NtfIconSide':  "NtfIcon cursor-pointer ml-1"}
+      onClick={() => context?.setRender("profile")}
+    >
+      <Image
+        src={props.src ? props.src : "./homeImages/memeber1.svg"}
+        className="w-[100%] h-[100%] "
+        alt="image"
+        style={{
+          borderRadius: "50%",
+          objectFit: "cover",
+        }}
+        width={45}
+        height={45}
+        priority={true}
+      />
+    </div>
+  );
+};
 
-export default Profile
+export default Profile;
