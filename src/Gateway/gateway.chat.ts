@@ -133,13 +133,13 @@ export class serverGateway
     );
 
     if (!isExist) {
-      console.log("Conversation does not Exist !");
+      // console.log("Conversation does not Exist !");
       // If dosn't exist create new record
       const newConv = await this._prisma.createConversation(payload);
       // ADD conversation ID for USER1 and USER2
       this._users.addNewConversation(payload, newConv.id);
     } else {
-      console.log("Conversation Exists !");
+      // console.log("Conversation Exists !");
       // If Exist Just add the message at the conversation ID
       await this._prisma.updateConversation(isExist.id, payload);
     }
@@ -172,7 +172,7 @@ export class serverGateway
             .emit("create", `${payload.name} created succefully !`);
       // Add the room to the user's room array of Objects
       this._users.addNewRoom(payload.ownerId, newRoom, "OWNER");
-      console.log(this._users.getUserById(payload.ownerId));
+      // console.log(this._users.getUserById(payload.ownerId));
 
       // Check Execption
     } catch (e) {
@@ -180,7 +180,7 @@ export class serverGateway
       // FIXME: I don't have to send errors to all client
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         // Means that the room already exist with that name
-        console.log('Errrrooooor !');
+        // console.log('Errrrooooor !');
         if (e.code === "P2002")
           this._server
             .to(client.id)
@@ -268,7 +268,7 @@ export class serverGateway
 		  this._server.to(socktId).emit("NewInvit", newInvit);
       notifications && this._server.to(socktId).emit("Notification", notifications);
 		});
-		console.log(" newInvet from :", targetFriend.sender);
+		// console.log(" newInvet from :", targetFriend.sender);
 	  }
 	}
   }
@@ -279,7 +279,7 @@ export class serverGateway
       Payload.userId,
       Payload.id
     );
-    console.log("deny : ", targetFriend, Payload.id, Payload.userId);
+    // console.log("deny : ", targetFriend, Payload.id, Payload.userId);
     if (targetFriend !== null) {
       const SocketsTarget = this._users.getUserById(Payload.userId);
       if (SocketsTarget) {
@@ -297,7 +297,7 @@ export class serverGateway
       Payload.id,
       Payload.userId,
     );
-    console.log("deny : ", targetFriend, Payload.id, Payload.userId);
+    // console.log("deny : ", targetFriend, Payload.id, Payload.userId);
     if (targetFriend !== null) {
       const SocketsTarget = this._users.getUserById(Payload.id);
       if (SocketsTarget) {
@@ -371,7 +371,7 @@ export class serverGateway
 	  //     this._server.to(socktId).emit("UnBlocked", Payload.userId);
 	  //   });
 	  // }
-	  console.log("unblocked", targetFriend);
+	  // console.log("unblocked", targetFriend);
 	  
 	  const client = this._users.getUserById(Payload.userId);
 	  if (client) {
@@ -409,20 +409,20 @@ export class serverGateway
 					console.error("Error fetching user info:", error);
 				}
 				let curentroom = this.gameRooms.searcheClientRoom(lodingdata.userid) ;
-				console.log(1);
+				// console.log(1);
 				if ( !curentroom )
 				{
 					curentroom = this.gameRooms.findEmptyRoom(lodingdata.type , lodingdata.userid , lodingdata.mode);
 					try{
 					if (!curentroom)
 					{
-						console.log(2);
+						// console.log(2);
 						this.gameRooms.addRoom(user , lodingdata.type , lodingdata.mode ,lodingdata.friendid);	
             curentroom =  this.gameRooms.searcheClientRoom(lodingdata.userid)
 					}
 					else
 					{
-						console.log(3);
+						// console.log(3);
 						this.gameRooms.addUser(curentroom, user);
 					}
 					}
@@ -433,17 +433,17 @@ export class serverGateway
 				// join game
 				else  if ( curentroom && (this.gameRooms.checkRoomsize(curentroom) === 2 ))
 				{ 
-					console.log(4);
+					// console.log(4);
 					client.join(curentroom);
 					this._server.to(curentroom).emit('RandomGameroom',{ room: this.gameRooms.rooms[curentroom] , alreadymatch: true});
 					return ;
 				}
 				// join game
 				client.join(curentroom);
-        console.log("curentroom", curentroom);
+        // console.log("curentroom", curentroom);
 				if ( curentroom && (this.gameRooms.checkRoomsize(curentroom) === 2 ))
 				{
-					console.log(5);
+					// console.log(5);
 					this._server.to(curentroom).emit('RandomGameroom' ,{ room: this.gameRooms.rooms[curentroom] , alreadymatch: false });
 				}
 			}
@@ -469,7 +469,7 @@ export class serverGateway
 			this.gameRooms.setmoveball(room, mydata.moveball);
 			if (!this.gameRooms.gameIntervals[room]) 
       {
-        console.log("create interval");
+        // console.log("create interval");
         let isGameOverHandled = false;
 				this.gameRooms.gameIntervals[room] = setInterval(async () => {
           if(!this.gameRooms.game[room])
@@ -592,7 +592,7 @@ export class serverGateway
 		async SendGameInvite(@ConnectedSocket() client: Socket, @MessageBody () mydata: { invitationSenderID: number , mode : string ,friendId : number }) {	
      
       const SocketsTarget = this._users.getUserById(mydata.friendId);
-      console.log("SendGameInvite", mydata);
+      // console.log("SendGameInvite", mydata);
       let user: userinfo ;
       try {
 					const base = await this._prisma.userInfogame(mydata.invitationSenderID);

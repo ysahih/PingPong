@@ -169,9 +169,9 @@ export class datagame {
 				this.game[room].colormode = 0;
 			else
 				this.game[room].colormode = 1;
-			console.log("Y" , this.game[room].ball.direction.y);
-			console.log("X" , this.game[room].ball.direction.x);
-			console.log("colormode" , this.game[room].colormode);
+			// console.log("Y" , this.game[room].ball.direction.y);
+			// console.log("X" , this.game[room].ball.direction.x);
+			// console.log("colormode" , this.game[room].colormode);
 		}
 
 		updateBall(room : string)

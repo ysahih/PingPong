@@ -130,7 +130,7 @@ export class UserController {
   async getRanking(@Req() req: Request){
     return await this.FriendsService.getRankingHistory(req.user['userId']);
   }
-  
+
   @Post('/updateInfo')
   @UseGuards(JwtAuthGuard)
   async updateInfo(@Req() req : Request, @Body() user :  {
@@ -139,7 +139,7 @@ export class UserController {
     lastName: string,
     password: string,
   }){
-    console.log('user ::', user);
+    // console.log('user ::', user);
 
     try {
       const userr = new upadateInfo();
@@ -147,7 +147,7 @@ export class UserController {
       userr.fullName = user.firstName + ' ' + user.lastName;
       userr.password = user.password;
       const errors = await validate(userr);
-      console.log('userr ::', errors);
+      // console.log('userr ::', errors);
     } catch (e) {
       console.log('error ::', e);
     }

@@ -36,11 +36,11 @@ export class authController {
     @Req() req: Request,
     @Res() res: Response
   ) {
-    console.log(req.user);
+    // console.log(req.user);
     const src = await this.authS.generateTwoFactorAuthentication(
       req.user["userName"]
     );
-    console.log(src);
+    // console.log(src);
     res.json(src);
   }
 
@@ -51,7 +51,7 @@ export class authController {
     @Body("token") token: string,
     @Res() res: Response
   ) {
-    console.log(token);
+    // console.log(token);
     const valid = await this.authS.disableTwofactor(req.user["userId"], token);
     res.json(valid);
   }
@@ -63,7 +63,7 @@ export class authController {
     @Body("token") token: string,
     @Res() res: Response
   ) {
-    console.log(token);
+    // console.log(token);
     const valid = await this.authS.enableTwofactor(req.user["userId"], token);
     res.json(valid);
   }
@@ -75,7 +75,7 @@ export class authController {
     @Body("token") token: string,
     @Res() res: Response
   ) {
-    console.log(token);
+    // console.log(token);
     const valid = await this.authS.verifyTwofactor(req.user["userId"], token);
     if (valid) await this.authS.ValidateToken(req.user["userId"], true, true);
     res.json(valid);

@@ -968,7 +968,7 @@ export class FriendsService {
 
       });
 
-      console.log("Result:", result);
+      // console.log("Result:", result);
       if (result?.history?.length)
       {
         const newResultPromise = result.history.map(async (res) : Promise<History> => {
@@ -992,7 +992,7 @@ export class FriendsService {
         });
 
         const newResult = await Promise.all(newResultPromise);
-        console.log("NewResult:", newResult);
+        // console.log("NewResult:", newResult);
         return newResult;    
       }
 

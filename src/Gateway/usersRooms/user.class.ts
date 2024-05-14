@@ -59,17 +59,17 @@ export class UsersServices {
 		{
 			cb(socket, this._users.get(data.id).rooms);
 
-			console.log('Before: ');
+			// console.log('Before: ');
 			console.log(this._users.get(data.id).socketId);
 
 			this._users.get(data.id).socketId.splice(data.index, 1);
 
-			console.log('After: ');
-			console.log(this._users.get(data.id).socketId);
+			// console.log('After: ');
+			// console.log(this._users.get(data.id).socketId);
 
 			if (!this._users.get(data.id).socketId.length)
 			{
-				console.log(`${this._users.get(data.id).username} will be deleted !`);
+				// console.log(`${this._users.get(data.id).username} will be deleted !`);
 				this._users.delete(data.id);
 				return (data.id);
 			}
@@ -142,7 +142,7 @@ export class UsersServices {
 
     for (const user of this._users.values()) {
       arr = arr.concat(user.socketId);
-      console.log(arr);
+      // console.log(arr);
     }
 
     return arr;
