@@ -3,6 +3,7 @@ import { ROLE, ROOMTYPE } from "@prisma/client"
 import { IsBoolean, IsOptional, ValidateIf } from "class-validator"
 import { Room } from "./usersRooms/UserRoom.interface"
 import { Type } from "class-transformer"
+import { IsDate, IsDateString } from "class-validator"
 
 // Message Class
 export class MessageDTO {
@@ -16,6 +17,10 @@ export class MessageDTO {
 	@IsNotEmpty()
 	@IsString()
 	message	:string
+
+	@IsNotEmpty()
+	@IsDateString()
+	createdAt :Date
 }
 
 export class RoomDTO {
@@ -131,6 +136,7 @@ export class ChatData {
 export class Messages {
 	content :string
 	userId :number
+	createdAt: Date
 }
 
 export class ConvData {

@@ -120,35 +120,64 @@ export class serverGateway
   async handleDirectMessage(@ConnectedSocket() client: Socket, @Body() payload: MessageDTO): Promise<void> {
 
     // TODO: I HAVE TO CHECK IF THE USER BLOKCED
+    console.log(payload);
+    // TODO: When A user send a message at that sended user to read status
 
     // Get sender User Infos
     const fromUser = this._users.getUserById(payload.from);
     // Check if already there's that conversation
     const isExist = fromUser.DirectChat.find(
       (conv) => conv.toUserId === payload.to
-    );
+      );
+
+      // Check if the receiver user is online between the _users
+      const toUser = this._users.getUserById(payload.to);
 
     if (!isExist) {
       // console.log("Conversation does not Exist !");
       // If dosn't exist create new record
-      const newConv = await this._prisma.createConversation(payload);
+      // const newConv = await this._prisma.createConversation(payload);
+      this._prisma.createConversation(payload)
+        .then((data) => {
+          this._users.addNewConversation(payload, data.id);
+
+          if (toUser)
+          {
+            this._prisma.uniqueConvo(payload.from, payload.to, payload.message)
+            .then((data) => {
+              toUser.socketId.forEach((socktId: string) =>
+                this._server.to(socktId).emit("newConvo", data)
+              );
+            });
+          }
+        });
       // ADD conversation ID for USER1 and USER2
-      this._users.addNewConversation(payload, newConv.id);
+      // this._users.addNewConversation(payload, newConv.id);
     } else {
       // console.log("Conversation Exists !");
       // If Exist Just add the message at the conversation ID
-      await this._prisma.updateConversation(isExist.id, payload);
+      // await this._prisma.updateConversation(isExist.id, payload);
+      this._prisma.updateConversation(isExist.id, payload)
+      .then(() => {
+        if (toUser)
+        {
+          this._prisma.uniqueConvo(payload.from, payload.to, payload.message)
+          .then((data) => {
+            toUser.socketId.forEach((socktId: string) =>
+              this._server.to(socktId).emit("newConvo", data)
+            );
+          });
+        }
+      });
     }
-    // Check if the receiver user is online between the _users
-    const toUser = this._users.getUserById(payload.to);
     // if is Online, send him a message to the 'chat' event
-    if (toUser)
-    {
-      const lastMessage :ChatData = await this._prisma.uniqueConvo(payload.from, payload.to);
-      toUser.socketId.forEach((socktId: string) =>
-        this._server.to(socktId).emit("newConvo", lastMessage)
-      );
-    }
+    // if (toUser)
+    // {
+    //   const lastMessage :ChatData = await this._prisma.uniqueConvo(payload.from, payload.to);
+    //   toUser.socketId.forEach((socktId: string) =>
+    //     this._server.to(socktId).emit("newConvo", lastMessage)
+    //   );
+    // }
   }
 
   // @UseFilters(ExceptionHandler)
@@ -272,8 +301,24 @@ export class serverGateway
       console.log("NewData:", this._users.getUserById(payload.userId));
     }
   }
+  
+  @UseFilters(ExceptionHandler)
+  @UsePipes(ValidationPipe)
+  @SubscribeMessage("typing")
+  async handleTyping(
+    @ConnectedSocket() client: Socket,
+    @Body() data: {from: number, to: number}
+  ): Promise<void> {
 
-  /**
+    // console.log("HELLO");
+    const to = this._users.getUserById(data.to).socketId;
+
+    to.forEach((socketId :string) => {
+      this._server.to(socketId).emit("isTyping", {from: data.from});
+    });
+  }
+
+   /**
    * handle friends request : by essadike
    */
 
