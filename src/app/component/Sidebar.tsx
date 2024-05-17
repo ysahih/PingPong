@@ -1,9 +1,10 @@
+"use client";
 import Image from "next/image";
 import Profile from "./Profile";
-import { use, useState } from "react";
+import { use, useEffect, useState } from "react";
 import axios from "axios";
 import Router from "next/navigation";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import UserDataContext, { UserData } from "@/components/context/context";
 import { useContext } from "react";
 import RenderContext, { renderContext } from "@/components/context/render";
@@ -12,6 +13,21 @@ import SocketContext from "@/components/context/socket";
 const Buttons = () => {
   const context: renderContext | null = useContext(RenderContext);
   const router = useRouter();
+  const pathName = usePathname();
+
+  useEffect(() => {
+    if (pathName === "/") {
+      context?.setRender("home");
+    } else if (pathName === "/Game") {
+      context?.setRender("games");
+    } else if (pathName === "/Ranking") {
+      context?.setRender("ranking");
+    } else if (pathName === "/Search") {
+      context?.setRender("search");
+    }
+  }
+  , [pathName]);
+
   return (
     <div className="buttons">
       <div
