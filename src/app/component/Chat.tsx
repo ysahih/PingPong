@@ -286,7 +286,7 @@ const Conversation = (props : ConvoProps) =>{
     return (
 
         <div className="conversation">
-            {convo === null && <div className="loading bg-red w-[100px]">
+            {convo === null && <div className="loading">
                         <CircularProgress />
             </div> }
             {
