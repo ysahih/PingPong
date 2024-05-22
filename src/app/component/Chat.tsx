@@ -1,5 +1,6 @@
 "use client";
-// import Head from "next/head";
+
+import { CircularProgress } from "@mui/material";
 import { RiSendPlaneFill } from "react-icons/ri";
 import { use, useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -283,14 +284,21 @@ const Conversation = (props : ConvoProps) =>{
     }, []) ;
 
     return (
+
         <div className="conversation">
+            {convo === null && <div className="loading">
+                        <CircularProgress />
+            </div> }
+            {
+                convo &&
+            <>
             <div className="convo">
                 <div className="convoHeader">
                     <div className="sender-info  cursor-pointer" onClick={() => render?.setRender("profileOverly")}>
                         <Image className="profilepic" src={convo?.image ? convo.image : "./homeImages/memeber1.svg"} width={38} height={42} alt="photo"/>
                         <div>
                             <h2>{convo?.userName}</h2>
-                            <p className="typing">{typing ? 'Typing...' : 'online'}</p>
+                            <p className="typing">{typing ? 'Typing' : 'online'}</p>
                         </div>
                     </div>
                     <Image className="go-back cursor-pointer" src="./homeImages/goback.svg" onClick={handleClick} width={28} height={25} alt="back" />
@@ -298,10 +306,10 @@ const Conversation = (props : ConvoProps) =>{
                 <hr className="line"/>
                 
              <div className="convoHolder" ref={scrollableDivRef}>
-                    {convo?.messages?.map((message: any, index: number) => (
-                        <div  key={index} className={props.userId === message.userId ? "othersMsg" : "myMsg"}>
-                            <p className={`sentAt ${props.userId === message.userId ? "othersDate" : "myDate"}`}>{timeAgo?.format(new Date(Date.now()))}</p>
-                            <div className={props.userId === message.userId ? "othersContent" : "myContent"}>
+                    {convo?.messages?.map((message: Message, index: number) => (
+                        <div  key={index} className={props.userId === message.senderID ? "othersMsg" : "myMsg"}>
+                            <p className={`sentAt ${props.userId === message.senderID ? "othersDate" : "myDate"}`}>{timeAgo?.format(new Date(message.createdAt))}</p>
+                            <div className={props.userId === message.senderID ? "othersContent" : "myContent"}>
                                 <p className="msgContent">{message?.content}</p>
                             </div>
                         </div>
@@ -316,8 +324,10 @@ const Conversation = (props : ConvoProps) =>{
                   <RiSendPlaneFill className="sendLogo" />
                 </button>
               </form>
+            </>
+            }
 
-        </div>
+            </div>
     );
 }
 
@@ -340,6 +350,7 @@ const Chat = () => {
     };
 
     useEffect(() => {
+        //fetching chat data.
         const fetchData = async () => {
             try {
                 const response = await axios.get(process.env.NEST_API + '/user/conversation', {
@@ -351,7 +362,7 @@ const Chat = () => {
             }
         };
         fetchData();
-            //if a user is blocked i should not recieve it from the back-end
+            //!! if a user is blocked i should not recieve it from the back-end
     }, []);
 
 
@@ -377,22 +388,27 @@ const Chat = () => {
 
 
     return (
-        <div className="chat">
-            {Convo?.chat === 0 && <div className="">
-                <div className="chatbar">
-                    <Header/>
-                    <Members chatdata={chatdata}/>
-                </div>
-               
-                <div className="messagesHolder">
-                    {chatdata ? chatdata.map((user: ChatData, index) => (
-                        <Message key={index} handleMsgClick= {()=>Convo?.setChat(user.id)} user={user}/>
-                    )) : null}
-                 </div>
-            </div>}
-            {Convo?.chat !== 0 && <Conversation updateChat={updateChat} handleMsgClick={()=>Convo?.setChat(0)} userId={Convo?.chat!} handleConvo={()=>setInConvo({content: "", createdAt: new Date(), senderID: 0})} inConvo={inConvo!} />}
+
+            <div className="chat">
             
-        </div>
+                    {Convo?.chat === 0 &&
+                    <div>
+                        <div className="chatbar">
+                            <Header/>
+                            <Members chatdata={chatdata}/>
+                        </div>
+                        
+                        <div className="messagesHolder">
+                            {chatdata ? chatdata.map((user: ChatData, index) => (
+                                <Message key={index} handleMsgClick= {()=>Convo?.setChat(user.id)} user={user}/>
+                            )) : null}
+                        </div>
+                    </div>}
+                {Convo?.chat !== 0 && <Conversation updateChat={updateChat} handleMsgClick={()=>Convo?.setChat(0)} userId={Convo?.chat!} handleConvo={()=>setInConvo({content: "", createdAt: new Date(), senderID: 0})} inConvo={inConvo!} />}
+                
+            </div>
+
+        
     );
 }
 
