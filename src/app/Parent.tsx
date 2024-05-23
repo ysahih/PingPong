@@ -1,6 +1,6 @@
 "use client";
 // "use strict";
-import { use, useEffect, useState } from "react";
+import { use, useContext, useEffect, useState } from "react";
 import "../styles/login/landingPage.css";
 import axios from "axios";
 import UserDataContext, { UserData } from "@/components/context/context";
@@ -21,6 +21,9 @@ import Friends from "@/components/userProfile/Friends";
 import Navbar from "./component/Navbar";
 import axiosApi from "@/components/signComonents/api";
 import { ChatData } from "./component/Dto/Dto";
+import { userState } from "@/components/context/userSate";
+import { number } from "yup";
+import { step } from "@material-tailwind/react";
 
 // import { useRouter } from 'next/router';
 /*
@@ -100,6 +103,7 @@ const getBlocked = async (proes: PropessetBlockedData) => {
 
 export default function Parent({ children }: { children: React.ReactNode }) {
   const [data, setData] = useState<UserData | null>(null);
+  
   const [checkTwoFactor, setCheckTwoFactor] = useState(
     data?.twoFaCheck || false
   );
@@ -108,6 +112,7 @@ export default function Parent({ children }: { children: React.ReactNode }) {
   const [BlockedData, setBlockedData] = useState<FriendsType[] | null>(null);
   const [Socket, setSocket] = useState<Socket | null>(null);
   const [redirect, setRedirect] = useState<boolean>(false);
+  const [userState, setUserState] = useState<{id: number, state: string} | null>(null);
 
   const router = useRouter();
 
@@ -145,18 +150,22 @@ export default function Parent({ children }: { children: React.ReactNode }) {
     socket.on("online", (data: { id: number }) => {
       console.log("online", data);
       if (data)
-        setFriendsData((currentFriends) =>
-          currentFriends
-            ? currentFriends.map((friend: FriendsType) =>
-                friend.id === data.id ? { ...friend, online: true } : friend
-              )
-            : null
-        );
+        {
+
+          setFriendsData((currentFriends) =>
+            currentFriends
+          ? currentFriends.map((friend: FriendsType) =>
+            friend.id === data.id ? { ...friend, online: true } : friend
+        )
+        : null
+      );
+      setUserState({id: data.id, state: "online"});
+      }
     });
 
     socket.on("offline", (data: { id: number }) => {
       console.log("offline", data);
-      if (data)
+      if (data){
         setFriendsData((currentFriends) =>
           currentFriends
             ? currentFriends.map((friend: FriendsType) =>
@@ -164,6 +173,8 @@ export default function Parent({ children }: { children: React.ReactNode }) {
               )
             : null
         );
+        setUserState({id: data.id, state: "offline"});
+      }
     });
     // Setup event listeners only once
     socket.on("connect", () => {
@@ -329,7 +340,8 @@ export default function Parent({ children }: { children: React.ReactNode }) {
       <UserDataContext.Provider value={data}>
         <ProfileDataContext.Provider
           value={{ FriendsData, InvitsData, BlockedData }}
-        >
+          >
+          <userStateContext.Provider value={{userState, setUserState}}>
           <SocketContext.Provider value={Socket}>
             {data ? (
               checkTwoFactor ? (
@@ -341,6 +353,7 @@ export default function Parent({ children }: { children: React.ReactNode }) {
               <Loding />
             )}
           </SocketContext.Provider>
+            </userStateContext.Provider>
         </ProfileDataContext.Provider>
       </UserDataContext.Provider>
     </>

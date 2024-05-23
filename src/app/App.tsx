@@ -11,7 +11,7 @@ import axios from "axios";
 import Router from "next/navigation";
 import { FiChevronsRight } from "react-icons/fi";
 import "@/styles/userProfile/userFriend.css";
-
+import userStateContext from "@/components/context/userSate";
 import { Carousel, Typography, Button, Switch } from "@material-tailwind/react";
 import ChatContext, { chatContext } from "@/components/context/chatContext";
 import RenderContext, { renderContext } from "@/components/context/render";
@@ -94,14 +94,14 @@ const Match: React.FC<{ user: History }> = (props) => {
 
   return (
     <div className="match">
-      <div className="opponent">
-        <Image className="rounded-full  w-[30px] h-[30px]" 
+      <div className="opponent w-[20%] xl:mr-[-20%]">
+        <Image className="rounded-full w-[30px] h-[30px]" 
           src={props.user?.image || "@/public/defaultImg.svg"}
           alt="profile"
           width={26}
           height={26}
         />
-        <p  className="truncate " >{props.user.userName}</p>
+        <p  className="truncate min-w-[40px]">{props.user.userName}</p>
       </div>
       <div className="level">
         <p>{props.user.level}</p>
@@ -155,7 +155,7 @@ export const Statistics = () => {
       </div>
       <div className="Statistics flex flex-col max-h-[800px] overflow-y-auto">
         <div className="Statistics-head">
-          <div className="w-[20%]" >
+          <div className="" >
             <p>Opponent</p>
           </div>
 
@@ -267,9 +267,11 @@ const Body = ({ children }: { children: React.ReactNode }) => {
           />
         </div>
         <Home showPopup={showPopup}>{children}</Home>
+      
         <div className="chatdiv hidden xl:block">
           <Chat />
         </div>
+        
       </div>
     </ChatContext.Provider>
   );
