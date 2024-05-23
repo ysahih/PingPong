@@ -122,6 +122,7 @@ const Buttons = () => {
 };
 
 const PhoneButtons = () => {
+  const router = useRouter();
   const context: renderContext | null = useContext(RenderContext);
 
   return (
@@ -130,7 +131,8 @@ const PhoneButtons = () => {
         className={`phonebutton ${
           context?.render === "home" ? "activeChatButton" : ""
         }`}
-        onClick={() => context?.setRender("home")}
+        onClick={() => {context?.setRender("home")
+        router.push("/")}}
       >
         <Image
           className="Phoneicon"
@@ -145,7 +147,8 @@ const PhoneButtons = () => {
         className={`phonebutton ${
           context?.render === "games" ? "activeChatButton" : ""
         }`}
-        onClick={() => context?.setRender("games")}
+        onClick={() => {context?.setRender("games")
+        router.push("/Game")}}
       >
         <Image
           className="Phoneicon"
@@ -159,7 +162,8 @@ const PhoneButtons = () => {
         className={`phonebutton ${
           context?.render === "ranking" ? "activeChatButton" : ""
         }`}
-        onClick={() => context?.setRender("ranking")}
+        onClick={() => {context?.setRender("ranking")
+        router.push("/Ranking")}}
       >
         <Image
           className="Phoneicon"
@@ -173,7 +177,8 @@ const PhoneButtons = () => {
         className={`phonebutton ${
           context?.render === "search" ? "activeChatButton" : ""
         }`}
-        onClick={() => context?.setRender("search")}
+        onClick={() => {context?.setRender("search")
+        router.push("/Search")}}
       >
         <Image
           className="Phoneicon"
@@ -187,7 +192,8 @@ const PhoneButtons = () => {
         className={`phonebutton ${
           context?.render === "chat" ? "activeChatButton" : ""
         }`}
-        onClick={() => context?.setRender("chat")}
+        onClick={() => {context?.setRender("chat")
+        router.push("/Chat")}}
       >
         <Image
           className="Phoneicon"

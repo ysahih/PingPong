@@ -138,7 +138,7 @@ export const Statistics = () => {
         <span className="px-4">Statistics</span>
         <hr className="line" />
       </div>
-      <div className="Statistics">
+      <div className="Statistics flex flex-col max-h-[800px] overflow-y-auto">
         <div className="Statistics-head">
           <div>
             <p>Opponent</p>
@@ -152,21 +152,11 @@ export const Statistics = () => {
             <p>W/L</p>
           </div>
         </div>
-        <div className="matches">
+        <div className="matches flex-1 flex flex-col">
           {Array.isArray(history) &&
             history.map((user: History, idx: number) => {
               return <Match key={user.userName + idx} user={user} />;
             })}
-          {/* <Match />
-          <Match />
-          <Match />
-          <Match />
-          <Match />
-          <Match />
-          <Match />
-          <Match />
-          <Match />
-          <Match /> */}
         </div>
       </div>
     </>

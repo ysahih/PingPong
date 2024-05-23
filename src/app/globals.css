@@ -822,22 +822,16 @@
     margin: 0px auto;
     padding-bottom: 25px;
     width: 90%;
-    max-width: 700px;
     background: var(--bg-color);
     max-width: 800px;
-    height: 40vh;
-    max-height: 40vh;
     border-top: 1px solid var(--item-border-color);
     border-radius: 12px;
     margin-bottom: 20px;
-    /* @media (max-width:700px) {
-        max-height: 300px;
-    } */
 
 }
 
 .Statistics-head{
-    margin-top: 8px;
+    margin: 10px;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -864,18 +858,15 @@
 
 .match{
     display: flex;
-    /* flex-direction: row; */
     justify-content: space-between;
-    width: 80%;
-    margin: 20px auto;
     align-items: center;
+    width: 80%;
+    margin: 14px auto;
     height: 40px;
     background: var(--item-border-color);
     border-radius: 26px;
     border-top: 1px solid var(--border-top-color);
     box-shadow: 0px 4px 10px 0px #00000040;
-
-
 }
 
 .matches{
