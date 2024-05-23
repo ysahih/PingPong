@@ -12,7 +12,7 @@ const UserRank  :React.FC<{data : rankingdata }> = ( Props ) => {
 		<div className=" w-[90%]  m-auto flex justify-between  items-center  bg-[#1B1A55] rounded-full border-t-2 border-[#0064FB] mt-[12px]">
 			<div className="RankBlock h-[50px] w-[90%] m-auto   flex justify-between  items-center  ">
 				<div className="flex justify-between items-center w-[20%]    ">
-					<Image src={ Props.data.image?  Props.data.image : "./homeImages/memeber1.svg"} width={40} height={40} alt="profile"/>
+					<Image src={ Props.data.image?  Props.data.image : "/homeImages/memeber1.svg"} width={40} height={40} alt="profile"/>
 					<p> {Props.data.userName}</p>
 				</div>
 				<p >{Props.data.winCounter}</p>

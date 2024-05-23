@@ -34,7 +34,7 @@ export const Tables = () => {
     <Carousel placeholder="carousel" className="tables rounded-lg z-10">
       <div className=" darktable relative h-1/2 w-full">
         <Image
-          src="./homeImages/darkvalley.svg"
+          src="/homeImages/darkvalley.svg"
           alt="image 1"
           width={200}
           height={100}

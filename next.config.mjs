@@ -5,6 +5,7 @@
 const nextConfig = {
     images: {
         unoptimized: true,
+        
       },
       env: {
         NEST_API: process.env.NEST_API,

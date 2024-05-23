@@ -40,7 +40,7 @@ const Buttons = () => {
       >
         <Image
           className="icon"
-          src="./homeImages/HomeIcon.svg"
+          src="/homeImages/HomeIcon.svg"
           alt="logo"
           width={14}
           height={18}
@@ -58,7 +58,7 @@ const Buttons = () => {
       >
         <Image
           className="icon"
-          src="./homeImages/gamesicon.svg"
+          src="/homeImages/gamesicon.svg"
           alt="logo"
           width={20}
           height={18}
@@ -76,7 +76,7 @@ const Buttons = () => {
       >
         <Image
           className="icon"
-          src="./homeImages/rankingicon.svg"
+          src="/homeImages/rankingicon.svg"
           alt="logo"
           width={20}
           height={18}
@@ -94,7 +94,7 @@ const Buttons = () => {
       >
         <Image
           className="icon"
-          src="./homeImages/searchicon.svg"
+          src="/homeImages/searchicon.svg"
           alt="logo"
           width={20}
           height={18}
@@ -110,7 +110,7 @@ const Buttons = () => {
       >
         <Image
           className="icon"
-          src="./homeImages/chaticon.svg"
+          src="/homeImages/chaticon.svg"
           alt="logo"
           width={20}
           height={18}
@@ -134,7 +134,7 @@ const PhoneButtons = () => {
       >
         <Image
           className="Phoneicon"
-          src="./homeImages/HomeIcon.svg"
+          src="/homeImages/HomeIcon.svg"
           alt="logo"
           width={24}
           height={20}
@@ -149,7 +149,7 @@ const PhoneButtons = () => {
       >
         <Image
           className="Phoneicon"
-          src="./homeImages/gamesicon.svg"
+          src="/homeImages/gamesicon.svg"
           alt="logo"
           width={30}
           height={18}
@@ -163,7 +163,7 @@ const PhoneButtons = () => {
       >
         <Image
           className="Phoneicon"
-          src="./homeImages/rankingicon.svg"
+          src="/homeImages/rankingicon.svg"
           alt="logo"
           width={30}
           height={18}
@@ -177,7 +177,7 @@ const PhoneButtons = () => {
       >
         <Image
           className="Phoneicon"
-          src="./homeImages/searchicon.svg"
+          src="/homeImages/searchicon.svg"
           alt="logo"
           width={30}
           height={18}
@@ -191,7 +191,7 @@ const PhoneButtons = () => {
       >
         <Image
           className="Phoneicon"
-          src="./homeImages/chaticon.svg"
+          src="/homeImages/chaticon.svg"
           alt="logo"
           width={24}
           height={18}
@@ -251,7 +251,7 @@ const Sidebar = (props: { showPopup: boolean}) => {
             }}>
           <Image
             className="logoutimage"
-            src="./homeImages/logouticon.svg"
+            src="/homeImages/logouticon.svg"
             alt="logo"
             width={26}
             height={30}

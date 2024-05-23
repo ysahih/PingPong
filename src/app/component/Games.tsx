@@ -1,32 +1,43 @@
 "use client";
 import Image from "next/image"
 import { GameContext } from "../Game/Gamecontext/gamecontext";
-import { useContext } from "react";
+import { use, useContext, useEffect, useRef } from "react";
 import RenderContext from "@/components/context/render";
 import UserDataContext from "@/components/context/context";
+import { useRouter } from "next/navigation";
 
 const Games = () => {
   const game = useContext(GameContext);
   const render = useContext(RenderContext);
   const user = useContext(UserDataContext);
+  const Ref = useRef<HTMLButtonElement>(null);
+  const router = useRouter();
+
+    useEffect(() => {
+      // if (user?.inGame === true) {
+      //   Ref.current?.click();
+      //   console.log("statues = " , user?.inGame);
+      // }
+      // else
+      //   router.push("/");
+    }
+    , []);
 
     return (
-
       <div className="Games">
       <div className="gameContainer">
 
           <div className="darkRow">
 
             <div className="gameTable">
-                <Image src="./homeImages/darktable.svg" alt="table" width={200} height={200}/>
+                <Image src="/homeImages/darktable.svg" alt="table" width={200} height={200}/>
             </div>
 
             <div className="tabledescribtion">
                 <h2> Dark Valley</h2>
                 <p>Play in a dark environment and get Dark</p>
                 <p>Valley’s achievement</p>
-                <button className="Playbutton"  onClick={
-
+                <button ref={Ref} className="Playbutton"  onClick={
                   ()=>{
                     game?.setRunning(false);
                     game?.setGamemode("Dark Valley");
@@ -34,7 +45,6 @@ const Games = () => {
                     game?.setgamefriend(-1);
                     render?.setRender("playGame");
                   }
-
                 }   >Play</button>
             </div>
           </div>
@@ -59,14 +69,14 @@ const Games = () => {
             </div>
 
             <div className="gameTable">
-                <Image src="./homeImages/lighttable.svg" alt="table" width={200} height={200}/>
+                <Image src="/homeImages/lighttable.svg" alt="table" width={200} height={200}/>
             </div>
           </div>
 
           <div className="robot">
 
           <div className="gameTable">
-                <Image src="./homeImages/robot.svg" alt="table" width={90} height={60}/>
+                <Image src="/homeImages/robot.svg" alt="table" width={90} height={60}/>
           </div>
 
             <div className="tabledescribtion">

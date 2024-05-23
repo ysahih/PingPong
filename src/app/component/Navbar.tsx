@@ -39,7 +39,7 @@ const Logo = () => {
       </div>
       <div style={{ maxWidth: "106px", maxHeight: "36px" }}>
         <Image
-          src="./homeImages/PONGy.svg"
+          src="/homeImages/PONGy.svg"
           className="Pongy"
           alt="logo"
           priority={true}
@@ -132,7 +132,7 @@ const Notification = () => {
         </div>
         <div className="NtfIcon">
           <Image
-            src="./homeImages/Ell2.svg"
+            src="/homeImages/Ell2.svg"
             alt="logo"
             width={26}
             height={26}
@@ -162,7 +162,7 @@ const Notification = () => {
               >
                 <div className="w-[34px] h-[34px] min-w-[34px] min-h-[34px]">
                 <Image
-                  src={data?.image || "./defaultImg.svg"}
+                  src={data?.image || "/defaultImg.svg"}
                   className="rounded-full w-[34px] h-[34px] min-w-[34px] min-h-[34px]"
                   alt="image"
                   width={34}
@@ -276,13 +276,13 @@ const Invite = () => {
                 </div>
                 {
                         displayChoise &&  <div className="desicion ">
-                        <Image src="./homeImages/Deny.svg" className="yes-no   " alt="image" width={24} height={24}  onClick={() =>
+                        <Image src="/homeImages/Deny.svg" className="yes-no   " alt="image" width={24} height={24}  onClick={() =>
                         { 
                             socket?.emit("gameInvitation", { clientID : user?.id ,  invitationSenderID: notification.invitationSenderID , response: false});
                             setDisplay(false);
                         } 
                         } />
-                        <Image src="./homeImages/Accept.svg" className="yes-no " alt="image" width={24} height={24} onClick={() =>
+                        <Image src="/homeImages/Accept.svg" className="yes-no " alt="image" width={24} height={24} onClick={() =>
                             {
                                 socket?.emit("gameInvitation", {  clientID : user?.id , invitationSenderID: notification.invitationSenderID , response: true});
                                 game?.setGamemode(notification.mode);

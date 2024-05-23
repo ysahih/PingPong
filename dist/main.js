@@ -16,7 +16,7 @@ async function server() {
         allowedHeaders: ['Access-Control-Allow-Headers', 'Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
         credentials: true,
     });
-    await app.listen(3000);
+    await app.listen(5500);
 }
 server().catch(console.error);
 //# sourceMappingURL=main.js.map

@@ -7,7 +7,7 @@ const Award = () => {
 
    return (
     <div className=" FriendsPh max-w-[120px] min-w-[120px] rounded-[5px] h-[120px] flex justify-center">
-        <Image  src="./iconsProfile/Award Medal 6.svg"
+        <Image  src="/iconsProfile/Award Medal 6.svg"
           width={100}
           height={100}
           alt="user"
