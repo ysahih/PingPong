@@ -3,17 +3,21 @@ import axios from "axios";
 import { Console } from "console";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { NoHistoy } from "../App";
+import { CircularProgress } from "@mui/material";
 
 
 
 const UserRank  :React.FC<{data : rankingdata }> = ( Props ) => {
 	
 	return (
-		<div className=" w-[90%]  m-auto flex justify-between  items-center  bg-[#1B1A55] rounded-full border-t-2 border-[#0064FB] mt-[12px]">
-			<div className="RankBlock h-[50px] w-[90%] m-auto   flex justify-between  items-center  ">
-				<div className="flex justify-between items-center w-[20%]    ">
-					<Image src={ Props.data.image?  Props.data.image : "/homeImages/memeber1.svg"} width={40} height={40} alt="profile"/>
-					<p> {Props.data.userName}</p>
+
+		<div className=" w-[90%]   m-auto flex justify-between  items-center  bg-[#1B1A55] rounded-full border-t-[1px] border-[#535C91] mt-[14px]">
+			<div className="  RankBlock h-[45px] w-[90%] m-auto   flex justify-between  items-center  ">
+				<div className="flex justify-start items-center w-[20%] gap-[10px]   ">
+					<Image  className="rounded-full  w-[40px] h-[40px]"  src={ Props.data.image?  Props.data.image : "./homeImages/memeber1.svg"} width={40} height={40} alt="profile"/>
+					<p   className="truncate "> {Props.data.userName}</p>
+
 				</div>
 				<p >{Props.data.winCounter}</p>
 				<p >{Props.data.lossCounter}</p>
@@ -23,10 +27,6 @@ const UserRank  :React.FC<{data : rankingdata }> = ( Props ) => {
 		</div>
 	);
 }
-
-
-
-
 
 type rankingdata = {
 
@@ -42,20 +42,21 @@ type rankingdata = {
 
 const Ranking = ()=>{
 	const [rankingData, setRankingData] = useState<rankingdata >()
-	
+	const [reciveresponse ,setreciveresponse] = useState<boolean>(false); 
 	useEffect(() => {
 		const data = async ( )=>{
 			const ranking = await axios.get(process.env.NEST_API + "/user/rankingHistory", {
 				withCredentials: true,
 			});
 			if (ranking.data){
+
 				setRankingData(ranking.data)
 			}
 			console.log(rankingData, "--", ranking.data);
+				setreciveresponse(true);
 		}
 		data();
 	}, [])
-
 
 
 
@@ -87,10 +88,10 @@ const Ranking = ()=>{
 					<p >Rank</p>
 				</div>
 				<div className="ranking-body h-[78%]  overflow-auto   ">
-				{	
-					 Array.isArray(rankingData) && rankingData?.map((data: rankingdata, idx: number) => {
-							return <UserRank key={data.userName + idx} data={data}/>;
-						})
+				{ !reciveresponse  ?  <div className="w-[100%] h-[100%]  flex items-center justify-center ">  <CircularProgress  />  </div>  : 	 
+					 Array.isArray(rankingData)  && rankingData.length > 0  ? rankingData?.map((data: rankingdata, idx: number) => {
+							return <UserRank key={data.userName + idx} data={data}/> })
+						: <NoHistoy />
 						}
 				</div>
 		</div> 
