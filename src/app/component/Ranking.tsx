@@ -11,11 +11,13 @@ import { CircularProgress } from "@mui/material";
 const UserRank  :React.FC<{data : rankingdata }> = ( Props ) => {
 	
 	return (
+
 		<div className=" w-[90%]   m-auto flex justify-between  items-center  bg-[#1B1A55] rounded-full border-t-[1px] border-[#535C91] mt-[14px]">
 			<div className="  RankBlock h-[45px] w-[90%] m-auto   flex justify-between  items-center  ">
 				<div className="flex justify-start items-center w-[20%] gap-[10px]   ">
 					<Image  className="rounded-full  w-[40px] h-[40px]"  src={ Props.data.image?  Props.data.image : "./homeImages/memeber1.svg"} width={40} height={40} alt="profile"/>
 					<p   className="truncate "> {Props.data.userName}</p>
+
 				</div>
 				<p >{Props.data.winCounter}</p>
 				<p >{Props.data.lossCounter}</p>

@@ -19,7 +19,7 @@ const Profile = (props: Src) => {
       onClick={() => router.push("/Profile")}
     >
       <Image
-        src={props.src ? props.src : "./homeImages/memeber1.svg"}
+        src={props.src ? props.src : "/homeImages/memeber1.svg"}
         className="w-[100%] h-[100%] "
         alt="image"
         style={{

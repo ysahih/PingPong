@@ -396,7 +396,7 @@ const SettingsAnd2Fa = () => {
               <Switch onChange={handleClick} checked={!!TwoFaStatus} />
               <button
                 ref={RefBtn}
-                className="btn2Fa"
+                className="btn2Fa h-[40px] w-[140px]"
                 onClick={() =>
                   TwoFaStatus ? setDisable2Fa(true) : setQrclose(true)
                 }

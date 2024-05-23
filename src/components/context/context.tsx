@@ -18,6 +18,7 @@ export type UserData = {
     setLastName: (lastName: string) => void;
     setEmail: (email: string) => void;
     level    : number,
+    inGame   : Boolean,
 }
 
 

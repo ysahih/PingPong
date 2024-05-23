@@ -24,6 +24,7 @@ import { ChatData } from "./component/Dto/Dto";
 import { userState } from "@/components/context/userSate";
 import { number } from "yup";
 import { step } from "@material-tailwind/react";
+import { boolean } from "yup";
 
 // import { useRouter } from 'next/router';
 /*
@@ -227,6 +228,21 @@ export default function Parent({ children }: { children: React.ReactNode }) {
       );
     });
 
+    socket.on("gameStatus", (gameStatus: {id: number, status: boolean}) => {
+        console.log("gameStatus:  ", gameStatus);
+        if (gameStatus) {
+          setFriendsData((currentFriends) =>
+            currentFriends
+              ? currentFriends.map((friend: FriendsType) =>
+                  friend.id === gameStatus.id ? { ...friend, inGame: gameStatus.status } : friend
+                )
+              : null
+          );
+          if(data?.id === gameStatus.id)
+            setData((currentData) => currentData ? {...currentData, inGame: gameStatus.status} : null);
+      }
+    })
+
     socket.on("NewInvit", (data: InvitsType) => {
       console.log("NewInvit :", data);
       if (
@@ -306,6 +322,8 @@ export default function Parent({ children }: { children: React.ReactNode }) {
           data.setFirstName = setFirstName;
           data.setLastName = setLastName;
           setData(data);
+          if(data.inGame)
+            router.push("/Game");
           // console.log("Data:", res.data, data);
         } catch (error) {
           // console.log('Error:', error);
@@ -331,7 +349,7 @@ export default function Parent({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  // // console.log("FriendsData:", FriendsData);
+  console.log("FriendsData:", FriendsData);
   // // console.log("InvitsData:", InvitsData);
   // // console.log("BlockedData:", BlockedData);
 

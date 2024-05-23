@@ -21,7 +21,8 @@ import {
   InvitsType,
   SentInvitsType,
 } from "@/components/userProfile/Dto";
-import Friends from "@/components/userProfile/Friends";
+
+// import Friends from "@/components/userProfile/Friends";
 import ChatContext from "@/components/context/chatContext";
 import axiosApi from "@/components/signComonents/api";
 
@@ -51,7 +52,7 @@ const Friend = (props: friendsType) => {
         {props.value.online && (
           <>
             <p
-              className="absolute w-2.5 h-2.5 bg-green-500 rounded-full  -top-[-12px] -right-[-8px] transform translate-x-1/2 translate-y-1/2 border-[4px] border-transparent "
+               className={`${props.value.inGame ? ' bg-blue-500': ' bg-green-500'} absolute w-2.5 h-2.5 rounded-full  -top-[-12px] -right-[-8px] transform translate-x-1/2 translate-y-1/2 border-[4px] border-transparent `}
               style={{ outline: "4px solid #1B1A55" }}
             ></p>
           </>

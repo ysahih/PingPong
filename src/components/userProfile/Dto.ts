@@ -15,6 +15,7 @@ export type FriendsType = {
     userName: string,
     image: string,
     online: boolean,
+    inGame: boolean,
 };
 
 export type SentInvitsType = {
