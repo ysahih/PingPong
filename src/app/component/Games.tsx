@@ -1,14 +1,52 @@
 "use client";
 import Image from "next/image"
 import { GameContext } from "../Game/Gamecontext/gamecontext";
-import { useContext } from "react";
+import { useContext, useRef, useState } from "react";
 import RenderContext from "@/components/context/render";
 import UserDataContext from "@/components/context/context";
+import QrContainer from "@/components/Qrcode/QRcode";
+import { Carousel } from "@material-tailwind/react";
+import { useClickAway } from "@uidotdev/usehooks";
+import CloseBtn from "@/components/closebtn";
+
+
+
+const HowToPlay = (props : {close : (close : boolean) => void }) => {
+  // const [close, setClose] = useState(false);
+
+  return (
+
+
+      <div   className=" w-[90%]   md:w-[700px] md:h-[800px]  bg-[#FFFFF] " >
+        <div  className="w-[100%]  flex justify-end  ">
+        <CloseBtn  close={props.close} />
+        </div>
+      <Carousel placeholder="carousel  " >
+        <div  className="  w-[100%] h-[100%]  md:w-[80%]  mx-auto  "  >
+          <img src="HowToPlay/ChoseMod.png" alt="explaine Game Rulses" />
+        </div>
+
+        <div   className="   w-[100%] h-[100%]  md:w-[80%]  mx-auto  " >
+          <img src="HowToPlay/HowToMovePlayer.png" alt="explaine Game Rulses" />
+        </div>
+        </Carousel>
+      </div>
+  )
+
+}
+
+
+
+
 
 const Games = () => {
   const game = useContext(GameContext);
   const render = useContext(RenderContext);
   const user = useContext(UserDataContext);
+  const [renderHowToPlay, setRenderHowToPlay] = useState(false); 
+  const ref = useClickAway<HTMLDivElement>(() => {
+    setRenderHowToPlay(false);
+  });
 
     return (
 
@@ -75,18 +113,37 @@ const Games = () => {
                 <p>a champion</p>
                 <button className="Playbutton" onClick={ 
                   ()=>{      
-                      // game?.setRunning(false);
-                      // game?.setGamemode("Frozen Arena");
-                      // game?.settype("random");
-                      // game?.setgamefriend(-1);
-                      // render?.setRender("playGame");
+                      game?.setRunning(false);
+                      game?.setGamemode("Dark Valley");
+                      game?.settype("ai");
+                      game?.setgamefriend(-1);
+                      render?.setRender("playGame");
                   }
                 
                 } >Play</button>
             </div>
 
           </div>
-
+            <div className="w-[80%] h-[5%] flex  justify-end">
+                <button className="bg-[#535C91] w-[120px] h-[30px] rounded-[6px] text-[#FFFFFF] font-Inter  border-t-[0.2px] text-[12px] border-hover-border-color-[#9290C3] flex justify-center items-center"
+                  onClick=
+                  {
+                    ()=>{
+                      setRenderHowToPlay(true);
+                    }
+                  }>
+                  HOW TO PLAY . 
+                </button>
+            </div>
+            {renderHowToPlay && 
+            (  
+              <div className="QrContainer">
+                <div ref={ref}>
+                    <HowToPlay  close={setRenderHowToPlay} />   
+                </div>
+              </div>
+            )
+            } 
       </div>
       </div>
     )
