@@ -21,7 +21,7 @@ import Friends from "@/components/userProfile/Friends";
 import Navbar from "./component/Navbar";
 import axiosApi from "@/components/signComonents/api";
 import { ChatData } from "./component/Dto/Dto";
-import { userState } from "@/components/context/userSate";
+import userStateContext, { userState } from "@/components/context/userSate";
 import { number } from "yup";
 import { step } from "@material-tailwind/react";
 import { boolean } from "yup";
