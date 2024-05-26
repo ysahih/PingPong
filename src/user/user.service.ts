@@ -259,6 +259,7 @@ export class FriendsService {
               image: true,
               id: true,
               online: true,
+              inGame: true,
             },
           },
           receiver: {
@@ -267,6 +268,7 @@ export class FriendsService {
               image: true,
               id: true,
               online: true,
+              inGame: true,
             },
           },
         },
@@ -283,6 +285,7 @@ export class FriendsService {
           userName: friendData.userName,
           image: friendData.image,
           online: friendData.online,
+          inGame: friendData.inGame,
         };
       });
       return Friends;
@@ -604,6 +607,33 @@ export class FriendsService {
     }
   }
 
+  async setGameStatus(userId: number[], status: boolean) : Promise<boolean> {
+    try {
+      const user = await this.prisma.user.update({
+        where: {
+          id: userId[0],
+        },
+        data: {
+          inGame: status,
+        },
+
+
+      });
+      const user2 = await this.prisma.user.update({
+        where: {
+          id: userId[1],
+        },
+        data: {
+          inGame: status,
+        },
+      });
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   async unblockFriendRequest(UserId: number, TargetId: number) {
     try {
       const friends = await this.prisma.friendRequest.updateMany({
@@ -668,6 +698,7 @@ export class FriendsService {
                   userName: true,
                   image: true,
                   online: true,
+                  // inGame: true,
                 },
               },
               messages: {

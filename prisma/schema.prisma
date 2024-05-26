@@ -26,6 +26,7 @@ model User {
   token     Boolean   @default(false)
   game      GameData[]
   online    Boolean   @default(false)
+  inGame    Boolean   @default(false)
   sentRequests   FriendRequest[] @relation("Sender")
   friendRequests    FriendRequest[] @relation("Receiver")
   update    Boolean   @default(false)
