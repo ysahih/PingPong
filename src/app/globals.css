@@ -859,6 +859,8 @@
 
 }
 
+
+
 .match{
     display: flex;
     justify-content: space-between;
@@ -877,7 +879,6 @@
     max-height: 100%;
     height: 40vh;
     overflow-x: hidden;
-
 }
 
 .opponent{
@@ -886,7 +887,7 @@
     justify-content: start;
     gap: 8px;
     margin-left: 10px;
-    width: 20%;
+    width: 10vw;
 }
 
 .w-l{

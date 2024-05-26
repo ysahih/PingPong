@@ -17,14 +17,15 @@ import { ConvoData } from "./Dto/Dto";
 import { send } from "process";
 import RenderContext, { renderContext } from "@/components/context/render";
 import { render } from "react-dom";
-import { Message } from "./Dto/Dto";
+import type { Message } from "./Dto/Dto";
 import TimeAgo from "javascript-time-ago";
 import { getTimeAgo } from "./timeAgo";
+import { useRouter } from "next/navigation";
 
 const Header = () =>{
     return(
         <div className="chatheader">
-            <Image src="./homeImages/chat.svg" alt="logo" width={19} height={17}/>
+            <Image src="/homeImages/chat.svg" alt="logo" width={19} height={17}/>
             <h2>General Chat</h2>
         </div>
     );
@@ -52,7 +53,7 @@ const Members: React.FC<Pics> = ({ chatdata }) => {
             <div className="profiles">
                 {members && members.map((user: ChatData, index) => (
                     <Image  className={members?.length > 1 ? "profilepics" : 'profilepics-mar'}
-                            src={ user.image ? user.image : "./homeImages/memeber1.svg"} 
+                            src={ user.image ? user.image : "/homeImages/memeber1.svg"} 
                             alt="member" 
                             key={index}
                             width={28} height={20}/>
@@ -72,13 +73,13 @@ const UserOption = ( { className }: userOptionClass ) => {
     return (
         <div  className={`userOption ${className}`}>
             <div className="block">
-                <Image className="optionlogo" src="./homeImages/chat.svg" alt="logo" width={19} height={17}/>
+                <Image className="optionlogo" src="/homeImages/chat.svg" alt="logo" width={19} height={17}/>
                 <p>Block</p>
             </div>
             <hr className="liney"></hr>
             <div className="clash">
                 <Image className="optionlogo" 
-                    src="./homeImages/chat.svg" 
+                    src="/homeImages/chat.svg" 
                     alt="logo" 
                     width={19} height={17}/>
                 <p>Clash</p>
@@ -113,7 +114,7 @@ const More = ({user}: {user: ChatData})=> {
     return (
         <div className="more">
             <div className="dotscontainer" onClick={handleMsgOption}>
-                <Image className="dots" src="./homeImages/dots.svg" alt="member" width={16} height={16}/>
+                <Image className="dots" src="/homeImages/dots.svg" alt="member" width={16} height={16}/>
             </div>
             <UserOption className={showMsgOption ? '' : 'invisible'} />
             <p className="date">{timeAgo?.format(new Date(user.createdAt))}</p>
@@ -132,7 +133,7 @@ const Message = ({handleMsgClick, user } : Props) =>{
 
             <div className="chatData" onClick={()=>{handleMsgClick(user.id)}}>
                 <div className="picture">
-                    <Image className="profilepic" src={user?.image? user.image : "./homeImages/memeber1.svg"} alt="member" width={48} height={40}/>
+                    <Image className="profilepic" src={user?.image? user.image : "/homeImages/memeber1.svg"} alt="member" width={48} height={40}/>
                 </div>
 
                 <div className="messageInfo">
@@ -282,7 +283,7 @@ const Conversation = (props : ConvoProps) =>{
               setTimeAgo(null);
         };
     }, []) ;
-
+    const router = useRouter();
     return (
 
         <div className="conversation">
@@ -294,14 +295,17 @@ const Conversation = (props : ConvoProps) =>{
             <>
             <div className="convo">
                 <div className="convoHeader">
-                    <div className="sender-info  cursor-pointer" onClick={() => render?.setRender("profileOverly")}>
-                        <Image className="profilepic" src={convo?.image ? convo.image : "./homeImages/memeber1.svg"} width={38} height={42} alt="photo"/>
+                    <div className="sender-info  cursor-pointer" onClick={() => {render?.setRender("profileOverly")
+                    router.push("/users?userName=" + props.userId.toString())
+
+                    }}>
+                        <Image className="profilepic" src={convo?.image ? convo.image : "/homeImages/memeber1.svg"} width={38} height={42} alt="photo"/>
                         <div>
                             <h2>{convo?.userName}</h2>
                             <p className="typing">{typing ? 'Typing' : 'online'}</p>
                         </div>
                     </div>
-                    <Image className="go-back cursor-pointer" src="./homeImages/goback.svg" onClick={handleClick} width={28} height={25} alt="back" />
+                    <Image className="go-back cursor-pointer" src="/homeImages/goback.svg" onClick={handleClick} width={28} height={25} alt="back" />
                 </div>
                 <hr className="line"/>
                 

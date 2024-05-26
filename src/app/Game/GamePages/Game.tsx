@@ -245,10 +245,6 @@ useEffect(() => {
       };
     }
   }, [dimensions, Socket, user?.id]);
-
-
-
-
   
   useEffect(() => {
     const handleResize = () => {

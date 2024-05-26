@@ -3,7 +3,7 @@
  */
 const nextConfig = {
   reactStrictMode: false ,
-  output: 'export',
+  // output: 'export',
   env: {
     NEST_API: process.env.NEST_API,
   },

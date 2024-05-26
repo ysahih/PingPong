@@ -4,6 +4,7 @@ import { GameContext } from "../Game/Gamecontext/gamecontext";
 import { useContext, useRef, useState } from "react";
 import RenderContext from "@/components/context/render";
 import UserDataContext from "@/components/context/context";
+import { useRouter } from "next/navigation";
 import QrContainer from "@/components/Qrcode/QRcode";
 import { Carousel } from "@material-tailwind/react";
 import { useClickAway } from "@uidotdev/usehooks";
@@ -49,22 +50,20 @@ const Games = () => {
   });
 
     return (
-
       <div className="Games">
       <div className="gameContainer">
 
           <div className="darkRow">
 
             <div className="gameTable">
-                <Image src="./homeImages/darktable.svg" alt="table" width={200} height={200}/>
+                <Image src="/homeImages/darktable.svg" alt="table" width={200} height={200}/>
             </div>
 
             <div className="tabledescribtion">
                 <h2> Dark Valley</h2>
                 <p>Play in a dark environment and get Dark</p>
                 <p>Valley’s achievement</p>
-                <button className="Playbutton"  onClick={
-
+                <button ref={ref} className="Playbutton"  onClick={
                   ()=>{
                     game?.setRunning(false);
                     game?.setGamemode("Dark Valley");
@@ -72,7 +71,6 @@ const Games = () => {
                     game?.setgamefriend(-1);
                     render?.setRender("playGame");
                   }
-
                 }   >Play</button>
             </div>
           </div>
@@ -97,14 +95,14 @@ const Games = () => {
             </div>
 
             <div className="gameTable">
-                <Image src="./homeImages/lighttable.svg" alt="table" width={200} height={200}/>
+                <Image src="/homeImages/lighttable.svg" alt="table" width={200} height={200}/>
             </div>
           </div>
 
           <div className="robot">
 
           <div className="gameTable">
-                <Image src="./homeImages/robot.svg" alt="table" width={90} height={60}/>
+                <Image src="/homeImages/robot.svg" alt="table" width={90} height={60}/>
           </div>
 
             <div className="tabledescribtion">
