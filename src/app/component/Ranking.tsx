@@ -50,7 +50,7 @@ const Ranking = ()=>{
 			});
 			if (ranking.data){
 
-				setRankingData(ranking.data)
+				setRankingData(ranking.data )
 			}
 			console.log(rankingData, "--", ranking.data);
 				setreciveresponse(true);
@@ -62,7 +62,7 @@ const Ranking = ()=>{
 
 
 	return(
-		<div className="ranking">
+		<div className="ranking ">
 				<div className="first-3">
 					<div className="secondPlace">
 						<Image src="./homeImages/firstplace.svg" width={18} height={7} alt="profile"/>
@@ -87,7 +87,7 @@ const Ranking = ()=>{
 					<p  >Level</p>
 					<p >Rank</p>
 				</div>
-				<div className="ranking-body h-[78%]  overflow-auto   ">
+				<div className="overflow-auto  bg-[var(--bg-color)] pb-[20px] max-h-[80vh]">
 				{ !reciveresponse  ?  <div className="w-[100%] h-[100%]  flex items-center justify-center ">  <CircularProgress  />  </div>  : 	 
 					 Array.isArray(rankingData)  && rankingData.length > 0  ? rankingData?.map((data: rankingdata, idx: number) => {
 							return <UserRank key={data.userName + idx} data={data}/> })
