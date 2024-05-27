@@ -1,10 +1,13 @@
 import React, { SetStateAction } from 'react';
 
-export class userState {
-    state: {id: number, state: string} = { id: 0, state: '' };
-    setState: React.Dispatch<SetStateAction<{id: number, state: string}>> = () => {};
-}
+export interface UserState {
+    id: number;
+    state: string;
+  }
+  
+  export const UserStateContext = React.createContext<{
+    userState: UserState;
+    setUserState: React.Dispatch<SetStateAction<UserState>>;
+  } | null>(null);
 
-const userStateContext = React.createContext<userState | null>(null);
-
-export default userStateContext;
+export default UserStateContext;

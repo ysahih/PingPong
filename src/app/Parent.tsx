@@ -11,6 +11,7 @@ import VerifyTwoFa from "@/components/Qrcode/QRcode";
 import ProfileDataContext, {
   ProfileData,
 } from "@/components/context/profilDataContext";
+import UserStateContext, { UserState } from "@/components/context/userSate";
 import { FriendsType, InvitsType } from "@/components/userProfile/Dto";
 import io, { Socket } from "socket.io-client";
 import SocketContext from "@/components/context/socket";
@@ -21,7 +22,6 @@ import Friends from "@/components/userProfile/Friends";
 import Navbar from "./component/Navbar";
 import axiosApi from "@/components/signComonents/api";
 import { ChatData } from "./component/Dto/Dto";
-import { userState } from "@/components/context/userSate";
 import { number } from "yup";
 import { step } from "@material-tailwind/react";
 import { boolean } from "yup";
@@ -113,8 +113,10 @@ export default function Parent({ children }: { children: React.ReactNode }) {
   const [BlockedData, setBlockedData] = useState<FriendsType[] | null>(null);
   const [Socket, setSocket] = useState<Socket | null>(null);
   const [redirect, setRedirect] = useState<boolean>(false);
-  const [userState, setUserState] = useState<{id: number, state: string} | null>(null);
-
+  const [userState, setUserState] = useState<UserState>({
+    id: 0,
+    state: '',
+  });
   const router = useRouter();
 
   const setImage = (image: string) => {
@@ -150,10 +152,9 @@ export default function Parent({ children }: { children: React.ReactNode }) {
 
     socket.on("online", (data: { id: number }) => {
       console.log("online", data);
-      if (data)
-        {
-
-          setFriendsData((currentFriends) =>
+      if (data){
+        
+        setFriendsData((currentFriends) =>
             currentFriends
           ? currentFriends.map((friend: FriendsType) =>
             friend.id === data.id ? { ...friend, online: true } : friend
@@ -238,8 +239,10 @@ export default function Parent({ children }: { children: React.ReactNode }) {
                 )
               : null
           );
-          if(data?.id === gameStatus.id)
+          setUserState({id: gameStatus.id, state: gameStatus.status ? "inGame" : "online"});
+          if(data?.id === gameStatus.id){
             setData((currentData) => currentData ? {...currentData, inGame: gameStatus.status} : null);
+          }
       }
     })
 
@@ -359,7 +362,7 @@ export default function Parent({ children }: { children: React.ReactNode }) {
         <ProfileDataContext.Provider
           value={{ FriendsData, InvitsData, BlockedData }}
           >
-          <userStateContext.Provider value={{userState, setUserState}}>
+          <UserStateContext.Provider value={{userState , setUserState}}>
           <SocketContext.Provider value={Socket}>
             {data ? (
               checkTwoFactor ? (
@@ -371,7 +374,7 @@ export default function Parent({ children }: { children: React.ReactNode }) {
               <Loding />
             )}
           </SocketContext.Provider>
-            </userStateContext.Provider>
+            </UserStateContext.Provider>
         </ProfileDataContext.Provider>
       </UserDataContext.Provider>
     </>
