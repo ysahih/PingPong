@@ -122,15 +122,15 @@ const Games = () => {
             </div>
 
           </div>
-            <div className="w-[80%] h-[5%] flex  justify-end">
-                <button className="bg-[#535C91] w-[120px] h-[30px] rounded-[6px] text-[#FFFFFF] font-Inter  border-t-[0.2px] text-[12px] border-hover-border-color-[#9290C3] flex justify-center items-center"
+            <div className="howto w-[80%] h-[5%] flex  justify-end">
+                <button className="bg-[#535C91] w-[120px] h-[30px] rounded-[6px] text-[#FFFFFF]   border-t-[0.2px] border-hover-border-color-[#9290C3] flex justify-center items-center"
                   onClick=
                   {
                     ()=>{
                       setRenderHowToPlay(true);
                     }
                   }>
-                  HOW TO PLAY . 
+                    How To Play
                 </button>
             </div>
             {renderHowToPlay && 

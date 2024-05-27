@@ -703,14 +703,16 @@
     gap : 8%;
 }
 
-.tabledescribtion p{
+.tabledescribtion p, .howto{
     font-family: Inter;
     font-size: 12px;
     font-weight: 400;
     color: #8A99E9;
-    
-}
 
+}
+.howto{
+    font-weight: 600    ;
+}
 
 
 .tabledescribtion h2{
