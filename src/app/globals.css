@@ -692,8 +692,8 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    gap: 10%;
+    justify-content: space-around;
+    /* gap: 10%; */
 }
 
 .darkRow, .LightRow, .robot{
@@ -722,8 +722,7 @@
 }
 
 
-.Playbutton{
-    
+.Playbutton{    
     margin-top: 8px;
     width: 65px;
     height: 25px;
@@ -736,6 +735,7 @@
     background: var(--border-top-color);
     border-top: 0.5px solid var(--hover-border-color);
 }
+
 
 .LightRow .tabledescribtion{
     /* margin-left: 15px; */
