@@ -94,7 +94,7 @@ const Match: React.FC<{ user: History }> = (props) => {
 
   return (
     <div className="match">
-      <div className="opponent w-[20%] xl:mr-[-20%]">
+      <div className="opponent w-[30%] xl:mr-[-20%] mr-[-40%]">
         <Image className="rounded-full w-[30px] h-[30px]" 
           src={props.user?.image || "@/public/defaultImg.svg"}
           alt="profile"

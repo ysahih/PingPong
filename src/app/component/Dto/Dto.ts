@@ -20,6 +20,8 @@ export type ChatData = {
 
 export type ConvoData = {
     id : number,
+    inGame : Boolean,
+    online : Boolean,
     userName: string,
     image: string,
     messages?: Array <Message>

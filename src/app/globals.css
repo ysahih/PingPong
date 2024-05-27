@@ -433,18 +433,21 @@
 
 .profilepics{
     margin-right: -14px;
-    width: 28px;
+    width: 28px ;
+    height: 28px;
     border-radius: 50%;
 }
 .profilepics-mar{
     /* margin-right: 0px; */
     border-radius: 50%;
     width: 28px;
+    height: 28px;
 
 }
 .profilepic{
     border-radius: 50%;
-    width: 38px;
+    width:  40px;
+    height: 40px;
 }
 
 
@@ -514,6 +517,7 @@
 .more{
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
 }
 
 .date{
@@ -544,7 +548,7 @@
     flex-direction: column; 
     justify-content: center; 
     align-items: center;  
-    height: 48px;
+    height: 30px;
     width: 65px; 
     margin-left: -16px;
     border: 1px 0px 0px 0px;
@@ -553,8 +557,9 @@
 
 }
 
-.block, .clash {
+.clash {
     display: flex;
+    /* justify-content: center; */
     gap: 4px;
 }
 
@@ -884,10 +889,9 @@
 .opponent{
     display: flex;
     align-items: center;
-    justify-content: start;
     gap: 8px;
     margin-left: 10px;
-    width: 10vw;
+    /* width: 10vw; */
 }
 
 .w-l{
