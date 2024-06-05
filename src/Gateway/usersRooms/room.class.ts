@@ -13,13 +13,15 @@ export class RoomsServices {
 		// console.log("Rooms:", rooms);
 
 		if (rooms.length)
-			rooms.forEach(room => socket.join(room.name));
+			rooms.forEach(room => socket.join(room.id.toString()));
+			// rooms.forEach(room => socket.join(room.name));
 	}
 
 	disconnectToRooms(socket: Socket, rooms: Room[]): void {
 
 		if (rooms.length)
-			rooms.forEach(room => socket.leave(room.name));
+			rooms.forEach(room => socket.leave(room.id.toString()));
+			// rooms.forEach(room => socket.leave(room.name));
 	}
 
 	async connectToRoom(server :Server, sockets :string[], room :string) {
@@ -34,6 +36,6 @@ export class RoomsServices {
 		// 	server.in(socketId).socketsJoin(room);
 		// }
 		// console.log(await server.in(room).fetchSockets());
-		console.log(await server.fetchSockets());
+		// console.log(await server.fetchSockets());
 	}
 };
