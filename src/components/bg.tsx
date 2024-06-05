@@ -6,7 +6,7 @@ const BackGround = () => {
     return (
         <div className='bg'>
             <Image
-                src={'./homeImages/Backgroundimage.webp'}
+                src={'/homeImages/Backgroundimage.webp'}
                 alt="background"
                 priority={true}
                 quality={100}

@@ -40,7 +40,7 @@ const Buttons = () => {
       >
         <Image
           className="icon"
-          src="./homeImages/HomeIcon.svg"
+          src="/homeImages/HomeIcon.svg"
           alt="logo"
           width={14}
           height={18}
@@ -58,7 +58,7 @@ const Buttons = () => {
       >
         <Image
           className="icon"
-          src="./homeImages/gamesicon.svg"
+          src="/homeImages/gamesicon.svg"
           alt="logo"
           width={20}
           height={18}
@@ -76,7 +76,7 @@ const Buttons = () => {
       >
         <Image
           className="icon"
-          src="./homeImages/rankingicon.svg"
+          src="/homeImages/rankingicon.svg"
           alt="logo"
           width={20}
           height={18}
@@ -94,7 +94,7 @@ const Buttons = () => {
       >
         <Image
           className="icon"
-          src="./homeImages/searchicon.svg"
+          src="/homeImages/searchicon.svg"
           alt="logo"
           width={20}
           height={18}
@@ -110,7 +110,7 @@ const Buttons = () => {
       >
         <Image
           className="icon"
-          src="./homeImages/chaticon.svg"
+          src="/homeImages/chaticon.svg"
           alt="logo"
           width={20}
           height={18}
@@ -122,6 +122,7 @@ const Buttons = () => {
 };
 
 const PhoneButtons = () => {
+  const router = useRouter();
   const context: renderContext | null = useContext(RenderContext);
 
   return (
@@ -130,11 +131,12 @@ const PhoneButtons = () => {
         className={`phonebutton ${
           context?.render === "home" ? "activeChatButton" : ""
         }`}
-        onClick={() => context?.setRender("home")}
+        onClick={() => {context?.setRender("home")
+        router.push("/")}}
       >
         <Image
           className="Phoneicon"
-          src="./homeImages/HomeIcon.svg"
+          src="/homeImages/HomeIcon.svg"
           alt="logo"
           width={24}
           height={20}
@@ -145,11 +147,12 @@ const PhoneButtons = () => {
         className={`phonebutton ${
           context?.render === "games" ? "activeChatButton" : ""
         }`}
-        onClick={() => context?.setRender("games")}
+        onClick={() => {context?.setRender("games")
+        router.push("/Game")}}
       >
         <Image
           className="Phoneicon"
-          src="./homeImages/gamesicon.svg"
+          src="/homeImages/gamesicon.svg"
           alt="logo"
           width={30}
           height={18}
@@ -159,11 +162,12 @@ const PhoneButtons = () => {
         className={`phonebutton ${
           context?.render === "ranking" ? "activeChatButton" : ""
         }`}
-        onClick={() => context?.setRender("ranking")}
+        onClick={() => {context?.setRender("ranking")
+        router.push("/Ranking")}}
       >
         <Image
           className="Phoneicon"
-          src="./homeImages/rankingicon.svg"
+          src="/homeImages/rankingicon.svg"
           alt="logo"
           width={30}
           height={18}
@@ -173,11 +177,12 @@ const PhoneButtons = () => {
         className={`phonebutton ${
           context?.render === "search" ? "activeChatButton" : ""
         }`}
-        onClick={() => context?.setRender("search")}
+        onClick={() => {context?.setRender("search")
+        router.push("/Search")}}
       >
         <Image
           className="Phoneicon"
-          src="./homeImages/searchicon.svg"
+          src="/homeImages/searchicon.svg"
           alt="logo"
           width={30}
           height={18}
@@ -187,11 +192,12 @@ const PhoneButtons = () => {
         className={`phonebutton ${
           context?.render === "chat" ? "activeChatButton" : ""
         }`}
-        onClick={() => context?.setRender("chat")}
+        onClick={() => {context?.setRender("chat")
+        router.push("/Chat")}}
       >
         <Image
           className="Phoneicon"
-          src="./homeImages/chaticon.svg"
+          src="/homeImages/chaticon.svg"
           alt="logo"
           width={24}
           height={18}
@@ -251,7 +257,7 @@ const Sidebar = (props: { showPopup: boolean}) => {
             }}>
           <Image
             className="logoutimage"
-            src="./homeImages/logouticon.svg"
+            src="/homeImages/logouticon.svg"
             alt="logo"
             width={26}
             height={30}

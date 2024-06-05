@@ -11,7 +11,7 @@ import axios from "axios";
 import Router from "next/navigation";
 import { FiChevronsRight } from "react-icons/fi";
 import "@/styles/userProfile/userFriend.css";
-
+import userStateContext from "@/components/context/userSate";
 import { Carousel, Typography, Button, Switch } from "@material-tailwind/react";
 import ChatContext, { chatContext } from "@/components/context/chatContext";
 import RenderContext, { renderContext } from "@/components/context/render";
@@ -28,13 +28,15 @@ import SocketContext from "@/components/context/socket";
 import CreateRoom from "../components/createRoom/createRoom";
 import RoomSettings from "../components/roomComponents/roomSettings";
 import JoinRoom from "./joinRoom/joinRoom";
+import { CircularProgress } from "@mui/material";
+
 
 export const Tables = () => {
   return (
     <Carousel placeholder="carousel" className="tables rounded-lg z-10">
       <div className=" darktable relative h-1/2 w-full">
         <Image
-          src="./homeImages/darkvalley.svg"
+          src="/homeImages/darkvalley.svg"
           alt="image 1"
           width={200}
           height={100}
@@ -91,14 +93,14 @@ export const Tables = () => {
 const Match: React.FC<{ user: History }> = (props) => {
   return (
     <div className="match">
-      <div className="opponent">
-        <Image
+      <div className="opponent w-[30%] xl:mr-[-20%] mr-[-40%]">
+        <Image className="rounded-full w-[30px] h-[30px]" 
           src={props.user?.image || "@/public/defaultImg.svg"}
           alt="profile"
           width={26}
           height={26}
         />
-        <p>{props.user.userName}</p>
+        <p  className="truncate min-w-[40px]">{props.user.userName}</p>
       </div>
       <div className="level">
         <p>{props.user.level}</p>
@@ -117,14 +119,27 @@ interface History {
   level: number;
 }
 
+
+
+  export const NoHistoy = () => {
+
+    return (
+      <div className=" flex justify-center items-center w-[100%] h-[100%] font-inter  text-lg  font-light text-[#8A99E9] ">
+        <p>NO MATCH PLAYED YET</p>
+      </div>
+    );
+  }
+
+
 export const Statistics = () => {
   const [history, setHistory] = useState<History[]>([]);
+  const [reciveresponse ,setreciveresponse] = useState<boolean>(false); 
   useEffect(() => {
     const histories = async () => {
       const response = await axios.get(process.env.NEST_API + "/user/history", {
         withCredentials: true,
       });
-      console.log("History:", response.data);
+        setreciveresponse(true);
       if (response.data) setHistory(response.data);
     };
     histories();
@@ -137,9 +152,9 @@ export const Statistics = () => {
         <span className="px-4">Statistics</span>
         <hr className="line" />
       </div>
-      <div className="Statistics">
+      <div className="Statistics flex flex-col max-h-[800px] overflow-y-auto">
         <div className="Statistics-head">
-          <div>
+          <div className="" >
             <p>Opponent</p>
           </div>
 
@@ -151,21 +166,16 @@ export const Statistics = () => {
             <p>W/L</p>
           </div>
         </div>
-        <div className="matches">
-          {Array.isArray(history) &&
+        <div className="matches  flex-1 flex flex-col">
+          {  !reciveresponse ? 
+          <div className="w-[100%] h-[100%] flex items-center justify-center ">
+             <CircularProgress /> 
+          </div> :
+              Array.isArray(history)  && history.length > 0 ?
             history.map((user: History, idx: number) => {
               return <Match key={user.userName + idx} user={user} />;
-            })}
-          {/* <Match />
-          <Match />
-          <Match />
-          <Match />
-          <Match />
-          <Match />
-          <Match />
-          <Match />
-          <Match />
-          <Match /> */}
+            })
+            : <NoHistoy />}
         </div>
       </div>
     </>
@@ -256,9 +266,11 @@ const Body = ({ children }: { children: React.ReactNode }) => {
           />
         </div>
         <Home showPopup={showPopup}>{children}</Home>
+      
         <div className="chatdiv hidden xl:block">
           <Chat />
         </div>
+        
       </div>
     </ChatContext.Provider>
   );

@@ -17,7 +17,7 @@ const ProfileOverlay = () => {
           <div className="ImgHeadProfileContainer">
             <Image
               className="ImgHeadprofile w-[70px] h-[70px] rounded-full md:w-[75px] md:h-[75px] "
-              src="./defaultImg.svg"
+              src="/defaultImg.svg"
               width={75}
               height={75}
               alt="avatar"
@@ -55,7 +55,7 @@ const ProfileOverlay = () => {
           <div className={`${blocking? 'hidden' : 'flex'} flex items-center justify-center  w-[100%] gap-4 mt-12`}>
               <Image
                 className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out"
-                src="./iconsProfile/Gamepad_solid.svg"
+                src="/iconsProfile/Gamepad_solid.svg"
                 width={28}
                 height={28}
                 property="true"
@@ -71,7 +71,7 @@ const ProfileOverlay = () => {
                 alt="online"
               />
               <Image
-                src="./iconsProfile/Chat_solid.svg"
+                src="/iconsProfile/Chat_solid.svg"
                 width={24}
                 height={24}
                 property="true"
@@ -93,7 +93,7 @@ const ProfileOverlay = () => {
                   // block(props.value.id);
                 }}
                 className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out"
-                src="./iconsProfile/User-block.svg"
+                src="/iconsProfile/User-block.svg"
                 width={28}
                 height={28}
                 property="true"

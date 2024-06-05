@@ -1,5 +1,6 @@
 "use client";
-// import Head from "next/head";
+
+import { CircularProgress } from "@mui/material";
 import { RiSendPlaneFill } from "react-icons/ri";
 import React, { use, useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -16,10 +17,15 @@ import { ConvoData } from "./Dto/Dto";
 import { send } from "process";
 import RenderContext, { renderContext } from "@/components/context/render";
 import { render } from "react-dom";
-import { Message } from "./Dto/Dto";
+import type { Message } from "./Dto/Dto";
 import TimeAgo from "javascript-time-ago";
 import { getTimeAgo } from "./timeAgo";
 import { useRouter } from "next/navigation";
+
+import UserStateContext from "@/components/context/userSate";
+import ProfileDataContext from "@/components/context/profilDataContext";
+import { stat } from "fs";
+
 
 const Header = () =>{
     const rout = useRouter();
@@ -65,7 +71,7 @@ const Members: React.FC<Pics> = ({ chatdata }) => {
             <div className="profiles">
                 {members && members.map((user: ChatData, index) => (
                     <Image  className={members?.length > 1 ? "profilepics" : 'profilepics-mar'}
-                            src={ user.image ? user.image : "./homeImages/memeber1.svg"} 
+                            src={ user.image ? user.image : "/homeImages/memeber1.svg"} 
                             alt="member" 
                             key={index}
                             width={28} height={20}/>
@@ -84,14 +90,14 @@ interface userOptionClass{
 const UserOption = ( { className }: userOptionClass ) => {
     return (
         <div  className={`userOption ${className}`}>
-            <div className="block">
-                <Image className="optionlogo" src="./homeImages/chat.svg" alt="logo" width={19} height={17}/>
+            {/* <div className="block">
+                <Image className="optionlogo" src="/homeImages/chat.svg" alt="logo" width={19} height={17}/>
                 <p>Block</p>
             </div>
-            <hr className="liney"></hr>
+            <hr className="liney"></hr> */}
             <div className="clash">
                 <Image className="optionlogo" 
-                    src="./homeImages/chat.svg" 
+                    src="/homeImages/chat.svg" 
                     alt="logo" 
                     width={19} height={17}/>
                 <p>Clash</p>
@@ -126,7 +132,7 @@ const More = ({user}: {user: ChatData})=> {
     return (
         <div className="more">
             <div className="dotscontainer" onClick={handleMsgOption}>
-                <Image className="dots" src="./homeImages/dots.svg" alt="member" width={16} height={16}/>
+                <Image className="dots" src="/homeImages/dots.svg" alt="member" width={16} height={16}/>
             </div>
             <UserOption className={showMsgOption ? '' : 'invisible'} />
             <p className="date">{timeAgo?.format(new Date(user.createdAt))}</p>
@@ -145,7 +151,7 @@ const Message = ({handleMsgClick, user } : Props) =>{
 
             <div className="chatData" onClick={()=>{handleMsgClick(user.id)}}>
                 <div className="picture">
-                    <Image className="profilepic" src={user?.image? user.image : "./homeImages/memeber1.svg"} alt="member" width={48} height={40}/>
+                    <Image className="profilepic" src={user?.image? user.image : "/homeImages/memeber1.svg"} alt="member"width={38} height={38} />
                 </div>
 
                 <div className="messageInfo">
@@ -182,14 +188,26 @@ const Conversation = (props : ConvoProps) =>{
     const scrollableDivRef = useRef<HTMLDivElement>(null);
     const [timeAgo, setTimeAgo] = useState<TimeAgo | null>(null);
     const [typing, setTyping] = useState<Boolean> (false);
+    const state = useContext(UserStateContext);
+    
+    const [userState, setUserState] = useState<string> ('offline');
+
+    const friends = useContext(ProfileDataContext);
+
 
     useEffect(() => {
-      const scrollableDiv = scrollableDivRef.current;
-      if (scrollableDiv)
-        scrollableDiv.scrollTop = scrollableDiv.scrollHeight;
-      
-    });
 
+        if (state?.userState.id === props.userId)
+            setUserState(state.userState.state);
+
+    }, [state?.userState.state]);
+
+
+    useEffect(() => {
+        const scrollableDiv = scrollableDivRef.current;
+        if (scrollableDiv)
+          scrollableDiv.scrollTop = scrollableDiv.scrollHeight;      
+      });
     const appendMessage = (newMessage: Object) => {
         setConvo((prevConvo :any) => {
           if (prevConvo?.messages) {
@@ -254,6 +272,11 @@ const Conversation = (props : ConvoProps) =>{
                     withCredentials: true,
                 });
                 setConvo(response.data);
+
+                if (response.data.inGame)
+                    setUserState("inGame");
+                else if (response.data.online)
+                    setUserState("online");
             } catch {
                 console.log('Error Fetching data for all messages !');
             }
@@ -295,28 +318,38 @@ const Conversation = (props : ConvoProps) =>{
               setTimeAgo(null);
         };
     }, []) ;
-
+    const router = useRouter();
     return (
+
         <div className="conversation">
+            {convo === null && <div className="loading">
+                        <CircularProgress />
+            </div> }
+            {
+                convo &&
+            <>
             <div className="convo">
                 <div className="convoHeader">
-                    <div className="sender-info  cursor-pointer" onClick={() => render?.setRender("profileOverly")}>
-                        <Image className="profilepic" src={convo?.image ? convo.image : "./homeImages/memeber1.svg"} width={38} height={42} alt="photo"/>
+                    <div className="sender-info  cursor-pointer" onClick={() => {render?.setRender("profileOverly")
+                    router.push("/users?userName=" + props.userId.toString())
+
+                    }}>
+                        <Image className="profilepic" src={convo?.image ? convo.image : "/homeImages/memeber1.svg"} width={38} height={38} alt="photo"/>
                         <div>
                             <h2>{convo?.userName}</h2>
-                            <p className="typing">{typing ? 'Typing...' : 'online'}</p>
+                            <p className="w-[50px]">{typing ? 'Typing...' : userState}</p>
                         </div>
                     </div>
-                    <Image className="go-back cursor-pointer" src="./homeImages/goback.svg" onClick={handleClick} width={28} height={25} alt="back" />
+                    <Image className="go-back cursor-pointer" src="/homeImages/goback.svg" onClick={handleClick} width={28} height={25} alt="back" />
                 </div>
                 <hr className="line"/>
                 
              <div className="convoHolder" ref={scrollableDivRef}>
                     {convo?.messages?.map((message: any, index: number) => (
                         <div  key={index} className={props.userId === message.userId ? "othersMsg" : "myMsg"}>
-                            <p className={`sentAt ${props.userId === message.userId ? "othersDate" : "myDate"}`}>{timeAgo?.format(new Date(Date.now()))}</p>
+                            <p className={`sentAt ${props.userId === message.userId ? "othersDate" : "myDate"}`}>{timeAgo?.format(new Date(message.createdAt))}</p>
                             <div className={props.userId === message.userId ? "othersContent" : "myContent"}>
-                                <p className="msgContent">{message?.content}</p>
+                                <p className="msgContent">{message?.content }</p>
                             </div>
                         </div>
                     ))} 
@@ -330,8 +363,10 @@ const Conversation = (props : ConvoProps) =>{
                   <RiSendPlaneFill className="sendLogo" />
                 </button>
               </form>
+            </>
+            }
 
-        </div>
+            </div>
     );
 }
 
@@ -354,6 +389,7 @@ const Chat = () => {
     };
 
     useEffect(() => {
+        //fetching chat data.
         const fetchData = async () => {
             try {
                 const response = await axios.get(process.env.NEST_API + '/user/conversation', {
@@ -365,7 +401,7 @@ const Chat = () => {
             }
         };
         fetchData();
-            //if a user is blocked i should not recieve it from the back-end
+            //!! if a user is blocked i should not recieve it from the back-end
     }, []);
 
 
@@ -391,22 +427,27 @@ const Chat = () => {
 
 
     return (
-        <div className="chat">
-            {Convo?.chat === 0 && <div className="">
-                <div className="chatbar">
-                    <Header/>
-                    <Members chatdata={chatdata}/>
-                </div>
-               
-                <div className="messagesHolder">
-                    {chatdata ? chatdata.map((user: ChatData, index) => (
-                        <Message key={index} handleMsgClick= {()=>Convo?.setChat(user.id)} user={user}/>
-                    )) : null}
-                 </div>
-            </div>}
-            {Convo?.chat !== 0 && <Conversation updateChat={updateChat} handleMsgClick={()=>Convo?.setChat(0)} userId={Convo?.chat!} handleConvo={()=>setInConvo({content: "", createdAt: new Date(), senderID: 0})} inConvo={inConvo!} />}
+
+            <div className="chat">
             
-        </div>
+                    {Convo?.chat === 0 &&
+                    <div>
+                        <div className="chatbar">
+                            <Header/>
+                            <Members chatdata={chatdata}/>
+                        </div>
+                        
+                        <div className="messagesHolder">
+                            {chatdata ? chatdata.map((user: ChatData, index) => (
+                                <Message key={index} handleMsgClick= {()=>Convo?.setChat(user.id)} user={user}/>
+                            )) : null}
+                        </div>
+                    </div>}
+                {Convo?.chat !== 0 && <Conversation updateChat={updateChat} handleMsgClick={()=>Convo?.setChat(0)} userId={Convo?.chat!} handleConvo={()=>setInConvo({content: "", createdAt: new Date(), senderID: 0})} inConvo={inConvo!} />}
+                
+            </div>
+
+        
     );
 }
 
