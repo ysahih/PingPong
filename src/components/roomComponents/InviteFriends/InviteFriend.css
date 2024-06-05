@@ -1,0 +1,101 @@
+
+.invite__wrapper {
+    margin-top: 20px;
+    height: 400px;
+    width: 100%;
+    background-color: #070F2B;
+    border-top: solid 2px #1B266B;
+    border-radius: 20px;
+}
+
+.invite__top--wrapper {
+    display: flex;
+    margin: 20px 40px;
+    /* gap: 10%; */
+    align-items: center;
+}
+
+.invite__header {
+    color: #8A99E9;
+	font-family: "Lalezar";
+	font-size: 32px;
+	width: fit-content;
+    /* margin-right: 20px; */
+}
+
+.invite__search--wrapper {
+    width: 100%;
+    /* width: 100%; */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.invite__search {
+    width: 250px;
+    height: 40px;
+    border-style: none;
+	border-top: solid 1px #0064FB;
+	border-radius: 10px;
+	background-color: #131C52;
+	color: #959dc8;
+	font-size: 16px;
+	font-family: 'Lalezar';
+	padding: 10px 12px;
+}
+
+::placeholder {
+	font-family: 'Lalezar';
+	font-size: 15px;
+	color: #babbc2;
+	/* padding: 10px 12px; */
+}
+
+.invite__friends--wrapper {
+    width: 95%;
+    height: 290px;
+    margin: 0 auto;
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+}
+
+.invite__friends__inform {
+    margin: 0 auto;
+    color: #959dc8;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.invite__friends__inform p {
+    font-family: 'inter';
+    font-size: 15px;
+}
+
+/* @media (max-width: 435px) {
+    
+} */
+
+@media (max-width: 522px) {
+    
+    .invite__wrapper {
+        height: 440px;
+    }
+    
+    .invite__top--wrapper {
+        flex-flow: column;
+        margin: 20px 20px;
+    }
+    
+    .invite__search {
+        width: 80%;
+    }
+
+    .invite__header {
+        font-size: 30px;
+        align-self: flex-start;
+        margin-left: 20px;
+    }
+}

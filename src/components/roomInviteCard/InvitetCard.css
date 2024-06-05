@@ -1,0 +1,108 @@
+
+.inviteCard {
+    width: 100%;
+    height: 50px;
+    background-color: #1B1A55;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    /* border: 1px solid white; */
+    border-radius: 25px;
+}
+
+.inviteCard:hover {
+    background-color: #232260;
+}
+
+.inviteCard__infos {
+    display: flex;
+    /* flex-flow: row nowrap; */
+    gap: 7px;
+    align-items: center;
+    margin-left: 5px;
+}
+
+.inviteCard__infos img {
+    width: 40px;
+    height: 40px;
+    border-style: none;
+    border-radius: 50%;
+    filter: brightness(60%);
+}
+
+.inviteCard:hover img{
+    filter: brightness(100%);
+}
+
+.inviteCard__infos p {
+    color: white;
+    font-family: 'Inter';
+    font-size: 15px;
+}
+
+.inviteCard__btns {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 15px;
+}
+
+.inviteCard__btns button {
+    position: relative;
+    width: 25px;
+    height: 25px;
+    border-style: none;
+    border-radius: 25px;
+    background-color: white;
+}
+
+.url--accept {
+    position: absolute;
+    background-image: url('../../../public/RoomSettings/Accept.svg') !important;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    background-size: 100% 100%;
+    transition: .2s;
+}
+
+.url--accept:hover {
+    background-image: url('../../../public/RoomSettings/AcceptColored.svg') !important;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    background-size: 100% 100%;
+}
+
+.url--deny {
+    background-image: url('../../../public/RoomSettings/Deny.svg') !important;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    background-size: 100% 100%;
+    transition: .2s;
+}
+
+.url--deny:hover {
+    background-image: url('../../../public/RoomSettings/DenyColored.svg') !important;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    background-size: 100% 100%;
+}
+
+/* Loading */
+
+.animation {
+    animation: fadeInOut 1s ease-in-out infinite alternate;
+}
+
+@keyframes fadeInOut {
+    from {
+        opacity: .6;
+    }
+    to {
+        opacity: 1;
+    }
+}

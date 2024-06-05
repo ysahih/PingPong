@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 import "./joinRoom.css"
 import Room from "./room/Room";

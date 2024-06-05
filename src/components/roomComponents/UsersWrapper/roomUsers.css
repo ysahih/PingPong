@@ -81,6 +81,14 @@
     background-size: 100% 100%;
 }
 
+.url--bannedUsers {
+    background-image: url('../../../../public/RoomSettings/BannedUsers.svg') !important;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    background-size: 100% 100%;
+}
+
 .room__users {
     width: 95%;
     height: 290px;
@@ -89,6 +97,8 @@
     flex-flow: row;
     gap: 20px;
     overflow-x: scroll;
+    /*TODO: Added */
+    overflow-x: auto;
     /* scroll-snap-type: x mandatory; */
 }
 
