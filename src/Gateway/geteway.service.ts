@@ -156,8 +156,10 @@ export class GatewayService {
             },
           },
           select: {
+            userRole: true,
             user: {
               select: {
+                id: true,
                 userName: true,
                 image: true,
               },
@@ -493,5 +495,33 @@ export class GatewayService {
 		});
 		return (user);
 	}
+
+  async getInvite(userId: number, roomId: number) {
+
+    try {
+
+      const data = await this._prisma.room.findUnique({
+        where: {
+          id: roomId,
+        },
+        include: {
+          invites: {
+            where: {
+              id: userId,
+            },
+            select: {
+              id: true,
+            }
+          },
+        },
+      });
+
+      // console.log(data.invites[0]);
+
+      return data.invites[0] ? data : null;
+    } catch (e) {
+      return null;
+    }
+  }
 
 }

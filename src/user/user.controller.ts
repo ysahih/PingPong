@@ -171,34 +171,27 @@ export class UserController {
 
     const { name, type, password } : {name :string, type :ROOMTYPE, password :string} = req.body;
 
-    console.log("Name:", name);
-    console.log("Type:", type);
-    console.log("Password:", password);
-
-    console.log("File:", file);
-
-    if (!name || (type === ROOMTYPE.PROTECTED && !password))
+    if (!name || !type || (type === ROOMTYPE.PROTECTED && !password))
       return {status: 0, message: 'Invalid data !'};
 
-  // try {
-  //   const hashedPassword = (password && type === ROOMTYPE.PROTECTED) ? await argon.hash(password) : null;
-  //   if (password && !hashedPassword)
-  //     return {status: 0, message: 'Room did not create !'}
+  try {
+    const hashedPassword = (password && type === ROOMTYPE.PROTECTED) ? await argon.hash(password) : null;
+    if (password && !hashedPassword)
+      return {status: 0, message: 'Room did not create !'}
 
-  //   const imgUrl = await this.cloud.uploadImage(file);
+    const imgUrl = await this.cloud.uploadImage(file);
 
-  //   await this.FriendsService.createRoom(parseInt(req.user["userId"]), name, type, hashedPassword, imgUrl);
-  //   return {status: 1, message: 'Room Created !'};
+    await this.FriendsService.createRoom(parseInt(req.user["userId"]), name, type, hashedPassword, imgUrl);
+    return {status: 1, message: 'Room Created !'};
 
-  //   } catch (e) {
-  //     if (e instanceof Prisma.PrismaClientKnownRequestError) {
-  //       if (e.code === "P2002")
-  //         return {status: 0, message: 'Room name already exists !'};
-  //     }
-  //     else
-  //       return {status: 0, message: 'Room did not create !'}
-  //   }
-    return {status: 0, message: 'huh'};
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        if (e.code === "P2002")
+          return {status: 0, message: 'Room name already exists !'};
+      }
+      else
+        return {status: 0, message: 'Room did not create !'}
+    }
   }
 
   @Post('userStatus')
@@ -214,11 +207,11 @@ export class UserController {
     }
   }
 
-  @Get('roomUsers/:roomName')
+  @Get('roomUsers/:id')
   @UseGuards(JwtAuthGuard)
-  async RoomUser(@Param('roomName') roomName :string, @Req() request :Request) {
+  async RoomUser(@Param('id') id :string, @Req() request :Request) {
 
-    return await this.FriendsService.roomUsers(request.user['userId'], roomName);
+    return await this.FriendsService.roomUsers(request.user['userId'], parseInt(id));
   }
 
   @Get('getRooms')
@@ -247,16 +240,16 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   async handleUpdateRoom(@UploadedFile() file: Express.Multer.File, @Req() request :Request) {
 
-    const { name, newName, type, password} : {name :string, newName :string, type :ROOMTYPE, password :string} = request.body;
+    const { id, newName, type, password} : {id :string, newName :string, type :ROOMTYPE, password :string} = request.body;
 
     console.log('------------------------------------------------------------------------------\n');
-    console.log("name:", name);
+    console.log("id:", id);
     console.log("newName:", newName);
     console.log("type:", type);
     console.log("password:", password);
     console.log('file:', file);
 
-    if (!name || (type === ROOMTYPE.PROTECTED && !password))
+    if ( (parseInt(id) < 1) || (type === ROOMTYPE.PROTECTED && !password))
       return {status: 0, message: 'Invalid data !'};
 
     if (password)
@@ -265,13 +258,13 @@ export class UserController {
 
       if (password && !hashedPass)
         return {status: 0, message: 'Something wrong !'};
-
-    if (file)
+      
+      if (file)
       var imgUrl :string = await this.cloud.uploadImage(file);
-
+    
     console.log('------------------------------------------------------------------------------\n');
-
-    return this.FriendsService.updateRoom(request.user['userId'], name, newName, type, imgUrl, hashedPass);
+    
+    return this.FriendsService.updateRoom(request.user['userId'], parseInt(id), newName, type, imgUrl, hashedPass);
   }
 
   @Get('getRoom/:name')
@@ -282,5 +275,51 @@ export class UserController {
     } catch (e) {
       return null;
     }
+  }
+
+  @Post('leave')
+  @UseGuards(JwtAuthGuard)
+  async handleLeave(@Req() request :Request, @Body('roomId') roomId :number) {
+
+    return await this.FriendsService.leaveRoom(request.user['userId'], roomId);
+  }
+
+  @Get('roomInvites')
+  @UseGuards(JwtAuthGuard)
+  async getRoomInvites(@Req() request :Request) {
+
+    return await this.FriendsService.roomInvites(request.user['userId']);
+  }
+
+  @Get('inviteUsers/:id')
+  @UseGuards(JwtAuthGuard)
+  async getUsersToInvites(@Req() request :Request, @Param('id') id :string) {
+
+    return await this.FriendsService.getUsersToInvite(request.user['userId'], parseInt(id));
+  }
+
+  @Post('inviteUser')
+  @UseGuards(JwtAuthGuard)
+  async handleInviteUser(@Req() request :Request, @Body('roomId') roomId: number, @Body('invitedId') invitedId: number) {
+
+    return await this.FriendsService.handleInviteUser(request.user['userId'], invitedId, roomId);
+  }
+
+  @Post('accInvite')
+  @UseGuards(JwtAuthGuard)
+  async invitationAccepta(@Req() request :Request, @Body('roomId') roomId :number, @Body('accept') accept :boolean) {
+
+    return await this.FriendsService.inviteAccept(request.user['userId'], roomId, accept);
+  }
+
+  @Get('roomSearch/:roomId/:name')
+  @UseGuards(JwtAuthGuard)
+  async handleRoomSearch(@Req() request :Request, @Param('roomId') roomId :string, @Param('name') name :string) {
+
+    // const {roomId} = request.body;
+    console.log(roomId);
+    console.log(name);
+
+    return await this.FriendsService.findUser(request.user['userId'], parseInt(roomId) ,name);
   }
 }

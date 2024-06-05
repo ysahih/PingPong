@@ -19,7 +19,7 @@ import { Server, Socket } from "socket.io";
 import { UsersServices } from "./usersRooms/user.class";
 import { ChatData, CreateRoom, JoinRoomDTO, MessageDTO, UpdateStatusRoom, UserOutDTO } from "./gateway.interface";
 import { RoomsServices } from "./usersRooms/room.class";
-import { Prisma } from "@prisma/client";
+import { Prisma, ROOMTYPE } from "@prisma/client";
 import { ExceptionHandler } from "./ExceptionFilter/exception.filter";
 import { GatewayService } from "./geteway.service";
 import * as jwt from "jsonwebtoken";
@@ -43,9 +43,8 @@ type Invitation = {
     credentials: true,
   },
 })
-export class serverGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
+export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+
   @WebSocketServer()
   private _server: Server = new Server();
 
@@ -241,14 +240,16 @@ export class serverGateway
 
       // TODO: I have to emit all users in the room to say that there's an new user
       console.log("Entered!");
-      
+
       this._users.addNewRoom(payload.userId, payload.room);
       
       this._users.getUserById(payload.userId).socketId?.forEach(socketId => {
-        this._server.sockets.sockets.get(socketId).join(payload.room.name);
+        this._server.sockets.sockets.get(socketId).join(payload.room.id.toString());
+        // this._server.sockets.sockets.get(socketId).join(payload.room.name);
       });
 
-      client.to(payload.room.name).emit("newJoin", {
+      client.to(payload.room.id.toString()).emit('newJoin', {
+      // client.to(payload.room.name).emit("newJoin", {
           userId: payload.userId,
           roomId: foundedRoom.id,
           userName: foundedRoom.users[0].user.userName,
@@ -270,8 +271,44 @@ export class serverGateway
     const UserInRoom = this._users.getUserById(payload.fromId).rooms.find((room) => room.id === payload.roomId);
 
     // Check if the user has the Admin role
-    if (UserInRoom && UserInRoom.UserRole !== 'USER')
-      client.to(payload.roomName).emit("UpdateStatus", payload);
+    if (UserInRoom && UserInRoom.UserRole !== 'USER') {
+      const user = this._users.getUserById(payload.userId);
+      if (user) {
+        user.rooms.find(room => room.id === payload.roomId).UserRole = payload.role;
+      }
+      client.to(payload.roomId.toString()).emit("UpdateStatus", {
+      // client.to(payload.roomName).emit("UpdateStatus", {
+        userId: payload.userId,
+        roomId: payload.roomId,
+        role: payload.role,
+        isMuted: payload.isMuted,
+      });
+    }
+  }
+
+  @UseFilters(ExceptionHandler)
+  @UsePipes(ValidationPipe)
+  @SubscribeMessage('changeOwner')
+  async handleOwnerChnage(@ConnectedSocket() client: Socket, @Body() payload :{roomId: number, ownerId: number, userId: number}) {
+
+    const checkOwner = await this._prisma.findRoom(payload.roomId, payload.ownerId);
+    const checkUser = await this._prisma.findRoom(payload.roomId, payload.userId);
+
+    if (checkOwner?.users[0]?.user?.id === payload.ownerId && checkOwner?.users[0]?.userRole === 'OWNER' && !checkUser.users.length) {
+
+      const owner = this._users.getUserById(payload.ownerId);
+
+      if (owner)
+        owner.rooms.find(room => room.id === payload.roomId).UserRole = 'OWNER';
+
+      // this._server.to(checkOwner?.name).emit("UpdateStatus", {
+      this._server.to(payload.roomId.toString()).emit("UpdateStatus", {
+        userId: payload.ownerId,
+        roomId: payload.roomId,
+        role: 'OWNER',
+        isMuted: false,
+      });
+    }
   }
 
   @UseFilters(ExceptionHandler)
@@ -280,18 +317,19 @@ export class serverGateway
   async handleUserOut(@ConnectedSocket() client :Socket, @Body() payload :UserOutDTO) {
 
     const user = this._users.getUserById(payload.userId);
-    const adminRoom = this._users.getUserById(payload.adminId).rooms.find((room) => payload.roomId === room.id);
     const room = await this._prisma.findRoom(payload.roomId, payload.userId);
+    const adminRoom = this._users.getUserById(payload.adminId).rooms.find((room) => payload.roomId === room.id);
 
     // Check if the user is really isn't the room again and if the admin is connected
-    if (!room?.users?.length && adminRoom && adminRoom.UserRole !== 'USER') {
+    if (!room?.users?.length && (adminRoom?.UserRole !== 'USER' || payload.adminId === payload.userId)) {
 
-      client.to(payload.roomName).emit('kickBanUser', {roomName: payload.roomName, userId: payload.userId});
+      client.to(payload.roomId.toString()).emit('kickBanUser', {userId: payload.userId, roomId: payload.roomId});
+      // client.to(payload.roomName).emit('kickBanUser', {roomName: payload.roomName, userId: payload.userId, roomId: payload.roomId});
 
       if (user) {
         // Make all the sockets of the client leave
         user.socketId.forEach((socketId) => {
-            this._server.sockets.sockets.get(socketId).leave(payload.roomName);
+            this._server.sockets.sockets.get(socketId).leave(payload.roomId.toString());
         });
         // Remove the room from the user data
         user.rooms.splice(user.rooms.findIndex((room) => room.id === payload.roomId), 1);
@@ -304,11 +342,54 @@ export class serverGateway
   
   @UseFilters(ExceptionHandler)
   @UsePipes(ValidationPipe)
+  @SubscribeMessage("roomTypeChange")
+  async RoomData(@ConnectedSocket() client: Socket, @Body() payload: {adminId: number, roomId: number, type: ROOMTYPE}): Promise<void> {
+
+    console.log(payload);
+
+    const adminChekcer = this._users.getUserById(payload.adminId);
+    const room = adminChekcer.rooms.find(room => room.id === payload.roomId);
+
+    if (room?.UserRole === 'OWNER') {
+      client.to(payload.roomId.toString()).emit('roomType', {
+        roomId: payload.roomId,
+        // name: payload?.name,
+        type: payload?.type,
+      });
+    }
+
+    // to.forEach((socketId :string) => {
+    //   this._server.to(socketId).emit("isTyping", {from: data.from});
+    // });
+  }
+
+  @UseFilters(ExceptionHandler)
+  @UsePipes(ValidationPipe)
+  @SubscribeMessage("roomInvite")
+  async roomInvite(@ConnectedSocket() client: Socket, @Body() payload: {adminId: number, roomId: number, userId: number}): Promise<void> {
+
+    console.log(payload);
+
+    const check = await this._prisma.getInvite(payload.userId, payload.roomId);
+    const checkInRoom = this._users.getUserById(payload.adminId).rooms.find(room => room.id === payload.roomId);
+    const user = this._users.getUserById(payload.userId);
+
+    console.log(check);
+    console.log(checkInRoom);
+
+    if (check.invites[0] && checkInRoom) {
+      user.socketId.forEach(socketId => this._server.to(socketId).emit('newRoom', {
+        id: check.id,
+        name: check.name,
+        image: check.image,
+      }));
+    }
+  }
+
+  @UseFilters(ExceptionHandler)
+  @UsePipes(ValidationPipe)
   @SubscribeMessage("typing")
-  async handleTyping(
-    @ConnectedSocket() client: Socket,
-    @Body() data: {from: number, to: number}
-  ): Promise<void> {
+  async handleTyping(@ConnectedSocket() client: Socket, @Body() data: {from: number, to: number}): Promise<void> {
 
     // console.log("HELLO");
     const to = this._users.getUserById(data.to).socketId;

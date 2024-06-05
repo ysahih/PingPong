@@ -83,16 +83,16 @@ export class UpdateStatusRoom {
 	@IsInt()
 	fromId		:number
 
-	@IsNotEmpty()
-	@IsString()
-	userName	:string
+	// @IsNotEmpty()
+	// @IsString()
+	// userName	:string
 
 	@IsInt()
 	userId	:number
 
-	@IsNotEmpty()
-	@IsString()
-	roomName	:string
+	// @IsNotEmpty()
+	// @IsString()
+	// roomName	:string
 
 	@IsInt()
 	roomId	:number
@@ -109,16 +109,16 @@ export class UpdateStatusRoom {
 export class UserOutDTO {
 
 	@IsInt()
-	adminId	:number
+	adminId		:number
 
 	@IsInt()
-	userId	:number
+	userId		:number
 
 	@IsInt()
-	roomId	:number
+	roomId		:number
 
-	@IsString()
-	roomName	:string
+	// @IsString()
+	// roomName	:string
 }
 
 export class ChatData {

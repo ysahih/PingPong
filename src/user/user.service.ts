@@ -1030,12 +1030,12 @@ export class FriendsService {
     return newRoom;
   }
 
-  async roomUsers(userId :number, roomName :string) {
+  async roomUsers(userId :number, id :number) {
     
     try {
       const user = await this.prisma.room.findUnique({
         where: {
-          name: roomName,
+          id: id,
         },
         include: {
           users: {
@@ -1054,7 +1054,7 @@ export class FriendsService {
 
       const users = await this.prisma.room.findMany({
         where: {
-          name: roomName,
+          id: id,
         },
         select: {
           id: true,
@@ -1229,7 +1229,7 @@ export class FriendsService {
       // console.log(JSON.stringify(user, null, 2));
 
       if (user && user?.banned?.length)
-        throw new Error('This user is banned !');
+        return {status: 0, message: 'This user is banned !'};
 
     var isPassword :boolean = true;
 
@@ -1259,22 +1259,22 @@ export class FriendsService {
 
         if (isPassword)
         {
-          const joinedRoom = await this.prisma.userRoom.create({
+          await this.prisma.userRoom.create({
             data: {
               userId: id,
               roomId: roomId,
             }
           });
-          return (joinedRoom);
+          return {status: 1, message: 'User joined successfully !'};
         }
-        return 'Incorect password';
+        return {status: 0, message: 'Incorect password !'};
       }
 
-      return null;
+      return {status: 0, message: 'Something wrong !'};
 
     } catch (e) {
       // console.log(e);
-      return null;
+      return {status: 0, message: 'Something wrong !'};
     }
   }
 
@@ -1354,14 +1354,14 @@ export class FriendsService {
     }
   }
 
-  async updateRoom(userId :number, name :string, newName ?:string, type ?:ROOMTYPE, url ?:string, password ?:string) {
+  async updateRoom(userId :number, roomId: number, newName ?:string, type ?:ROOMTYPE, url ?:string, password ?:string) {
 
     // TODO: I have to delete the OLD picture
 
     try {
       const room = await this.prisma.room.findUnique({
         where: {
-          name: name,
+          id: roomId,
         },
         include: {
           users: {
@@ -1401,7 +1401,7 @@ export class FriendsService {
 
           const data = await this.prisma.room.update({
             where: {
-              name: name,
+              id: roomId,
             },
             data: {
               ...obj,
@@ -1428,7 +1428,510 @@ export class FriendsService {
       },
       select: {
         type: true,
+        id: true,
       }
     });
   }
+
+  async leaveRoom(userId: number, roomId :number) {
+
+    console.log(roomId);
+    console.log(userId);
+    try {
+      const user = await this.prisma.room.findUnique({
+        where: {
+          id: roomId,
+        },
+        include: {
+          users: {
+            where: {
+              userId: userId,
+            },
+            select: {
+              userRole: true,
+              user: {
+                select: {
+                  userName: true,
+                  id: true,
+                },
+              },
+            },
+          },
+        }
+      });
+
+      if (user.users.length) {
+        const userLeaved = await this.prisma.userRoom.delete({
+          where: {
+            userId_roomId: {
+              userId: userId,
+              roomId: roomId,
+            },
+          },
+        });
+
+        
+        if (user.users[0].userRole === 'OWNER') {
+          const data = await this.prisma.room.findMany({
+            select: {
+              users: {
+                orderBy: {
+                  joinedAt: 'asc',
+                },
+                // skip: 1,
+                take: 1,
+                select: {
+                  user: {
+                    select: {
+                      id: true,
+                    },
+                  },
+                },
+              },
+            },
+          });
+
+          console.log(JSON.stringify(data, null, 2));
+          console.log(data[0].users.length);
+
+          if (data[0]?.users?.length) {
+            await this.prisma.userRoom.update({
+              where: {
+                userId_roomId: {
+                  userId: data[0].users[0].user.id,
+                  roomId: roomId,
+                },
+              },
+              data: {
+                userRole: 'OWNER',
+              },
+            });
+          }
+          if (!data[0]?.users?.length) {
+            console.log("Will Bi deleted !");
+            await this.prisma.room.delete({
+              where: {
+                id: roomId,
+              },
+            });
+            return {status: 1, message: "User leaved the room, Room will be deleted !", deleted: 1};
+          }
+          console.log(data);
+          return {status: 1, message: "User leaved the room", ownerId: data[0]?.users[0]?.user.id};
+        }
+
+        return {status: 1, message: "User leaved the room"};
+      }
+      return {status: 0, message: 'User is not in the room'};
+
+    } catch (e) {
+      console.log(e);
+      return {status: 0, message: 'Something wrong'};
+    }
+  }
+
+  async roomInvites(id :number) {
+    const invites = await this.prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        roomInvites: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
+      },
+    });
+
+    console.log()
+
+    return invites.roomInvites.length ? invites.roomInvites : [];
+  }
+
+  async getUsersToInvite(userId :number, roomId: number) {
+
+    try {
+      let nbUsers = 0;
+      let usersInvited :{id: number, roomId: number, userName: string, pic :string}[] = []
+
+      const user = await this.prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+        include: {
+            sentRequests: {
+              where: {
+                AND: [
+                  {accepted: true},
+                  {
+                    receiver: {
+                      NOT: {
+                        OR: [
+                          {
+                          bannedFrom: {
+                            some: {
+                              id: roomId,
+                            },
+                          },
+                        },
+                        {
+                          rooms: {
+                            some: {
+                              roomId: roomId,
+                            },
+                          },
+                        },
+                        {
+                          roomInvites: {
+                            some: {
+                              id: roomId,
+                            },
+                          },
+                        },
+                      ],
+                      },
+                    },
+                  },
+                ],
+              },
+              take: 5,
+              select: {
+                receiver: {
+                  select: {
+                    id: true,
+                    userName: true,
+                    image: true,
+                    bannedFrom: true,
+                  },
+                },
+              },
+            },
+            friendRequests: {
+              where: {
+                AND: [
+                  {accepted: true},
+                  {
+                    sender: {
+                      NOT: {
+                        OR: [
+                          {
+                          bannedFrom: {
+                            some: {
+                              id: roomId,
+                            },
+                          },
+                        },
+                        {
+                          rooms: {
+                            some: {
+                              roomId: roomId,
+                            },
+                          },
+                        },
+                        {
+                          roomInvites: {
+                            some: {
+                              id: roomId,
+                            },
+                          },
+                        },
+                      ]
+                      },
+                    },
+                  },
+                ],
+              },
+              take: 5,
+              select: {
+                sender: {
+                  select: {
+                    id: true,
+                    userName: true,
+                    image: true,
+                    bannedFrom: true,
+                  },
+                },
+              },
+            }
+          },
+      });
+
+      // console.log(JSON.stringify(user, null, 2));
+
+      // for (let person of user?.friendRequests) {
+      //   console.log(person);
+      // }
+      // console.log('\n');
+      // for (let person of user?.sentRequests) {
+      //   console.log(person);
+      // }
+
+      if (user?.sentRequests.length) {
+        nbUsers = user?.sentRequests.length > 5 ? 5 : user?.sentRequests.length;
+        usersInvited = user?.sentRequests.map(user => {
+          return {
+            id: user.receiver.id,
+            roomId: roomId,
+            userName: user.receiver.userName,
+            pic: user.receiver.image
+          }
+        });
+      }
+
+      if (nbUsers < 5) {
+          for (let person of user?.friendRequests) {
+            if (nbUsers >= 5)
+                break ;
+            // usersInvited = [...usersInvited, {id: person.sender.id, roomId: roomId, userName: person.sender.userName, pic: person.sender.image}];
+            usersInvited.push({id: person.sender.id, roomId: roomId, userName: person.sender.userName, pic: person.sender.image});
+            nbUsers++;
+          }
+      }
+
+      if (nbUsers < 5) {
+
+        const exclude :number[] = usersInvited.map(User => {
+          const {id} = User;
+          return id;
+        });
+
+        const newUsers = await this.prisma.user.findMany({
+          where: {
+            NOT: [
+              {
+                id: {
+                  in: exclude,
+                },
+              },
+              {bannedFrom: {
+                some: {
+                  id: roomId,
+                }
+              }},
+              {roomInvites: {
+                some: {
+                  id: roomId,
+                }
+              }},
+              {rooms: {
+                some: {
+                  roomId: roomId,
+                },
+              }},
+            ],
+          },
+          take: 5 - nbUsers,
+          orderBy: {
+            id: 'desc',
+          },
+          select: {
+            id: true,
+            userName: true,
+            image: true,
+          },
+        })
+        // console.log("NewUser:", newUsers);
+        for (let person of newUsers) {
+          if (nbUsers >= 5)
+              break ;
+            console.log(person);
+            // usersInvited = [...usersInvited, {id: person.sender.id, roomId: roomId, userName: person.sender.userName, pic: person.sender.image}];
+          usersInvited.push({id: person.id, roomId: roomId, userName: person.userName, pic: person.image});
+          nbUsers++;
+        }
+      }
+
+      console.log(usersInvited);
+
+      return usersInvited;
+    } catch (e) {
+      console.log(e);
+      return [];
+    }
+  }
+
+  async handleInviteUser(ownerId: number, userId: number, roomId: number) {
+
+    console.log(userId);
+
+    try {
+      const checkOwer = await this.prisma.room.findUnique({
+        where: {
+          id: roomId,
+        },
+        include: {
+          users: {
+            where: {
+              user: {
+                // OR: [
+                id: ownerId,
+                  // {id: userId},
+                // ],
+              },
+            },
+            select: {
+              id: true,
+              userRole: true,
+            }
+          },
+          banned: {
+            where: {
+              id: userId,
+            },
+            select: {
+              id: true,
+            }
+          }
+        },
+      });
+
+      if (checkOwer?.users[0]?.userRole === 'OWNER' && !checkOwer?.banned[0]) {
+        // await this.prisma.room.update({
+        //   where: {
+        //     id: roomId,
+        //   },
+        //   data: {
+        //     invites: {
+        //       connect: {
+        //         id: userId,
+        //       }
+        //     }
+        //   }
+        // });
+        await this.prisma.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            roomInvites: {
+              connect: {
+                id: roomId,
+              }
+            }
+          }
+        });
+
+        return {status: 1, message: 'User invited Successfully !'};
+      }
+      // Check if the userId is not banned and not in the room
+      return {status: 0, message: 'Something Wrong !'};
+
+    } catch (e) {
+      console.log(e);
+      return {status: 0, message: 'Something Wrong !'};
+    }
+  }
+
+  async inviteAccept(userId: number, roomId :number, accept :boolean) {
+    try {
+      const checkInvite = await this.prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+        include: {
+          roomInvites: {
+            where: {
+              id: roomId,
+            },
+            select: {
+              id: true,
+            }
+          }
+        }
+      });
+
+      if (checkInvite.roomInvites.length) {
+        await this.prisma.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            roomInvites: {
+              disconnect: {
+                id: roomId,
+              },
+            }
+          }
+        });
+        if (accept)
+          return this.joinRoom(userId, roomId);
+        // else {
+        // }
+
+        return {status: 1, message: 'User denied the invite successfully !'};
+      }
+
+      return {status: 0, message: 'User has not privileges !'};
+
+    } catch (e) {
+      console.log(e);
+      return {status: 0, message: 'Something wrong !'};
+    }
+  }
+
+  async findUser(userId: number, roomId: number, name :string) {
+    try {
+      const mainUser = await this.prisma.user.findMany({
+        where: {
+            userName: {
+            contains: name,
+            mode: 'insensitive',
+          },
+          NOT: {
+            id: userId,
+          }
+        },
+        include: {
+          bannedFrom: {
+            where: {
+              id: roomId,
+            }
+          },
+          roomInvites: {
+            where: {
+              id: roomId,
+            },
+            select: {
+              id: true,
+            }
+          },
+          rooms: {
+            where: {
+              roomId: roomId,
+            },
+            select: {
+              id: true,
+            }
+          }
+        }
+      });
+
+      // console.log(mainUser);
+      // console.log('\n');
+      const newData = mainUser.filter(user => !user.bannedFrom.length && !user.roomInvites.length && !user.rooms.length).map(user => {
+        return {
+          id: user.id,
+          roomId: roomId,
+          userName: user.userName,
+          pic: user.image,
+        }
+      })
+
+      console.log(newData);
+
+      return newData;
+
+    } catch (e) {
+      console.log(e);
+      return [];
+    }
+  }
 }
+
+// id			:number
+// roomId		:number
+// userName	:string
+// pic			:string

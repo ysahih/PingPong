@@ -149,7 +149,13 @@ CREATE TABLE "_ConverstaionToUser" (
 );
 
 -- CreateTable
-CREATE TABLE "_RoomToUser" (
+CREATE TABLE "_bannedList" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "_invitesList" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
 );
@@ -194,10 +200,16 @@ CREATE UNIQUE INDEX "_ConverstaionToUser_AB_unique" ON "_ConverstaionToUser"("A"
 CREATE INDEX "_ConverstaionToUser_B_index" ON "_ConverstaionToUser"("B");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "_RoomToUser_AB_unique" ON "_RoomToUser"("A", "B");
+CREATE UNIQUE INDEX "_bannedList_AB_unique" ON "_bannedList"("A", "B");
 
 -- CreateIndex
-CREATE INDEX "_RoomToUser_B_index" ON "_RoomToUser"("B");
+CREATE INDEX "_bannedList_B_index" ON "_bannedList"("B");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_invitesList_AB_unique" ON "_invitesList"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_invitesList_B_index" ON "_invitesList"("B");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_ReadByToUser_AB_unique" ON "_ReadByToUser"("A", "B");
@@ -254,10 +266,16 @@ ALTER TABLE "_ConverstaionToUser" ADD CONSTRAINT "_ConverstaionToUser_A_fkey" FO
 ALTER TABLE "_ConverstaionToUser" ADD CONSTRAINT "_ConverstaionToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_RoomToUser" ADD CONSTRAINT "_RoomToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "Room"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_bannedList" ADD CONSTRAINT "_bannedList_A_fkey" FOREIGN KEY ("A") REFERENCES "Room"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_RoomToUser" ADD CONSTRAINT "_RoomToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_bannedList" ADD CONSTRAINT "_bannedList_B_fkey" FOREIGN KEY ("B") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_invitesList" ADD CONSTRAINT "_invitesList_A_fkey" FOREIGN KEY ("A") REFERENCES "Room"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_invitesList" ADD CONSTRAINT "_invitesList_B_fkey" FOREIGN KEY ("B") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_ReadByToUser" ADD CONSTRAINT "_ReadByToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "ReadBy"("id") ON DELETE CASCADE ON UPDATE CASCADE;

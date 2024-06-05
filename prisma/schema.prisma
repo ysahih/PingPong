@@ -40,7 +40,8 @@ model User {
   level          Float             @default(0)
   lossCounter    Int           @default(0) 
   winCounter    Int           @default(0) 
-  bannedFrom      Room[]
+  bannedFrom      Room[] @relation("bannedList")
+  roomInvites     Room[] @relation("invitesList")
   @@map("Users")
 }
 
@@ -146,7 +147,8 @@ model Room {
 
     users    UserRoom[]
     messages Message[]
-    banned    User[]
+    banned    User[] @relation("bannedList")
+    invites    User[] @relation("invitesList")
 
     // lastMsjAt DateTime
 }
