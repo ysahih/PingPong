@@ -43,6 +43,7 @@
 	width: 90px;
 	height: 90px;
 	border-radius: 10px;
+	border-top: solid 1px #0064FB;
 	/* border: #babbc2 solid 2px; */
 	/* padding: 3px; */
 }

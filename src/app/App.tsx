@@ -25,8 +25,8 @@ import {
 } from "./Game/Gamecontext/gamecontext";
 import UserDataContext from "@/components/context/context";
 import SocketContext from "@/components/context/socket";
-import CreateRoom from "./createRoom/createRoom";
-import RoomSettings from "./RoomSettings/roomSettings";
+import CreateRoom from "../components/createRoom/createRoom";
+import RoomSettings from "../components/roomComponents/roomSettings";
 import JoinRoom from "./joinRoom/joinRoom";
 import { CircularProgress } from "@mui/material";
 
@@ -91,7 +91,6 @@ export const Tables = () => {
 };
 
 const Match: React.FC<{ user: History }> = (props) => {
-
   return (
     <div className="match">
       <div className="opponent w-[30%] xl:mr-[-20%] mr-[-40%]">

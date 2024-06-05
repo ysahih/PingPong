@@ -345,16 +345,29 @@
 }
 
 .chatheader{
-    
     display: flex;
     margin-left: 10%;
     margin-bottom: 15px;
     gap: 8px;
     margin-top: 50px;
+    /* ADDED ! */
+    height: 30px;
+    width: 80%;
+    justify-content: space-between;
 
 }
 
-.chatheader h2{
+/* ADDED */
+.chatheader__header {
+    display: inline;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 5px;
+}
+
+/* ADD JSUT THE CLASS */
+.chatheader__header h2{
     font-family: Inter;
     font-size: 15px;
     margin-top: -1px;
@@ -362,7 +375,51 @@
     color: #FFFFFF;
 }
 
+.chatheader__btns {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 10px;
+}
 
+.chatheader__btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border-style: none;
+    transition: .2s;
+}
+
+.url--invite {
+    background-image: url('../../public/RoomSettings/RoomInvits.svg') !important;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    background-size: 100% 100%;
+}
+
+.url--invite:hover {
+    background-image: url('../../public/RoomSettings/RoomInvitsClicked.svg') !important;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    background-size: 100% 100%;
+}
+
+.url--create {
+    background-image: url('../../public/RoomSettings/AddRooms.svg') !important;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    background-size: 100% 100%;
+}
+
+.url--create:hover {
+    background-image: url('../../public/RoomSettings/AddRoomsClicked.svg') !important;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    background-size: 100% 100%;
+}
 
 .chatholder{
     margin: 0px auto;

@@ -1,10 +1,10 @@
-import { ROOMTYPE } from "../createRoom/interfaces"
+import { ROOMTYPE } from "../../components/createRoom/interfaces";
 
 export interface JoinRoomDTO {
-    id      :number
-    name    :string
-    image   :string
-    type    :ROOMTYPE
+  id: number;
+  name: string;
+  image: string;
+  type: ROOMTYPE;
 }
 
 // {

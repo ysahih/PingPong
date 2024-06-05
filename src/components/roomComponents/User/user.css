@@ -65,6 +65,7 @@
     font-family: 'Inter', cursive;
     font-size: 16px;
     margin-bottom: 5px;
+    margin-bottom: 2px;
 }
 
 .user__profile--role--settings {
@@ -160,6 +161,7 @@
     height: 22px;
     border: none;
     opacity: 1;
+    transition-delay: .1s;
 }
 
 .user__profile--btn--enabled:hover {

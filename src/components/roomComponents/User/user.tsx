@@ -9,7 +9,7 @@ import SocketContext from "@/components/context/socket";
 import axios from "axios";
 import { RoomUsers } from "../interfaces";
 
-const User :React.FC<{user :RoomUsers, curUser :RoomUsers | null, name :string, updateUsers :Dispatch<SetStateAction<RoomUsers[]>>, updateCurUser :Dispatch<SetStateAction<RoomUsers | null>>}> = (userProp) => {
+const User :React.FC<{user :RoomUsers, curUser :RoomUsers | null, updateUsers :Dispatch<SetStateAction<RoomUsers[]>>, updateCurUser :Dispatch<SetStateAction<RoomUsers | null>>}> = (userProp) => {
 
     const [user, setUser] = useState<RoomUsers>(userProp.user);
     const [disableAdmin, setDisableAdmin] = useState<boolean>(false);
@@ -49,9 +49,9 @@ const User :React.FC<{user :RoomUsers, curUser :RoomUsers | null, name :string, 
         if (response.data.status) {
             socket?.emit('userStatusInRoom', {
                 fromId: curUser?.userId,
-                userName: newUser.userName,
+                // userName: newUser.userName,
                 userId: newUser.userId,
-                roomName: userProp.name,
+                // roomName: userProp.name,
                 roomId: newUser.roomId,
                 role: newUser.role,
                 isMuted: newUser.isMuted
@@ -86,7 +86,7 @@ const User :React.FC<{user :RoomUsers, curUser :RoomUsers | null, name :string, 
                 adminId: curUser?.userId,
                 userId: user.userId,
                 roomId: user.roomId,
-                roomName: userProp.name,
+                // roomName: userProp.name,
             });
         }
 
@@ -98,7 +98,7 @@ const User :React.FC<{user :RoomUsers, curUser :RoomUsers | null, name :string, 
             <div className="user__profile--pic--wrapper">
                 <Image src={user.image ? user.image : defaultPic.src} width={75} height={75} alt="user pic" className="user__profile--pic" />
             </div>
-            <p className="user__profile--username">{user.userName}</p>
+            <p className="user__profile--username" title={user.userName}>{user.userName.length > 10 ? user.userName.slice(0, 10) + "..." : user.userName} </p>
             <p className="user__profile--role">{user.role}</p>
 
             {/* TODO: Add a mute sign if the user was muted */}
@@ -111,18 +111,11 @@ const User :React.FC<{user :RoomUsers, curUser :RoomUsers | null, name :string, 
                         <FormControlLabel control={<OverSwitch size="small" name="switch" id={user.userName + "2"} />} label={"Mute"} checked={user.isMuted} className="user__profile--role" onChange={() => handleStatus('mute')} disabled={disableMute}/>
                     </FormGroup>
 
-                    <div className="user__profile--settings">
+                    {/* <div className="user__profile--settings"> */}
 
-                        {/* <div className="user__profile--btn--wrapper">
-                            <Image ref={kickImg} className={disablKick ? "user__profile--btn--clicked" : "user__profile--btn"} src={kickUser.src} width={20} height={20} alt="Kick user svg" onClick={handleKick}/>
-                        </div>
-
-                        <div className="user__profile--btn--wrapper">
-                            <Image className="user__profile--btn" src={banUser.src} width={20} height={20} alt="Ban user svg" />
-                        </div> */}
                         {/* <div className="user__profile--btn--wrapper"> */}
                             {/* <button type={!disablKick ? "submit" : "button"} className={!disablKick ? "user__profile--btn--enabled" : "user__profile--btn--disabled"} onClick={handleKick}></button> */}
-                            {
+                            {/* {
                                 !disableKick ?
                                 <button type="submit" className="user__profile--btn--enabled url--kick" onClick={() => handleKick('kick')}></button> :
                                 <Image src={loading} width={20} height={20} className="user__profile--loading" alt="Loading logo"/>
@@ -132,10 +125,10 @@ const User :React.FC<{user :RoomUsers, curUser :RoomUsers | null, name :string, 
                                 !disableBan ? 
                                 <button type="submit" className="user__profile--btn--enabled url--ban" onClick={() => handleKick('ban')}></button> :
                                 <Image src={loading} width={20} height={20} className="user__profile--loading" alt="Loading logo"/>
-                            }
+                            } */}
                         {/* </div> */}
 
-                    </div>
+                    {/* </div> */}
                 </>
             }
             {
@@ -146,15 +139,8 @@ const User :React.FC<{user :RoomUsers, curUser :RoomUsers | null, name :string, 
                         <FormControlLabel control={<OverSwitch size="small" name="switch" id={user.userName + "2"} />} label={"Mute"} checked={user.isMuted} className="user__profile--role" onChange={() => handleStatus('mute')} disabled={disableMute}/>
                     </FormGroup>
 
-                    <div className="user__profile--settings">
+                    {/* <div className="user__profile--settings">
 
-                        {/* <div className="user__profile--btn--wrapper">
-                            <Image className="user__profile--btn" src={kickUser.src} width={20} height={20} alt="Kick user svg" onClick={handleKick}/>
-                        </div>
-
-                        <div className="user__profile--btn--wrapper">
-                            <Image className="user__profile--btn" src={banUser.src} width={20} height={20} alt="Ban user svg" />
-                        </div> */}
 
                             {
                                 !disableKick ?
@@ -166,8 +152,33 @@ const User :React.FC<{user :RoomUsers, curUser :RoomUsers | null, name :string, 
                                 <button type="submit" className="user__profile--btn--enabled url--ban" onClick={() => handleKick('ban')}></button> :
                                 <Image src={loading} width={20} height={20} className="user__profile--loading" alt="Loading logo"/>
                             }
-                    </div>
+                    </div> */}
+
                 </>
+            }
+            {
+                ((curUser?.role === 'OWNER' && user.role !== 'OWNER') || (curUser?.role === 'ADMIN' && user.role === 'USER')) &&
+                <div className="user__profile--settings">
+
+                    {/* <div className="user__profile--btn--wrapper">
+                        <Image className="user__profile--btn" src={kickUser.src} width={20} height={20} alt="Kick user svg" onClick={handleKick}/>
+                    </div>
+
+                    <div className="user__profile--btn--wrapper">
+                        <Image className="user__profile--btn" src={banUser.src} width={20} height={20} alt="Ban user svg" />
+                    </div> */}
+
+                        {
+                            !disableKick ?
+                            <button type="submit" className="user__profile--btn--enabled url--kick" onClick={() => handleKick('kick')} title="Kick user"></button> :
+                            <Image src={loading} width={20} height={20} className="user__profile--loading" alt="Loading logo"/>
+                        }
+                        {
+                            !disableBan ? 
+                            <button type="submit" className="user__profile--btn--enabled url--ban" onClick={() => handleKick('ban')} title="Ban user"></button> :
+                            <Image src={loading} width={20} height={20} className="user__profile--loading" alt="Loading logo"/>
+                        }
+                </div>
             }
         </div>
     );

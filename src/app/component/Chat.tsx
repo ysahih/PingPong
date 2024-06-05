@@ -2,7 +2,7 @@
 
 import { CircularProgress } from "@mui/material";
 import { RiSendPlaneFill } from "react-icons/ri";
-import { use, useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useContext } from "react";
 import { ChatData } from "./Dto/Dto";
@@ -21,15 +21,30 @@ import type { Message } from "./Dto/Dto";
 import TimeAgo from "javascript-time-ago";
 import { getTimeAgo } from "./timeAgo";
 import { useRouter } from "next/navigation";
+
 import UserStateContext from "@/components/context/userSate";
 import ProfileDataContext from "@/components/context/profilDataContext";
 import { stat } from "fs";
 
+
 const Header = () =>{
-    return(
+    const rout = useRouter();
+
+    const handleClick = (e :React.MouseEvent<HTMLElement>, action :'invite' | 'create') => {
+        e.preventDefault();
+        action === 'invite' ? rout.push('/roomInvites') : rout.push('/createRoom');
+    }
+
+    return (
         <div className="chatheader">
-            <Image src="/homeImages/chat.svg" alt="logo" width={19} height={17}/>
-            <h2>General Chat</h2>
+            <div className="chatheader__header">
+                <Image src="./homeImages/chat.svg" alt="logo" width={19} height={17}/>
+                <h2>General Chat</h2>
+            </div>
+            <div className="chatheader__btns">
+                <button className="chatheader__btn url--invite" onClick={e => handleClick(e, 'invite')}></button>
+                <button className="chatheader__btn url--create" onClick={e => handleClick(e, 'create')}></button>
+            </div>
         </div>
     );
 }

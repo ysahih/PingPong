@@ -20,6 +20,14 @@ export interface UpdateStatusRoom {
 }
 
 export interface KickBanUser {
-	roomName	:string
+	// roomName	:string
 	userId		:number
+	roomId		:number
+}
+
+export interface UserInvited {
+	id			:number
+	roomId		:number
+	userName	:string
+	pic			:string
 }
