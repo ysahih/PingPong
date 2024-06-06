@@ -109,6 +109,7 @@ const UserOption = ( { className }: userOptionClass ) => {
 
 type Props = {
     handleMsgClick: (value:number) => void;
+    setIsRoom: (value: Boolean) => void;
     user : ChatData;
 };
 
@@ -142,14 +143,17 @@ const More = ({user}: {user: ChatData})=> {
 
 
 
-const Message = ({handleMsgClick, user } : Props) =>{
+const Message = ({handleMsgClick, user, setIsRoom} : Props) =>{
 
    
 
     return (
         <div className="Message">
 
-            <div className="chatData" onClick={()=>{handleMsgClick(user.id)}}>
+            <div className="chatData" onClick={()=>{
+                handleMsgClick(user.id)
+                setIsRoom(user.isRoom)
+                }}>
                 <div className="picture">
                     <Image className="profilepic" src={user?.image? user.image : "/homeImages/memeber1.svg"} alt="member"width={38} height={38} />
                 </div>
@@ -173,11 +177,12 @@ const Message = ({handleMsgClick, user } : Props) =>{
     handleMsgClick: (value:number) => void;
     inConvo: Message;
     userId: number;
+    isRoom: Boolean;
     updateChat: (newChatData: ChatData) =>void
     handleConvo : () => void;
 };
 
-const Conversation = (props : ConvoProps) =>{
+const Conversation = (props: ConvoProps) =>{
 
     const socket = useContext(SocketContext);
     const sender  = useContext(UserDataContext);
@@ -235,6 +240,7 @@ const Conversation = (props : ConvoProps) =>{
                 to: props.userId,
                 message: Input,
                 createdAt: new Date(Date.now()),
+                isRoom : props.isRoom,
             });
         }, 1000);
       
@@ -268,7 +274,7 @@ const Conversation = (props : ConvoProps) =>{
                 
                 // const request = userId > 0 ? process.env.NEST_API + '/user/messages?id=' + userId.toString()
                 //                 : process.env.NEST_API + '/user/messages?roomName=' + roomName;
-                const response = await axios.get(process.env.NEST_API + '/user/messages?id=' + props.userId.toString(), {
+                const response = await axios.get(process.env.NEST_API + '/user/messages?id=' + props.userId.toString() + '&isRoom=' + props.isRoom, {
                     withCredentials: true,
                 });
                 setConvo(response.data);
@@ -377,6 +383,7 @@ const Chat = () => {
     const socket = useContext(SocketContext);
     const Convo = useContext(ChatContext);
     const [inConvo, setInConvo]  = useState<Message>();
+    const [isRoom, setIsRoom] = useState<Boolean>(false);
 
     const appendChat = (newChatData: ChatData) => {
         setChatdata((prevConvo) => {
@@ -439,11 +446,11 @@ const Chat = () => {
                         
                         <div className="messagesHolder">
                             {chatdata ? chatdata.map((user: ChatData, index) => (
-                                <Message key={index} handleMsgClick= {()=>Convo?.setChat(user.id)} user={user}/>
+                                <Message key={index} handleMsgClick={()=>Convo?.setChat(user.id)} setIsRoom={setIsRoom} user={user}/>
                             )) : null}
                         </div>
                     </div>}
-                {Convo?.chat !== 0 && <Conversation updateChat={updateChat} handleMsgClick={()=>Convo?.setChat(0)} userId={Convo?.chat!} handleConvo={()=>setInConvo({content: "", createdAt: new Date(), senderID: 0})} inConvo={inConvo!} />}
+                {Convo?.chat !== 0 && <Conversation updateChat={updateChat} isRoom={isRoom} handleMsgClick={()=>Convo?.setChat(0)} userId={Convo?.chat!} handleConvo={()=>setInConvo({content: "", createdAt: new Date(), senderID: 0})} inConvo={inConvo!} />}
                 
             </div>
 
