@@ -87,14 +87,14 @@ interface userOptionClass{
     className: string;
 }
 
+{/* <div className="block">
+    <Image className="optionlogo" src="/homeImages/chat.svg" alt="logo" width={19} height={17}/>
+    <p>Block</p>
+</div>
+<hr className="liney"></hr> */}
 const UserOption = ( { className }: userOptionClass ) => {
     return (
         <div  className={`userOption ${className}`}>
-            {/* <div className="block">
-                <Image className="optionlogo" src="/homeImages/chat.svg" alt="logo" width={19} height={17}/>
-                <p>Block</p>
-            </div>
-            <hr className="liney"></hr> */}
             <div className="clash">
                 <Image className="optionlogo" 
                     src="/homeImages/chat.svg" 
@@ -109,7 +109,7 @@ const UserOption = ( { className }: userOptionClass ) => {
 
 type Props = {
     handleMsgClick: (value:number) => void;
-    setIsRoom: (value: Boolean) => void;
+    setIsRoom: (value: boolean) => void;
     user : ChatData;
 };
 
@@ -145,14 +145,12 @@ const More = ({user}: {user: ChatData})=> {
 
 const Message = ({handleMsgClick, user, setIsRoom} : Props) =>{
 
-   
-
     return (
         <div className="Message">
 
             <div className="chatData" onClick={()=>{
-                handleMsgClick(user.id)
-                setIsRoom(user.isRoom)
+                setIsRoom(user.isRoom);
+                handleMsgClick(user.id);
                 }}>
                 <div className="picture">
                     <Image className="profilepic" src={user?.image? user.image : "/homeImages/memeber1.svg"} alt="member"width={38} height={38} />
@@ -177,7 +175,7 @@ const Message = ({handleMsgClick, user, setIsRoom} : Props) =>{
     handleMsgClick: (value:number) => void;
     inConvo: Message;
     userId: number;
-    isRoom: Boolean;
+    isRoom: boolean;
     updateChat: (newChatData: ChatData) =>void
     handleConvo : () => void;
 };
@@ -242,7 +240,7 @@ const Conversation = (props: ConvoProps) =>{
                 createdAt: new Date(Date.now()),
                 isRoom : props.isRoom,
             });
-        }, 1000);
+        }, 1500);
       
           const newMessage = { content: Input, userId: sender?.id, createdAt: Date.now()};
           appendMessage(newMessage);
@@ -271,12 +269,16 @@ const Conversation = (props: ConvoProps) =>{
     useEffect(()=>{
         const fetchConvo  = async () =>{
             try{
-                
-                // const request = userId > 0 ? process.env.NEST_API + '/user/messages?id=' + userId.toString()
-                //                 : process.env.NEST_API + '/user/messages?roomName=' + roomName;
-                const response = await axios.get(process.env.NEST_API + '/user/messages?id=' + props.userId.toString() + '&isRoom=' + props.isRoom, {
+                const response = await axios.get(process.env.NEST_API + '/user/messages', {
+                    params: {
+                        id: props.userId,
+                        isRoom: props.isRoom ? 1 : 0,
+                    },
                     withCredentials: true,
                 });
+
+                console.log(response.data);
+
                 setConvo(response.data);
 
                 if (response.data.inGame)
@@ -383,11 +385,11 @@ const Chat = () => {
     const socket = useContext(SocketContext);
     const Convo = useContext(ChatContext);
     const [inConvo, setInConvo]  = useState<Message>();
-    const [isRoom, setIsRoom] = useState<Boolean>(false);
+    const [isRoom, setIsRoom] = useState<boolean>(false);
 
     const appendChat = (newChatData: ChatData) => {
         setChatdata((prevConvo) => {
-          if (prevConvo) {
+        if (prevConvo) {
             const updatedConvo = [ newChatData, ...prevConvo ];
             return updatedConvo;
         }
@@ -402,6 +404,7 @@ const Chat = () => {
                 const response = await axios.get(process.env.NEST_API + '/user/conversation', {
                     withCredentials: true,
                 });
+                console.log('Convs:', response.data);
                 setChatdata([...response.data].reverse());
             } catch (error) {
                 console.error('Error fetching data:', error);

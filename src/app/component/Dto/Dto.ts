@@ -12,7 +12,7 @@ export type ChatData = {
     lastMessage: string,
     isOnline: Boolean,
     isRead: Boolean,
-    isRoom: Boolean,
+    isRoom: boolean,
     createdAt: Date
 }
 
