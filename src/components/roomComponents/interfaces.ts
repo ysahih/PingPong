@@ -31,3 +31,9 @@ export interface UserInvited {
 	userName	:string
 	pic			:string
 }
+
+export interface Banned {
+	id			:number
+	userName	:string
+	image		:string
+}

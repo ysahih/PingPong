@@ -213,18 +213,13 @@ const RoomUpdate: FC<{id: number, type: ROOMTYPE | undefined, setType: Dispatch<
 
           <div id="div3" className="roomUpdate__type__wrapper">
             {/* {
-                            updateProp.type !== ROOMTYPE.PRIVATE && */}
+              updateProp.type !== ROOMTYPE.PRIVATE && */}
             <button
               type="button"
-              className={
-                selcType === ROOMTYPE.PRIVATE
-                  ? "roomUpdate__type--pressed"
-                  : "roomUpdate__type"
-              }
+              className={selcType === ROOMTYPE.PRIVATE ? "roomUpdate__type--pressed" : "roomUpdate__type"}
               onClick={(e) => handleOnClick(ROOMTYPE.PRIVATE, e)}
-            >
-              {" "}
-              Private{" "}
+              >
+              Private
             </button>
             {/* } */}
 
@@ -239,13 +234,12 @@ const RoomUpdate: FC<{id: number, type: ROOMTYPE | undefined, setType: Dispatch<
               }
               onClick={(e) => handleOnClick(ROOMTYPE.PUBLIC, e)}
             >
-              {" "}
-              Public{" "}
+              Public
             </button>
             {/* } */}
 
             {/* {
-                            updateProp.type !== ROOMTYPE.PROTECTED && */}
+              updateProp.type !== ROOMTYPE.PROTECTED && */}
             <button
               type="button"
               className={
@@ -255,8 +249,7 @@ const RoomUpdate: FC<{id: number, type: ROOMTYPE | undefined, setType: Dispatch<
               }
               onClick={(e) => handleOnClick(ROOMTYPE.PROTECTED, e)}
             >
-              {" "}
-              Protected{" "}
+              Protected
             </button>
             {/* } */}
           </div>

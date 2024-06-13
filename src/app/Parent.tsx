@@ -148,6 +148,9 @@ export default function Parent({ children }: { children: React.ReactNode }) {
 
     const socket = io(process.env.NEST_API ?? "", {
       withCredentials: true,
+      // transports: ['websocket', 'polling'],
+      // timestampParam: ,
+      // timestampRequests: ,
       // autoConnect: true by default, so no need to explicitly call connect()
     });
 

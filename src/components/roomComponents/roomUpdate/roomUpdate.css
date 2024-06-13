@@ -1,9 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 
 .roomUpdate__wrapper {
-    margin-top: 20px;
-    height: 400px;
-    width: 100%;
+    height: 100%;
+    width: 50%;
     background-color: #070F2B;
     border-top: solid 2px #1B266B;
     border-radius: 20px;
@@ -23,7 +22,8 @@
     /* width: 90%; */
     margin: 0 40px;
     display: flex;
-	flex-flow: row wrap;
+	flex-flow: column;
+	align-items: center;
     gap: 30px;
 }
 
@@ -139,11 +139,14 @@ input[type="file"] {
 }
 
 .roomUpdate__type__wrapper {
+	margin: 0 auto;
     background-color: inherit;
 	display: flex;
-	flex-flow: row nowrap;
+	/* flex-flow: row nowrap; */
 	justify-content: space-between;
-	/* gap: 15px; */
+	/* align-items: center; */
+	max-width: 285px;
+	gap: 15px;
 }
 
 .roomUpdate__type {
@@ -202,10 +205,11 @@ input[type="file"] {
 	color: #1ECDF8;
 }
 
-@media (max-width: 522px) {
+@media (max-width: 690px) {
 
 	.roomUpdate__wrapper {
-		height: 670px;
+		height: 630px;
+		width: 100%;
 	}
 
 	.updateRoom__header {
@@ -222,7 +226,7 @@ input[type="file"] {
 	}
 
 	.roomUpdate__form--wrapper {
-		margin: 0;
+		margin: 30px auto;
 		justify-content: center;
 	}
 
@@ -254,5 +258,11 @@ input[type="file"] {
 
 	.roomUpdate__label {
 		font-size: 12px;
+	}
+}
+
+@media (max-width: 308px) {
+	.roomUpdate__form--wrapper {
+		margin: 0;
 	}
 }

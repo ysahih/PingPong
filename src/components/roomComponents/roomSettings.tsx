@@ -6,6 +6,7 @@ import RoomUpdate from "./roomUpdate/roomUpdate";
 import { ROOMTYPE } from "../createRoom/interfaces";
 import axios from "axios";
 import SocketContext from "@/components/context/socket";
+import BannedUsers from "./bannedUsers/BannedUsers";
 
 export interface RoomData {
   type: ROOMTYPE;
@@ -62,7 +63,12 @@ const RoomSettings: FC<{ name: string }> = (roomProp) => {
         <>
           <RoomUser id={id} settings={setSettings} setOwnerId={setOwnerId} />
           {roomType === "PRIVATE" && <InviteFriends id={ownerId} roomId={id} />}
-          {settings && (<RoomUpdate id={id} type={roomType} setType={setRoomType} ownerId={ownerId} /> )}
+          {settings && (
+            <div className="settings--wrapper">
+              <RoomUpdate id={id} type={roomType} setType={setRoomType} ownerId={ownerId} /> 
+              <BannedUsers roomId={id} />
+            </div>
+          )}
         </>
       )}
     </div>

@@ -62,7 +62,6 @@
 
 .invite__friends__inform {
     margin: 0 auto;
-    color: #959dc8;
     display: flex;
     flex-flow: column;
     justify-content: center;
@@ -70,6 +69,7 @@
 }
 
 .invite__friends__inform p {
+    color: #959dc8;
     font-family: 'inter';
     font-size: 15px;
 }

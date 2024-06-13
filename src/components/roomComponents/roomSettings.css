@@ -7,11 +7,17 @@
 	overflow-y: auto; */
 }
 
-/* h1 {
-    color: #8A99E9;
-	font-family: "Lalezar";
-	font-size: 50px;
-	font-size: 32px;
-	margin: 20px 40px;
-	width: fit-content;
-} */
+.settings--wrapper {
+	display: flex;
+	gap: 15px;
+	height: 550px;
+	margin-top: 20px;
+    margin-bottom: 50px;
+}
+
+@media (max-width: 690px) {
+	.settings--wrapper {
+		flex-flow: column;
+		height: 1200px;
+	}
+}

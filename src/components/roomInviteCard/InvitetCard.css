@@ -9,6 +9,7 @@
     justify-content: space-between;
     /* border: 1px solid white; */
     border-radius: 25px;
+    flex-shrink: 0;
 }
 
 .inviteCard:hover {
@@ -17,7 +18,7 @@
 
 .inviteCard__infos {
     display: flex;
-    /* flex-flow: row nowrap; */
+    flex-flow: row nowrap;
     gap: 7px;
     align-items: center;
     margin-left: 5px;

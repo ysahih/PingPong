@@ -10,10 +10,11 @@ export type ChatData = {
     userName: string,
     image: string,
     lastMessage: string,
-    isOnline: Boolean,
-    isRead: Boolean,
-    isRoom: boolean,
     createdAt: Date
+    isOnline: Boolean,
+    isRoom: boolean,
+    hasNoAccess: boolean,
+    isRead: Boolean,
 }
 
 

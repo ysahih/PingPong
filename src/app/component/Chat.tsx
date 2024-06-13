@@ -234,13 +234,14 @@ const Conversation = (props: ConvoProps) =>{
 
             setTimeout(() => {
             socket?.emit("directMessage", {
-                from: sender?.id,
-                to: props.userId,
-                message: Input,
-                createdAt: new Date(Date.now()),
-                isRoom : props.isRoom,
-            });
-        }, 1500);
+                    from: sender?.id,
+                    to: props.userId,
+                    message: Input,
+                    createdAt: new Date(Date.now()),
+                    isRoom : props.isRoom,
+                });
+                // TODO: Last message time - now() < 500ms ? 500ms : 0,
+            }, 2000);
       
           const newMessage = { content: Input, userId: sender?.id, createdAt: Date.now()};
           appendMessage(newMessage);
@@ -253,7 +254,8 @@ const Conversation = (props: ConvoProps) =>{
                             isOnline: false, // will be added
                             isRead: false, //will be removed
                             isRoom: false,
-                            createdAt: new Date()
+                            createdAt: new Date(),
+                            hasNoAccess: false
             });
           setInput('');
           if (inputRef.current)
@@ -290,7 +292,6 @@ const Conversation = (props: ConvoProps) =>{
             }
         }
         fetchConvo();
-        
     }, [props.userId]);
 
     //appending new messages that are passed as props 

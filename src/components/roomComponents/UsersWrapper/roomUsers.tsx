@@ -145,16 +145,15 @@ const RoomUser :React.FC<{id :number, settings :Dispatch<SetStateAction<boolean>
                 {
                     !!users.length &&
                     <div className="room__users____top--settings">
-
                         {
                             curUserStatus?.role === 'OWNER' &&
                             <>
                                 <div className="room__users__btn--wrapper">
                                     <button type="submit" className={`url--update ${update ? "room__user__btn--animation" : ''}`} onClick={handleUpdate}></button>
                                 </div>
-                                <div className="room__users__btn--wrapper">
+                                {/* <div className="room__users__btn--wrapper">
                                     <button type="submit" className="url--bannedUsers"></button>
-                                </div>
+                                </div> */}
                                 <div className="room__users__btn--wrapper">
                                     <button type="submit" className="url--delete"></button>
                                 </div>
