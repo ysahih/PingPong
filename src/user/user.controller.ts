@@ -98,14 +98,14 @@ export class UserController {
   @Get('conversation')
   @UseGuards(JwtAuthGuard)
   async GetConversation(@Req() req : Request){
-      return await this.FriendsService.Getconversation(req.user['userId']);
+    return await this.FriendsService.Getconversation(req.user['userId']);
   }
 
   @Get('messages')
   @UseGuards(JwtAuthGuard)
   async GetMessages(@Req() req :Request) {
 
-    return await this.FriendsService.message(req.user['userId'], Number(req.query['id']));
+    return await this.FriendsService.message(req.user['userId'], Number(req.query['id']), Number(req.query['isRoom']));
   }
 
   @Get('getSentInvits')
@@ -321,5 +321,11 @@ export class UserController {
     console.log(name);
 
     return await this.FriendsService.findUser(request.user['userId'], parseInt(roomId) ,name);
+  }
+
+  @Get('ban/:roomId')
+  @UseGuards(JwtAuthGuard)
+  async getBannedUsers(@Req() request :Request, @Param('roomId') roomId :string) {
+    return this.FriendsService.getBannedUsers(parseInt(roomId), request.user['userId']);
   }
 }

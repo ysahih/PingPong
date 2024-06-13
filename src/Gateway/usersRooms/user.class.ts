@@ -104,7 +104,7 @@ export class UsersServices {
   }
 
   // Create new conversation data at the user's map element
-  addNewConversation(payload: MessageDTO, newConvId: number): void {
+  addNewConversation(payload: MessageDTO, newConvId: number) {
     this._users.get(payload.from).DirectChat.push({
       id: newConvId,
       toUserId: payload.to,

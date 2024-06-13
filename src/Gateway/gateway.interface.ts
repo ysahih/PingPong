@@ -21,6 +21,9 @@ export class MessageDTO {
 	@IsNotEmpty()
 	@IsDateString()
 	createdAt :Date
+
+	@IsBoolean()
+	isRoom		:boolean
 }
 
 export class RoomDTO {
@@ -122,15 +125,16 @@ export class UserOutDTO {
 }
 
 export class ChatData {
-	id: number
-	userName: string
-	image: string
-	lastMessage: string
-	createdAt: Date
+	id				:number
+	userName		:string
+	image			:string
+	lastMessage		:string
+	createdAt		:Date
+	isOnline		:boolean
+	isRoom			:boolean
+	hasNoAccess	:boolean
 	// TODO: Handle This
-	isOnline: boolean
-	isRead: boolean
-	isRoom: boolean
+	isRead			:boolean
 }
 
 export class Messages {
@@ -143,6 +147,8 @@ export class ConvData {
 	id :number
 	userName :string
 	image :string
+	inGame :boolean
+	online :boolean
 	messages :Messages[]
 }
 

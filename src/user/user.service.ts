@@ -678,11 +678,11 @@ export class FriendsService {
         },
         select: {
           conv: {
-            orderBy: {
-              messages: {
-                _count: "asc",
-              },
-            },
+            // orderBy: {
+            //   messages: {
+            //     _count: "asc",
+            //   },
+            // },
             // select: {
             //   id: true,
             // },
@@ -711,25 +711,53 @@ export class FriendsService {
                   content: true,
                   createdAt: true,
                   userId: true,
-                  readBy: {
-                    select: {
-                      users: {
-                        select: {
-                          id: true,
-                        },
-                      },
-                    },
-                  },
+                  // readBy: {
+                  //   select: {
+                  //     users: {
+                  //       select: {
+                  //         id: true,
+                  //       },
+                  //     },
+                  //   },
+                  // },
                 },
               },
             },
           },
+          rooms: {
+            select: {
+              isMuted: true,
+              room: {
+                include: {
+                  messages: {
+                    orderBy: {
+                      id: 'desc',
+                    },
+                    take: 1,
+                    select: {
+                      // id: true,
+                      content: true,
+                      userId: true,
+                      createdAt: true,
+                    }
+                  }
+                }
+              }
+            }
+          }
         },
       });
+
+      // console.log("Menssages:", JSON.stringify(lastMessajes, null, 2));
   
       let sortedData = new Array<ChatData>();
   
-      if (lastMessajes?.conv) {
+      if (lastMessajes?.conv.length) {
+
+        const blockedUsers = await this.SearchCantShow(id);
+
+        // console.log(blockedUsers);
+
         lastMessajes.conv.forEach((conv) => {
           let orgConv = new ChatData();
   
@@ -738,44 +766,68 @@ export class FriendsService {
             orgConv.userName = conv.users[0].userName;
             orgConv.image = conv.users[0].image;
             orgConv.isOnline = conv.users[0].online;
+            // FIXME: Check this
+            orgConv.hasNoAccess = !!blockedUsers.find(id => id.id === conv.users[0].id);
+            orgConv.isRoom = false;
           }
           if (conv?.messages) {
             orgConv.lastMessage = conv.messages[0].content;
             orgConv.createdAt = conv.messages[0].createdAt;
-            if (conv?.messages[0].readBy)
-              orgConv.isRead = true;
-            else
-              orgConv.isRead = false;
-            orgConv.isRoom = false;
-            // FIXME: This is should be handled
           }
           if (orgConv)
             sortedData.push(orgConv);
         });
       }
+
+      if (lastMessajes?.rooms.length) {
+        lastMessajes.rooms.forEach((room) => {
+          let orgRoom = new ChatData();
   
+          // if (room?.) {
+            orgRoom.id = room.room.id;
+            orgRoom.userName = room.room.name;
+            orgRoom.image = room.room.image;
+            orgRoom.isOnline = false;
+          // }
+          // if (room?.room?.messages.length) {
+            orgRoom.lastMessage = room.room.messages[0]?.content || '';
+            orgRoom.createdAt = room.room.messages[0]?.createdAt || new Date(1970, 0, 1, 0, 0, 0, 0);
+            orgRoom.isRoom = true;
+            orgRoom.hasNoAccess = room.isMuted;
+          // }
+          if (orgRoom)
+            sortedData.push(orgRoom);
+        });
+      }
+
+      // console.log(sortedData);
+
       sortedData.sort((user1, user2) => {
         return (user1.createdAt.getTime() - user2.createdAt.getTime());
       })
+
       // console.log(sortedData);
 
       return sortedData;
     }
-    catch(err)
-      {
-        return null
-      }
+    catch(e) {
+      console.log(e);
+      return null;
+    }
   }
 
-  async message(userId: number, withUserId: number, isRoom :boolean = false) {
+  async message(userId: number, withUserId: number, isRoom :number) {
 
-    let user;
+    // console.log(userId);
+    // console.log(withUserId);
+    // console.log(isRoom);
+
     let convData = new ConvData();
 
     try {
       if (!isRoom)
       {
-        user = await this.prisma.user.findUnique({
+        const user = await this.prisma.user.findUnique({
           where: {
             id: withUserId,
           },
@@ -783,92 +835,105 @@ export class FriendsService {
             id: true,
             userName: true,
             image: true,
+            online: true,
+            inGame: true,
             conv: {
               where: {
                 AND: [
-                  {users: {some: {id: user}}},
+                  {users: {some: {id: userId}}},
                   {users: {some: {id: withUserId}}},
                 ],
               },
+              select:{
+                // users: {
+                //   where: {
+                //     id: {
+                //       not: userId,
+                //     },
+                //   },
+                //   select: {
+                //     online: true,
+                //     inGame: true,
+                //   }
+                // },
+                messages: {
+                  orderBy: {
+                    id: 'asc',
+                  },
+                  select: {
+                    content: true,
+                    userId: true,
+                    createdAt: true,
+                  }
+                }
+              }
             },
           },
         });
 
-        if (user)
-        {
+        // console.log(JSON.stringify(user, null, 2));
+
+        if (user){
           convData.id = user.id;
           convData.userName = user.userName;
           convData.image = user.image;
+          convData.inGame = user.inGame;
+          convData.online = user.online;
+          convData.messages = user.conv[0]?.messages || [];
         }
-
-        if (user?.conv)
-        {
-          const messages = await this.prisma.converstaion.findFirst({
-            where: {
-              AND: [
-                {users: {some: {id: userId}}},
-                {users: {some: {id: withUserId}}},
-              ]
+      }
+      else {
+        const room = await this.prisma.room.findUnique({
+          where: {
+            id: withUserId,
+          },
+          include: {
+            users: {
+              where: {
+                userId: userId,
+              },
+              select: {
+                id: true,
+              },
             },
-            select: {
+          }
+        });
+
+        // console.log(room);
+
+        if (room.users.length) {
+          const data = await this.prisma.room.findUnique({
+            where: {
+              id: withUserId,
+            },
+            include: {
               messages: {
                 orderBy: {
-                  createdAt: 'asc',
+                  id: 'asc',
                 },
                 select: {
                   content: true,
                   userId: true,
                   createdAt: true,
-                },
-              },
-            },
+                }
+              }
+            }
           });
 
-          convData.messages = messages ? messages.messages : [];
+          convData.id = data.id;
+          convData.userName = data.name;
+          convData.image = data.image;
+          convData.inGame = false;
+          convData.online = false;
+          convData.messages = data.messages;
         }
-      //   user = await this.prisma.converstaion.findFirst({
-      //     where: {
-      //       AND: [
-      //         {users: {some: {id: userId}}},
-      //         {users: {some: {id: withUserId}}},
-      //       ]
-      //     },
-      //     select: {
-      //       users: {
-      //         where: {
-      //           NOT: {
-      //             id: userId,
-      //           },
-      //         },
-      //         select: {
-      //           id: true,
-      //           userName: true,
-      //           image: true,
-      //         },
-      //       },
-      //       messages: {
-      //         orderBy: {
-      //           createdAt: 'asc',
-      //         },
-      //         select: {
-      //           content: true,
-      //           userId: true,
-      //         },
-      //       },
-      //     },
-      //   });
-      // }
-      // const convData :ConvData = {
-      //   id: user.users[0].id,
-      //   image: user.users[0].image,
-      //   userName: user.users[0].userName,
-      //   messages: user.messages,
       }
       // console.log(convData);
       // console.log(user);
       // console.log('--------------------------')
       return (convData);
     } catch (e) {
+      console.log(e);
       return null;
     }
   }
@@ -879,7 +944,7 @@ export class FriendsService {
       if (result)
       {
         if (result == "L")
-         { await this.prisma.user.update({
+          { await this.prisma.user.update({
           where:{
             id: userId,
           },
@@ -1428,8 +1493,6 @@ export class FriendsService {
         if (url)
           obj.image = url;
 
-        console.log("Object:", obj);
-
           const data = await this.prisma.room.update({
             where: {
               id: roomId,
@@ -1522,9 +1585,6 @@ export class FriendsService {
             },
           });
 
-          console.log(JSON.stringify(data, null, 2));
-          console.log(data[0].users.length);
-
           if (data[0]?.users?.length) {
             await this.prisma.userRoom.update({
               where: {
@@ -1539,7 +1599,6 @@ export class FriendsService {
             });
           }
           if (!data[0]?.users?.length) {
-            console.log("Will Bi deleted !");
             await this.prisma.room.delete({
               where: {
                 id: roomId,
@@ -1547,7 +1606,7 @@ export class FriendsService {
             });
             return {status: 1, message: "User leaved the room, Room will be deleted !", deleted: 1};
           }
-          console.log(data);
+          // console.log(data);
           return {status: 1, message: "User leaved the room", ownerId: data[0]?.users[0]?.user.id};
         }
 
@@ -1576,8 +1635,6 @@ export class FriendsService {
         },
       },
     });
-
-    console.log()
 
     return invites.roomInvites.length ? invites.roomInvites : [];
   }
@@ -1775,7 +1832,7 @@ export class FriendsService {
         }
       }
 
-      console.log(usersInvited);
+      // console.log(usersInvited);
 
       return usersInvited;
     } catch (e) {
@@ -1951,7 +2008,7 @@ export class FriendsService {
         }
       })
 
-      console.log(newData);
+      // console.log(newData);
 
       return newData;
 
@@ -1960,9 +2017,44 @@ export class FriendsService {
       return [];
     }
   }
-}
 
-// id			:number
-// roomId		:number
-// userName	:string
-// pic			:string
+  async getBannedUsers(roomId :number, userId: number) {
+
+    try {
+      const checkOwner = await this.prisma.userRoom.findUnique({
+        where: {
+          userId_roomId: {
+            roomId: roomId,
+            userId: userId,
+          },
+        },
+        select: {
+          userRole: true,
+        },
+      });
+
+      if (checkOwner.userRole === 'OWNER') {
+        const users =  await this.prisma.room.findUnique({
+          where: {
+            id: roomId,
+          },
+          select: {
+            banned: {
+              select: {
+                id: true,
+                userName: true,
+                image: true,
+              },
+            },
+          },
+        });
+
+        return users.banned;
+      }
+      return [];
+    } catch (e) {
+      console.log(e);
+      return []
+    }
+  }
+}

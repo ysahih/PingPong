@@ -1,5 +1,6 @@
 import { flatten, Injectable } from "@nestjs/common";
 import { ROOMTYPE } from "@prisma/client";
+import { use } from "passport";
 import {
   CreateRoom,
   MessageDTO,
@@ -70,8 +71,62 @@ export class GatewayService {
     return user;
   }
 
+  async getBlocked(user1 :number, user2 :number) :Promise<boolean> {
+
+    // FIXME:  Keep working on this
+    const user = await this._prisma.user.findUnique({
+      where: {
+        id: user1,
+      },
+      include: {
+        friendRequests: {
+          where: {
+            senderId: user2,
+          },
+          select: {
+            id: true,
+            blocked: true,
+          },
+        },
+        sentRequests: {
+          where: {
+            receiverId: user2,
+          },
+          select: {
+            id: true,
+            blocked: true,
+          }
+        }
+      }
+    });
+
+    // console.log("Data:", user);
+
+    return user.sentRequests[0]?.blocked || user.friendRequests[0]?.blocked;
+  }
+
+  async isMuted(roomId: number, userId :number) {
+    const data = await this._prisma.room.findUnique({
+      where: {
+        id: roomId,
+      },
+      select: {
+        users: {
+          where: {
+            userId: userId,
+          },
+          select: {
+            isMuted: true,
+          }
+        }
+      }
+    });
+
+    return data.users[0]?.isMuted;
+  }
+
   async createConversation(payload: MessageDTO) {
-    const newConv = await this._prisma.converstaion.create({
+    return await this._prisma.converstaion.create({
       data: {
         users: {
           connect: [{ id: payload.from }, { id: payload.to }],
@@ -88,25 +143,86 @@ export class GatewayService {
         },
       },
     });
+    // const newConv = await this._prisma.converstaion.create({
+    //   data: {
+    //     users: {
+    //       connect: [{ id: payload.from }, { id: payload.to }],
+    //     },
+    //     messages: {
+    //       create: {
+    //         content: payload.message,
+    //         userId: payload.from,
+    //         createdAt: payload.createdAt,
+    //         readBy: {
+    //           create: { users: { connect: { id: payload.from } } },
+    //         },
+    //       },
+    //     },
+    //   },
+    // });
 
-    return newConv;
+    // return newConv;
   }
 
   async updateConversation(id: number, payload: MessageDTO) {
-    await this._prisma.converstaion.update({
-      where: {
-        id: id,
-      },
-      data: {
-        messages: {
-          create: {
-            content: payload.message,
-            userId: payload.from,
-            createdAt: payload.createdAt,
+
+      await this._prisma.converstaion.update({
+        where: {
+          id: id,
+        },
+        data: {
+          messages: {
+            create: {
+              content: payload.message,
+              userId: payload.from,
+              createdAt: payload.createdAt,
+            },
           },
         },
-      },
-    });
+      });
+  }
+
+  async updateConvRoom(payload: MessageDTO) :Promise<ChatData> {
+
+      const data = await this._prisma.room.update({
+        where: {
+          id: payload.to,
+        },
+        data: {
+          messages: {
+            create: {
+              content: payload.message,
+              userId: payload.from,
+              createdAt: payload.createdAt,
+            }
+          }
+        },
+        select: {
+          image: true,
+          name: true,
+          users: {
+            where: {
+              id: payload.from,
+            },
+            select: {
+              isMuted: true,
+            }
+          }
+        }
+      });
+
+      return {
+        id: payload.from,
+        image: data.image,
+        userName: data.name,
+        createdAt: payload.createdAt,
+        lastMessage: payload.message,
+        isRoom: true,
+        hasNoAccess: data.users[0].isMuted,
+        // Will be deleted !
+        isOnline: false,
+        isRead: false,
+      }
   }
 
   async createRoom(payload: CreateRoom, roomType: ROOMTYPE) {
@@ -426,7 +542,7 @@ export class GatewayService {
     }
   }
 
-  async uniqueConvo(senderId: number, receiverId: number, message: string) {
+  async uniqueConvo(senderId: number, receiverId: number, message: string, createdAt :Date) {
 
     const user = await this._prisma.converstaion.findFirst({
       where: {
@@ -446,19 +562,21 @@ export class GatewayService {
             id: true,
             userName: true,
             image: true,
+            online: true,
+            inGame: true,
           },
         },
-        messages: {
-          take: 1,
-          orderBy: {
-            createdAt: 'desc',
-          },
-          select: {
-            content: true,
-            createdAt: true,
-            userId: true,
-          },
-        },
+        // messages: {
+        //   take: 1,
+        //   orderBy: {
+        //     createdAt: 'desc',
+        //   },
+        //   select: {
+        //     content: true,
+        //     createdAt: true,
+        //     userId: true,
+        //   },
+        // },
       },
     });
 
@@ -469,16 +587,100 @@ export class GatewayService {
       userName: user.users[0].userName,
       image: user.users[0].image,
       lastMessage: message,
-      createdAt: user.messages[0].createdAt,
-      isOnline: false,
+      createdAt: createdAt,
+      isOnline: user.users[0].online,
+      isRoom: user.users[0].inGame,
+      hasNoAccess: false,
       isRead: false,
-      isRoom: false,
     }
 
     // console.log(convo);
 
     return (convo);
   }
+
+  async getUser(id: number, message :string, createdAt :Date) :Promise<ChatData>{
+    const user = await this._prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        id: true,
+          userName: true,
+          image: true,
+          online: true,
+          inGame: true,
+      }
+    });
+
+    return {
+      id: id,
+      userName: user.userName,
+      image: user.image,
+      isOnline: user.online,
+      createdAt: createdAt,
+      lastMessage: message,
+      isRoom: false,
+      isRead: false,
+      hasNoAccess: false,
+    }
+  }
+
+  // async uniqueConvo(senderId: number, receiverId: number, message: string) {
+
+  //   const user = await this._prisma.converstaion.findFirst({
+  //     where: {
+  //       AND: [
+  //         {users: {some: {id: senderId}}},
+  //         {users: {some: {id: receiverId}}},
+  //       ],
+  //     },
+  //     include: {
+  //       users: {
+  //         where: {
+  //           NOT: {
+  //             id: receiverId,
+  //           },
+  //         },
+  //         select: {
+  //           id: true,
+  //           userName: true,
+  //           image: true,
+  //           online: true,
+  //           inGame: true,
+  //         },
+  //       },
+  //       // messages: {
+  //       //   take: 1,
+  //       //   orderBy: {
+  //       //     createdAt: 'desc',
+  //       //   },
+  //       //   select: {
+  //       //     content: true,
+  //       //     createdAt: true,
+  //       //     userId: true,
+  //       //   },
+  //       // },
+  //     },
+  //   });
+
+  //   // console.log(user);
+
+  //   const convo :ChatData = {
+  //     id: user.users[0].id,
+  //     userName: user.users[0].userName,
+  //     image: user.users[0].image,
+  //     lastMessage: message,
+  //     createdAt: createdAt,
+  //     isOnline: user.users[0].online,
+  //     isRoom: user.users[0].inGame,
+  //     isRead: false,
+  //   }
+
+  //   // console.log(convo);
+
+  //   return (convo);
+  // }
 
   async userInfogame(id: number) {
 

@@ -66,7 +66,6 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   async handleConnection(client: Socket): Promise<void> {
 
     // const mesj = await this._prisma.message(15, 7);
-
     try {
       const allToken = client.handshake.headers.cookie;
 
@@ -102,124 +101,124 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   async handleDisconnect(@ConnectedSocket() client: Socket): Promise<void> {
     // Get the user out of the rooms and out of the users Map
 
-    const id = await this._users.deleteUser(
-      client,
-      this._rooms.disconnectToRooms
-    );
-	if (id < 0) return;
+    const id = await this._users.deleteUser(client, this._rooms.disconnectToRooms);
+    if (id < 0) return;
     const allSockets = this._users.getAllSocketsIds();
     allSockets.forEach((sokcetId: string) =>
       this._server.to(sokcetId).emit("offline", { id: id })
     );
-	await this.FriendsService.Online(id, false);
+    await this.FriendsService.Online(id, false);
   }
 
   @UseFilters(ExceptionHandler)
   @UsePipes(ValidationPipe)
   @SubscribeMessage("directMessage")
-  async handleDirectMessage(@ConnectedSocket() client: Socket, @Body() payload: MessageDTO): Promise<void> {
+  async handleDirectMessage(@ConnectedSocket() client: Socket, @Body() payload: MessageDTO) {
 
-    // TODO: I HAVE TO CHECK IF THE USER BLOKCED
-    console.log(payload);
-    // TODO: When A user send a message at that sended user to read status
+    console.log('Incoming', payload.message);
 
-    // Get sender User Infos
     const fromUser = this._users.getUserById(payload.from);
-    // Check if already there's that conversation
-    const isExist = fromUser.DirectChat.find(
-      (conv) => conv.toUserId === payload.to
-      );
 
+    if (payload.isRoom) {
+      const isMuted = await this._prisma.isMuted(payload.to, payload.from);
+      if (isMuted)
+          return ;
+      const room = fromUser.rooms.find(room => room.id === payload.to);
+      if (room) {
+        const data = await this._prisma.updateConvRoom(payload);
+        client.to(payload.to.toString()).emit('newConvo', data);
+      }
+    }
+    else {
+      const isBlocked = await this._prisma.getBlocked(payload.from, payload.to);
+      if (isBlocked)
+        return ;
+      // Get sender User Infos
+      // Check if already there's that conversation
+      const isExist = fromUser.DirectChat.find((conv) => conv.toUserId === payload.to);
+  
       // Check if the receiver user is online between the _users
       const toUser = this._users.getUserById(payload.to);
 
-    if (!isExist) {
-      // console.log("Conversation does not Exist !");
-      // If dosn't exist create new record
-      // const newConv = await this._prisma.createConversation(payload);
-      this._prisma.createConversation(payload)
-        .then((data) => {
-          this._users.addNewConversation(payload, data.id);
-
-          if (toUser)
-          {
-            this._prisma.uniqueConvo(payload.from, payload.to, payload.message)
-            .then((data) => {
-              toUser.socketId.forEach((socktId: string) =>
-                this._server.to(socktId).emit("newConvo", data)
-              );
-            });
-          }
-        });
-      // ADD conversation ID for USER1 and USER2
-      // this._users.addNewConversation(payload, newConv.id);
-    } else {
-      // console.log("Conversation Exists !");
-      // If Exist Just add the message at the conversation ID
-      // await this._prisma.updateConversation(isExist.id, payload);
-      this._prisma.updateConversation(isExist.id, payload)
-      .then(() => {
-        if (toUser)
-        {
-          this._prisma.uniqueConvo(payload.from, payload.to, payload.message)
-          .then((data) => {
-            toUser.socketId.forEach((socktId: string) =>
-              this._server.to(socktId).emit("newConvo", data)
-            );
-          });
-        }
-      });
+      if (!isExist) {
+          const id = await this._prisma.createConversation(payload);
+          this._users.addNewConversation(payload, id.id);
+      } else {
+        await this._prisma.updateConversation(isExist.id, payload)
+      }
+  
+      console.log('Outgoing:', payload.message);
+      if (toUser) {
+        const data = await this._prisma.getUser(payload.from, payload.message, payload.createdAt);
+        toUser.socketId.forEach((socktId: string) => this._server.to(socktId).emit("newConvo", data));
+      }
     }
-    // if is Online, send him a message to the 'chat' event
-    // if (toUser)
-    // {
-    //   const lastMessage :ChatData = await this._prisma.uniqueConvo(payload.from, payload.to);
-    //   toUser.socketId.forEach((socktId: string) =>
-    //     this._server.to(socktId).emit("newConvo", lastMessage)
-    //   );
-    // }
-  }
+  } 
 
   // @UseFilters(ExceptionHandler)
   // @UsePipes(ValidationPipe)
-  // @SubscribeMessage("createRoom")
-  // async handleCreateRoom(
-  //   @ConnectedSocket() client: Socket,
-  //   @Body() payload: CreateRoom
-  // ): Promise<void> {
+  // @SubscribeMessage("directMessage")
+  // handleDirectMessage(@ConnectedSocket() client: Socket, @Body() payload: MessageDTO) {
 
-  //   try {
-  //     // TODO: Handle if it is protected it should contain a password
-  //     // Create a room record
-  //     const newRoom = await this._prisma.createRoom(payload, payload.type);
-  //     this._server
-  //           .to(client.id)
-  //           .emit("create", `${payload.name} created succefully !`);
-  //     // Add the room to the user's room array of Objects
-  //     // this._users.addNewRoom(payload.ownerId, newRoom, "OWNER");
-  //     console.log(this._users.getUserById(payload.ownerId));
+  //   // setTimeout(() => {
+  //   // TODO: I HAVE TO CHECK IF THE USER BLOKCED
+  //   console.log(payload.message);
 
-  //     // Check Execption
-  //   } catch (e) {
-  //     // If it's From prisma
-  //     // FIXME: I don't have to send errors to all client
-  //     if (e instanceof Prisma.PrismaClientKnownRequestError) {
-  //       // Means that the room already exist with that name
-  //       console.log('Errrrooooor !');
-  //       if (e.code === "P2002")
-  //         this._server
-  //           .to(client.id)
-  //           .emit("error", `${payload.name} already exists !`);
-  //     }
-  //     // Something else happened
-  //     else
-  //       this._server
-  //         .to(client.id)
-  //         .emit("error", `${payload.name} Room creation failed !`);
+  //   // console.log(`Time: ${new Date().getTime() - new Date(payload.createdAt).getTime()}`);
+  //   // TODO: When A user send a message at that sended user to read status
+
+  //   // Get sender User Infos
+  //   const fromUser = this._users.getUserById(payload.from);
+  //   // Check if already there's that conversation
+  //   const isExist = fromUser.DirectChat.find((conv) => conv.toUserId === payload.to);
+
+  //     // Check if the receiver user is online between the _users
+  //     const toUser = this._users.getUserById(payload.to);
+
+  //   if (!isExist) {
+  //     // console.log("Conversation does not Exist !");
+  //     // If dosn't exist create new record
+  //     // const newConv = await this._prisma.createConversation(payload);
+  //     this._prisma.createConversation(payload)
+  //       .then((data) => {
+  //         this._users.addNewConversation(payload, data.id);
+  //         if (toUser) {
+  //           // this._prisma.uniqueConvo(payload.from, payload.to, payload.message, payload.createdAt)
+  //           this._prisma.getUser(payload.from, payload.message, payload.createdAt)
+  //           .then((data) => {
+
+  //             console.log('Message:', data.lastMessage);
+
+  //             toUser.socketId.forEach((socktId: string) =>
+  //               client.to(socktId).emit("newConvo", data)
+  //           );
+  //           });
+  //         }
+  //       });
+  //       // ADD conversation ID for USER1 and USER2
+  //     // this._users.addNewConversation(payload, newConv.id);
+  //   } else {
+  //     // console.log("Conversation Exists !");
+  //     // If Exist Just add the message at the conversation ID
+  //     // await this._prisma.updateConversation(isExist.id, payload);
+  //     this._prisma.updateConversation(isExist.id, payload)
+  //     .then(() => {
+  //       if (toUser) {
+  //         // this._prisma.uniqueConvo(payload.from, payload.to, payload.message, payload.createdAt)
+  //         this._prisma.getUser(payload.from, payload.message, payload.createdAt)
+  //         .then((data) => {
+
+  //             console.log('Message:', data.lastMessage);
+
+  //             toUser.socketId.forEach((socktId: string) =>
+  //               client.to(socktId).emit("newConvo", data)
+  //             );
+  //         });
+  //       }
+  //     });
   //   }
   // }
 
-  // TODO: Check Banned
   @UseFilters(ExceptionHandler)
   @UsePipes(ValidationPipe)
   @SubscribeMessage("joinRoom")
