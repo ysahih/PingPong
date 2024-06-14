@@ -328,4 +328,10 @@ export class UserController {
   async getBannedUsers(@Req() request :Request, @Param('roomId') roomId :string) {
     return this.FriendsService.getBannedUsers(parseInt(roomId), request.user['userId']);
   }
+
+  @Post('unban/:roomId')
+  @UseGuards(JwtAuthGuard)
+  async handleUnban(@Req() request :Request, @Body('roomId') roomId :string, @Body('userId') userId :string) {
+    
+  }
 }

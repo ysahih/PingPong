@@ -2057,4 +2057,41 @@ export class FriendsService {
       return []
     }
   }
+
+  async unban(roomId :number, ownerId :number, userId :number) {
+    try {
+        const checkOwner = await this.prisma.userRoom.findUnique({
+          where: {
+            userId_roomId: {
+              roomId: roomId,
+              userId: ownerId,
+            },
+          },
+          select: {
+            userRole: true,
+          },
+        });
+
+        if (checkOwner.userRole === 'OWNER') {
+          this.prisma.user.update({
+            where: {
+              id: userId,
+            },
+            data: {
+              bannedFrom: {
+                delete: {
+                  id: roomId,
+                },
+              },
+            },
+          });
+
+          return {status: 1, message: 'Unban successfully !'}
+        }
+        return {status: 0, message: 'This user has no privileges !'}
+    } catch (e) {
+      console.log(e);
+      return {status: 0, message: 'Something went wrong !'};
+    }
+  }
 }
