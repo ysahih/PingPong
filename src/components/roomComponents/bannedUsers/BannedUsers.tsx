@@ -49,7 +49,7 @@ const BannedUsers :FC<{roomId :number}> = (banProp) => {
                             :
                             <>
                                 {
-                                    bannedUsers.map(user => <BannedCard key={user.id} id={user.id} userName={user.userName} pic={user.image} />)
+                                    bannedUsers.map(user => <BannedCard key={user.id} id={user.id} userName={user.userName} pic={user.image} roomId={banProp.roomId}/>)
                                 }
                             </>
                         }

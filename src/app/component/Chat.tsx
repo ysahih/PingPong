@@ -341,6 +341,7 @@ const Conversation = (props: ConvoProps) =>{
                 <div className="convoHeader">
                     <div className="sender-info  cursor-pointer" onClick={() => {render?.setRender("profileOverly")
                     router.push("/users?userName=" + props.userId.toString())
+                    // router.push("/room?name=" + props.roomName);
 
                     }}>
                         <Image className="profilepic" src={convo?.image ? convo.image : "/homeImages/memeber1.svg"} width={38} height={38} alt="photo"/>
