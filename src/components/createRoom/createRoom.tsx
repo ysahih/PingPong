@@ -7,6 +7,8 @@ import Image from "next/image";
 import pic from "@/../public/createRoom/GroupChat.svg";
 import axios from "axios";
 import { RoomFormat, ROOMTYPE } from "./interfaces";
+import SocketContext from "../context/socket";
+import UserDataContext from "../context/context";
 // import { RoomFormat, ROOMTYPE } from "../../app/createRoom/interfaces";
 
 const CreateRoom = () => {
@@ -16,6 +18,8 @@ const CreateRoom = () => {
 	const [image, setImage] = useState<string>("");
 	const [file, setFile] = useState<File | null>(null);
 	const [creating, setCreating] = useState<boolean>(false);
+	const socket = useContext(SocketContext);
+	const user = useContext(UserDataContext);
 
   // Select Room Type
 	const handleOnClick = (type: ROOMTYPE, e: React.MouseEvent<HTMLElement>) => {
@@ -79,16 +83,16 @@ const CreateRoom = () => {
 			}
 			);
 
-			response.data.status
-			? setCreate(response.data.message)
-			: setError(response.data.message);
+			response.data.status ? setCreate(response.data.message) : setError(response.data.message);
+			if (response.data.status)
+				socket?.emit('createRoom', {
+					ownerId: user?.id,
+					roomId: response.data.roomId
+			})
 			setCreating(false);
 			formik.values.password = "";
 
-			setTimeout(
-			() => (response.data.status ? setCreate("") : setError("")),
-			2000
-			);
+			setTimeout(() => (response.data.status ? setCreate("") : setError("")), 2000);
 		};
 
 		createRoom();

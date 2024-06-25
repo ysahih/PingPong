@@ -1,19 +1,23 @@
-import { FC } from 'react';
-import './BannedCard.css'
-import userPic from '@/../public/RoomSettings/DefaultUserPic.svg'
+import { Dispatch, FC, SetStateAction } from 'react';
+import './BannedCard.css';
+import userPic from '@/../public/RoomSettings/DefaultUserPic.svg';
 import Image from 'next/image';
 import axios from 'axios';
+import { Banned } from '../../interfaces';
 
-const BannedCard :FC<{id: number, userName: string, pic: string, roomId: number}> = (prop) => {
+const BannedCard :FC<{id: number, userName: string, pic: string, roomId: number, setBannedUsers :Dispatch<SetStateAction<Banned[]>>}> = (prop) => {
 
     const handleUnban = async () => {
-        const response = await axios.post(process.env.NEST_API + '/user/unban/' + prop.roomId.toString(), {
+        const response = await axios.post(process.env.NEST_API + '/user/unban', {
+            roomId: prop.roomId,
             userId: prop.id,
         }, {
             withCredentials: true,
         });
 
         console.log(response.data);
+        if (response.data.status)
+            prop.setBannedUsers(users => users.filter(user => user.id !== prop.id));
     };
 
     return (

@@ -1,3 +1,5 @@
+"use client";
+
 import React, { Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from "react";
 import User from "../User/user";
 import { KickBanUser, RoomUsers } from "../interfaces"
@@ -7,6 +9,7 @@ import UserDataContext from "@/components/context/context";
 import SocketContext from "@/components/context/socket";
 import UserLoading from "../UserLoading/UserLoading";
 import { UpdateStatusRoom } from "../interfaces";
+import { useRouter } from "next/navigation";
 
 const RoomUser :React.FC<{id :number, settings :Dispatch<SetStateAction<boolean>>, setOwnerId :Dispatch<SetStateAction<number>>}> = (roomProps) => {
 
@@ -16,6 +19,7 @@ const RoomUser :React.FC<{id :number, settings :Dispatch<SetStateAction<boolean>
     const socket = useContext(SocketContext);
     const [loading, setLoading] = useState<boolean>(false);
     const [update, setUpdate] = useState<boolean>(false);
+    const rout = useRouter();
 
     useEffect(() => {
 
@@ -65,10 +69,8 @@ const RoomUser :React.FC<{id :number, settings :Dispatch<SetStateAction<boolean>
 
             socket?.on('newJoin', (payload :RoomUsers) => {
 
-                // console.log("Room:", roomProps.name);
                 console.log("Payload:", payload.roomName);
 
-                // if (payload.roomName === roomProps.name)
                 if (payload.roomId === roomProps.id)
                     setUsers((user) => [...user, payload]);
             });
@@ -77,20 +79,26 @@ const RoomUser :React.FC<{id :number, settings :Dispatch<SetStateAction<boolean>
 
                 console.log("KickBan:", payload);
 
-                // if (payload.roomName === roomProps.name) {
                 if (payload.roomId === roomProps.id) {
                     // TODO: I have to take him to the home
+                    // setUsers([]);
                     if (curUser?.id === payload.userId)
-                        setUsers([]);
+                        rout.push('/');
                     else
                         setUsers((users) => users.filter((user) => user.userId !== payload.userId));
                 }
             });
 
+            socket?.on('deleted', (payload: {roomId: number}) => { 
+                if (roomProps.id === payload.roomId)
+                    rout.push('/');
+            })
+
             return () => {
                 socket?.off('UpdateStatus');
                 socket?.off('newJoin');
                 socket?.off('kickBanUser');
+                socket?.off('deleted');
             }
         }
     }, [users]);
@@ -133,7 +141,25 @@ const RoomUser :React.FC<{id :number, settings :Dispatch<SetStateAction<boolean>
                 }
             }
             // TODO: I have to push the user to the home
-            setUsers([]);
+            // setUsers([]);
+            rout.push('/');
+        }
+    };
+
+    const deleteRoom = async () => {
+        const response = await axios.post(process.env.NEST_API + '/user/deleteRoom', {
+            roomId: roomProps.id,
+        }, {
+            withCredentials: true,
+        });
+
+        console.log(response.data);
+        if (response.data.status) {
+            rout.push('/');
+            socket?.emit('deleteRoom', {
+                ownerId: curUser?.id,
+                roomId: roomProps.id,
+            })
         }
     };
 
@@ -154,7 +180,7 @@ const RoomUser :React.FC<{id :number, settings :Dispatch<SetStateAction<boolean>
                                 {/* <div className="room__users__btn--wrapper">
                                     <button type="submit" className="url--bannedUsers"></button>
                                 </div> */}
-                                <div className="room__users__btn--wrapper">
+                                <div className="room__users__btn--wrapper" onClick={deleteRoom}>
                                     <button type="submit" className="url--delete"></button>
                                 </div>
                             </>
