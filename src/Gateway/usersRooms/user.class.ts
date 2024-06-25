@@ -35,6 +35,15 @@ export class UsersServices {
     return this._users.get(id);
   }
 
+  async getUserBySocket(socketId :string) :Promise<User | null> {
+    for (const user of this._users.values()) {
+      const index = user.socketId.indexOf(socketId);
+      if (index != -1)
+        return user;
+    }
+    return null;
+  }
+
   // Find socketId's user and return a Promise with that userId and index od socket at the sockets array
   async findUserSocket(socketId: string): Promise<{ id: number; index: number } | null> {
     for (const user of this._users.values()) {

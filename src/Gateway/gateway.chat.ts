@@ -28,6 +28,7 @@ import { Message } from "@prisma/client";
 import { datagame, gameSocket, userinfo } from "./gateway.gameclasses";
 import { exit } from "process";
 import { Console } from "console";
+import { Room } from "./usersRooms/UserRoom.interface";
 
 type Invitation = {
   id: number;
@@ -264,6 +265,26 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @UseFilters(ExceptionHandler)
   @UsePipes(ValidationPipe)
+  @SubscribeMessage('createRoom')
+  async handleCreateRoom(@ConnectedSocket() client: Socket, @Body() payload :{ownerId: number, roomId: number}) {
+
+    const checkOwner = await this._prisma.findRoom(payload.roomId, payload.ownerId);
+    const owner = this._users.getUserById(payload.ownerId);
+    const findRoom = owner.rooms.find(room => room.id === payload.roomId);
+    
+    if (checkOwner?.users[0].userRole === 'OWNER' && !findRoom) {
+      owner.rooms.push({
+        id: payload.roomId,
+        name: checkOwner.name,
+        type: checkOwner.type,
+        UserRole: 'OWNER',
+      });
+      client.join(payload.roomId.toString());
+    }
+  }
+
+  @UseFilters(ExceptionHandler)
+  @UsePipes(ValidationPipe)
   @SubscribeMessage('userStatusInRoom')
   handleUserStatusInRoom(@ConnectedSocket() client: Socket, @Body() payload :UpdateStatusRoom) {
 
@@ -335,8 +356,37 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         user.rooms.splice(user.rooms.findIndex((room) => room.id === payload.roomId), 1);
         // client.leave(payload.roomName);
       }
+    }
+  }
 
-      console.log("NewData:", this._users.getUserById(payload.userId));
+  @UseFilters(ExceptionHandler)
+  @UsePipes(ValidationPipe)
+  @SubscribeMessage("deleteRoom")
+  async handleDeleteRoom(@ConnectedSocket() client: Socket, @Body() payload: {ownerId: number, roomId: number}) {
+
+    const room = await this._prisma.findRoom(payload.roomId, payload.ownerId);
+    const owner = this._users.getUserById(payload.ownerId);
+    const checkInRoom = owner.rooms.find(room => room.id === payload.roomId);
+
+    console.log('Room:', room);
+
+    // TODO:
+    // 1. Chekc if thre room doesn't exist anymore
+    // 2. check in the cache if the user was an owner
+    // 3. broadcast to all users leave the room
+    // 3. make all sockets leaves the room
+
+    if (!room && checkInRoom?.UserRole === 'OWNER') {
+      const allClients = await this._server.in(payload.roomId.toString()).fetchSockets();
+      console.log(allClients);
+
+      client.to(payload.roomId.toString()).emit('deleted', {roomId: payload.roomId});
+      this._server.socketsLeave(payload.roomId.toString());
+
+      for (const socket of allClients) {
+        const user = await this._users.getUserBySocket(socket.id);
+        user.rooms = user.rooms.filter(room => room.id !== payload.roomId);
+      }
     }
   }
   
@@ -373,11 +423,12 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     const check = await this._prisma.getInvite(payload.userId, payload.roomId);
     const checkInRoom = this._users.getUserById(payload.adminId).rooms.find(room => room.id === payload.roomId);
     const user = this._users.getUserById(payload.userId);
+    const checkUser = user.rooms.find(room => room.id === payload.roomId);
 
     console.log(check);
     console.log(checkInRoom);
 
-    if (check.invites[0] && checkInRoom) {
+    if (check.invites[0] && checkInRoom && !checkUser) {
       user.socketId.forEach(socketId => this._server.to(socketId).emit('newRoom', {
         id: check.id,
         name: check.name,

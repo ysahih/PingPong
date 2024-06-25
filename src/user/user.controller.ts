@@ -167,7 +167,7 @@ export class UserController {
   @Post('createRoom')
   @UseInterceptors(FileInterceptor("file"))
   @UseGuards(JwtAuthGuard)
-  async CreateRoom( @UploadedFile() file: Express.Multer.File, @Req() req :Request) :Promise<{status :number, message :string}> {
+  async CreateRoom( @UploadedFile() file: Express.Multer.File, @Req() req :Request) {
 
     const { name, type, password } : {name :string, type :ROOMTYPE, password :string} = req.body;
 
@@ -181,8 +181,8 @@ export class UserController {
 
     const imgUrl = await this.cloud.uploadImage(file);
 
-    await this.FriendsService.createRoom(parseInt(req.user["userId"]), name, type, hashedPassword, imgUrl);
-    return {status: 1, message: 'Room Created !'};
+    const room = await this.FriendsService.createRoom(parseInt(req.user["userId"]), name, type, hashedPassword, imgUrl);
+    return {status: 1, message: 'Room Created !', roomId: room.id};
 
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
@@ -329,9 +329,15 @@ export class UserController {
     return this.FriendsService.getBannedUsers(parseInt(roomId), request.user['userId']);
   }
 
-  @Post('unban/:roomId')
+  @Post('unban')
   @UseGuards(JwtAuthGuard)
   async handleUnban(@Req() request :Request, @Body('roomId') roomId :string, @Body('userId') userId :string) {
-    
+    return this.FriendsService.unban(parseInt(roomId), request.user['userId'], parseInt(userId));
+  }
+
+  @Post('deleteRoom')
+  @UseGuards(JwtAuthGuard)
+  async handleDeleteRoom(@Req() request :Request, @Body('roomId') roomId :string) {
+    return this.FriendsService.deleteRoom(request.user['userId'], parseInt(roomId));
   }
 }
