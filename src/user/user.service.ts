@@ -1290,6 +1290,8 @@ export class FriendsService {
         return -(room1.users.length - room2.users.length);
       });
 
+      console.log('Users:', sortedRooms);
+
       return sortedRooms.map((room) => {
         return {
           id: room.id,
@@ -1530,17 +1532,32 @@ export class FriendsService {
     }
   }
 
-  async getRoom(name :string) {
+  async getRoom(userId: number, name :string) {
 
-    return await this.prisma.room.findUnique({
+    const data = await this.prisma.room.findUnique({
       where: {
         name: name,
       },
       select: {
         type: true,
         id: true,
+        users: {
+          where: {
+            userId: userId,
+          },
+          select: {
+            id: true,
+          }
+        }
       }
     });
+
+    if (data.users?.length)
+        return ({
+          id: data.id,
+          type: data.type,
+        });
+    return null;
   }
 
   async leaveRoom(userId: number, roomId :number) {

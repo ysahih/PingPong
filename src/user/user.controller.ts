@@ -269,9 +269,9 @@ export class UserController {
 
   @Get('getRoom/:name')
   @UseGuards(JwtAuthGuard)
-  async hadnleRoom(@Param('name') name :string) {
+  async hadnleRoom(@Req() request :Request, @Param('name') name :string) {
     try {
-      return await this.FriendsService.getRoom(name);
+      return await this.FriendsService.getRoom(request.user['userId'], name);
     } catch (e) {
       return null;
     }
