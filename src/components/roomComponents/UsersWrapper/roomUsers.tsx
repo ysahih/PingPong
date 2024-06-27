@@ -69,7 +69,7 @@ const RoomUser :React.FC<{id :number, settings :Dispatch<SetStateAction<boolean>
 
             socket?.on('newJoin', (payload :RoomUsers) => {
 
-                console.log("Payload:", payload.roomName);
+                console.log("Join:", payload);
 
                 if (payload.roomId === roomProps.id)
                     setUsers((user) => [...user, payload]);
