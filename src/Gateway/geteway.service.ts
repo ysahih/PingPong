@@ -202,17 +202,22 @@ export class GatewayService {
           name: true,
           users: {
             where: {
-              id: payload.from,
+              userId: payload.from,
             },
             select: {
               isMuted: true,
+              user: {
+                select: {
+                  userName: true,
+                }
+              }
             }
           }
         }
       });
 
       return {
-        id: payload.from,
+        id: payload.to,
         image: data.image,
         userName: data.name,
         createdAt: payload.createdAt,

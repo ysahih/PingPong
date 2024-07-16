@@ -116,8 +116,6 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   @SubscribeMessage("directMessage")
   async handleDirectMessage(@ConnectedSocket() client: Socket, @Body() payload: MessageDTO) {
 
-    console.log('Incoming', payload.message);
-
     const fromUser = this._users.getUserById(payload.from);
 
     if (payload.isRoom) {
