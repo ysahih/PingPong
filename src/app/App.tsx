@@ -220,6 +220,7 @@ const Home = ({
 
 const Body = ({ children }: { children: React.ReactNode }) => {
   const [showPopup, setShowPopup] = useState(true);
+  const [label, setLabel] = useState({chat:0, isRoom:false});
 
   useEffect(() => {
     const handleResize = () => {
@@ -247,10 +248,9 @@ const Body = ({ children }: { children: React.ReactNode }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const [chat, setChat] = useState(0);
 
   return (
-    <ChatContext.Provider value={{ chat, setChat }}>
+    <ChatContext.Provider value={{ label, setLabel }}>
       <div className="body">
         <Sidebar showPopup={showPopup} />
         <div

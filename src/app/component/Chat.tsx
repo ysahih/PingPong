@@ -108,8 +108,7 @@ const UserOption = ( { className }: userOptionClass ) => {
 
 
 type Props = {
-    handleMsgClick: (value:number) => void;
-    setIsRoom: (value: boolean) => void;
+    handleMsgClick: () => void;
     user : ChatData;
 };
 
@@ -136,22 +135,22 @@ const More = ({user}: {user: ChatData})=> {
                 <Image className="dots" src="/homeImages/dots.svg" alt="member" width={16} height={16}/>
             </div>
             <UserOption className={showMsgOption ? '' : 'invisible'} />
-            <p className="date">{timeAgo?.format(new Date(user.createdAt))}</p>
+            <p className="date">{new Date(user.createdAt).toDateString() === new Date(1970, 0, 1, 0, 0, 0, 0).toDateString() ? '' : timeAgo?.format(new Date(user.createdAt)) }</p>
         </div>
     );
 }
 
 
 
-const Message = ({handleMsgClick, user, setIsRoom} : Props) =>{
+const Message = ({handleMsgClick, user} : Props) =>{
 
+    useEffect(()=>{
+        console.log('user when enters is: ' , user.id);
+    }, [])
     return (
         <div className="Message">
 
-            <div className="chatData" onClick={()=>{
-                setIsRoom(user.isRoom);
-                handleMsgClick(user.id);
-                }}>
+            <div className="chatData"  onClick={handleMsgClick}>
                 <div className="picture">
                     <Image className="profilepic" src={user?.image? user.image : "/homeImages/memeber1.svg"} alt="member"width={38} height={38} />
                 </div>
@@ -174,8 +173,7 @@ const Message = ({handleMsgClick, user, setIsRoom} : Props) =>{
   type ConvoProps = {
     handleMsgClick: (value:number) => void;
     inConvo: Message;
-    userId: number;
-    isRoom: boolean;
+    label: {chat: number, isRoom: boolean};
     updateChat: (newChatData: ChatData) =>void
     handleConvo : () => void;
 };
@@ -200,7 +198,7 @@ const Conversation = (props: ConvoProps) =>{
 
     useEffect(() => {
 
-        if (state?.userState.id === props.userId)
+        if (props.label.isRoom == false && state?.userState.id === props.label.chat)
             setUserState(state.userState.state);
 
     }, [state?.userState.state]);
@@ -235,10 +233,10 @@ const Conversation = (props: ConvoProps) =>{
             setTimeout(() => {
             socket?.emit("directMessage", {
                     from: sender?.id,
-                    to: props.userId,
+                    to: props.label.chat,
                     message: Input,
                     createdAt: new Date(Date.now()),
-                    isRoom : props.isRoom,
+                    isRoom : props.label.isRoom,
                 });
                 // TODO: Last message time - now() < 500ms ? 500ms : 0,
             }, 2000);
@@ -247,15 +245,15 @@ const Conversation = (props: ConvoProps) =>{
           appendMessage(newMessage);
           
 
-          props.updateChat({id: props.userId,
+          props.updateChat({id: props.label.chat,
                             userName: convo?.userName!,
                             image: convo?.image!,
                             lastMessage: Input,
                             isOnline: false, // will be added
                             isRead: false, //will be removed
-                            isRoom: false,
+                            isRoom: props.label.isRoom,
                             createdAt: new Date(),
-                            hasNoAccess: false
+                            hasNoAccess: false// add this later on
             });
           setInput('');
           if (inputRef.current)
@@ -273,13 +271,13 @@ const Conversation = (props: ConvoProps) =>{
             try{
                 const response = await axios.get(process.env.NEST_API + '/user/messages', {
                     params: {
-                        id: props.userId,
-                        isRoom: props.isRoom ? 1 : 0,
+                        id: props.label.chat,
+                        isRoom: props.label.isRoom ? 1 : 0,
                     },
                     withCredentials: true,
                 });
 
-                console.log(response.data);
+                console.log('data hhh:', response.data);
 
                 setConvo(response.data);
 
@@ -292,7 +290,7 @@ const Conversation = (props: ConvoProps) =>{
             }
         }
         fetchConvo();
-    }, [props.userId]);
+    }, [props.label.chat]);
 
     //appending new messages that are passed as props 
     useEffect(()=>{
@@ -305,7 +303,7 @@ const Conversation = (props: ConvoProps) =>{
     const handleTyping = (e: any) => {
         socket?.emit("typing", {
             from: sender?.id,
-            to: props.userId,
+            to: props.label.chat,
         })
         setInput(e.target.value);
     }
@@ -313,7 +311,7 @@ const Conversation = (props: ConvoProps) =>{
     useEffect(()=>{
         socket?.on("isTyping", (payload : {from: number}) => {
 
-            if (payload.from === props.userId) {
+            if (payload.from === props.label.chat){
 
                 setTyping(true);
                 setTimeout( () => {
@@ -340,14 +338,14 @@ const Conversation = (props: ConvoProps) =>{
             <div className="convo">
                 <div className="convoHeader">
                     <div className="sender-info  cursor-pointer" onClick={() => {render?.setRender("profileOverly")
-                    router.push("/users?userName=" + props.userId.toString())
+                    router.push("/users?userName=" + props.label.chat.toString())
                     // router.push("/room?name=" + props.roomName);
 
                     }}>
                         <Image className="profilepic" src={convo?.image ? convo.image : "/homeImages/memeber1.svg"} width={38} height={38} alt="photo"/>
                         <div>
                             <h2>{convo?.userName}</h2>
-                            <p className="w-[50px]">{typing ? 'Typing...' : userState}</p>
+                            {!props.label.isRoom && <p className="w-[50px]">{typing ? 'Typing...' : userState}</p>}
                         </div>
                     </div>
                     <Image className="go-back cursor-pointer" src="/homeImages/goback.svg" onClick={handleClick} width={28} height={25} alt="back" />
@@ -356,9 +354,9 @@ const Conversation = (props: ConvoProps) =>{
                 
              <div className="convoHolder" ref={scrollableDivRef}>
                     {convo?.messages?.map((message: any, index: number) => (
-                        <div  key={index} className={props.userId === message.userId ? "othersMsg" : "myMsg"}>
-                            <p className={`sentAt ${props.userId === message.userId ? "othersDate" : "myDate"}`}>{timeAgo?.format(new Date(message.createdAt))}</p>
-                            <div className={props.userId === message.userId ? "othersContent" : "myContent"}>
+                        <div  key={index} className={props.label.chat === message.userId ? "othersMsg" : "myMsg"}>
+                            <p className={`sentAt ${props.label.chat === message.userId ? "othersDate" : "myDate"}`}>{timeAgo?.format(new Date(message.createdAt))}</p>
+                            <div className={props.label.chat === message.userId ? "othersContent" : "myContent"}>
                                 <p className="msgContent">{message?.content }</p>
                             </div>
                         </div>
@@ -398,6 +396,9 @@ const Chat = () => {
         return [newChatData];
         });
     };
+    useEffect(() => {
+        console.log('user when enters is: ' , Convo?.label.chat);
+    });
 
     useEffect(() => {
         //fetching chat data.
@@ -421,8 +422,8 @@ const Chat = () => {
         
         // if the conversation exists:
         // ^^ this logic gets it sorted when appending new conversations ^^ \\
-        if (chatdata?.some( olddata => olddata.id === newChatData.id))
-                setChatdata(chatdata.filter(chat => chat.id !== newChatData.id));
+        if (chatdata?.some( olddata => (olddata.isRoom && newChatData.isRoom && olddata.id === newChatData.id)))
+                setChatdata(chatdata.filter(chat => chat.id !== newChatData.id)); // to be tested!!
             appendChat(newChatData);
     }
     // listen
@@ -431,18 +432,18 @@ const Chat = () => {
             updateChat(newChatData);
             
             // if you are inside the convo we pass the new message as props
-            if (Convo?.chat === newChatData.id)
+            if (Convo?.label.chat === newChatData.id && Convo?.label.isRoom === newChatData.isRoom)
                 setInConvo({content: newChatData.lastMessage, createdAt: newChatData.createdAt, senderID: newChatData.id});
         })
         return () => { socket?.off("newConvo")}
-    }, [chatdata, Convo?.chat]);
+    }, [chatdata, Convo?.label.chat]);
 
 
     return (
 
             <div className="chat">
             
-                    {Convo?.chat === 0 &&
+                    {Convo?.label.chat === 0 &&
                     <div>
                         <div className="chatbar">
                             <Header/>
@@ -451,11 +452,11 @@ const Chat = () => {
                         
                         <div className="messagesHolder">
                             {chatdata ? chatdata.map((user: ChatData, index) => (
-                                <Message key={index} handleMsgClick={()=>Convo?.setChat(user.id)} setIsRoom={setIsRoom} user={user}/>
+                                <Message key={index} handleMsgClick={()=>Convo?.setLabel({chat: user.id, isRoom: user.isRoom})} setIsRoom={setIsRoom} user={user}/>
                             )) : null}
                         </div>
                     </div>}
-                {Convo?.chat !== 0 && <Conversation updateChat={updateChat} isRoom={isRoom} handleMsgClick={()=>Convo?.setChat(0)} userId={Convo?.chat!} handleConvo={()=>setInConvo({content: "", createdAt: new Date(), senderID: 0})} inConvo={inConvo!} />}
+                {Convo?.label.chat !== 0 && <Conversation updateChat={updateChat} label={Convo?.label!} handleMsgClick={()=>Convo?.setLabel({chat:0, isRoom:false})}  handleConvo={()=>setInConvo({content: "", createdAt: new Date(), senderID: 0})} inConvo={inConvo!} />}
                 
             </div>
 

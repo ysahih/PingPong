@@ -572,9 +572,9 @@
 }
 
 .more{
-    display: flex;
+    /* display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-between; */
 }
 
 .date{
@@ -601,13 +601,13 @@
 }
 
 .userOption{
-    display: flex; 
+    /* display: flex; 
     flex-direction: column; 
     justify-content: center; 
     align-items: center;  
     height: 30px;
     width: 65px; 
-    margin-left: -16px;
+    margin-left: -16px; */
     border: 1px 0px 0px 0px;
     border-radius: 5px 0px 5px 5px; 
     background: #040A2F;
