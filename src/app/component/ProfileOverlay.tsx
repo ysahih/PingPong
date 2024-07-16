@@ -76,7 +76,7 @@ const ProfileOverlay = () => {
                 height={24}
                 property="true"
                 onClick={() => {
-                  // context?.setChat(props.value.id);
+                  // context?.setChat(props.value.id);//!!
                 }}
                 alt="online"
                 className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[24px] min-h-[24px]"

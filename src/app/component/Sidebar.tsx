@@ -24,6 +24,8 @@ const Buttons = () => {
       context?.setRender("ranking");
     } else if (pathName === "/Search") {
       context?.setRender("search");
+    } else if (pathName === "/Chat") {
+      context?.setRender("chat");
     }
   }
   , [pathName]);
@@ -106,7 +108,10 @@ const Buttons = () => {
         className={`sideButton visible xl:invisible ${
           context?.render === "chat" ? "activeChatButton" : ""
         }`}
-        onClick={() => context?.setRender("chat")}
+        onClick={() => {context?.setRender("chat")
+        router.push("/chat")
+      }}
+      
       >
         <Image
           className="icon"

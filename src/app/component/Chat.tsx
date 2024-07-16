@@ -421,8 +421,9 @@ const Chat = () => {
     const updateChat = (newChatData: ChatData) =>{
         
         // if the conversation exists:
+        console.log('new chat data:',  Convo?.label.isRoom, newChatData.isRoom);
         // ^^ this logic gets it sorted when appending new conversations ^^ \\
-        if (chatdata?.some( olddata => (olddata.isRoom && newChatData.isRoom && olddata.id === newChatData.id)))
+        if (chatdata?.some( olddata => (olddata.isRoom === newChatData.isRoom && olddata.id === newChatData.id)))
                 setChatdata(chatdata.filter(chat => chat.id !== newChatData.id)); // to be tested!!
             appendChat(newChatData);
     }
@@ -431,12 +432,13 @@ const Chat = () => {
         socket?.on("newConvo", (newChatData: ChatData) => {
             updateChat(newChatData);
             
+            
             // if you are inside the convo we pass the new message as props
             if (Convo?.label.chat === newChatData.id && Convo?.label.isRoom === newChatData.isRoom)
                 setInConvo({content: newChatData.lastMessage, createdAt: newChatData.createdAt, senderID: newChatData.id});
         })
         return () => { socket?.off("newConvo")}
-    }, [chatdata, Convo?.label.chat]);
+    }, [chatdata, Convo?.label]);
 
 
     return (
