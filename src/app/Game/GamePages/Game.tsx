@@ -23,7 +23,7 @@ const Game : React.FC<{}> = () => {
   const isMouseDown = useRef(false);
   const [dimensions, setDimensions] = useState({ width: (window.innerWidth * 0.6), height: window.innerHeight * 0.4 });
   var bodie = {p_Width: dimensions.width  * 0.011, p_Height: dimensions.height * 0.17 , b_Width: dimensions.width * 0.01 };
-  var color  = { background : game?.gamemode == "Frozen Arena" ? "#0064FB" : "#000000"  , player: game?.gamemode == "Frozen Arena" ? "#1B266B" : "#FFA500",  grid : game?.gamemode == "Frozen Arena" ? "#1ECDF8" : "#081041" ,ball: "#ff8c19"}
+  var color  = { background : game?.gamemode == "Dark Valley" ? "#1B266B" : "#000000"  , player: game?.gamemode == "Dark Valley" ? "#0064FB" : "#FFA500",  grid : game?.gamemode == "Dark Valley" ? "#081041" : "#081041" ,ball: "#1ECDF8"}
   const position = useRef<Gameresponse >({player1: 50, player2: 50, player1score: 0, player2score: 0, ball: { x: 50, y: 50 } , stop : 0 , gameover : false , iscollision : false , colormode : 0});
 
   let effect : Effect[];
@@ -133,12 +133,15 @@ useEffect(() => {
 
       let animationFrameId: number;
       const draw = () => {
+        context.beginPath();
         context.fillStyle = color.background ; 
         context.fillRect(0, 0, dimensions.width, dimensions.height); 
         context.fillStyle = color.player ; 
-        context.shadowColor = `hsla(${40}, 100%, 50%, .99)`;
-        context.shadowBlur = 30;
-        
+        if (game?.gamemode != "Dark Valley")
+        {
+            context.shadowColor = `hsla(${40}, 100%, 50%, .99)`;
+            context.shadowBlur = 30;
+        }
         context.fillRect(
           dimensions.width * 0.05, 
           dimensions.height * p_y.current / 100 - bodie.p_Height / 2, 
@@ -164,11 +167,13 @@ useEffect(() => {
           dimensions.height * 0.05 ,
           dimensions.width * 0.01 ,
           dimensions.height * 0.9 )
-        context.beginPath();
-        if(position.current.colormode == 1)
+        
+        if(position.current.colormode == 1 && game?.gamemode != "Dark Valley")
         context.fillStyle = "#ff8c19";
+        else if(position.current.colormode == 2 && game?.gamemode != "Dark Valley")
+        context.fillStyle = `hsla(${200}, 100%, 70%, .8)`;
         else
-        context.fillStyle = `hsla(${200}, 100%, 70%, .8)`; 
+        context.fillStyle = color.ball;
         context.arc(
             dimensions.width * position.current.ball.x / 100, 
             dimensions.height * position.current.ball.y / 100, 
@@ -178,18 +183,22 @@ useEffect(() => {
         );
         context.fill();
         context.closePath();
-        effect.map((effect) => {
-          effect.draw(context);
-          effect.update(dimensions.width * position.current.ball.x / 100 , dimensions.height * position.current.ball.y / 100 , position.current.colormode , shouldRotate);
-        }) 
-        pushEffect(effect , 20 , dimensions.width * position.current.ball.x / 100 , dimensions.height * position.current.ball.y / 100 , position.current.colormode );
-        if (position.current.iscollision)
+
+        if (game?.gamemode != "Dark Valley")
         {
-          pushColition(colition , 20 , dimensions.width * position.current.ball.x / 100 , dimensions.height * position.current.ball.y / 100 , position.current.colormode);
-          colition.map((effect) => {
-            effect.update(dimensions.width * position.current.ball.x / 100 , dimensions.height * position.current.ball.y / 100  , position.current.colormode);
+          effect.map((effect) => {
             effect.draw(context);
-          })
+            effect.update(dimensions.width * position.current.ball.x / 100 , dimensions.height * position.current.ball.y / 100 , position.current.colormode , shouldRotate);
+          }) 
+          pushEffect(effect , 20 , dimensions.width * position.current.ball.x / 100 , dimensions.height * position.current.ball.y / 100 , position.current.colormode );
+          if (position.current.iscollision)
+          {
+            pushColition(colition , 20 , dimensions.width * position.current.ball.x / 100 , dimensions.height * position.current.ball.y / 100 , position.current.colormode);
+            colition.map((effect) => {
+              effect.update(dimensions.width * position.current.ball.x / 100 , dimensions.height * position.current.ball.y / 100  , position.current.colormode);
+              effect.draw(context);
+            })
+          }
         }
     };
 

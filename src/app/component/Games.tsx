@@ -84,7 +84,7 @@ const Games = () => {
                 <button className="Playbutton" onClick={ 
                   ()=>{      
                       game?.setRunning(false);
-                      game?.setGamemode("Frozen Arena");
+                      game?.setGamemode("Flame Arena");
                       game?.settype("random");
                       game?.setgamefriend(-1);
                       render?.setRender("playGame");
