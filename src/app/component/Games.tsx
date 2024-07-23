@@ -78,8 +78,8 @@ const Games = () => {
           <div className="LightRow">
 
             <div className="tabledescribtion">
-                <h2>Frozen Arena</h2>
-                <p>Play in a Light environment and get Frozen</p>
+                <h2>Flame Arena</h2>
+                <p>Play in a Flame environment and get Flame</p>
                 <p>Arena's achievement</p>
                 <button className="Playbutton" onClick={ 
                   ()=>{      
@@ -88,14 +88,12 @@ const Games = () => {
                       game?.settype("random");
                       game?.setgamefriend(-1);
                       render?.setRender("playGame");
-                  
                   }
-                
                 } >Play</button>
             </div>
 
             <div className="gameTable">
-                <Image src="/homeImages/lighttable.svg" alt="table" width={200} height={200}/>
+                <Image src="/homeImages/FlameArena.png" alt="table" width={200} height={200}/>
             </div>
           </div>
 
@@ -107,8 +105,8 @@ const Games = () => {
 
             <div className="tabledescribtion">
                 <h2>ROBOT</h2>
-                <p>Play against the robot and get</p>
-                <p>a champion</p>
+                <p>Play against the robot to </p>
+                <p>test your might</p>
                 <button className="Playbutton" onClick={ 
                   ()=>{      
                       game?.setRunning(false);
@@ -120,9 +118,8 @@ const Games = () => {
                 
                 } >Play</button>
             </div>
-
           </div>
-            <div className="howto w-[80%] h-[5%] flex  justify-end">
+            <div className="howto w-[80%] h-[5%] flex  justify-end ">
                 <button className="bg-[#535C91] w-[120px] h-[30px] rounded-[6px] text-[#FFFFFF]   border-t-[0.2px] border-hover-border-color-[#9290C3] flex justify-center items-center"
                   onClick=
                   {
@@ -136,7 +133,7 @@ const Games = () => {
             {renderHowToPlay && 
             (  
               <div className="QrContainer">
-                <div ref={ref}>
+                <div ref={ref} >
                     <HowToPlay  close={setRenderHowToPlay} />   
                 </div>
               </div>

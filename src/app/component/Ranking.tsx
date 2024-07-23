@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { NoHistoy } from "../App";
 import { CircularProgress } from "@mui/material";
+import { boolean } from "yup";
+
 
 
 
@@ -28,9 +30,8 @@ const UserRank  :React.FC<{data : rankingdata }> = ( Props ) => {
 	);
 }
 
+
 type rankingdata = {
-
-
 	rank : number ,
 	userName: string,
 	image: string,
@@ -39,6 +40,47 @@ type rankingdata = {
 	lossCounter: number
 	
 }
+
+	const TopPlayers :React.FC< {data: rankingdata | undefined ,reciveresponse : | boolean }  >  =  (Props)=>{
+
+		return (
+			<div className="first-3">
+				{ !Props.reciveresponse  ?  <div className="w-[100%] h-[100%]  flex items-center justify-center ">  <CircularProgress  />  </div>  :
+					<>
+						{
+							  Array.isArray(Props.data) && Props.data && Props.data.length > 1  ?
+							<div className="secondPlace">
+								<Image src="./homeImages/firstplace.svg" width={18} height={7} alt="profile"/>
+								<Image  className="rounded-full w-[43px] h-[43px] " src={ Props.data[1].image?  Props.data[1].image : "./homeImages/memeber1.svg"} width={43} height={43} alt="profile"/>
+								<p>{Props.data[1].userName} </p>
+							</div> : <></>
+
+						}
+
+						{
+							 Array.isArray(Props.data) && Props.data && Props.data.length > 0  ?
+							<div className="firstPlace">
+								<Image src="./homeImages/firstplace.svg" width={30} height={16} alt="profile"/>
+								<Image  className="rounded-full w-[43px] h-[43px] "  src={ Props.data[0].image?  Props.data[0].image : "./homeImages/memeber1.svg"} width={60} height={60} alt="profile"/>
+								<p>{Props.data[0].userName}</p>
+						
+							</div>: <></>
+						}
+
+						{
+							 Array.isArray(Props.data) && Props.data && Props.data.length > 2  ?
+							<div className="thirdPlace">
+								<Image src="./homeImages/firstplace.svg" width={18} height={7} alt="profile"/>
+								<Image  className="rounded-full w-[43px] h-[43px] " src={ Props.data[2].image?  Props.data[2].image : "./homeImages/memeber1.svg"} width={43} height={43} alt="profile"/>
+								<p>{Props.data[2].userName}</p>
+							</div> : <></>
+						}
+					</>
+			}
+			</div>
+
+		);
+	}
 
 const Ranking = ()=>{
 	const [rankingData, setRankingData] = useState<rankingdata >()
@@ -51,6 +93,7 @@ const Ranking = ()=>{
 			if (ranking.data){
 
 				setRankingData(ranking.data )
+
 			}
 			console.log(rankingData, "--", ranking.data);
 				setreciveresponse(true);
@@ -63,23 +106,7 @@ const Ranking = ()=>{
 
 	return(
 		<div className="ranking ">
-				<div className="first-3">
-					<div className="secondPlace">
-						<Image src="./homeImages/firstplace.svg" width={18} height={7} alt="profile"/>
-						<Image src="./homeImages/memeber1.svg" width={43} height={43} alt="profile"/>
-						<p>Username</p>
-					</div>
-					<div className="firstPlace">
-						<Image src="./homeImages/firstplace.svg" width={30} height={16} alt="profile"/>
-						<Image src="./homeImages/memeber1.svg" width={60} height={60} alt="profile"/>
-						<p>Username</p>
-					</div>
-					<div className="thirdPlace">
-						<Image src="./homeImages/firstplace.svg" width={18} height={7} alt="profile"/>
-						<Image src="./homeImages/memeber1.svg" width={43} height={43} alt="profile"/>
-						<p>Username</p>
-					</div>
-				</div>
+				< TopPlayers  data={rankingData} reciveresponse={reciveresponse} />
 				<div className="ranking-head  w-[83%] flex justify-between m-auto text-[#8A99E9] mt-6 ">
 					<p className="w-[20%]" >Username</p>
 					<p  >Wins</p>
@@ -99,3 +126,10 @@ const Ranking = ()=>{
 }
 
 export default Ranking
+
+
+
+
+
+
+// if the user isn't in top 10  doens't appear the ranking data if he apprears he has wrong data 

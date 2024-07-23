@@ -246,9 +246,7 @@ const Body = ({ children }: { children: React.ReactNode }) => {
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
   const [chat, setChat] = useState(0);
-
   return (
     <ChatContext.Provider value={{ chat, setChat }}>
       <div className="body">
