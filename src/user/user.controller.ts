@@ -44,6 +44,12 @@ export class UserController {
     return await this.FriendsService.getfriendsRequest(req.user["userId"]);
   }
 
+  @Get("users/:name")
+  @UseGuards(JwtAuthGuard)
+  async getUsers(@Req() req: Request, @Param('name') name :string) {
+    return await this.FriendsService.getUserProfile(name, req.user['userId']);
+  }
+
   @Get("friends")
   @UseGuards(JwtAuthGuard)
   async sendFriendRequest(@Req() req: Request) {

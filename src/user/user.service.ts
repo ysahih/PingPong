@@ -54,6 +54,29 @@ export class FriendsService {
     }
   }
 
+  async getUserProfile(name: string, id: number) {
+    try {
+      const blocked = await this.SearchCantShow(id);
+      const user = await this.prisma.user.findUnique({
+        where: {
+          userName: name,
+        },
+        select: {
+          userName: true,
+          image: true,
+          id: true,
+          online: true,
+          inGame: true,
+        },
+      });
+      if (!user) return null;
+      if (blocked.some((b) => b.id === user.id)) return null;
+      return user;
+    } catch (e) {
+      return null;
+    }
+  }
+  
   async searchUser(userName: string, id: number) {
     try {
       const user = await this.prisma.user.findMany({
