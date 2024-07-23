@@ -27,6 +27,7 @@ export type GameBack = {
 	player2score : number,
 	ball : { x: number , y: number  , direction : {x : number , y : number } , stop : number } ,
 	gameover : boolean,
+	gameoverHandled : boolean,
 	iscollision : boolean,
 	colormode : number
 }
@@ -86,6 +87,10 @@ export class datagame {
 		{
 			this.game[room].gameover = true;
 		}
+		setgameoverHandled(room : string)
+		{
+			this.game[room].gameoverHandled = true;
+		}
 		setmoveball(room : string , moveball : number)
 		{
 			this.game[room].ball.stop = moveball;
@@ -113,6 +118,7 @@ export class datagame {
 					stop : 0,
 				},
 				gameover : false,
+				gameoverHandled : false,
 				iscollision : false,
 				colormode : 0
 			}
@@ -259,9 +265,13 @@ export class datagame {
 
 	findEmptyRoom (type : string , clientid : number , mode : string)
 	{
+
 		for (const room in this.rooms) {
-			if (this.rooms[room].users.length < 2 && this.rooms[room].type === type && mode === mode && type != "ai" && type != "friend")
+			if (this.rooms[room].users.length < 2 && this.rooms[room].type === type && type != "ai" && type != "friend")
 			{
+				console.log("room" , this.rooms[room].type);
+				console.log("mode" , this.rooms[room].mode);
+				console.log("modein" , mode);
 				return room;
 			}
 			if (this.rooms[room].users.length < 2 && this.rooms[room].type === type && type === "friend" && this.rooms[room].friendid === clientid)

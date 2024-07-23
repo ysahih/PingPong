@@ -701,7 +701,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 			if (!this.gameRooms.gameIntervals[room]) 
       {
         // console.log("create interval");
-        let isGameOverHandled = false;
+        
 				this.gameRooms.gameIntervals[room] = setInterval(async () => {
           if(!this.gameRooms.game[room])
           {
@@ -709,9 +709,9 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
             // console.log("game not found");
             return ;
           }
-					if ((this.gameRooms.game[room].player1score >= 7 ||  this.gameRooms.game[room].player2score >= 7) && isGameOverHandled == false)
+					if ((this.gameRooms.game[room].player1score >= 7 ||  this.gameRooms.game[room].player2score >= 7) && this.gameRooms.game[room].gameoverHandled == false)
 					{
-            isGameOverHandled = true;
+            this.gameRooms.setgameoverHandled(room);
             this.gameRooms.newRound(room);
             this.gameRooms.setmoveball(room, 0);
             const user1 = this.gameRooms.rooms[room].users[0].clientid;
