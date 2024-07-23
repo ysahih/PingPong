@@ -24,11 +24,11 @@ const HowToPlay = (props : {close : (close : boolean) => void }) => {
         </div>
       <Carousel placeholder="carousel  " >
         <div  className="  w-[100%] h-[100%]  md:w-[80%]  mx-auto  "  >
-          <img src="HowToPlay/ChoseMod.png" alt="explaine Game Rulses" />
+          <img src="HowToPlay/ChoseMod.png" width={800} height={800} alt="explaine Game Rulses" />
         </div>
 
         <div   className="   w-[100%] h-[100%]  md:w-[80%]  mx-auto  " >
-          <img src="HowToPlay/HowToMovePlayer.png" alt="explaine Game Rulses" />
+          <img src="HowToPlay/HowToMovePlayer.png" width={800} height={800} alt="explaine Game Rulses" />
         </div>
         </Carousel>
       </div>

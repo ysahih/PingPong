@@ -30,7 +30,6 @@ const UserRank  :React.FC<{data : rankingdata }> = ( Props ) => {
 	);
 }
 
-
 type rankingdata = {
 	rank : number ,
 	userName: string,
