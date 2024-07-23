@@ -6,8 +6,9 @@ import next from "next";
 import { useContext } from "react";
 import Image from "next/image";
 import { useState } from "react";
+import { USER } from "../users/page";
 
-const ProfileOverlay = () => {
+const ProfileOverlay = (props : {userData: USER} | null) => {
     // const context = useContext(UserDataContext);
 
     const [blocking, setBlocking] = useState<boolean>(false);
@@ -17,14 +18,14 @@ const ProfileOverlay = () => {
           <div className="ImgHeadProfileContainer">
             <Image
               className="ImgHeadprofile w-[70px] h-[70px] rounded-full md:w-[75px] md:h-[75px] "
-              src="/defaultImg.svg"
+              src={props?.userData?.image || "/iconsProfile/Avatar.svg"}
               width={75}
               height={75}
               alt="avatar"
             />
             <div>
               <h2 className="ProfileUserName text-[20px] sm:text-xl">
-                {/* {context?.userName} <span> #12 </span> */}
+                {props?.userData?.userName }<span> </span>
               </h2>
               <h3 className="ProfileUserFName">
                 {/* {context?.firstName + " " + context?.lastName} */}

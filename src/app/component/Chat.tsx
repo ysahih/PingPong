@@ -338,7 +338,7 @@ const Conversation = (props: ConvoProps) =>{
             <div className="convo">
                 <div className="convoHeader">
                     <div className="sender-info  cursor-pointer" onClick={() => {render?.setRender("profileOverly")
-                    router.push("/users?userName=" + props.label.chat.toString())
+                    router.push("/users?userName=" + convo?.userName);
                     // router.push("/room?name=" + props.roomName);
 
                     }}>
@@ -456,7 +456,7 @@ const Chat = () => {
                             )) : null}
                         </div>
                     </div>}
-                {Convo?.label.chat !== 0 && <Conversation updateChat={updateChat} label={Convo?.label!} handleMsgClick={()=>Convo?.setLabel({chat:0, isRoom:false})}  handleConvo={()=>setInConvo({content: "", createdAt: new Date(), senderID: 0})} inConvo={inConvo!} />}
+                {Convo?.label.chat !== 0 && <Conversation  updateChat={updateChat} label={Convo?.label!} handleMsgClick={()=>Convo?.setLabel({chat:0, isRoom:false})}  handleConvo={()=>setInConvo({content: "", createdAt: new Date(), senderID: 0})} inConvo={inConvo!} />}
                 
             </div>
 
