@@ -30,7 +30,7 @@ const JoinRoom = () => {
 
     return (
         <div className="joinRoom__warpper">
-            <input type="text" name="search--room" className="joinRoom__search"/>
+            {/* <input type="text" name="search--room" className="joinRoom__search"/> */}
             {
                 loading && (!rooms.length ?
                     <p className="joinRoom__message"> No chat room available </p>
