@@ -39,7 +39,6 @@ const HowToPlay = (props : {close : (close : boolean) => void }) => {
 
 
 
-
 const Games = () => {
   const game = useContext(GameContext);
   const render = useContext(RenderContext);

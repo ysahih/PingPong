@@ -161,7 +161,6 @@ useEffect(() => {
         context.shadowBlur = 0;
 
 
-
         context.fillStyle = color.grid ;
         context.fillRect(dimensions.width * 0.495 ,
           dimensions.height * 0.05 ,
@@ -281,28 +280,29 @@ useEffect(() => {
 
 
   const handleTouchMove = (e: React.TouchEvent) => {
+    
       if (canvasRef.current) {
         var rect = (e.touches[0].clientY / window.innerHeight) * 100;
         const tablerect = canvasRef.current.getBoundingClientRect();
         if (!shouldRotate && rect >= tablerect.top / window.innerHeight * 100 && rect <= tablerect.bottom / window.innerHeight * 100) {
            adjustedRect.current = rect - (tablerect.top / window.innerHeight * 100);
-          adjustedRect.current = adjustedRect.current * 100 / (tablerect.height / window.innerHeight * 100);
-          if (isMouseDown.current) {
+          adjustedRect.current = adjustedRect.current * 100 / (tablerect.height / window.innerHeight * 100);  
             position.current.stop = 1;
             p_y.current = adjustedRect.current;    
-          }
+          
         }
           rect = (e.touches[0].clientX / window.innerWidth) * 100;
          if (shouldRotate && rect >= tablerect.left / window.innerWidth * 100 && rect <= tablerect.right / window.innerWidth * 100) {
           adjustedRect.current = rect - (tablerect.left / window.innerWidth * 100);
           adjustedRect.current = adjustedRect.current * 100 / (tablerect.width / window.innerWidth * 100);
          
-          if (isMouseDown.current) {
+          
             position.current.stop = 1;
             p_y.current = adjustedRect.current;
-          }
+          
         }
       }
+      console.log("touchmove" , p_y.current);
     }
 
   return (
