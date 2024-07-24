@@ -1,0 +1,14 @@
+
+button {
+    background-color: #0a113f;
+    width: 70px;
+    height: 30px;
+    border-radius: 10px;
+    color: #b0b4ca;
+    color: whitesmoke;
+}
+
+.clicked {
+    border: 2px solid rgb(210, 211, 221, .5);
+    color: whitesmoke;
+}
