@@ -216,9 +216,9 @@ export class UserController {
 
   @Get('getRooms')
   @UseGuards(JwtAuthGuard)
-  async getRooms(@Req() request :Request) {
+  async getRooms(@Req() request :Request, @Query("name") name :string) {
 
-    return await this.FriendsService.getRooms(request.user['userId']);
+    return await this.FriendsService.getRooms(request.user['userId'], name);
   }
 
   @Post('joinRoom')

@@ -1260,11 +1260,15 @@ export class FriendsService {
     });
   }
 
-  async getRooms(id: number) {
+  async getRooms(id: number, name :string) {
 
     try {
-      const rooms = await this.prisma.room.findMany({
+      let rooms = await this.prisma.room.findMany({
         where: {
+          name: {
+            contains: name,
+            mode: 'insensitive',
+          },
           NOT: {
             OR: [
               {users: {some: {userId: id}}},
@@ -1286,13 +1290,14 @@ export class FriendsService {
         },
       });
 
-      const sortedRooms = rooms.sort((room1, room2) => {
-        return -(room1.users.length - room2.users.length);
-      });
+      if (!name)
+        rooms = rooms.sort((room1, room2) => {
+          return -(room1.users.length - room2.users.length);
+        });
 
-      console.log('Users:', sortedRooms);
+      // console.log('Users:', sortedRooms);
 
-      return sortedRooms.map((room) => {
+      return rooms.map((room) => {
         return {
           id: room.id,
           name: room.name,
