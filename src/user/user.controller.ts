@@ -187,7 +187,7 @@ export class UserController {
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === "P2002")
-          return {status: 0, message: 'Room name already exists !'};
+          return {status: 0, message: `${name} room already exists !`};
       }
       else
         return {status: 0, message: 'Room did not create !'}
