@@ -65,6 +65,11 @@ export class FriendsService {
           userName: true,
           image: true,
           id: true,
+          lastName: true,
+          firstName: true,
+          level: true,
+          winCounter: true,
+          lossCounter: true,
           online: true,
           inGame: true,
         },
@@ -89,6 +94,7 @@ export class FriendsService {
           userName: true,
           image: true,
           id: true,
+          level: true,
         },
       });
       if (user.length > 0)
@@ -121,6 +127,7 @@ export class FriendsService {
           image: true,
           id: true,
           online: true,
+          level: true,
         },
       });
       if (!user) return null;
@@ -178,6 +185,7 @@ export class FriendsService {
               userName: true,
               image: true,
               id: true,
+              level: true,
             },
           },
           receiver: {
@@ -185,6 +193,7 @@ export class FriendsService {
               userName: true,
               image: true,
               id: true,
+              level: true,
             },
           },
         },
@@ -213,6 +222,7 @@ export class FriendsService {
               userName: true,
               image: true,
               id: true,
+              level: true,
             },
           },
         },
@@ -243,6 +253,7 @@ export class FriendsService {
               userName: true,
               image: true,
               id: true,
+              level: true,
             },
           },
         },
@@ -283,6 +294,7 @@ export class FriendsService {
               id: true,
               online: true,
               inGame: true,
+              level: true,
             },
           },
           receiver: {
@@ -292,6 +304,7 @@ export class FriendsService {
               id: true,
               online: true,
               inGame: true,
+              level: true,
             },
           },
         },
@@ -309,6 +322,7 @@ export class FriendsService {
           image: friendData.image,
           online: friendData.online,
           inGame: friendData.inGame,
+          level: friendData.level,
         };
       });
       return Friends;
@@ -443,6 +457,7 @@ export class FriendsService {
             image: true,
             id: true,
             online: true,
+            level: true,
           },
         });
 
@@ -455,6 +470,7 @@ export class FriendsService {
             image: true,
             id: true,
             online: true,
+            level: true,
           },
         });
         return { reciever: friend, sender: user };
@@ -490,6 +506,7 @@ export class FriendsService {
               userName: true,
               image: true,
               id: true,
+              level: true,
             },
           },
           receiver: {
@@ -497,6 +514,7 @@ export class FriendsService {
               userName: true,
               image: true,
               id: true,
+              level: true,
             },
           },
         },
@@ -576,6 +594,7 @@ export class FriendsService {
             userName: true,
             image: true,
             id: true,
+            level: true,
           },
         });
         return user;
@@ -619,6 +638,7 @@ export class FriendsService {
             userName: true,
             image: true,
             id: true,
+            level: true,
           },
         });
         if (!user) return null;

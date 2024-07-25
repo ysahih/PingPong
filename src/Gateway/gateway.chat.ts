@@ -36,6 +36,7 @@ type Invitation = {
     id: number;
     userName: string;
     image: string;
+    level: number;
   };
 };
 
@@ -472,6 +473,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 		  id: targetFriend.sender.id,
 		  userName: targetFriend.sender.userName,
 		  image: targetFriend.sender.image,
+      level: targetFriend.sender.level,
 		},
 	  };
 	  const Sockets = this._users.getUserById(Payload.id);
