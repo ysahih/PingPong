@@ -19,6 +19,8 @@ export type UserData = {
     setEmail: (email: string) => void;
     level    : number,
     inGame   : Boolean,
+    winCounter: number,
+    lossCounter: number,
 }
 
 

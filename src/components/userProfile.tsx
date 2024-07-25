@@ -352,9 +352,10 @@ const SettingsAnd2Fa = () => {
             <div className="flex gap-4 w-[100%]  items-center">
               <label htmlFor="ImageInput">
                 <Image
-                  className="cursor-pointer rounded-[10px] border-2 border-gray-300 w-[140px] h-[140px]"
+                  className="cursor-pointer rounded-[10px] border-2 border-gray-300 w-[140px] h-[140px] object-cover"
+                  
                   src={imageSrc}
-                  alt="Pongy"
+                  alt="profile"
                   width={140}
                   height={140}
                   priority={true}
@@ -433,7 +434,7 @@ const UserProfile = () => {
           />
           <div>
             <h2 className="ProfileUserName text-[20px] sm:text-xl">
-              {context?.userName} <span> #12 </span>
+              {context?.userName} <span> #{context?.level} </span>
             </h2>
             <h3 className="ProfileUserFName">
               {context?.firstName + " " + context?.lastName}
@@ -456,11 +457,11 @@ const UserProfile = () => {
           <div className="flex sm:mr-[35%] p-1 gap-1 sm:gap-0 sm-p-0 justify-center">
             <div>
               <h3 className="WinsLowssers">Wins</h3>
-              <h3 className="counterWinsLowsers">30</h3>
+              <h3 className="counterWinsLowsers">{context?.winCounter}</h3>
             </div>
             <div>
               <h3 className="WinsLowssers">Losses</h3>
-              <h3 className="counterWinsLowsers">5</h3>
+              <h3 className="counterWinsLowsers">{context?.lossCounter}</h3>
             </div>
           </div>
         </div>

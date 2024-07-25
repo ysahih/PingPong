@@ -12,6 +12,11 @@ export interface USER {
   inGame: boolean;
   online: boolean;
   userName: string;
+  lastName: string;
+  firstName: string;
+  level: number;
+  winCounter: number;
+  lossCounter: number;
 }
 
 const ProfileOverlayPage = () => {

@@ -10,6 +10,7 @@ import UserDataContext from "../context/context";
 import RenderContext from "../context/render";
 import Game from "@/app/Game/GamePages/Game";
 import { GameContext } from "@/app/Game/Gamecontext/gamecontext";
+import { useRouter } from "next/navigation";
 // import RenderContext from "../context/render";
 
 interface friendsType {
@@ -35,6 +36,7 @@ const Friend = (props: friendsType) => {
   const socket = useContext(SocketContext);
   const user = useContext(UserDataContext);
   const context = useContext(ChatContext);
+  const router = useRouter();
 
   const render = useContext(RenderContext);
 
@@ -76,8 +78,12 @@ const Friend = (props: friendsType) => {
           style={{ outline: ".2px solid #535C91" }}
         >
           <Image
-            className="bg-cover bg-center w-full h-full"
+            className="bg-cover bg-center w-full h-full cursor-pointer"
             src={props?.value?.image || "./defaultImg.svg"}
+            onClick={() => {
+              router.push(`/users?userName=${props.value.userName}`);
+            }
+            }
             width={60}
             height={60}
             alt="user"
@@ -86,7 +92,7 @@ const Friend = (props: friendsType) => {
       </div>
       <div className="containerFriend__info">
         <h3 className="text-[16px]">{props.value.userName}</h3>
-        <p className="text-center text-[#8A99E9] text-[12px]">#12</p>
+        <p className="text-center text-[#8A99E9] text-[12px]">#{props.value.level}</p>
       </div>
       <div
         className={`${
