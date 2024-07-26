@@ -11,6 +11,8 @@ import RenderContext from "../context/render";
 import Game from "@/app/Game/GamePages/Game";
 import { GameContext } from "@/app/Game/Gamecontext/gamecontext";
 import { useRouter } from "next/navigation";
+import { IoGameController } from "react-icons/io5";
+
 // import RenderContext from "../context/render";
 
 interface friendsType {
@@ -63,16 +65,21 @@ const Friend = (props: friendsType) => {
   return (
     <div className="FriendsPh min-w-[190px] h-[230px] bg-[#040A2F] mr-[15px] flex flex-col items-center">
       <div className="relative">
-        {props.value.online && (
           <>
-            <p
-              className={`${
-                props.value.inGame ? " bg-blue-500" : " bg-green-500"
-              } absolute w-2.5 h-2.5 rounded-full  -top-[-12px] -right-[-8px] transform translate-x-1/2 translate-y-1/2 border-[4px] border-transparent `}
-              style={{ outline: "4px solid #1B1A55" }}
-            ></p>
+            {props.value.inGame && props.value.online && (
+              <IoGameController
+                className={`bg-[#1B1A55] absolute rounded-full  -top-[-12px] -right-[-8px] text-blue-500 transform translate-x-1/2 translate-y-1/2 `}
+                style={{ outline: "4px solid #1B1A55" }}
+              />
+            )}
+
+            {!props.value.inGame && props.value.online && (
+              <p
+                className={` bg-green-500 absolute w-2.5 h-2.5 rounded-full  -top-[-12px] -right-[-8px] transform translate-x-1/2 translate-y-1/2 border-[4px] border-transparent `}
+                style={{ outline: "4px solid #1B1A55" }}
+              ></p>
+            )}
           </>
-        )}
         <div
           className="mt-[16px] inline-block rounded-full overflow-hidden border-2 border-transparent shadow-lg w-[60px] h-[60px]"
           style={{ outline: ".2px solid #535C91" }}
@@ -82,8 +89,7 @@ const Friend = (props: friendsType) => {
             src={props?.value?.image || "./defaultImg.svg"}
             onClick={() => {
               router.push(`/users?userName=${props.value.userName}`);
-            }
-            }
+            }}
             width={60}
             height={60}
             alt="user"
@@ -92,7 +98,9 @@ const Friend = (props: friendsType) => {
       </div>
       <div className="containerFriend__info">
         <h3 className="text-[16px]">{props.value.userName}</h3>
-        <p className="text-center text-[#8A99E9] text-[12px]">#{props.value.level}</p>
+        <p className="text-center text-[#8A99E9] text-[12px]">
+          #{props.value.level}
+        </p>
       </div>
       <div
         className={`${

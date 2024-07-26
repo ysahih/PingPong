@@ -136,15 +136,8 @@ const Notification = () => {
             alt="logo"
             width={26}
             height={26}
-            // objectFit="cover"
             priority={true}
-            style={{
-              width: "auto",
-              height: "auto",
-              maxWidth: "26px",
-              maxHeight: "26px",
-              objectFit: "cover",
-            }}
+            className="h-[26px] w-[26px] object-cover"
           />
         </div>
       </div>
@@ -168,10 +161,6 @@ const Notification = () => {
                   width={34}
                   height={34}
                   priority={true}
-                  style={{
-                    width: "auto",
-                    height: "auto"
-                  }}
                 />
                 </div>
                 <p className="infoNtf">

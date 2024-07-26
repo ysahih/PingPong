@@ -26,6 +26,7 @@ import ChatContext from "@/components/context/chatContext";
 import axiosApi from "@/components/signComonents/api";
 import { string } from "yup";
 import { useRouter } from "next/navigation";
+import { IoGameController } from "react-icons/io5";
 
 type UserProps = {
   id: number;
@@ -52,16 +53,22 @@ const Friend = (props: friendsType) => {
   return (
     <div className="search-card SearchCard  text-white mb-2">
       <div className="relative">
-        {props.value.online && (
           <>
-            <p
-              className={`${
-                props.value.inGame ? " bg-blue-500" : " bg-green-500"
-              } absolute w-2.5 h-2.5 rounded-full  -top-[-12px] -right-[-8px] transform translate-x-1/2 translate-y-1/2 border-[4px] border-transparent `}
-              style={{ outline: "4px solid #1B1A55" }}
-            ></p>
+            {props.value.inGame && props.value.online && (
+              <IoGameController
+                className={`bg-[#1B1A55] absolute rounded-full  -top-[-12px] -right-[-8px] text-blue-500 transform translate-x-1/2 translate-y-1/2 `}
+                style={{ outline: "4px solid #1B1A55" }}
+              />
+            )}
+
+            {!props.value.inGame && props.value.online && (
+              <p
+                className={` bg-green-500 absolute w-2.5 h-2.5 rounded-full  -top-[-12px] -right-[-8px] transform translate-x-1/2 translate-y-1/2 border-[4px] border-transparent `}
+                style={{ outline: "4px solid #1B1A55" }}
+              ></p>
+            )}
           </>
-        )}
+      
         <div
           className="mt-2 inline-block rounded-full overflow-hidden border-2 border-transparent shadow-lg w-[80px] h-[80px]"
           style={{ outline: ".2px solid #535C91" }}
@@ -260,7 +267,7 @@ const User = (props: UserProps) => {
         </div>
       ) : (
         <IoMdPersonAdd
-          className="w-[30px] h-[30px] mt-[10px] cursor-pointer  hover:scale-[120%] transition-all duration-300 ease-in-out"
+          className="w-[30px] text-[#8a99e9] h-[30px] mt-[10px] cursor-pointer  hover:scale-[120%] transition-all duration-300 ease-in-out"
           onClick={() => {
             socket?.emit("NewInvit", { id: props.id, userId: user?.id });
             setSent(true);
@@ -313,7 +320,7 @@ const SentInvits = (props: { invit: SentInvitsType }) => {
       >
         <p className=" text-[#8A99E9] text-[14px] ">
           {" "}
-          {cenceled ? "canceled" : "cancel Invitation"}
+          {cenceled ? "canceled" : "Cancel Invitation"}
         </p>
       </div>
     </div>
