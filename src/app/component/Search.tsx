@@ -25,6 +25,7 @@ import {
 // import Friends from "@/components/userProfile/Friends";
 import ChatContext from "@/components/context/chatContext";
 import axiosApi from "@/components/signComonents/api";
+import { string } from "yup";
 
 type UserProps = {
   id: number;
@@ -297,9 +298,9 @@ const SentInvits = (props: { invit: SentInvitsType }) => {
   );
 };
 
-const Search = () => {
+const Search = (state : {searchData: string}) => {
   const [users, setUsers] = useState<UserProps[]>([]);
-  const [userName, setUserName] = useState<string>("");
+  // const [userName, setUserName] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const friends = useContext(ProfileDataContext);
   const [userNotFound, setUserNotFound] = useState<boolean>(false);
@@ -310,12 +311,12 @@ const Search = () => {
       setIsLoading(true);
       setUserNotFound(false);
     }
-    if (userName.length > 0) {
+    if (state.searchData.length > 0) {
       setIsLoading(false);
     }
     if (!isLoading) {
       let inUsers = users.find((user) =>
-        user.userName.toLowerCase().startsWith(userName.toLowerCase())
+        user.userName.toLowerCase().startsWith(state.searchData.toLowerCase())
       );
       if (inUsers) {
         setUserNotFound(false);
@@ -323,7 +324,7 @@ const Search = () => {
       }
 
       let inSentInvit = sentInvits?.some((invit) =>
-        invit.receiver.userName.toLowerCase().startsWith(userName.toLowerCase())
+        invit.receiver.userName.toLowerCase().startsWith(state.searchData.toLowerCase())
       );
 
       if (inSentInvit) {
@@ -332,10 +333,10 @@ const Search = () => {
       }
 
       let inFriends = friends?.FriendsData?.find((friend) =>
-        friend.userName.toLowerCase().startsWith(userName.toLowerCase())
+        friend.userName.toLowerCase().startsWith(state.searchData.toLowerCase())
       );
       let inInvits = friends?.InvitsData?.find((invit) =>
-        invit.sender.userName.toLowerCase().startsWith(userName.toLowerCase())
+        invit.sender.userName.toLowerCase().startsWith(state.searchData.toLowerCase())
       );
       if (inFriends || inInvits || inUsers || inSentInvit) {
         setUserNotFound(false);
@@ -345,19 +346,19 @@ const Search = () => {
         !inInvits &&
         !inUsers &&
         !inSentInvit &&
-        userName.length > 0
+        state.searchData.length > 0
       ) {
         setUserNotFound(true);
       }
     }
-  }, [friends, userNotFound, users, userName, isLoading]);
+  }, [friends, userNotFound, users, state.searchData, isLoading]);
 
   useEffect(() => {
     setIsLoading(true);
     const search = async () => {
       try {
         const dataSearch = await axiosApi.get(
-          process.env.NEST_API + "/user/search?userName=" + userName,
+          process.env.NEST_API + "/user/search?userName=" + state.searchData,
           {
             withCredentials: true,
           }
@@ -379,20 +380,10 @@ const Search = () => {
       }
     };
     search();
-  }, [userName, friends]);
+  }, [state.searchData, friends]);
 
   return (
-    <div className="search flex flex-col items-center w-full p-2 pt-8">
-      <div className="bg-[#030824] InputSearch w-[300px] flex pl-[10px] items-center gap-2 mb-[20px]">
-        <CiSearch className="w-[30px] h-[30px] text-white" />
-        <input
-          type="search"
-          name="search"
-          placeholder="Search"
-          className=" bg-transparent border-none focus:border-none focus:outline-none w-[240px] h-[40px] text-white text-[16px]"
-          onChange={(e) => setTimeout(() => setUserName(e.target.value.trim()), 800)}
-        />
-      </div>
+    
       <div className="SearchContainer">
         <>
           {friends && friends?.FriendsData?.map((friend) => {
@@ -400,7 +391,7 @@ const Search = () => {
             return (
               friend.userName
                 .toLowerCase()
-                .startsWith(userName.toLowerCase()) && <Friend key={friend.id} value={friend} />
+                .startsWith(state.searchData.toLowerCase()) && <Friend key={friend.id} value={friend} />
             );
           })}
         </>
@@ -410,7 +401,7 @@ const Search = () => {
             return (
               invit.sender.userName
                 .toLowerCase()
-                .startsWith(userName.toLowerCase()) && <Invit key={invit.id} value={invit} />
+                .startsWith(state.searchData.toLowerCase()) && <Invit key={invit.id} value={invit} />
             );
           })}
         </>
@@ -421,7 +412,7 @@ const Search = () => {
               return (
                 invit.receiver.userName
                   .toLowerCase()
-                  .startsWith(userName.toLowerCase()) && (
+                  .startsWith(state.searchData.toLowerCase()) && (
                   <SentInvits key={invit.id} invit={invit} />
                 )
               );
@@ -439,7 +430,7 @@ const Search = () => {
               (user, index) =>
                 user.userName
                   .toLowerCase()
-                  .startsWith(userName.toLowerCase()) && (
+                  .startsWith(state.searchData.toLowerCase()) && (
                   <User
                     key={index}
                     id={user.id}
@@ -467,7 +458,7 @@ const Search = () => {
           </div>
         )}
       </div>
-    </div>
+   
   );
 };
 

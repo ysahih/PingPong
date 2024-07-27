@@ -1,12 +1,14 @@
 "use client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./joinRoom.css"
 import Room from "./room/Room";
 import axios from "axios";
 import { JoinRoomDTO } from "./interfaces"
 import RoomLoading from "./roomLoading/roomLoading";
+import Image from "next/image";
+import logo from '@/../public/RoomSettings/UserInite.svg';
 
-const JoinRoom = () => {
+const JoinRoom :React.FC<{searchDat :string}> = (prop) => {
 
     const [rooms, setRooms] = useState<JoinRoomDTO[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
@@ -14,10 +16,10 @@ const JoinRoom = () => {
     useEffect(() => {
 
         const getRooms = async () => {
-            const response = await axios.get(process.env.NEST_API + "/user/getRooms", {
+            const response = await axios.get(process.env.NEST_API + `/user/getRooms?name=${prop.searchDat}`, {
                 withCredentials: true,
             });
-
+            
             if (response.data)
             {
                 setRooms(response.data);
@@ -26,26 +28,22 @@ const JoinRoom = () => {
         }
         getRooms();
 
-    }, []);
+    }, [prop.searchDat]);
 
     return (
-        <div className="joinRoom__warpper">
-            <input type="text" name="search--room" className="joinRoom__search"/>
+        <>
             {
                 loading && (!rooms.length ?
-                    <p className="joinRoom__message"> No chat room available </p>
+                    <div className="joinRoom__message">
+                        <p>No chat room available</p>
+                        <Image src={logo} width={20} height={20} alt="User Inite logo"/>
+                    </div>
                     :
                     <div className="joinRoom__rooms--wrapper">
                         {rooms?.map((room) => <Room key={room.name} room={room} updateRooms={setRooms} />)}
                     </div>
                 )
             }
-            {/* {
-                loading && rooms?.length &&
-                <div className="joinRoom__rooms--wrapper">
-                    {rooms?.map((room) => <Room key={room.name} room={room} updateRooms={setRooms} />)}
-                </div>
-            } */}
             {
                 !loading &&
                 <div className="joinRoom__rooms--wrapper">
@@ -57,7 +55,7 @@ const JoinRoom = () => {
                     <RoomLoading />
                 </div>
             }
-        </div>
+        </>
     );
     
 }
