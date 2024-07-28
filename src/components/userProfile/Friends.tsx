@@ -130,7 +130,7 @@ const Friend = (props: friendsType) => {
           height={24}
           property="true"
           onClick={() => {
-            context?.setChat(props.value.id);
+            context?.setLabel({id: props.value.id, isRoom: false});
             // handleChat();
           }}
           alt="online"

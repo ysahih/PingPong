@@ -71,8 +71,7 @@ const FriendsType = (props: { value: USER }) => {
           height={24}
           property="true"
           onClick={() => {
-            context?.setChat(props.value.id);
-            // handleChat();
+            context?.setLabel({id: props.value.id, isRoom: false});
           }}
           alt="online"
           className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[24px] min-h-[24px]"
@@ -162,7 +161,7 @@ const InvitType = (props: { value: USER }) => {
           height={30}
           property="true"
           onClick={() => {
-            context?.setChat(props.value.id);
+            context?.setLabel({id: props.value.id, isRoom: false});
             // handleChat();
           }}
           alt="online"
@@ -219,7 +218,7 @@ const SentInvit = (props: { value: USER }) => {
           height={30}
           property="true"
           onClick={() => {
-            context?.setChat(props.value.id);
+            context?.setLabel({id: props.value.id, isRoom: false});
             // handleChat();
           }}
           alt="online"
@@ -269,7 +268,7 @@ const AddFried = (props: { value: USER }) => {
           height={30}
           property="true"
           onClick={() => {
-            context?.setChat(props.value.id);
+            context?.setLabel({id: props.value.id, isRoom: false});
             // handleChat();
           }}
           alt="online"
@@ -402,7 +401,7 @@ const ProfileOverlay = (props: { userData: USER , Type: string | null}) => {
               height={24}
               property="true"
               onClick={() => {
-                // context?.setChat(props.value.id);
+                // context?.setLabel({id: props.value.id, isRoom: false});
               }}
               alt="online"
               className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[24px] min-h-[24px]"

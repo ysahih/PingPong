@@ -13,20 +13,9 @@ import SocketContext from "@/components/context/socket";
 const Buttons = () => {
   const context: renderContext | null = useContext(RenderContext);
   const router = useRouter();
-  const pathName = usePathname();
+  // const pathName = usePathname();
 
-  useEffect(() => {
-    if (pathName === "/") {
-      context?.setRender("home");
-    } else if (pathName === "/Game") {
-      context?.setRender("games");
-    } else if (pathName === "/Ranking") {
-      context?.setRender("ranking");
-    } else if (pathName === "/Search") {
-      context?.setRender("search");
-    }
-  }
-  , [pathName]);
+
 
   return (
     <div className="buttons">
@@ -106,7 +95,8 @@ const Buttons = () => {
         className={`sideButton visible xl:invisible ${
           context?.render === "chat" ? "activeChatButton" : ""
         }`}
-        onClick={() => context?.setRender("chat")}
+        onClick={() => {context?.setRender("chat")
+        router.push("/Chat")}}
       >
         <Image
           className="icon"
