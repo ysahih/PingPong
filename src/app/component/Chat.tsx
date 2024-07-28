@@ -97,7 +97,6 @@ interface userOptionClass {
 }
 
 {
- 
 }
 const UserOption = ({ className }: userOptionClass) => {
   return (
@@ -207,6 +206,7 @@ const Conversation = (props: ConvoProps) => {
   const [timeAgo, setTimeAgo] = useState<TimeAgo | null>(null);
   const [typing, setTyping] = useState<Boolean>(false);
   const state = useContext(UserStateContext);
+  const user = useContext(UserDataContext);
 
   const [userState, setUserState] = useState<string>("offline");
 
@@ -369,10 +369,12 @@ const Conversation = (props: ConvoProps) => {
                 />
                 <div>
                   <h2>{convo?.userName}</h2>
-                  {!props.label.isRoom && (
+                  {!props.label.isRoom ? (
                     <p className="w-[50px]">
                       {typing ? "Typing..." : userState}
                     </p>
+                  ) : (
+                    <p className="w-[50px]">Channel</p>
                   )}
                 </div>
               </div>
@@ -392,25 +394,26 @@ const Conversation = (props: ConvoProps) => {
                 <div
                   key={index}
                   className={
-                    props.label.id === message.userId ? "othersMsg" : "myMsg"
+                    user?.id === message.userId ? "myMsg" : "othersMsg"
                   }
                 >
                   <p
                     className={`sentAt ${
-                      props.label.id === message.userId
-                        ? "othersDate"
-                        : "myDate"
+                      user?.id !== message.userId ? "othersDate" : "myDate"
                     }`}
                   >
                     {timeAgo?.format(new Date(message.createdAt))}
                   </p>
                   <div
                     className={
-                      props.label.id === message.userId
+                      user?.id !== message.userId
                         ? "othersContent"
                         : "myContent"
                     }
                   >
+                    {props.label.isRoom && user?.id !== message.userId && (
+                      <h1 className="font-xs text-xs text-[#081041]">user </h1>
+                    )}
                     <p className="msgContent">{message?.content}</p>
                   </div>
                 </div>
