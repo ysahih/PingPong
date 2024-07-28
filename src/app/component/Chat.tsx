@@ -176,6 +176,7 @@ const Message = ({handleMsgClick, user} : Props) =>{
     label: {chat: number, isRoom: boolean};
     updateChat: (newChatData: ChatData) =>void
     handleConvo : () => void;
+
 };
 
 const Conversation = (props: ConvoProps) =>{
@@ -338,8 +339,8 @@ const Conversation = (props: ConvoProps) =>{
             <div className="convo">
                 <div className="convoHeader">
                     <div className="sender-info  cursor-pointer" onClick={() => {render?.setRender("profileOverly")
+                    props.label.isRoom ? router.push("/room?name=" + props.label.chat.toString()) :
                     router.push("/users?userName=" + props.label.chat.toString())
-                    // router.push("/room?name=" + props.roomName);
 
                     }}>
                         <Image className="profilepic" src={convo?.image ? convo.image : "/homeImages/memeber1.svg"} width={38} height={38} alt="photo"/>
@@ -454,7 +455,7 @@ const Chat = () => {
                         
                         <div className="messagesHolder">
                             {chatdata ? chatdata.map((user: ChatData, index) => (
-                                <Message key={index} handleMsgClick={()=>Convo?.setLabel({chat: user.id, isRoom: user.isRoom})} setIsRoom={setIsRoom} user={user}/>
+                                <Message key={index} handleMsgClick={()=>Convo?.setLabel({chat: user.id, isRoom: user.isRoom})} user={user}/>
                             )) : null}
                         </div>
                     </div>}
