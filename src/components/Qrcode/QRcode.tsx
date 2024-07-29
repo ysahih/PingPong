@@ -1,6 +1,6 @@
 import AuthCode from "react-auth-code-input";
 import CloseBtn from "../closebtn";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { HtmlContext } from "next/dist/server/future/route-modules/app-page/vendored/contexts/entrypoints";
 import { useRouter } from "next/navigation";
@@ -15,6 +15,8 @@ const VerifyTwoFa = (props: VerifyTwoFaProps) => {
   const btnValue = useRef(null);
   const [enable2Fa, setEnable2Fa] = useState(true);
   const router = useRouter();
+
+
   const Logout = async () => {
     try {
       const res = await axios.get(process.env.NEST_API + "/logout", {
@@ -89,8 +91,8 @@ const VerifyTwoFa = (props: VerifyTwoFaProps) => {
               }
             }, 200);
           }}
-          allowedCharacters="numeric"
         />
+
         <h4>Enter the code here</h4>
         <button
           ref={btnValue}

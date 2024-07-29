@@ -12,8 +12,9 @@ export const Loding = () => {
           alt="logo"
           width={50}
           height={50}
+          property='false'
           style={{
-            height: "auto",
+            // height: "auto",
             width: "auto",
             maxWidth: "100%",
           }} />

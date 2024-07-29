@@ -50,17 +50,20 @@ const Info = () => {
     if (error.iserror) {
       return;
     }
-   
+    if (!user.userName && !user.firstName && !user.lastName) {
+      return;
+    }
 
     const toastId = toast.loading("Waiting...");
     setActiveToast(true);
     console.log(user);
     const send = async () => {
-      const res = await axiosApi.post(process.env.NEST_API + '/user/updateInfo', 
+      const res = await axiosApi.post(
+        process.env.NEST_API + "/user/updateInfo",
         {
-          userName: user?.userName || '',
-          firstName: user?.firstName || '',
-          lastName: user?.lastName || '',
+          userName: user?.userName || "",
+          firstName: user?.firstName || "",
+          lastName: user?.lastName || "",
         },
         {
           withCredentials: true,
@@ -68,7 +71,7 @@ const Info = () => {
       );
       if (res?.data?.message) {
         toast.dismiss(toastId);
-        toast.error(res?.data?.message, {icon: '⚠️'});
+        toast.error(res?.data?.message, { icon: "⚠️" });
         setActiveToast(false);
         return;
       }
@@ -76,9 +79,15 @@ const Info = () => {
       setActiveToast(false);
       toast.success("update Successfully !");
       if (userData) {
-        userData?.setFirstName(!user?.firstName ?  userData?.firstName : user?.firstName);
-        userData?.setLastName(!user?.lastName ?  userData?.lastName : user?.lastName);
-        userData?.setUserName(  !user?.userName ?  userData?.userName : user?.userName);
+        userData?.setFirstName(
+          !user?.firstName ? userData?.firstName : user?.firstName
+        );
+        userData?.setLastName(
+          !user?.lastName ? userData?.lastName : user?.lastName
+        );
+        userData?.setUserName(
+          !user?.userName ? userData?.userName : user?.userName
+        );
       }
     };
     send();
@@ -125,7 +134,7 @@ const Info = () => {
         autoComplete="true"
         onChange={handleChange}
       />
-      
+
       <button
         type="submit"
         name="submit"

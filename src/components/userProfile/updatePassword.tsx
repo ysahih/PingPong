@@ -34,9 +34,9 @@ const UpdatePassword = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    setUser(prevState => ({
+    setUser((prevState) => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }));
 
     if (name === "NewPassword") {
@@ -60,7 +60,12 @@ const UpdatePassword = () => {
       return;
     }
 
-    if (user.NewPassword !== user.ConfirmPassword) {
+    if (
+      user.NewPassword !== user.ConfirmPassword ||
+      user.NewPassword === "" ||
+      user.ConfirmPassword === "" ||
+      user.CurrentPassword === ""
+    ) {
       setErrorP(true);
       return;
     }
@@ -70,16 +75,20 @@ const UpdatePassword = () => {
 
     const send = async () => {
       try {
-        const res = await axiosApi.post(process.env.NEST_API + '/user/UpdatePassword', {
-          CurrentPassword: user.CurrentPassword,
-          NewPassword: user.NewPassword,
-        }, {
-          withCredentials: true,
-        });
+        const res = await axiosApi.post(
+          process.env.NEST_API + "/user/UpdatePassword",
+          {
+            CurrentPassword: user.CurrentPassword,
+            NewPassword: user.NewPassword,
+          },
+          {
+            withCredentials: true,
+          }
+        );
 
         if (res?.data?.message) {
           toast.dismiss(toastId);
-          toast.error(res.data.message, { icon: '⚠️' });
+          toast.error(res.data.message, { icon: "⚠️" });
           setActiveToast(false);
           return;
         }

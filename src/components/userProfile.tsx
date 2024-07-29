@@ -30,6 +30,8 @@ const QrCode = (props: QrCodeProps) => {
   const [input, setInput] = useState("");
   const [enable2Fa, setEnable2Fa] = useState(true);
   const [QRsrc, setQRsrc] = useState(null);
+  
+
   const urlG =
     "https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en&gl=US";
   const btnValue = useRef(null);
@@ -296,13 +298,11 @@ const SettingsAnd2Fa = () => {
           width={240}
           height={260}
           priority={true}
-        
           alt="image"
           style={{
             maxWidth: "100%",
             height: "auto",
             width: "auto",
-          
           }}
         />
         <h1 className="text-2xl text-white ml-4 mt-[15px]">Settings</h1>
@@ -354,7 +354,6 @@ const SettingsAnd2Fa = () => {
               <label htmlFor="ImageInput">
                 <Image
                   className="cursor-pointer rounded-[10px] border-2 border-gray-300 w-[140px] h-[140px] object-cover"
-                  
                   src={imageSrc}
                   alt="profile"
                   width={140}
@@ -386,29 +385,32 @@ const SettingsAnd2Fa = () => {
               </div>
             </div>
           )}
-          {stateClick === 1 && (
-            <Info />
-          )}
+          {stateClick === 1 && <Info />}
           {stateClick === 2 && (
             <div className="flex flex-col w-[100%] gap-4 mt-4 justify-start items-start ">
-              <div className="">
-              <div className="flex gap-4 justify-center items-center mt-4">
-              <Switch onChange={handleClick} checked={!!TwoFaStatus} />
-              <button
-                ref={RefBtn}
-                className="btn2Fa h-[40px] w-[140px]"
-                onClick={() =>
-                  TwoFaStatus ? setDisable2Fa(true) : setQrclose(true)
-                }
-              >
-                {TwoFaStatus ? "Disable 2FA" : "Enable 2FA"}
-              </button>
-              </div>
-              <UpdatePassword />
-              {Qrclose && <QrCode close={setQrclose} towFa={set2FaStatus} />}
-              {disable2Fa && (
-                <Disable2Fa close={setDisable2Fa} twoFa={set2FaStatus} />
-              )}
+              <div className="w-full">
+                <div className="flex gap-4  items-center mt-4">
+                  <Switch
+                    onChange={handleClick}
+                    checked={!!TwoFaStatus}
+                    name="switch"
+                    className="h-[40px] w-[40px]"
+                  />
+                  <button
+                    ref={RefBtn}
+                    className="btn2Fa h-[30px] w-[120px]"
+                    onClick={() =>
+                      TwoFaStatus ? setDisable2Fa(true) : setQrclose(true)
+                    }
+                  >
+                    {TwoFaStatus ? "Disable 2FA" : "Enable 2FA"}
+                  </button>
+                </div>
+                <UpdatePassword />
+                {Qrclose && <QrCode close={setQrclose} towFa={set2FaStatus} />}
+                {disable2Fa && (
+                  <Disable2Fa close={setDisable2Fa} twoFa={set2FaStatus} />
+                )}
               </div>
             </div>
           )}
