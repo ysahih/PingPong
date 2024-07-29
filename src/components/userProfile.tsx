@@ -19,6 +19,7 @@ import SecurityIcon from "@mui/icons-material/Security";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import ProfileDataContext from "./context/profilDataContext";
 import Info from "./userProfile/updateInfo";
+import UpdatePassword from "./userProfile/updatePassword";
 
 interface QrCodeProps {
   close: (val: boolean) => void;
@@ -389,11 +390,9 @@ const SettingsAnd2Fa = () => {
             <Info />
           )}
           {stateClick === 2 && (
-            <div className="flex w-[100%] gap-4 mt-4">
-              <h3 className="text-md text-gray-500 mt-6">
-                Enable or disable 2FA
-              </h3>
-              <div className="flex gap-4 justify-center mt-4">
+            <div className="flex flex-col w-[100%] gap-4 mt-4 justify-start items-start ">
+              <div className="">
+              <div className="flex gap-4 justify-center items-center mt-4">
               <Switch onChange={handleClick} checked={!!TwoFaStatus} />
               <button
                 ref={RefBtn}
@@ -404,6 +403,8 @@ const SettingsAnd2Fa = () => {
               >
                 {TwoFaStatus ? "Disable 2FA" : "Enable 2FA"}
               </button>
+              </div>
+              <UpdatePassword />
               {Qrclose && <QrCode close={setQrclose} towFa={set2FaStatus} />}
               {disable2Fa && (
                 <Disable2Fa close={setDisable2Fa} twoFa={set2FaStatus} />
