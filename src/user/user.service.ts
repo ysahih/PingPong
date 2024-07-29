@@ -726,7 +726,7 @@ export class FriendsService {
           },
           rooms: {
             select: {
-              isMuted: true,
+              // isMuted: true,
               room: {
                 include: {
                   messages: {
@@ -754,10 +754,6 @@ export class FriendsService {
   
       if (lastMessajes?.conv.length) {
 
-        const blockedUsers = await this.SearchCantShow(id);
-
-        // console.log(blockedUsers);
-
         lastMessajes.conv.forEach((conv) => {
           let orgConv = new ChatData();
   
@@ -767,7 +763,7 @@ export class FriendsService {
             orgConv.image = conv.users[0].image;
             orgConv.isOnline = conv.users[0].online;
             // FIXME: Check this
-            orgConv.hasNoAccess = !!blockedUsers.find(id => id.id === conv.users[0].id);
+            // orgConv.hasNoAccess = !!blockedUsers.find(id => id.id === conv.users[0].id);
             orgConv.isRoom = false;
           }
           if (conv?.messages) {
@@ -793,7 +789,7 @@ export class FriendsService {
             orgRoom.lastMessage = room.room.messages[0]?.content || '';
             orgRoom.createdAt = room.room.messages[0]?.createdAt || new Date(1970, 0, 1, 0, 0, 0, 0);
             orgRoom.isRoom = true;
-            orgRoom.hasNoAccess = room.isMuted;
+            // orgRoom.hasNoAccess = room.isMuted;
           // }
           if (orgRoom)
             sortedData.push(orgRoom);
@@ -873,6 +869,8 @@ export class FriendsService {
 
         // console.log(JSON.stringify(user, null, 2));
 
+        const blockedUsers = await this.SearchCantShow(userId);
+
         if (user){
           convData.id = user.id;
           convData.userName = user.userName;
@@ -880,6 +878,7 @@ export class FriendsService {
           convData.inGame = user.inGame;
           convData.online = user.online;
           convData.messages = user.conv[0]?.messages || [];
+          convData.hasNoAccess = !!blockedUsers.find(id => id.id === withUserId);
         }
       }
       else {
@@ -894,41 +893,70 @@ export class FriendsService {
               },
               select: {
                 id: true,
+                isMuted: true,
               },
             },
+            messages: {
+              orderBy: {
+                id: 'asc',
+              },
+              select: {
+                content: true,
+                userId: true,
+                createdAt: true,
+                user: {
+                  select: {
+                    userName: true,
+                  }
+                }
+              }
+            }
           }
         });
 
         // console.log(room);
 
         if (room.users.length) {
-          const data = await this.prisma.room.findUnique({
-            where: {
-              id: withUserId,
-            },
-            include: {
-              messages: {
-                orderBy: {
-                  id: 'asc',
-                },
-                select: {
-                  content: true,
-                  userId: true,
-                  createdAt: true,
-                }
-              }
-            }
-          });
+          // const data = await this.prisma.room.findUnique({
+          //   where: {
+          //     id: withUserId,
+          //   },
+          //   include: {
+          //     messages: {
+          //       orderBy: {
+          //         id: 'asc',
+          //       },
+          //       select: {
+          //         content: true,
+          //         userId: true,
+          //         createdAt: true,
+          //         user: {
+          //           select: {
+          //             userName: true,
+          //           }
+          //         }
+          //       }
+          //     }
+          //   }
+          // });
 
-          convData.id = data.id;
-          convData.userName = data.name;
-          convData.image = data.image;
+          convData.id = room.id;
+          convData.userName = room.name;
+          convData.image = room.image;
           convData.inGame = false;
           convData.online = false;
-          convData.messages = data.messages;
+          convData.hasNoAccess = room.users[0].isMuted;
+          convData.messages = room.messages.map(msj => {
+            return {
+              content: msj.content,
+              createdAt: msj.createdAt,
+              userId: msj.userId,
+              userName: msj.user.userName,
+            }
+          });
         }
       }
-      // console.log(convData);
+      console.log(convData);
       // console.log(user);
       // console.log('--------------------------')
       return (convData);

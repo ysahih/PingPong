@@ -223,7 +223,7 @@ export class GatewayService {
         createdAt: payload.createdAt,
         lastMessage: payload.message,
         isRoom: true,
-        hasNoAccess: data.users[0].isMuted,
+        // hasNoAccess: data.users[0].isMuted,
         // Will be deleted !
         isOnline: false,
         isRead: false,
@@ -595,7 +595,7 @@ export class GatewayService {
       createdAt: createdAt,
       isOnline: user.users[0].online,
       isRoom: user.users[0].inGame,
-      hasNoAccess: false,
+      // hasNoAccess: false,
       isRead: false,
     }
 
@@ -627,7 +627,7 @@ export class GatewayService {
       lastMessage: message,
       isRoom: false,
       isRead: false,
-      hasNoAccess: false,
+      // hasNoAccess: false,
     }
   }
 

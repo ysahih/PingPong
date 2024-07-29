@@ -132,31 +132,32 @@ export class ChatData {
 	createdAt		:Date
 	isOnline		:boolean
 	isRoom			:boolean
-	hasNoAccess	:boolean
 	// TODO: Handle This
 	isRead			:boolean
 }
 
 export class Messages {
-	content :string
-	userId :number
-	createdAt: Date
+	content 	:string
+	userId 		:number
+	createdAt	:Date
+	userName	?:string
 }
 
 export class ConvData {
-	id :number
-	userName :string
-	image :string
-	inGame :boolean
-	online :boolean
-	messages :Messages[]
+	id 			:number
+	userName	:string
+	image 		:string
+	inGame 		:boolean
+	online 		:boolean
+	hasNoAccess	:boolean
+	messages 	:Messages[]
 }
 
 export interface History {
-	userName: string
-	image: string
-	result: string
-	level: number
+	userName	:string
+	image		:string
+	result		:string
+	level		:number
 }
 
 export class RoomUsers {
