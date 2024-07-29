@@ -712,6 +712,74 @@ export class FriendsService {
     }
   }
 
+  async updatePassword(id: number, password: string) {
+    try {
+      const hash = await argon.hash(password);
+      const user = await this.prisma.user.update({
+        where: {
+          id: id,
+        },
+        data: {
+          hash: hash,
+        },
+      });
+      return user;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async getUserInfo(id: number) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          id: id,
+        },
+        select: {
+          userName: true,
+          id: true,
+          lastName: true,
+          firstName: true,
+          hash: true,
+        },
+      });
+      return user;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async updateInfo(id: number, userName: string, firstName: string, lastName: string) {
+    try {
+      const oldinfo = await this.prisma.user.findUnique({
+        where: {
+          userName: userName,
+        },
+        select: {
+          userName: true,
+          lastName: true,
+          firstName: true,
+        },
+      });
+      if (oldinfo) {
+        return null;
+      }
+      const user = await this.prisma.user.update({
+        where: {
+          id: id,
+        },
+        data: {
+          userName: userName,
+          lastName: lastName,
+          firstName: firstName,
+        },
+      });
+      return user;
+    } catch (e) {
+      return null;
+    }
+  }
+
   async Getconversation(id :number){
 
     try{

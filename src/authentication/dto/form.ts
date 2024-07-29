@@ -48,13 +48,10 @@ export class signupData{
 
 export class upadateInfo{
     @IsNotEmpty()
-    // @IsString()
+    @IsString()
     @MinLength(4,
         {message: 'firstName must be at least 2 characters long'})
-    @IsNumber(
-        {allowNaN: false},
-        {message: 'userName must be a number'}
-    )
+    @MaxLength(20,{message:'firstName must be at most 20 characters long'})
     userName: string;
 
     @MinLength(2,
@@ -63,11 +60,15 @@ export class upadateInfo{
         {message: 'lastName must be at most 16 characters long'})
     @IsNotEmpty()
     @IsString()
-    fullName: string;
+    lastName: string;
 
+    @MinLength(2,
+        {message: 'lastName must be at least 2 characters long'})
+    @MaxLength(20,
+        {message: 'lastName must be at most 16 characters long'})
     @IsNotEmpty()
     @IsString()
-    password: string;
+    firstName: string;
 }
 
 

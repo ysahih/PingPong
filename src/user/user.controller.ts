@@ -14,7 +14,7 @@ import {
 } from "@nestjs/common";
 import { FriendsService } from "./user.service";
 import { JwtAuthGuard } from "src/authentication/jwtStrategy/jwtguards";
-import { Request } from "express";
+import e, { Request } from "express";
 import { IsString } from "class-validator";
 import { validate } from 'class-validator';
 import { upadateInfo } from "src/authentication/dto/form";
@@ -150,24 +150,64 @@ export class UserController {
     userName: string,
     firstName:  string,
     lastName: string,
-    password: string,
   }){
-    // console.log('user ::', user);
-
     try {
+      const userOldInfo = await this.FriendsService.getUserInfo(req.user['userId']);
+    
       const userr = new upadateInfo();
-      userr.userName = user.userName;
-      userr.fullName = user.firstName + ' ' + user.lastName;
-      userr.password = user.password;
+      if (!user.userName) 
+        userr.userName = userOldInfo.userName;
+      else
+        userr.userName = user.userName;
+    
+      if (!user.firstName)
+        userr.firstName = userOldInfo.firstName;
+      else
+        userr.firstName = user.firstName;
+
+      if (!user.lastName)
+        userr.lastName = userOldInfo.lastName;
+      else
+        userr.lastName = user.lastName;
+
       const errors = await validate(userr);
-      // console.log('userr ::', errors);
+      if (errors.length > 0) {
+        return { "message": errors.map(e => e.constraints) };
+      }
+      const update = await this.FriendsService.updateInfo(req.user['userId'], userr.userName, userr.firstName, userr.lastName);
+      if (!update) {
+        return { "message": "userName already used!" };
+      }
+      if (update) {
+        return { "g": "success" };
+      }
+
     } catch (e) {
       console.log('error ::', e);
+      return { "message": "error" };
     }
+  }
 
-    const userName = user.userName;
-    // this.FriendsService.updateInfo(req.user['userId'], id['id'])
-    return { "g": "success" };
+  @Post('UpdatePassword')
+  @UseGuards(JwtAuthGuard)
+  async updatePassword(@Req() req : Request, @Body() user : {CurrentPassword :string, NewPassword :string}) {
+    try {
+      const userOldInfo = await this.FriendsService.getUserInfo(req.user['userId']);
+      const valid = await argon.verify(userOldInfo.hash, user.CurrentPassword);
+      if (!valid) {
+        return { "message": "Old password is wrong!" };
+      }
+      const update = await this.FriendsService.updatePassword(req.user['userId'], user.NewPassword);
+      if (!update) {
+        return { "message": "error" };
+      }
+      if (update) {
+        return { "g": "success" };
+      }
+    } catch (e) {
+      console.log('error ::', e);
+      return { "message": "Error somthing wrong!" };
+    }
   }
 
   @Post('createRoom')
@@ -219,6 +259,7 @@ export class UserController {
 
     return await this.FriendsService.roomUsers(request.user['userId'], parseInt(id));
   }
+
 
   @Get('getRooms')
   @UseGuards(JwtAuthGuard)
