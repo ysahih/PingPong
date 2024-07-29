@@ -8,6 +8,7 @@ import {
   Put,
   Query,
   Req,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -22,6 +23,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { Prisma, ROLE, ROOMTYPE } from "@prisma/client";
 import { cloudinaryService } from "src/authentication/cloudinary.service";
 import * as argon from 'argon2'
+import { generateJwtToken } from "src/authentication/jwtStrategy/jwtToken";
 
 @Controller("user")
 export class UserController {
@@ -150,7 +152,7 @@ export class UserController {
     userName: string,
     firstName:  string,
     lastName: string,
-  }){
+  }, @Res() response : e.Response) {
     try {
       const userOldInfo = await this.FriendsService.getUserInfo(req.user['userId']);
     
@@ -179,6 +181,11 @@ export class UserController {
         return { "message": "userName already used!" };
       }
       if (update) {
+        response.cookie("jwt", generateJwtToken(update), {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production', // Use 'true' in production
+          sameSite: "lax", // Use 'none' in production with 'secure: true'
+        }).send({  "g": "success"  });
         return { "g": "success" };
       }
 

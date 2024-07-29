@@ -773,6 +773,11 @@ export class FriendsService {
           lastName: lastName,
           firstName: firstName,
         },
+        select: {
+          userName: true,
+          id: true,
+          email: true,
+        },
       });
       return user;
     } catch (e) {
