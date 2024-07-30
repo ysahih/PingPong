@@ -698,10 +698,13 @@ export class GatewayService {
 				userName: true,
 				image: true,
         level: true,
+        achievement: true,
+        history :true ,
 			}
 		});
-		return (user);
+return (user);
 	}
+
 
   async getInvite(userId: number, roomId: number) {
 

@@ -1,3 +1,4 @@
+import { userInfo } from "os"
 import { exit } from "process"
 
 export type gameSocket = { 
@@ -32,7 +33,7 @@ export type GameBack = {
 	colormode : number
 }
 
-export type userinfo = { clientid: number , image : string , username : string , ingame : boolean , level : number}
+export type userinfo = { clientid: number , image : string , username : string , ingame : boolean , level : number , achievenemt : number[] , numberofgames : number};
 export type RoomInfo = {users: userinfo[],gameloding: boolean  , type : string , mode : string, friendid : number};
 
 
@@ -232,7 +233,7 @@ export class datagame {
 		this.initgame(roomname);
 		if (type === "ai")
 		{
-			this.addUser(roomname, {clientid: -1, image: "ai", username: "ai", ingame: false , level : 100});
+			this.addUser(roomname, {clientid: -1, image: "ai", username: "ai", ingame: false , level : 100 , achievenemt : [] , numberofgames : 0});
 		}
 	}
 	addUser(roomname : string, user :userinfo ){
@@ -281,6 +282,25 @@ export class datagame {
 		}
 		return null
 	}
+	checkAchievement(user : userinfo , achievement : number)
+	{
+		return user.achievenemt.includes(achievement);
+				
+	}
+	numberOfgames( clientid : number , room : string)
+	{
+		for (const user of this.rooms[room].users)
+		{
+			if (user.clientid === clientid)
+			{
+				return user.numberofgames;
+			}
+		}
+		return 0;
+	
+		
+	}
+
 	getRoomsLength(): number {
     return Object.keys(this.rooms).length;
   }

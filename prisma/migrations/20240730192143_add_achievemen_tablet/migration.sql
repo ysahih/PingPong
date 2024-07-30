@@ -25,6 +25,7 @@ CREATE TABLE "Users" (
     "level" DOUBLE PRECISION NOT NULL DEFAULT 0,
     "lossCounter" INTEGER NOT NULL DEFAULT 0,
     "winCounter" INTEGER NOT NULL DEFAULT 0,
+    "achievement" INTEGER[],
 
     CONSTRAINT "Users_pkey" PRIMARY KEY ("id")
 );

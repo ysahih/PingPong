@@ -1019,10 +1019,38 @@ export class FriendsService {
           },
         });
       }
+      
+
+
     } catch (e) {
       return null;
     }
   }
+
+
+  async updateAchievement(userId :number, achievement :number) {
+    try{
+      
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { achievement: true,
+         },
+      });
+      if (!user)
+        throw new Error('User not found');
+      console.log( "data",  userId ,  achievement);
+      
+      const newAchievement = [...user.achievement, achievement];
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { achievement: newAchievement },
+      });    
+    }
+    catch(e){
+      return null;
+    }
+  }
+
 
   async getRankingHistory(id: number){
     try {
