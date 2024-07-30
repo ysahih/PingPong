@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useContext, useEffect, useRef, useState } from "react";
 import UserDataContext, { UserData } from "./context/context";
 import axios from "axios";
-import AuthCode from "react-auth-code-input";
 import CloseBtn from "./closebtn";
 import Switch from "react-switch";
 import UserFriends from "./userProfile/userProfile";
@@ -20,6 +19,8 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import ProfileDataContext from "./context/profilDataContext";
 import Info from "./userProfile/updateInfo";
 import UpdatePassword from "./userProfile/updatePassword";
+import OtpInput from "react-otp-input";
+import OTPInput from "react-otp-input";
 
 interface QrCodeProps {
   close: (val: boolean) => void;
@@ -30,7 +31,6 @@ const QrCode = (props: QrCodeProps) => {
   const [input, setInput] = useState("");
   const [enable2Fa, setEnable2Fa] = useState(true);
   const [QRsrc, setQRsrc] = useState(null);
-  
 
   const urlG =
     "https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en&gl=US";
@@ -112,8 +112,15 @@ const QrCode = (props: QrCodeProps) => {
             Google Authenticator
           </a>
         </h3>
-        <AuthCode
-          inputClassName={`inputwith ${!enable2Fa && "InputError"} `}
+
+        <OTPInput
+          numInputs={6}
+          
+          value={input}
+          renderInput={(props, index) => (
+            <input {...props} id={index.toString()} />
+          )}
+          inputStyle={`inputwith ${!enable2Fa && "InputError"} `}
           onChange={(res: string) => {
             setInput(res), setEnable2Fa(true);
             setTimeout(() => {
@@ -126,7 +133,7 @@ const QrCode = (props: QrCodeProps) => {
               }
             }, 200);
           }}
-          allowedCharacters="numeric"
+          inputType="number"
         />
         <h4>Enter the code here</h4>
         <button
@@ -206,9 +213,16 @@ const Disable2Fa = (props: Disable2FaProps) => {
             Google Authenticator
           </a>
         </h3>
-        <AuthCode
-          inputClassName={`inputwith ${!enable2Fa && "InputError"} `}
+        <OTPInput
+          numInputs={6}
+          // renderSeparator={<span>-</span>}
+          value={input}
+          renderInput={(props, index) => (
+            <input {...props} id={index.toString()} />
+          )}
+          inputStyle={`inputwith ${!enable2Fa && "InputError"} `}
           onChange={(res: string) => {
+            // console.log("==========",res);
             setInput(res), setEnable2Fa(true);
             setTimeout(() => {
               if (
@@ -220,7 +234,7 @@ const Disable2Fa = (props: Disable2FaProps) => {
               }
             }, 200);
           }}
-          allowedCharacters="numeric"
+          inputType="number"
         />
         <h4>Enter the code here</h4>
         <button

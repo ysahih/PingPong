@@ -1,10 +1,10 @@
-import AuthCode from "react-auth-code-input";
 import CloseBtn from "../closebtn";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { HtmlContext } from "next/dist/server/future/route-modules/app-page/vendored/contexts/entrypoints";
 import { useRouter } from "next/navigation";
 import "@/styles/userProfile/userprofile.css";
+import OTPInput from "react-otp-input";
 
 interface VerifyTwoFaProps {
   close: (val: boolean) => void;
@@ -76,11 +76,17 @@ const VerifyTwoFa = (props: VerifyTwoFaProps) => {
             Google Authenticator
           </a>
         </h3>
-        <AuthCode
-          inputClassName={`inputwith ${!enable2Fa && "InputError"} `}
+        <OTPInput
+          numInputs={6}
+          // renderSeparator={<span>-</span>}
+          value={input}
+          renderInput={(props, index) => (
+            <input {...props} id={index.toString()} />
+          )}
+          inputStyle={`inputwith ${!enable2Fa && "InputError"} `}
           onChange={(res: string) => {
-            setInput(res);
-            setEnable2Fa(true);
+            console.log("==========",res);
+            setInput(res), setEnable2Fa(true);
             setTimeout(() => {
               if (
                 res.length === 6 &&
@@ -91,6 +97,7 @@ const VerifyTwoFa = (props: VerifyTwoFaProps) => {
               }
             }, 200);
           }}
+          inputType="number"
         />
 
         <h4>Enter the code here</h4>
