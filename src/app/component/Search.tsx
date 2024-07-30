@@ -103,21 +103,15 @@ const Friend = (props: friendsType) => {
           alt="online"
         />
         <Image
-          src="./iconsProfile/Chat_solid.svg"
+          src="/iconsProfile/Chat_solid.svg"
           width={24}
           height={24}
-          property="true"
           onClick={() => {
-            context?.setLabel({id: props.value.id, isRoom: false}); // set chat isRoom property
+            context?.setLabel({ id: props.value.id, isRoom: false });
+            // handleChat();
           }}
           alt="online"
-          className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[24px] min-h-[24px]"
-          style={{
-            width: "auto",
-            height: "auto",
-            maxWidth: "24px",
-            maxHeight: "24px",
-          }}
+          className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[24px] h-[24px] min-h-[24px]"
         />
         <Image
           onClick={() => {
@@ -420,7 +414,6 @@ const Search = (state: { searchData: string }) => {
       <>
         {friends &&
           friends?.FriendsData?.map((friend) => {
-            // console.log("friend ----", friend);
             return (
               friend.userName
                 .toLowerCase()

@@ -8,18 +8,12 @@ import CloseBtn from "./closebtn";
 import Switch from "react-switch";
 import UserFriends from "./userProfile/userProfile";
 import Awards from "./userProfile/Awards";
-import UpdateForm from "@/app/update/UpdateForm";
 import "@/styles/update/update.css";
-import { FaUserFriends } from "react-icons/fa";
-import { MdOutlineBlock } from "react-icons/md";
-import { MdGroupAdd } from "react-icons/md";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SecurityIcon from "@mui/icons-material/Security";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import ProfileDataContext from "./context/profilDataContext";
 import Info from "./userProfile/updateInfo";
 import UpdatePassword from "./userProfile/updatePassword";
-import OtpInput from "react-otp-input";
 import OTPInput from "react-otp-input";
 
 interface QrCodeProps {
@@ -60,7 +54,7 @@ const QrCode = (props: QrCodeProps) => {
     if (btnValue && btnValue.current) {
       (btnValue.current as HTMLButtonElement).textContent = "Verify";
     }
-    console.log(res.data);
+    // console.log(res.data);
   }
 
   useEffect(() => {
@@ -268,6 +262,8 @@ const SettingsAnd2Fa = () => {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event?.target?.files?.[0];
+    if (!file?.type.includes("image"))
+      return ;
     setImageSrc(
       file
         ? URL.createObjectURL(file)
@@ -275,7 +271,7 @@ const SettingsAnd2Fa = () => {
         ? context.image
         : imageSrc
     );
-    setFile(file || null);
+     setFile(file || null);
   };
 
   const handleClick = () => {

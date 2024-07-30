@@ -18,7 +18,6 @@ import { MdOutlinePersonAddDisabled } from "react-icons/md";
 import { IoMdPersonAdd } from "react-icons/io";
 import { IoGameController } from "react-icons/io5";
 
-
 const FriendsType = (props: { value: USER }) => {
   const socket = useContext(SocketContext);
   const user = useContext(UserDataContext);
@@ -66,21 +65,15 @@ const FriendsType = (props: { value: USER }) => {
           alt="online"
         />
         <Image
-          src="./iconsProfile/Chat_solid.svg"
+          src="/iconsProfile/Chat_solid.svg"
           width={24}
           height={24}
-          property="true"
           onClick={() => {
-            context?.setLabel({id: props.value.id, isRoom: false});
+            context?.setLabel({ id: props.value.id, isRoom: false });
+            // handleChat();
           }}
           alt="online"
-          className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[24px] min-h-[24px]"
-          style={{
-            width: "auto",
-            height: "auto",
-            maxWidth: "24px",
-            maxHeight: "24px",
-          }}
+          className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[24px] h-[24px] min-h-[24px]"
         />
         <Image
           onClick={() => {
@@ -110,7 +103,6 @@ const InvitType = (props: { value: USER }) => {
   const [deny, setDeny] = useState<boolean>(false);
   const router = useRouter();
   const context = useContext(ChatContext);
-
 
   return (
     <>
@@ -156,22 +148,15 @@ const InvitType = (props: { value: USER }) => {
           alt="online"
         />
         <Image
-          src="./iconsProfile/Chat_solid.svg"
+          src="/iconsProfile/Chat_solid.svg"
           width={30}
           height={30}
-          property="true"
           onClick={() => {
-            context?.setLabel({id: props.value.id, isRoom: false});
+            context?.setLabel({ id: props.value.id, isRoom: false });
             // handleChat();
           }}
           alt="online"
-          className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[30px] min-h-[30px]"
-          style={{
-            width: "auto",
-            height: "auto",
-            maxWidth: "30px",
-            maxHeight: "30px",
-          }}
+          className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[30px] h-[30px] min-h-[30px]"
         />
       </div>
 
@@ -192,7 +177,6 @@ const SentInvit = (props: { value: USER }) => {
   const context = useContext(ChatContext);
   const [canceled, setCanceled] = useState<boolean>(false);
 
-
   return (
     <>
       <div
@@ -201,51 +185,41 @@ const SentInvit = (props: { value: USER }) => {
         } flex items-center justify-center  w-[100%] gap-4 mt-10 mr-4`}
       >
         <div
-        onClick={() => {
-          socket?.emit("DeleteFriend", {
-            id: props.value.id,
-            userId: user?.id,
-          });
-          setCanceled(true);
-        }}
-      >
-        <MdOutlinePersonAddDisabled className="text-[#8a99e9] cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[30px] min-h-[30px]"/>
-
-      </div>
+          onClick={() => {
+            socket?.emit("DeleteFriend", {
+              id: props.value.id,
+              userId: user?.id,
+            });
+            setCanceled(true);
+          }}
+        >
+          <MdOutlinePersonAddDisabled className="text-[#8a99e9] cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[30px] min-h-[30px]" />
+        </div>
         <Image
-          src="./iconsProfile/Chat_solid.svg"
+          src="/iconsProfile/Chat_solid.svg"
           width={30}
           height={30}
-          property="true"
           onClick={() => {
-            context?.setLabel({id: props.value.id, isRoom: false});
+            context?.setLabel({ id: props.value.id, isRoom: false });
             // handleChat();
           }}
           alt="online"
-          className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[30px] min-h-[30px]"
-          style={{
-            width: "auto",
-            height: "auto",
-            maxWidth: "30px",
-            maxHeight: "30px",
-          }}
+          className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[30px] h-[30px] min-h-[30px]"
         />
       </div>
       <div className="flex items-center justify-center w-[100%] mt-12">
-        {canceled && (
-          <p className="text-[#8A99E9] text-[14px]">Canceled</p>
-        )}
+        {canceled && <p className="text-[#8A99E9] text-[14px]">Canceled</p>}
       </div>
-      </>
+    </>
   );
-}
+};
 
 const AddFried = (props: { value: USER }) => {
   const socket = useContext(SocketContext);
   const user = useContext(UserDataContext);
   const router = useRouter();
   const context = useContext(ChatContext);
- 
+
   const [sent, setSent] = useState<boolean>(false);
   return (
     <>
@@ -254,7 +228,6 @@ const AddFried = (props: { value: USER }) => {
           sent ? "hidden" : "flex"
         } flex items-center justify-center  w-[100%] gap-4 mt-10 mr-4`}
       >
-  
         <IoMdPersonAdd
           className="w-[30px] text-[#8a99e9] h-[30px]  cursor-pointer  hover:scale-[120%] transition-all duration-300 ease-in-out"
           onClick={() => {
@@ -262,77 +235,61 @@ const AddFried = (props: { value: USER }) => {
             setSent(true);
           }}
         />
-        <Image
-          src="./iconsProfile/Chat_solid.svg"
+          <Image
+          src="/iconsProfile/Chat_solid.svg"
           width={30}
           height={30}
-          property="true"
           onClick={() => {
-            context?.setLabel({id: props.value.id, isRoom: false});
+            context?.setLabel({ id: props.value.id, isRoom: false });
             // handleChat();
           }}
           alt="online"
-          className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[30px] min-h-[30px]"
-          style={{
-            width: "auto",
-            height: "auto",
-            maxWidth: "30px",
-            maxHeight: "30px",
-          }}
+          className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[30px] h-[30px] min-h-[30px]"
         />
       </div>
       <div className="flex items-center justify-center w-[100%] mt-12">
-        {sent && (
-          <p className="text-[#8A99E9] text-[14px]">Invitation Sent</p>
-        )}
+        {sent && <p className="text-[#8A99E9] text-[14px]">Invitation Sent</p>}
       </div>
-      </>
+    </>
   );
-}
+};
 
-const ProfileOverlay = (props: { userData: USER , Type: string | null}) => {
+const ProfileOverlay = (props: { userData: USER; Type: string | null }) => {
   // const context = useContext(UserDataContext);
 
   return (
     <div className="userProfile">
       <div className="HeadProfile">
         <div className="ImgHeadProfileContainer">
-        <div className="relative">
-          <>
-            {props.userData.inGame && props.userData.online && (
-              <IoGameController
-                className={`bg-[#1B1A55] absolute rounded-full  -top-[-18px] -right-[-8px] text-blue-500 transform translate-x-1/2 translate-y-1/2 `}
-                style={{ outline: "4px solid #1B1A55" }}
-              />
-            )}
+          <div className="relative">
+            <>
+              {props.userData.inGame && props.userData.online && (
+                <IoGameController
+                  className={`bg-[#1B1A55] absolute rounded-full  -top-[-18px] -right-[-8px] text-blue-500 transform translate-x-1/2 translate-y-1/2 `}
+                  style={{ outline: "4px solid #1B1A55" }}
+                />
+              )}
 
-            {!props.userData.inGame && props.userData.online && (
-              <p
-                className={` bg-green-500 absolute w-2.5 h-2.5 rounded-full  -top-[-18px] -right-[-8px] transform translate-x-1/2 translate-y-1/2 border-[4px] border-transparent `}
-                style={{ outline: "4px solid #1B1A55" }}
-              ></p>
-            )}
-          </>
-        <div
-          className="mt-[16px] inline-block rounded-full overflow-hidden border-2 border-transparent shadow-lg w-[75px] h-[75px]"
-          style={{ outline: ".2px solid #535C91" }}
-        >
-          <Image
-            className="bg-cover bg-center w-full h-full cursor-pointer"
-            src={props?.userData?.image || "./defaultImg.svg"}
-            width={75}
-            height={75}
-            alt="user"
-          />
-        </div>
-      </div>
-          {/* <Image
-            className="ImgHeadprofile w-[70px] h-[70px] rounded-full md:w-[75px] md:h-[75px] "
-            src={props?.userData?.image || "/iconsProfile/Avatar.svg"}
-            width={75}
-            height={75}
-            alt="avatar"
-          /> */}
+              {!props.userData.inGame && props.userData.online && (
+                <p
+                  className={` bg-green-500 absolute w-2.5 h-2.5 rounded-full  -top-[-18px] -right-[-8px] transform translate-x-1/2 translate-y-1/2 border-[4px] border-transparent `}
+                  style={{ outline: "4px solid #1B1A55" }}
+                ></p>
+              )}
+            </>
+            <div
+              className="mt-[16px] inline-block rounded-full overflow-hidden border-2 border-transparent shadow-lg w-[75px] h-[75px]"
+              style={{ outline: ".2px solid #535C91" }}
+            >
+              <Image
+                className="bg-cover bg-center w-full h-full cursor-pointer"
+                src={props?.userData?.image || "./defaultImg.svg"}
+                width={75}
+                height={75}
+                alt="user"
+              />
+            </div>
+          </div>
           <div>
             <h2 className="ProfileUserName text-[20px] sm:text-xl">
               {props?.userData?.userName}
@@ -344,16 +301,6 @@ const ProfileOverlay = (props: { userData: USER , Type: string | null}) => {
           </div>
         </div>
         <div className="flex flex-col items-end">
-          {/* <div>
-            {props?.userData.inGame ? (
-              <p className=" w-2.5 h-2.5 bg-blue-500 rounded-full"></p>
-            ) : props?.userData.online ? (
-              <p className=" w-2.5 h-2.5 bg-green-500 rounded-full"></p>
-            ) : (
-              <p className=" w-2.5 h-2.5 bg-gray-500 rounded-full"></p>
-            )}
-          </div> */}
-
           <div className="flex sm:mr-[35%] p-1 gap-1 mt-2 sm:gap-0 sm-p-0 justify-center">
             <div>
               <h3 className="WinsLowssers">Wins</h3>
@@ -361,7 +308,6 @@ const ProfileOverlay = (props: { userData: USER , Type: string | null}) => {
                 {props?.userData.winCounter}
               </h3>
             </div>
-
             <div>
               <h3 className="WinsLowssers">Losses</h3>
               <h3 className="counterWinsLowsers">
@@ -369,62 +315,18 @@ const ProfileOverlay = (props: { userData: USER , Type: string | null}) => {
               </h3>
             </div>
           </div>
-          {props?.userData && props.Type == "friend" &&  <FriendsType value={props.userData} />}
-          {props?.userData && props.Type == "invit" && <InvitType value={props.userData} />}
-          {props?.userData && props.Type == "notFriend" && <AddFried value={props.userData} />}
-          {props?.userData && props.Type == "sentInvit" && <SentInvit value={props.userData} />}
-          {/* <div
-            className={`${
-              blocking ? "hidden" : "flex"
-            } flex items-center justify-center  w-[100%] gap-4 mt-12`}
-          >
-            <Image
-              className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out"
-              src="/iconsProfile/Gamepad_solid.svg"
-              width={28}
-              height={28}
-              property="true"
-              onClick={() => {
-                // game?.setGamemode("friend")
-                // game?.settype("friend");
-                // game?.setgamefriend(props.value.id);
-                // console.log("send game1 " ,game?.gametype , "33")
-                // sendGame(props.value.id);
-                // console.log("send game " , props.value.id , user?.id);
-                // render?.setRender("playGame");
-              }}
-              alt="online"
-            />
-            <Image
-              src="/iconsProfile/Chat_solid.svg"
-              width={24}
-              height={24}
-              property="true"
-              onClick={() => {
-                // context?.setLabel({id: props.value.id, isRoom: false});
-              }}
-              alt="online"
-              className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[24px] min-h-[24px]"
-              style={{
-                width: "auto",
-                height: "auto",
-                maxWidth: "24px",
-                maxHeight: "24px",
-              }}
-            />
-            <Image
-              onClick={() => {
-                setBlocking(true);
-                // block(props.value.id);
-              }}
-              className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out"
-              src="/iconsProfile/User-block.svg"
-              width={28}
-              height={28}
-              property="true"
-              alt="online"
-            />
-          </div> */}
+          {props?.userData && props.Type == "friend" && (
+            <FriendsType value={props.userData} />
+          )}
+          {props?.userData && props.Type == "invit" && (
+            <InvitType value={props.userData} />
+          )}
+          {props?.userData && props.Type == "notFriend" && (
+            <AddFried value={props.userData} />
+          )}
+          {props?.userData && props.Type == "sentInvit" && (
+            <SentInvit value={props.userData} />
+          )}
         </div>
       </div>
 

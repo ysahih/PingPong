@@ -12,7 +12,6 @@ const Info = () => {
     userName: "",
   });
   const [error, setError] = useState({ iserror: false, message: "" });
-  const [errorP, setErrorP] = useState(false);
   const userData = useContext(UserDataContext);
   const [activeToast, setActiveToast] = useState(false);
 
@@ -56,7 +55,6 @@ const Info = () => {
 
     const toastId = toast.loading("Waiting...");
     setActiveToast(true);
-    console.log(user);
     const send = async () => {
       const res = await axiosApi.post(
         process.env.NEST_API + "/user/updateInfo",

@@ -6,6 +6,7 @@ import UserDataContext from "@/components/context/context";
 import ProfileDataContext from "@/components/context/profilDataContext";
 import axios from "axios";
 import { Loding } from "../home/Loding";
+import Image from "next/image";
 
 export interface USER {
   id: number;
@@ -47,19 +48,20 @@ const ProfileOverlayPage = () => {
         process.env.NEST_API + "/user/getSentInvits",
         { withCredentials: true }
       );
-      const sentIvit : SENTINVIT[] = data.data;
+      const sentIvit: SENTINVIT[] = data.data;
       if (!searchRouter.get("userName")) {
         router1.replace("/404");
-      } 
-      else if (sentIvit.find((invit) => invit.receiver.userName === searchRouter.get("userName"))) {
+      } else if (
+        sentIvit.find(
+          (invit) => invit.receiver.userName === searchRouter.get("userName")
+        )
+      ) {
         setType("sentInvit");
-      }
-      else if (
+      } else if (
         user?.FriendsData?.find(
           (friend) => friend.userName === searchRouter.get("userName")
         )
       ) {
-        console.log("frsdgsdg================: ", searchRouter.get("userName"));
         setType("friend");
       } else if (
         user?.InvitsData?.find(
@@ -68,10 +70,8 @@ const ProfileOverlayPage = () => {
       ) {
         setType("invit");
       } else setType("notFriend");
-      console.log("sentInvit: ", data.data);
     };
     sentInvit();
-    
   }, [searchRouter, user?.FriendsData, router1]);
 
   useEffect(() => {
@@ -83,7 +83,6 @@ const ProfileOverlayPage = () => {
       );
       setUserData(user.data);
       setLoading(true);
-      console.log("user+++++++++: ", user.data);
     };
     getUser();
   }, [type]);
@@ -97,9 +96,29 @@ const ProfileOverlayPage = () => {
         </div>
       )}
       {!userData && Loading && (
-        <div className=" userProfile bg-[var(bg-color)] flex justify-center items-center text-white text-sm">
-          User Not Found..!
-        </div>
+         <div className="userProfile">
+         <div className="HeadProfile">
+           <div className="ImgHeadProfileContainer">
+             <div className="relative">
+               <div
+                 className="mt-[16px] inline-block rounded-full overflow-hidden border-2 border-transparent shadow-lg w-[75px] h-[75px]"
+                 style={{ outline: ".2px solid #535C91" }}
+               >
+                 <Image
+                   className="bg-cover bg-center w-full h-full cursor-pointer"
+                   src="./defaultImg.svg"
+                   width={75}
+                   height={75}
+                   alt="user"
+                 />
+               </div>
+             </div>
+             <div>
+                <h3 className="text-[16px] text-center text-[#8A99E9]">User Not Found!</h3>
+             </div>
+           </div>
+          </div>
+          </div>
       )}
     </>
   );

@@ -133,7 +133,7 @@ const UpdatePassword = () => {
         onChange={handleChange}
       />
       {error.iserror && (
-        <p className="text-[13px] mt-[-13px] text-[red] ml-[4px]">
+        <p className="text-[13px] mt-[-20px] sm:mt-[-13px] text-[red] ml-[4px]">
           {error.message}
         </p>
       )}
@@ -146,7 +146,7 @@ const UpdatePassword = () => {
         onChange={handleChange}
       />
       {errorP && (
-        <p className="text-[13px] mt-[-13px] text-[red] ml-[4px]">
+        <p className="text-[13px] mt-[-20px] sm:mt-[-13px] text-[red] ml-[4px]">
           Passwords do not match
         </p>
       )}
