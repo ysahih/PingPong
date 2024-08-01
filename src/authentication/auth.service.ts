@@ -196,9 +196,14 @@ export class authService {
           hash: hash,
           userName: username,
         },
+        select: {
+          id: true,
+          email: true,
+          userName: true,
+          update: true,
+          image: true,
+        },
       });
-      if (data) delete data.hash;
-      // console.log(hash);
       return { data };
     } catch (error) {
       // console.log(error.meta?.target[0]);

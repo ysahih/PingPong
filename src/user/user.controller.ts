@@ -183,7 +183,7 @@ export class UserController {
       if (update) {
         response.cookie("jwt", generateJwtToken(update), {
           httpOnly: true,
-          secure: process.env.NODE_ENV === 'production', // Use 'true' in production
+          secure: false,
           sameSite: "lax", // Use 'none' in production with 'secure: true'
         }).send({  "g": "success"  });
         return { "g": "success" };

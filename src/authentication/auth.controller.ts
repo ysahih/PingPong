@@ -90,7 +90,7 @@ export class authController {
     else
     response.cookie("jwt", generateJwtToken(user.user), {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production', // Use 'true' in production
+      secure: false,
       sameSite: "lax", // Use 'none' in production with 'secure: true'
     }).send({ login: "login success !" });
   }
@@ -102,9 +102,9 @@ export class authController {
     if (user.error) response.status(400).json(user.error);
     else
       response
-        .cookie("jwt", generateJwtToken(user.data), {
+        .cookie("jwt", generateJwtToken({userName: user.data.userName, id: user.data.id, email: user.data.email}), {
           httpOnly: true,
-          secure: process.env.NODE_ENV === 'production', // Use 'true' in production
+          secure: false,
           sameSite: "lax",
         })
         .send(user.data);
@@ -130,7 +130,7 @@ export class authController {
       response
         .cookie("jwt", request.user, {
           httpOnly: true,
-          secure: true,
+          secure: false,
           sameSite: "lax",
         })
         .redirect(this.FrontEndUrl);
@@ -159,7 +159,7 @@ export class authController {
     res
       .clearCookie("jwt", {
         httpOnly: true,
-          secure: process.env.NODE_ENV === 'production', // Use 'true' in production
+        secure: false,
           sameSite: "lax",
       })
       .send({ logout: "logout success !" });
@@ -202,7 +202,7 @@ export class authController {
         res
           .cookie("jwt", generateJwtToken(data), {
             httpOnly: true,
-            secure: true,
+            secure: false,
             sameSite: "lax",
           })
           .send("ok");
@@ -226,7 +226,7 @@ export class authController {
         res
           .cookie("jwt", generateJwtToken(data), {
             httpOnly: true,
-            secure: true,
+            secure: false,
             sameSite: "lax",
           })
           .send("ok");
