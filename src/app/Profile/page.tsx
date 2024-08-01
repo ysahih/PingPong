@@ -1,11 +1,11 @@
 import UserProfile from "@/components/userProfile";
 
 const Profile = () => {
-    return (
-        <>
-            <UserProfile />
-        </>
-    )
-}
+  return (
+    <>
+      <UserProfile />
+    </>
+  );
+};
 
 export default Profile;

@@ -1,3 +1,4 @@
+"use client";
 import { FC, useContext, useEffect, useState } from "react";
 import RoomUser from "./UsersWrapper/roomUsers";
 import "./roomSettings.css";
@@ -7,10 +8,7 @@ import { ROOMTYPE } from "../createRoom/interfaces";
 import axios from "axios";
 import SocketContext from "@/components/context/socket";
 import BannedUsers from "./bannedUsers/BannedUsers";
-
-export interface RoomData {
-  type: ROOMTYPE;
-}
+import { useRouter } from "next/navigation";
 
 const RoomSettings: FC<{ name: string }> = (roomProp) => {
   const [roomType, setRoomType] = useState<ROOMTYPE>();
@@ -19,6 +17,7 @@ const RoomSettings: FC<{ name: string }> = (roomProp) => {
   const [settings, setSettings] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const socket = useContext(SocketContext);
+  const router = useRouter();
 
   useEffect(() => {
     // TODO: Better get RoomType as Prop
@@ -32,13 +31,14 @@ const RoomSettings: FC<{ name: string }> = (roomProp) => {
         }
       );
 
-      // TODO: if (!data.data) Push to 404
       if (data.data) {
         setRoomType(data.data.type);
         setId(data.data.id);
 
         setLoading(false);
       }
+      else
+        router.push('/404');
     };
     data();
   }, []);

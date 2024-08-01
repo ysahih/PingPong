@@ -34,7 +34,7 @@ const Block = (props: BlockedType) => {
       </div>
       <div className="containerFriend__info">
         <h3 className="text-[16px]">{props.value.userName}</h3>
-        <p className="text-center text-[#8A99E9] text-[12px]">#12</p>
+        <p className="text-center text-[#8A99E9] text-[12px]">#{props.value.level}</p>
       </div>
       <div className="flex items-center justify-center  w-[100%] gap-4 mt-10 h-[28px]">
         <Image

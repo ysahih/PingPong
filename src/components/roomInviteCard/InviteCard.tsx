@@ -31,7 +31,7 @@ const InviteCard :React.FC<{userId: number | undefined, id: number, name :string
                     UserRole: "USER",
                 },
             });
-            // TODO: Remove the room from the list
+
             prop.setRooms(rooms => rooms.filter(room => room.id !== prop.id));
         }
         setClicked(false);

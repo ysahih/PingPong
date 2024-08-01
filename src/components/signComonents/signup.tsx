@@ -12,6 +12,9 @@ export default function Signup() {
     const router = useRouter();
     const signupRequest = async (values: typeof SignupForm) => {
         try {
+            if (values.FirstName === "" || values.LastName === "" || values.Email === "") {
+                return;
+            }
             const response = await axios.post(process.env.NEST_API + '/signup', {
                 firstName: values.FirstName,
                 email: values.Email,

@@ -8,6 +8,8 @@
 	border-style: none;
 	border-radius: 20px;
 	border-top: solid 2px #1B266B;
+	display: flex;
+	flex-flow: column;
 }
 
 .roomInvites h1 {
@@ -20,22 +22,6 @@
 	width: fit-content;
 }
 
-.roomInvites__inform {
-	display: flex;
-	flex-flow: column nowrap;
-	justify-content: center;
-	margin: 40px auto;
-	color: #8A99E9;
-	font-family: "Inter", serif;
-	font-style: italic;
-	/* font-size: 50px; */
-	font-size: 20px;
-}
-
-/* .roomInvites__inform p {
-	display: block;
-} */
-
 .roomInvites__users {
 	width: 80%;
 	height: 80%;
@@ -46,6 +32,20 @@
     grid-template-rows: repeat(auto-fill, minmax(40px, 1fr));
     gap: 1rem;
 	padding-right: 15px;
+}
+
+.roomInvites__inform {
+	display: flex;
+	flex-flow: column;
+	align-items: center;
+	margin: 0 auto;
+}
+
+.roomInvites__inform p {
+	color: #959dc8;
+	font-family: 'inter';
+	font-size: 15px;
+	margin-bottom: 5px;
 }
 
 @media (max-width: 1359px) and (min-width: 1300px) {

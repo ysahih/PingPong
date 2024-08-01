@@ -6,6 +6,8 @@ import RoomInvite from '../interface';
 import WaitingCard from '@/components/roomInviteCard/waitingCard';
 import SocketContext from '@/components/context/socket';
 import UserDataContext from '@/components/context/context';
+import Image from "next/image";
+import logo from '@/../public/RoomSettings/UserInite.svg';
 
 const RoomInvites = () => {
 
@@ -20,6 +22,7 @@ const RoomInvites = () => {
                 withCredentials: true,
             });
 
+            console.log('UserInvites:', response.data);
             setRooms(response.data);
             setTimeout(() => setLoading(false), 2000);
         };
@@ -29,6 +32,7 @@ const RoomInvites = () => {
 
     useEffect(() => {
         socket?.on('newRoom', (payload :RoomInvite) => {
+            console.log('NewRoom:', payload);
             setRooms(rooms => [payload, ...rooms]);
         })
         return () => {
@@ -40,19 +44,25 @@ const RoomInvites = () => {
         <div className="roomInvites">
             <h1>Invites</h1>
             {
+            !!loading ?
                 <div className='roomInvites__users'>
-                    {
-                        loading ? 
-                        <>
-                            <WaitingCard />
-                            <WaitingCard />
-                            <WaitingCard />
-                            <WaitingCard />
-                        </>
-                        :
-                        !!rooms?.length && rooms?.map(room => <InviteCard key={room.id} userId={user?.id} id={room.id} name={room.name} image={room.image} setRooms={setRooms}/>)
-                    }
+                    <WaitingCard />
+                    <WaitingCard />
+                    <WaitingCard />
+                    <WaitingCard />
                 </div>
+                :
+                    !!rooms?.length ?
+                        <div className='roomInvites__users'>
+                        {
+                            rooms?.map(room => <InviteCard key={room.id} userId={user?.id} id={room.id} name={room.name} image={room.image} setRooms={setRooms}/>)
+                        }
+                        </div>
+                        :
+                        <div className='roomInvites__inform'>
+                            <p>No Invitation</p>
+                            <Image src={logo} width={20} height={20} alt="User Inite logo"/>
+                        </div>
             }
         </div>
     );

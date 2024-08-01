@@ -7,6 +7,9 @@ import Image from "next/image";
 import pic from "@/../public/createRoom/GroupChat.svg";
 import axios from "axios";
 import { RoomFormat, ROOMTYPE } from "./interfaces";
+import SocketContext from "../context/socket";
+import UserDataContext from "../context/context";
+import toast, { Toaster } from "react-hot-toast";
 // import { RoomFormat, ROOMTYPE } from "../../app/createRoom/interfaces";
 
 const CreateRoom = () => {
@@ -16,6 +19,12 @@ const CreateRoom = () => {
 	const [image, setImage] = useState<string>("");
 	const [file, setFile] = useState<File | null>(null);
 	const [creating, setCreating] = useState<boolean>(false);
+	const socket = useContext(SocketContext);
+	const user = useContext(UserDataContext);
+	const toastType = new Map([
+		["Creating..." , toast.loading],
+		["Created !", toast.success],
+	]);
 
   // Select Room Type
 	const handleOnClick = (type: ROOMTYPE, e: React.MouseEvent<HTMLElement>) => {
@@ -48,6 +57,14 @@ const CreateRoom = () => {
 		}
 	};
 
+	const createToast = (message :string) => {
+		const toastFunc = toastType.get(message);
+		const toastId = toastFunc ? toastFunc(message) : toast.error(message);
+		setTimeout(() => {
+			toast.dismiss(toastId);
+		}, 2000);
+	}
+
 	const formik = useFormik<RoomFormat>({
 		initialValues: {
 		name: "",
@@ -68,27 +85,26 @@ const CreateRoom = () => {
 			if (value.type === ROOMTYPE.PROTECTED)
 			formData.append("password", value.password);
 
-			const response = await axios.post(
-			process.env.NEST_API + "/user/createRoom",
-			formData,
-			{
-				headers: {
-				Accept: "form-data",
-				},
-				withCredentials: true,
-			}
+			const response = await axios.post(process.env.NEST_API + "/user/createRoom", formData,
+				{
+					headers: {
+					Accept: "form-data",
+					},
+					withCredentials: true,
+				}
 			);
 
-			response.data.status
-			? setCreate(response.data.message)
-			: setError(response.data.message);
+			// response.data.status ? setCreate(response.data.message) : setError(response.data.message);
+			response.data.status ? createToast("Created !") : createToast(response.data.message);
+			if (response.data.status)
+				socket?.emit('createRoom', {
+					ownerId: user?.id,
+					roomId: response.data.roomId
+			})
 			setCreating(false);
 			formik.values.password = "";
 
-			setTimeout(
-			() => (response.data.status ? setCreate("") : setError("")),
-			2000
-			);
+			setTimeout(() => (response.data.status ? setCreate("") : setError("")), 2000);
 		};
 
 		createRoom();
@@ -118,7 +134,12 @@ const CreateRoom = () => {
   });
 
   return (
+	// <>
 	<div className="createRoom">
+	<Toaster containerStyle={{
+		marginTop: "100px",
+		zIndex: "10"
+	}}/>
 	  <h1 className="createRoom__header">Chat Room</h1>
 
 	  <div className="createRoom__wrapper">
@@ -248,6 +269,7 @@ const CreateRoom = () => {
 		</form>
 	  </div>
 	</div>
+	// </>
   );
 };
 

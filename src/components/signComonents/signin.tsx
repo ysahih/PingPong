@@ -20,12 +20,17 @@ export default function Signin() {
     function singRequest(e: React.FormEvent<HTMLFormElement>)
     {
         e.preventDefault();
+
         const signin = async () => {
             const data = {
                 userName: (document.getElementsByName("Email or UserName")[0] as HTMLInputElement).value,
                 email: (document.getElementsByName("Email or UserName")[0] as HTMLInputElement).value,
                 password: (document.getElementsByName("Password")[0] as HTMLInputElement).value
             };
+            if (data.userName === "" || data.password === "") {
+                setError(true);
+                return;
+            }
             try {
                 const response = await axiosApi.post(process.env.NEST_API + '/signin', JSON.stringify(data) , {
                     headers: {

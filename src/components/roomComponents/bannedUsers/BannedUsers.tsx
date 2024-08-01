@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Banned } from '../interfaces';
 import WaitingCard from '@/components/roomInviteCard/waitingCard';
 import Image from 'next/image';
-import logo from '@/../public/RoomSettings/Scan_solid.svg'
+import logo from '@/../public/RoomSettings/Scan_solid.svg';
 import BannedCard from './Cards/Bannedcard';
 
 const BannedUsers :FC<{roomId :number}> = (banProp) => {
@@ -18,7 +18,7 @@ const BannedUsers :FC<{roomId :number}> = (banProp) => {
                 withCredentials: true,
             });
 
-            console.log(response.data);
+            console.log("Data:", response.data);
 
             setBannedUsers(response.data);
             setLoading(false);
@@ -49,7 +49,7 @@ const BannedUsers :FC<{roomId :number}> = (banProp) => {
                             :
                             <>
                                 {
-                                    bannedUsers.map(user => <BannedCard key={user.id} id={user.id} userName={user.userName} pic={user.image} roomId={banProp.roomId}/>)
+                                    bannedUsers.map(user => <BannedCard key={user.id} id={user.id} userName={user.userName} pic={user.image} roomId={banProp.roomId} setBannedUsers={setBannedUsers} />)
                                 }
                             </>
                         }

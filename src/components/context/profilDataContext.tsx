@@ -6,6 +6,7 @@ export type InvitsType = {
         id: number,
         userName: string,
         image: string
+        level: number,
     },
 };
 
@@ -15,6 +16,7 @@ export type FriendsType = {
     image: string,
     online: boolean,
     inGame: boolean,
+    level: number,
 };
 
 export type ProfileData = {

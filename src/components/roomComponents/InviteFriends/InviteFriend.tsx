@@ -20,6 +20,7 @@ const InviteFriends :React.FC<{id :number, roomId :number}> = (prop) => {
                 withCredentials: true,
             });
 
+            console.log("UsersInvite:", response.data);
             if (response.data.length) {
                 setUsers(response.data);
                 // setUsers([]);

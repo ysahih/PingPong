@@ -1,11 +1,9 @@
 import JoinRoom from "./joinRoom";
 
-
 const joinRoomPage = () => {
-
     return (
         <>
-            <JoinRoom />
+            <JoinRoom searchDat="" />
         </>
     );
 };

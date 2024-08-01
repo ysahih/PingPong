@@ -4,21 +4,17 @@ import Image from "next/image";
 import { useContext, useEffect, useRef, useState } from "react";
 import UserDataContext, { UserData } from "./context/context";
 import axios from "axios";
-import AuthCode from "react-auth-code-input";
 import CloseBtn from "./closebtn";
 import Switch from "react-switch";
 import UserFriends from "./userProfile/userProfile";
 import Awards from "./userProfile/Awards";
-import UpdateForm from "@/app/update/UpdateForm";
 import "@/styles/update/update.css";
-import { FaUserFriends } from "react-icons/fa";
-import { MdOutlineBlock } from "react-icons/md";
-import { MdGroupAdd } from "react-icons/md";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SecurityIcon from "@mui/icons-material/Security";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import ProfileDataContext from "./context/profilDataContext";
 import Info from "./userProfile/updateInfo";
+import UpdatePassword from "./userProfile/updatePassword";
+import OTPInput from "react-otp-input";
 
 interface QrCodeProps {
   close: (val: boolean) => void;
@@ -29,6 +25,7 @@ const QrCode = (props: QrCodeProps) => {
   const [input, setInput] = useState("");
   const [enable2Fa, setEnable2Fa] = useState(true);
   const [QRsrc, setQRsrc] = useState(null);
+
   const urlG =
     "https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&hl=en&gl=US";
   const btnValue = useRef(null);
@@ -57,7 +54,7 @@ const QrCode = (props: QrCodeProps) => {
     if (btnValue && btnValue.current) {
       (btnValue.current as HTMLButtonElement).textContent = "Verify";
     }
-    console.log(res.data);
+    // console.log(res.data);
   }
 
   useEffect(() => {
@@ -109,8 +106,15 @@ const QrCode = (props: QrCodeProps) => {
             Google Authenticator
           </a>
         </h3>
-        <AuthCode
-          inputClassName={`inputwith ${!enable2Fa && "InputError"} `}
+
+        <OTPInput
+          numInputs={6}
+          
+          value={input}
+          renderInput={(props, index) => (
+            <input {...props} id={index.toString()} />
+          )}
+          inputStyle={`inputwith ${!enable2Fa && "InputError"} `}
           onChange={(res: string) => {
             setInput(res), setEnable2Fa(true);
             setTimeout(() => {
@@ -123,7 +127,7 @@ const QrCode = (props: QrCodeProps) => {
               }
             }, 200);
           }}
-          allowedCharacters="numeric"
+          inputType="number"
         />
         <h4>Enter the code here</h4>
         <button
@@ -203,9 +207,16 @@ const Disable2Fa = (props: Disable2FaProps) => {
             Google Authenticator
           </a>
         </h3>
-        <AuthCode
-          inputClassName={`inputwith ${!enable2Fa && "InputError"} `}
+        <OTPInput
+          numInputs={6}
+          // renderSeparator={<span>-</span>}
+          value={input}
+          renderInput={(props, index) => (
+            <input {...props} id={index.toString()} />
+          )}
+          inputStyle={`inputwith ${!enable2Fa && "InputError"} `}
           onChange={(res: string) => {
+            // console.log("==========",res);
             setInput(res), setEnable2Fa(true);
             setTimeout(() => {
               if (
@@ -217,7 +228,7 @@ const Disable2Fa = (props: Disable2FaProps) => {
               }
             }, 200);
           }}
-          allowedCharacters="numeric"
+          inputType="number"
         />
         <h4>Enter the code here</h4>
         <button
@@ -251,6 +262,8 @@ const SettingsAnd2Fa = () => {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event?.target?.files?.[0];
+    if (!file?.type.includes("image"))
+      return ;
     setImageSrc(
       file
         ? URL.createObjectURL(file)
@@ -258,7 +271,7 @@ const SettingsAnd2Fa = () => {
         ? context.image
         : imageSrc
     );
-    setFile(file || null);
+     setFile(file || null);
   };
 
   const handleClick = () => {
@@ -295,13 +308,11 @@ const SettingsAnd2Fa = () => {
           width={240}
           height={260}
           priority={true}
-        
           alt="image"
           style={{
             maxWidth: "100%",
             height: "auto",
             width: "auto",
-          
           }}
         />
         <h1 className="text-2xl text-white ml-4 mt-[15px]">Settings</h1>
@@ -352,9 +363,9 @@ const SettingsAnd2Fa = () => {
             <div className="flex gap-4 w-[100%]  items-center">
               <label htmlFor="ImageInput">
                 <Image
-                  className="cursor-pointer rounded-[10px] border-2 border-gray-300 w-[140px] h-[140px]"
+                  className="cursor-pointer rounded-[10px] border-2 border-gray-300 w-[140px] h-[140px] object-cover"
                   src={imageSrc}
-                  alt="Pongy"
+                  alt="profile"
                   width={140}
                   height={140}
                   priority={true}
@@ -384,29 +395,32 @@ const SettingsAnd2Fa = () => {
               </div>
             </div>
           )}
-          {stateClick === 1 && (
-            <Info />
-          )}
+          {stateClick === 1 && <Info />}
           {stateClick === 2 && (
-            <div className="flex w-[100%] gap-4 mt-4">
-              <h3 className="text-md text-gray-500 mt-6">
-                Enable or disable 2FA
-              </h3>
-              <div className="flex gap-4 justify-center mt-4">
-              <Switch onChange={handleClick} checked={!!TwoFaStatus} />
-              <button
-                ref={RefBtn}
-                className="btn2Fa h-[40px] w-[140px]"
-                onClick={() =>
-                  TwoFaStatus ? setDisable2Fa(true) : setQrclose(true)
-                }
-              >
-                {TwoFaStatus ? "Disable 2FA" : "Enable 2FA"}
-              </button>
-              {Qrclose && <QrCode close={setQrclose} towFa={set2FaStatus} />}
-              {disable2Fa && (
-                <Disable2Fa close={setDisable2Fa} twoFa={set2FaStatus} />
-              )}
+            <div className="flex flex-col w-[100%] gap-4 mt-4 justify-start items-start ">
+              <div className="w-full">
+                <div className="flex gap-4  items-center mt-4">
+                  <Switch
+                    onChange={handleClick}
+                    checked={!!TwoFaStatus}
+                    name="switch"
+                    className="h-[40px] w-[40px]"
+                  />
+                  <button
+                    ref={RefBtn}
+                    className="btn2Fa h-[30px] w-[120px]"
+                    onClick={() =>
+                      TwoFaStatus ? setDisable2Fa(true) : setQrclose(true)
+                    }
+                  >
+                    {TwoFaStatus ? "Disable 2FA" : "Enable 2FA"}
+                  </button>
+                </div>
+                <UpdatePassword />
+                {Qrclose && <QrCode close={setQrclose} towFa={set2FaStatus} />}
+                {disable2Fa && (
+                  <Disable2Fa close={setDisable2Fa} twoFa={set2FaStatus} />
+                )}
               </div>
             </div>
           )}
@@ -433,7 +447,7 @@ const UserProfile = () => {
           />
           <div>
             <h2 className="ProfileUserName text-[20px] sm:text-xl">
-              {context?.userName} <span> #12 </span>
+              {context?.userName} <span> #{context?.level} </span>
             </h2>
             <h3 className="ProfileUserFName">
               {context?.firstName + " " + context?.lastName}
@@ -456,11 +470,11 @@ const UserProfile = () => {
           <div className="flex sm:mr-[35%] p-1 gap-1 sm:gap-0 sm-p-0 justify-center">
             <div>
               <h3 className="WinsLowssers">Wins</h3>
-              <h3 className="counterWinsLowsers">30</h3>
+              <h3 className="counterWinsLowsers">{context?.winCounter}</h3>
             </div>
             <div>
               <h3 className="WinsLowssers">Losses</h3>
-              <h3 className="counterWinsLowsers">5</h3>
+              <h3 className="counterWinsLowsers">{context?.lossCounter}</h3>
             </div>
           </div>
         </div>

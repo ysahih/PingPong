@@ -4,7 +4,6 @@ import { IoMdPersonAdd } from "react-icons/io";
 import Image from "next/image";
 import React, {
   ReactElement,
-  use,
   useContext,
   useEffect,
   useRef,
@@ -25,11 +24,15 @@ import {
 // import Friends from "@/components/userProfile/Friends";
 import ChatContext from "@/components/context/chatContext";
 import axiosApi from "@/components/signComonents/api";
+import { string } from "yup";
+import { useRouter } from "next/navigation";
+import { IoGameController } from "react-icons/io5";
 
 type UserProps = {
   id: number;
   image: string;
   userName: string;
+  level: number;
 };
 
 interface friendsType {
@@ -41,6 +44,7 @@ const Friend = (props: friendsType) => {
   const user = useContext(UserDataContext);
   const context = useContext(ChatContext);
   const [blocking, setBlocking] = useState<boolean>(false);
+  const router = useRouter();
 
   const block = (id: number) => {
     socket?.emit("NewBlocked", { id: id, userId: user?.id });
@@ -49,30 +53,41 @@ const Friend = (props: friendsType) => {
   return (
     <div className="search-card SearchCard  text-white mb-2">
       <div className="relative">
-        {props.value.online && (
           <>
-            <p
-               className={`${props.value.inGame ? ' bg-blue-500': ' bg-green-500'} absolute w-2.5 h-2.5 rounded-full  -top-[-12px] -right-[-8px] transform translate-x-1/2 translate-y-1/2 border-[4px] border-transparent `}
-              style={{ outline: "4px solid #1B1A55" }}
-            ></p>
+            {props.value.inGame && props.value.online && (
+              <IoGameController
+                className={`bg-[#1B1A55] absolute rounded-full  -top-[-12px] -right-[-8px] text-blue-500 transform translate-x-1/2 translate-y-1/2 `}
+                style={{ outline: "4px solid #1B1A55" }}
+              />
+            )}
+
+            {!props.value.inGame && props.value.online && (
+              <p
+                className={` bg-green-500 absolute w-2.5 h-2.5 rounded-full  -top-[-12px] -right-[-8px] transform translate-x-1/2 translate-y-1/2 border-[4px] border-transparent `}
+                style={{ outline: "4px solid #1B1A55" }}
+              ></p>
+            )}
           </>
-        )}
+      
         <div
           className="mt-2 inline-block rounded-full overflow-hidden border-2 border-transparent shadow-lg w-[80px] h-[80px]"
           style={{ outline: ".2px solid #535C91" }}
         >
           <Image
-            className="bg-cover bg-center w-[80px] h-[80px]"
+            className="bg-cover bg-center w-[80px] h-[80px] cursor-pointer"
             src={props?.value?.image || "./defaultImg.svg"}
             width={60}
             height={60}
             alt="user"
+            onClick={() => {
+              router.push(`/users?userName=${props.value.userName}`);
+            }}
           />
         </div>
       </div>
       <div className="mt-[-10px]">
         <h3 className="text-[16px]">{props.value.userName}</h3>
-        <p className="text-center text-[#8A99E9] text-[12px]">#12</p>
+        <p className="text-center text-[#8A99E9] text-[12px]">#{props.value.level}</p>
       </div>
       <div
         className={`${
@@ -88,21 +103,15 @@ const Friend = (props: friendsType) => {
           alt="online"
         />
         <Image
-          src="./iconsProfile/Chat_solid.svg"
+          src="/iconsProfile/Chat_solid.svg"
           width={24}
           height={24}
-          property="true"
           onClick={() => {
-            context?.setChat(props.value.id);
+            context?.setLabel({ id: props.value.id, isRoom: false });
+            // handleChat();
           }}
           alt="online"
-          className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[24px] min-h-[24px]"
-          style={{
-            width: 'auto',
-            height: 'auto',
-            maxWidth: '24px',
-            maxHeight: '24px',
-          }}
+          className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[24px] h-[24px] min-h-[24px]"
         />
         <Image
           onClick={() => {
@@ -134,6 +143,7 @@ const Invit = (props: InvitProps) => {
   const user = useContext(UserDataContext);
   const [Accepting, setAccepting] = useState<boolean>(false);
   const [deny, setDeny] = useState<boolean>(false);
+  const router = useRouter();
 
   return (
     <div key={values.id} className="search-card SearchCard  text-white mb-2">
@@ -143,17 +153,20 @@ const Invit = (props: InvitProps) => {
           style={{ outline: ".2px solid #535C91" }}
         >
           <Image
-            className="bg-cover bg-center w-[80px] h-[80px]"
+            className="bg-cover bg-center w-[80px] h-[80px] cursor-pointer"
             src={values?.sender?.image || "./defaultImg.svg"}
             width={60}
             height={60}
+            onClick={() => {
+              router.push(`/users?userName=${values?.sender?.userName}`);
+            }}
             alt="user"
           />
         </div>
       </div>
       <div className="mt-[-10px]">
         <h3 className="text-[16px]">{values.sender.userName}</h3>
-        <p className="text-center text-[#8A99E9] text-[12px]">#12</p>
+        <p className="text-center text-[#8A99E9] text-[12px]">#{values.sender.level}</p>
       </div>
       <div
         className={`${
@@ -224,6 +237,7 @@ const User = (props: UserProps) => {
   const user = useContext(UserDataContext);
   const [sent, setSent] = useState<boolean>(false);
   // need to change ./re
+  const router = useRouter();
   return (
     <div className="search-card SearchCard  text-white mb-2">
       <Image
@@ -231,12 +245,15 @@ const User = (props: UserProps) => {
         alt="profile"
         width={80}
         height={80}
-        className="w-[80px] h-[80px] rounded-[50%] mt-2 ounded-full overflow-hidden border-2 border-transparent shadow-lg"
+        className=" w-[80px] h-[80px] rounded-[50%] mt-2 ounded-full overflow-hidden border-2 border-transparent shadow-lg cursor-pointer"
         style={{ outline: "1px solid #535C91" }}
+        onClick={() => {
+          router.push(`/users?userName=${props.userName}`);
+        }}
       />
       <div className="mt-[-10px]">
         <h3 className="text-[16px]">{props.userName}</h3>
-        <p className="text-center text-[#8A99E9] text-[12px]">#12</p>
+        <p className="text-center text-[#8A99E9] text-[12px]">#{props.level}</p>
       </div>
       {sent ? (
         <div className="mt-[10px] rounded-2 ">
@@ -244,7 +261,7 @@ const User = (props: UserProps) => {
         </div>
       ) : (
         <IoMdPersonAdd
-          className="w-[30px] h-[30px] mt-[10px] cursor-pointer  hover:scale-[120%] transition-all duration-300 ease-in-out"
+          className="w-[30px] text-[#8a99e9] h-[30px] mt-[10px] cursor-pointer  hover:scale-[120%] transition-all duration-300 ease-in-out"
           onClick={() => {
             socket?.emit("NewInvit", { id: props.id, userId: user?.id });
             setSent(true);
@@ -259,7 +276,7 @@ const SentInvits = (props: { invit: SentInvitsType }) => {
   const invit: SentInvitsType = props.invit;
   const user = useContext(UserDataContext);
   const [cenceled, setCenceled] = useState<boolean>(false);
-
+  const router = useRouter();
   const socket = useContext(SocketContext);
   return (
     <div className="search-card SearchCard  text-white mb-2">
@@ -269,8 +286,12 @@ const SentInvits = (props: { invit: SentInvitsType }) => {
           style={{ outline: ".2px solid #535C91" }}
         >
           <Image
-            className="bg-cover bg-center w-[80px] h-[80px]"
+            className="bg-cover bg-center w-[80px] h-[80px] cursor-pointer"
             src={invit?.receiver?.image || "./defaultImg.svg"}
+            onClick={() => {
+              router.push(`/users?userName=${invit.receiver.userName}`);
+            }
+            }
             width={60}
             height={60}
             alt="user"
@@ -279,7 +300,7 @@ const SentInvits = (props: { invit: SentInvitsType }) => {
       </div>
       <div className="mt-[-10px]">
         <h3 className="text-[16px]">{invit.receiver.userName}</h3>
-        <p className="text-center text-[#8A99E9] text-[12px]">#12</p>
+        <p className="text-center text-[#8A99E9] text-[12px]">#{invit.receiver.level}</p>
       </div>
       <div
         className="mt-[6px] cursor-pointer CancelBtn"
@@ -291,15 +312,18 @@ const SentInvits = (props: { invit: SentInvitsType }) => {
           setCenceled(true);
         }}
       >
-        <p className=" text-[#8A99E9] text-[14px] "> {cenceled? 'canceled' : 'cancel Invitation'}</p>
+        <p className=" text-[#8A99E9] text-[14px] ">
+          {" "}
+          {cenceled ? "canceled" : "Cancel Invitation"}
+        </p>
       </div>
     </div>
   );
 };
 
-const Search = () => {
+const Search = (state: { searchData: string }) => {
   const [users, setUsers] = useState<UserProps[]>([]);
-  const [userName, setUserName] = useState<string>("");
+  // const [userName, setUserName] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const friends = useContext(ProfileDataContext);
   const [userNotFound, setUserNotFound] = useState<boolean>(false);
@@ -310,12 +334,12 @@ const Search = () => {
       setIsLoading(true);
       setUserNotFound(false);
     }
-    if (userName.length > 0) {
+    if (state.searchData.length > 0) {
       setIsLoading(false);
     }
     if (!isLoading) {
       let inUsers = users.find((user) =>
-        user.userName.toLowerCase().startsWith(userName.toLowerCase())
+        user.userName.toLowerCase().startsWith(state.searchData.toLowerCase())
       );
       if (inUsers) {
         setUserNotFound(false);
@@ -323,7 +347,9 @@ const Search = () => {
       }
 
       let inSentInvit = sentInvits?.some((invit) =>
-        invit.receiver.userName.toLowerCase().startsWith(userName.toLowerCase())
+        invit.receiver.userName
+          .toLowerCase()
+          .startsWith(state.searchData.toLowerCase())
       );
 
       if (inSentInvit) {
@@ -332,10 +358,12 @@ const Search = () => {
       }
 
       let inFriends = friends?.FriendsData?.find((friend) =>
-        friend.userName.toLowerCase().startsWith(userName.toLowerCase())
+        friend.userName.toLowerCase().startsWith(state.searchData.toLowerCase())
       );
       let inInvits = friends?.InvitsData?.find((invit) =>
-        invit.sender.userName.toLowerCase().startsWith(userName.toLowerCase())
+        invit.sender.userName
+          .toLowerCase()
+          .startsWith(state.searchData.toLowerCase())
       );
       if (inFriends || inInvits || inUsers || inSentInvit) {
         setUserNotFound(false);
@@ -345,19 +373,19 @@ const Search = () => {
         !inInvits &&
         !inUsers &&
         !inSentInvit &&
-        userName.length > 0
+        state.searchData.length > 0
       ) {
         setUserNotFound(true);
       }
     }
-  }, [friends, userNotFound, users, userName, isLoading]);
+  }, [friends, userNotFound, users, state.searchData, isLoading]);
 
   useEffect(() => {
     setIsLoading(true);
     const search = async () => {
       try {
         const dataSearch = await axiosApi.get(
-          process.env.NEST_API + "/user/search?userName=" + userName,
+          process.env.NEST_API + "/user/search?userName=" + state.searchData,
           {
             withCredentials: true,
           }
@@ -379,94 +407,87 @@ const Search = () => {
       }
     };
     search();
-  }, [userName, friends]);
+  }, [state.searchData, friends]);
 
   return (
-    <div className="search flex flex-col items-center w-full p-2 pt-8">
-      <div className="bg-[#030824] InputSearch w-[300px] flex pl-[10px] items-center gap-2 mb-[20px]">
-        <CiSearch className="w-[30px] h-[30px] text-white" />
-        <input
-          type="search"
-          name="search"
-          placeholder="Search"
-          className=" bg-transparent border-none focus:border-none focus:outline-none w-[240px] h-[40px] text-white text-[16px]"
-          onChange={(e) => setTimeout(() => setUserName(e.target.value.trim()), 800)}
-        />
-      </div>
-      <div className="SearchContainer">
-        <>
-          {friends && friends?.FriendsData?.map((friend) => {
-            // console.log("friend ----", friend);
+    <div className="SearchContainer">
+      <>
+        {friends &&
+          friends?.FriendsData?.map((friend) => {
             return (
               friend.userName
                 .toLowerCase()
-                .startsWith(userName.toLowerCase()) && <Friend key={friend.id} value={friend} />
+                .startsWith(state.searchData.toLowerCase()) && (
+                <Friend key={friend.id} value={friend} />
+              )
             );
           })}
-        </>
+      </>
 
-        <>
-          {friends?.InvitsData?.map((invit) => {
+      <>
+        {friends?.InvitsData?.map((invit) => {
+          return (
+            invit.sender.userName
+              .toLowerCase()
+              .startsWith(state.searchData.toLowerCase()) && (
+              <Invit key={invit.id} value={invit} />
+            )
+          );
+        })}
+      </>
+
+      <>
+        {!isLoading && sentInvits && sentInvits.length ? (
+          sentInvits?.map((invit: SentInvitsType) => {
             return (
-              invit.sender.userName
+              invit.receiver.userName
                 .toLowerCase()
-                .startsWith(userName.toLowerCase()) && <Invit key={invit.id} value={invit} />
+                .startsWith(state.searchData.toLowerCase()) && (
+                <SentInvits key={invit.id} invit={invit} />
+              )
             );
-          })}
-        </>
+          })
+        ) : (
+          <></>
+        )}
+      </>
 
+      {isLoading ? (
+        <LoadingIndicator />
+      ) : (
         <>
-          {!isLoading && sentInvits && sentInvits.length ? (
-            sentInvits?.map((invit: SentInvitsType) => {
-              return (
-                invit.receiver.userName
-                  .toLowerCase()
-                  .startsWith(userName.toLowerCase()) && (
-                  <SentInvits key={invit.id} invit={invit} />
-                )
-              );
-            })
-          ) : (
-            <></>
+          {users.map(
+            (user, index) =>
+              user.userName
+                .toLowerCase()
+                .startsWith(state.searchData.toLowerCase()) && (
+                <User
+                  key={index}
+                  id={user.id}
+                  image={user.image}
+                  userName={user.userName}
+                  level={user.level}
+                />
+              )
           )}
         </>
+      )}
 
-        {isLoading ? (
-          <LoadingIndicator />
-        ) : (
-          <>
-            {users.map(
-              (user, index) =>
-                user.userName
-                  .toLowerCase()
-                  .startsWith(userName.toLowerCase()) && (
-                  <User
-                    key={index}
-                    id={user.id}
-                    image={user.image}
-                    userName={user.userName}
-                  />
-                )
-            )}
-          </>
-        )}
-
-        {userNotFound && (
-          <div className="min-w-[600px] h-[600px] text-white2 flex flex-col justify-center items-center bg-[#030824]">
-            <Image
-              src={"./iconsProfile/not-found.png"}
-              width={200}
-              height={100}
-              alt="img"
-              className="mb-14"
-            />
-            <h1 className="text-white">No Result Found</h1>
-            <p className="text-[#8A99E9] text-[14px]">
-              We can't find any item matching your search
-            </p>
-          </div>
-        )}
-      </div>
+      {userNotFound && (
+        <div className="min-w-[600px] h-[600px] text-white2 flex flex-col justify-center items-center bg-[#030824]">
+          <Image
+            src={"./iconsProfile/not-found.png"}
+            width={200}
+            height={100}
+            alt="img"
+            className="mb-14"
+          />
+          <h1 className="text-white">No Result Found</h1>
+          <p className="text-[#8A99E9] text-[14px]">
+            We can't find any item matching your search
+          </p>
+        </div>
+      )}
     </div>
   );
 };
