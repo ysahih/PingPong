@@ -174,11 +174,11 @@ export class UserController {
 
       const errors = await validate(userr);
       if (errors.length > 0) {
-        return { "message": errors.map(e => e.constraints) };
+        response.send( {"message": errors.map(e => e.constraints) });
       }
       const update = await this.FriendsService.updateInfo(req.user['userId'], userr.userName, userr.firstName, userr.lastName);
       if (!update) {
-        return { "message": "userName already used!" };
+        response.send({ "message": "userName already used!" });
       }
       if (update) {
         response.cookie("jwt", generateJwtToken(update), {
@@ -191,7 +191,7 @@ export class UserController {
 
     } catch (e) {
       console.log('error ::', e);
-      return { "message": "error" };
+      response.send({ "message": "error" });
     }
   }
 

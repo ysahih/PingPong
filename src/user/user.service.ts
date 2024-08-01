@@ -762,6 +762,7 @@ export class FriendsService {
         },
       });
       if (oldinfo) {
+        console.log("User already exists");
         return null;
       }
       const user = await this.prisma.user.update({
