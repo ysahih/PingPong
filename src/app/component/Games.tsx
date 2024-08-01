@@ -63,7 +63,7 @@ const Games = () => {
                 <h2> Dark Valley</h2>
                 <p>Play in a dark environment and get Dark</p>
                 <p>Valley’s achievement</p>
-                <button ref={ref} className="Playbutton"  onClick={
+                <button  className="Playbutton"  onClick={
                   ()=>{
                     game?.setRunning(false);
                     game?.setGamemode("Dark Valley");

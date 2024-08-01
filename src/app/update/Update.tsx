@@ -16,8 +16,10 @@ const UpdatePage = () => {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event?.target?.files?.[0];
-    setImageSrc(file ? URL.createObjectURL(file) : context?.image? context.image : imageSrc);
-    setFile(file || null);
+    if (file?.type.includes("image")) {
+      setImageSrc(file ? URL.createObjectURL(file) : context?.image? context.image : imageSrc);
+      setFile(file || null);
+    }
   };
 
   return (
