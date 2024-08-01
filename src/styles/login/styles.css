@@ -92,6 +92,7 @@
 }
 
 .InputError{
+    border: transparent;
     border: 1px solid red;
 }
 

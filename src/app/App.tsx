@@ -220,7 +220,7 @@ const Home = ({
 
 const Body = ({ children }: { children: React.ReactNode }) => {
   const [showPopup, setShowPopup] = useState(true);
-  const [label, setLabel] = useState({chat:0, isRoom:false});
+  const [label, setLabel] = useState({id:0, isRoom:false});
 
   useEffect(() => {
     const handleResize = () => {

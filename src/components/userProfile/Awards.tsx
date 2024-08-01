@@ -10,6 +10,7 @@ const Award = () => {
         <Image  src="/iconsProfile/Award Medal 6.svg"
           width={100}
           height={100}
+          priority={true}
           alt="user"
           className="bg-cover bg-center w-full h-full max-w-[100px] max-h-[100px]  overflow-hidden border-2 border-transparent shadow-lg"
         />

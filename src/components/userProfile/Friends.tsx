@@ -1,40 +1,25 @@
 import ChatContext from "../context/chatContext";
 import "@/styles/userProfile/userFriend.css";
-import axios from "axios";
 import Image from "next/image";
-import { use, useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { FriendsType } from "./Dto";
 import ProfileDataContext from "../context/profilDataContext";
 import SocketContext from "../context/socket";
 import UserDataContext from "../context/context";
 import RenderContext from "../context/render";
-import Game from "@/app/Game/GamePages/Game";
 import { GameContext } from "@/app/Game/Gamecontext/gamecontext";
-// import RenderContext from "../context/render";
+import { useRouter } from "next/navigation";
+import { IoGameController } from "react-icons/io5";
 
 interface friendsType {
   value: FriendsType;
 }
 
-// const block = async (id: number) => {
-//   try {
-//     const dataBlocked = await axios.patch(
-//       `http://localhost:3000/user/block?id=${id}`,
-//       {},
-//       {
-//         withCredentials: true,
-//       }
-//     );
-//     console.log(dataBlocked);
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
-
 const Friend = (props: friendsType) => {
   const socket = useContext(SocketContext);
   const user = useContext(UserDataContext);
   const context = useContext(ChatContext);
+  const router = useRouter();
 
   const render = useContext(RenderContext);
 
@@ -52,32 +37,35 @@ const Friend = (props: friendsType) => {
       friendId: id,
     });
   };
-
-  // function handleChat (){
-  //   if (window.innerWidth <= 1139)
-
-  // }
-
+  
   return (
     <div className="FriendsPh min-w-[190px] h-[230px] bg-[#040A2F] mr-[15px] flex flex-col items-center">
       <div className="relative">
-        {props.value.online && (
-          <>
+        <>
+          {props.value.inGame && props.value.online && (
+            <IoGameController
+              className={`bg-[#1B1A55] absolute rounded-full  -top-[-12px] -right-[-8px] text-blue-500 transform translate-x-1/2 translate-y-1/2 `}
+              style={{ outline: "4px solid #1B1A55" }}
+            />
+          )}
+
+          {!props.value.inGame && props.value.online && (
             <p
-              className={`${
-                props.value.inGame ? " bg-blue-500" : " bg-green-500"
-              } absolute w-2.5 h-2.5 rounded-full  -top-[-12px] -right-[-8px] transform translate-x-1/2 translate-y-1/2 border-[4px] border-transparent `}
+              className={` bg-green-500 absolute w-2.5 h-2.5 rounded-full  -top-[-12px] -right-[-8px] transform translate-x-1/2 translate-y-1/2 border-[4px] border-transparent `}
               style={{ outline: "4px solid #1B1A55" }}
             ></p>
-          </>
-        )}
+          )}
+        </>
         <div
           className="mt-[16px] inline-block rounded-full overflow-hidden border-2 border-transparent shadow-lg w-[60px] h-[60px]"
           style={{ outline: ".2px solid #535C91" }}
         >
           <Image
-            className="bg-cover bg-center w-full h-full"
+            className="bg-cover bg-center w-full h-full cursor-pointer"
             src={props?.value?.image || "./defaultImg.svg"}
+            onClick={() => {
+              router.push(`/users?userName=${props.value.userName}`);
+            }}
             width={60}
             height={60}
             alt="user"
@@ -86,7 +74,9 @@ const Friend = (props: friendsType) => {
       </div>
       <div className="containerFriend__info">
         <h3 className="text-[16px]">{props.value.userName}</h3>
-        <p className="text-center text-[#8A99E9] text-[12px]">#12</p>
+        <p className="text-center text-[#8A99E9] text-[12px]">
+          #{props.value.level}
+        </p>
       </div>
       <div
         className={`${
@@ -103,30 +93,21 @@ const Friend = (props: friendsType) => {
             game?.setGamemode("friend");
             game?.settype("friend");
             game?.setgamefriend(props.value.id);
-            console.log("send game1 ", game?.gametype, "33");
             sendGame(props.value.id);
-            console.log("send game ", props.value.id, user?.id);
             render?.setRender("playGame");
           }}
           alt="online"
         />
         <Image
-          src="./iconsProfile/Chat_solid.svg"
+          src="/iconsProfile/Chat_solid.svg"
           width={24}
           height={24}
-          property="true"
           onClick={() => {
-            context?.setLabel({chat: props.value.id, isRoom: false});
+            context?.setLabel({ id: props.value.id, isRoom: false });
             // handleChat();
           }}
           alt="online"
-          className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[24px] min-h-[24px]"
-          style={{
-            width: "auto",
-            height: "auto",
-            maxWidth: "24px",
-            maxHeight: "24px",
-          }}
+          className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[24px] h-[24px] min-h-[24px]"
         />
         <Image
           onClick={() => {
@@ -149,13 +130,7 @@ const Friend = (props: friendsType) => {
 };
 
 const Friends = () => {
-  // const [Friends, setFriends] = useState<FriendsType[] | null>(null);
-
   const Friends = useContext(ProfileDataContext)?.FriendsData;
-  // useEffect(() => {
-  //   setFriends( FriendsData|| null);
-  // }
-  // , [FriendsData] );
 
   return (
     <>

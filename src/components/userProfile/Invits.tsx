@@ -5,6 +5,7 @@ import { InvitsType } from "./Dto";
 import ProfileDataContext from "../context/profilDataContext";
 import SocketContext from "../context/socket";
 import UserDataContext from "../context/context";
+import { useRouter } from "next/navigation";
 
 interface InvitProps {
   value: InvitsType;
@@ -16,6 +17,7 @@ const Invit = (props: InvitProps) => {
   const user = useContext(UserDataContext);
   const [Accepting, setAccepting] = useState<boolean>(false);
   const [deny, setDeny] = useState<boolean>(false);
+  const router = useRouter();
 
   return (
     <div
@@ -28,8 +30,12 @@ const Invit = (props: InvitProps) => {
           style={{ outline: ".2px solid #535C91" }}
         >
           <Image
-            className="bg-cover bg-center w-full h-full"
+            className="bg-cover bg-center w-full h-full cursor-pointer"
             src={values?.sender?.image || "./defaultImg.svg"}
+            onClick={() => {
+              router.push(`/users?userName=${props.value.sender.userName}`);
+            }
+            }
             width={60}
             height={60}
             alt="user"
@@ -38,7 +44,7 @@ const Invit = (props: InvitProps) => {
       </div>
       <div className="containerFriend__info">
         <h3 className="text-[16px]">{values.sender.userName}</h3>
-        <p className="text-center text-[#8A99E9] text-[12px]">#12</p>
+        <p className="text-center text-[#8A99E9] text-[12px]">#{values.sender.level}</p>
       </div>
       <div
         className={`${

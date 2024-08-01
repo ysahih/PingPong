@@ -1,5 +1,5 @@
 import "@/styles/userProfile/userFriend.css";
-import { useContext, useState } from "react";
+import { use, useContext, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import * as Yup from "yup";
 import UserDataContext from "../context/context";
@@ -10,10 +10,8 @@ const Info = () => {
     firstName: "",
     lastName: "",
     userName: "",
-    password: "",
   });
   const [error, setError] = useState({ iserror: false, message: "" });
-  const [errorP, setErrorP] = useState(false);
   const userData = useContext(UserDataContext);
   const [activeToast, setActiveToast] = useState(false);
 
@@ -31,50 +29,65 @@ const Info = () => {
       setError({ iserror: true, message: err?.message });
     }
   };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.name === "userName") {
       e.target.value.length > 0 && validateUserName(e.target.value);
       e.target.value.length == 0 && setError({ iserror: false, message: "" });
+      setUser({ ...user, userName: e.target.value });
     }
-    e.target.name === "password" && setErrorP(false);
-    setUser({ ...user, [e.target.name]: e.target.value });
+    if (e.target.name === "firstName") {
+      setUser({ ...user, firstName: e.target.value });
+    }
+    if (e.target.name === "lastName") {
+      setUser({ ...user, lastName: e.target.value });
+    }
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(user);
-    if (!user?.password.length) return setErrorP(true);
-    if (!user?.lastName.length) setUser({ ...user, lastName: userData?.lastName || ''});
-    if (!user?.lastName.length) setUser({ ...user, firstName: userData?.firstName || ''});
-    if (!user?.userName.length) setUser({ ...user, userName: userData?.userName || ''});
-    if (activeToast) return;
-    
+    if (error.iserror) {
+      return;
+    }
+    if (!user.userName && !user.firstName && !user.lastName) {
+      return;
+    }
+    activeToast && toast.dismiss();
     const toastId = toast.loading("Waiting...");
     setActiveToast(true);
     const send = async () => {
-      const res = await axiosApi.post(process.env.NEST_API + '/user/updateInfo', 
+      const res = await axiosApi.post(
+        process.env.NEST_API + "/user/updateInfo",
         {
-          userName: user?.userName,
-          firstName: user?.firstName,
-          lastName: user?.lastName,
-          password: user?.password,
+          userName: user?.userName || "",
+          firstName: user?.firstName || "",
+          lastName: user?.lastName || "",
         },
         {
           withCredentials: true,
         }
       );
+      console.log(res?.data);
       if (res?.data?.message) {
         toast.dismiss(toastId);
-        toast.error(res?.data?.message, {icon: '⚠️'});
+        toast.error(res?.data?.message, { icon: "⚠️" });
         setActiveToast(false);
         return;
       }
       toast.dismiss(toastId);
       setActiveToast(false);
       toast.success("update Successfully !");
-      userData?.setFirstName(user?.firstName);
-      userData?.setLastName(user?.lastName);
-      userData?.setUserName(user?.userName);
+      if (userData) {
+        userData?.setFirstName(
+          !user?.firstName ? userData?.firstName : user?.firstName
+        );
+        userData?.setLastName(
+          !user?.lastName ? userData?.lastName : user?.lastName
+        );
+        userData?.setUserName(
+          !user?.userName ? userData?.userName : user?.userName
+        );
+      }
     };
     send();
   };
@@ -99,7 +112,7 @@ const Info = () => {
         onChange={handleChange}
       />
       {error?.iserror && (
-        <p className="text-[13px] mt-[-15px] text-[red] ml-[4px]">
+        <p className="text-[13px] mt-[-13px] text-[red] ml-[4px]">
           {error.message}
         </p>
       )}
@@ -121,17 +134,6 @@ const Info = () => {
         onChange={handleChange}
       />
 
-      <input
-        name="password"
-        type="password"
-        className="w-[200px] text-black FormInput"
-        placeholder="password"
-        autoComplete="off"
-        onChange={handleChange}
-      />
-      {errorP && (
-        <p className="text-[13px] mt-[-15px] ml-[4px] text-[red]">required !</p>
-      )}
       <button
         type="submit"
         name="submit"

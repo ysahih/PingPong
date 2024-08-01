@@ -141,9 +141,6 @@
     cursor: pointer;
 }
 
-.profileimage, .profilecenter{
-    /* margin-bottom: -45px; */
-}
 
 
 .rightBar h2{
@@ -153,7 +150,7 @@
     font-size: 15px;
     color: #8A99E9;
    
-    /* background: red; */
+   
 }
 /* //phone side bar */
 
@@ -176,8 +173,7 @@
 
 .phonebuttons{
     margin-top: 90px;
-    padding: -1px;;
-    /* margin-right: 20px; */
+
     
 }
 
@@ -571,16 +567,11 @@
     color: #FFFFFF;
 }
 
-.more{
-    /* display: flex;
-    flex-direction: column;
-    justify-content: space-between; */
-}
+
 
 .date{
     font-family: Inter;
-    font-size: 11px;
-    margin-top: -10px;
+    margin-top: 10px;
     font-weight: 400;
     color: #8A99E9;
     /* background-color: red; */
@@ -623,14 +614,7 @@
     gap: 4px;
 }
 
-.block p{
-    display: flex;
-    font-family: Inter;
-    font-size: 12px;
-    font-weight: 400;
-    color: #FF0000;
 
-}
 
 .clash p{
     font-family: Inter;
@@ -742,10 +726,6 @@
     border-radius: 12px;
     min-height: 600px;
     display: flex;
-    /* flex-direction: column; */
-    /* justify-content: center; */
-    /* align-items: center; */
-    /* box-shadow: 5px 4px 10px 0px #00000040; */
 }
 .gameContainer{
     width: 100%;
@@ -799,16 +779,10 @@
 }
 
 
-.LightRow .tabledescribtion{
-    /* margin-left: 15px; */
-}
-
-/* Home */
 
 .hometable{
     margin-top: 30px;
     width: 100%;
-    /* min-width: 800px; */
 }
 
 /* //Game launcher*/
@@ -1026,16 +1000,6 @@
 }
 
 
-/* /conversation// */
-
-.conversation{
-    /* overflow: hidden; */
-   
-    /* display: flex; */
-    /* background-color: red; */
-    /* flex-direction: column; */
-}
-
 .convo{
     width: 100%;
     margin: 0px auto;
@@ -1124,13 +1088,6 @@
 
 
 
-.chatholder .convoHolder{
-    /* height: calc(85vh - 180px); */
-   
-}
-
-
-
 .convoHolder{
     padding: 20px;
     width: 100% ;
@@ -1140,11 +1097,6 @@
     /* min-height: 700px; */
     max-height: 60vh;
 }
-
-/* .con{
-    display: flex;
-  flex-direction: column-reverse;
-} */
 
 .msgContent{
 
@@ -1163,7 +1115,6 @@
 
 .myDate{
     align-self: end;
-    /* align-self: end; */
 }
 
 .othersDate, .myDate{
@@ -1174,7 +1125,7 @@
 }
 
 .othersContent, .myContent{
-    /* background-color: red; */
+
     padding: 10px;
     width: fit-content;
     margin-bottom: 10px;
