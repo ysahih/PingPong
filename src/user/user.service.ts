@@ -54,6 +54,34 @@ export class FriendsService {
     }
   }
 
+  async getUserProfile(name: string, id: number) {
+    try {
+      const blocked = await this.SearchCantShow(id);
+      const user = await this.prisma.user.findUnique({
+        where: {
+          userName: name,
+        },
+        select: {
+          userName: true,
+          image: true,
+          id: true,
+          lastName: true,
+          firstName: true,
+          level: true,
+          winCounter: true,
+          lossCounter: true,
+          online: true,
+          inGame: true,
+        },
+      });
+      if (!user) return null;
+      if (blocked.some((b) => b.id === user.id)) return null;
+      return user;
+    } catch (e) {
+      return null;
+    }
+  }
+  
   async searchUser(userName: string, id: number) {
     try {
       const user = await this.prisma.user.findMany({
@@ -66,6 +94,7 @@ export class FriendsService {
           userName: true,
           image: true,
           id: true,
+          level: true,
         },
       });
       if (user.length > 0)
@@ -98,6 +127,7 @@ export class FriendsService {
           image: true,
           id: true,
           online: true,
+          level: true,
         },
       });
       if (!user) return null;
@@ -155,6 +185,7 @@ export class FriendsService {
               userName: true,
               image: true,
               id: true,
+              level: true,
             },
           },
           receiver: {
@@ -162,6 +193,7 @@ export class FriendsService {
               userName: true,
               image: true,
               id: true,
+              level: true,
             },
           },
         },
@@ -190,6 +222,7 @@ export class FriendsService {
               userName: true,
               image: true,
               id: true,
+              level: true,
             },
           },
         },
@@ -220,6 +253,7 @@ export class FriendsService {
               userName: true,
               image: true,
               id: true,
+              level: true,
             },
           },
         },
@@ -260,6 +294,7 @@ export class FriendsService {
               id: true,
               online: true,
               inGame: true,
+              level: true,
             },
           },
           receiver: {
@@ -269,6 +304,7 @@ export class FriendsService {
               id: true,
               online: true,
               inGame: true,
+              level: true,
             },
           },
         },
@@ -286,6 +322,7 @@ export class FriendsService {
           image: friendData.image,
           online: friendData.online,
           inGame: friendData.inGame,
+          level: friendData.level,
         };
       });
       return Friends;
@@ -420,6 +457,7 @@ export class FriendsService {
             image: true,
             id: true,
             online: true,
+            level: true,
           },
         });
 
@@ -432,6 +470,7 @@ export class FriendsService {
             image: true,
             id: true,
             online: true,
+            level: true,
           },
         });
         return { reciever: friend, sender: user };
@@ -467,6 +506,7 @@ export class FriendsService {
               userName: true,
               image: true,
               id: true,
+              level: true,
             },
           },
           receiver: {
@@ -474,6 +514,7 @@ export class FriendsService {
               userName: true,
               image: true,
               id: true,
+              level: true,
             },
           },
         },
@@ -553,6 +594,7 @@ export class FriendsService {
             userName: true,
             image: true,
             id: true,
+            level: true,
           },
         });
         return user;
@@ -596,6 +638,7 @@ export class FriendsService {
             userName: true,
             image: true,
             id: true,
+            level: true,
           },
         });
         if (!user) return null;
@@ -664,6 +707,80 @@ export class FriendsService {
       if (friends) await this.deleteFriendRequest(UserId, TargetId);
       else return null;
       return friends;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async updatePassword(id: number, password: string) {
+    try {
+      const hash = await argon.hash(password);
+      const user = await this.prisma.user.update({
+        where: {
+          id: id,
+        },
+        data: {
+          hash: hash,
+        },
+      });
+      return user;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async getUserInfo(id: number) {
+    try {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          id: id,
+        },
+        select: {
+          userName: true,
+          id: true,
+          lastName: true,
+          firstName: true,
+          hash: true,
+        },
+      });
+      return user;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  async updateInfo(id: number, userName: string, firstName: string, lastName: string) {
+    try {
+      const oldinfo = await this.prisma.user.findUnique({
+        where: {
+          userName: userName,
+        },
+        select: {
+          userName: true,
+          lastName: true,
+          firstName: true,
+        },
+      });
+      if (oldinfo) {
+        console.log("User already exists");
+        return null;
+      }
+      const user = await this.prisma.user.update({
+        where: {
+          id: id,
+        },
+        data: {
+          userName: userName,
+          lastName: lastName,
+          firstName: firstName,
+        },
+        select: {
+          userName: true,
+          id: true,
+          email: true,
+        },
+      });
+      return user;
     } catch (e) {
       return null;
     }
