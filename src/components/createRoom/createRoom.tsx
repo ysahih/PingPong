@@ -62,7 +62,7 @@ const CreateRoom = () => {
 		const toastId = toastFunc ? toastFunc(message) : toast.error(message);
 		setTimeout(() => {
 			toast.dismiss(toastId);
-		}, 70000);
+		}, 2000);
 	}
 
 	const formik = useFormik<RoomFormat>({
@@ -134,12 +134,12 @@ const CreateRoom = () => {
   });
 
   return (
-	<>
+	// <>
+	<div className="createRoom">
 	<Toaster containerStyle={{
 		marginTop: "100px",
 		zIndex: "10"
 	}}/>
-	<div className="createRoom">
 	  <h1 className="createRoom__header">Chat Room</h1>
 
 	  <div className="createRoom__wrapper">
@@ -269,7 +269,7 @@ const CreateRoom = () => {
 		</form>
 	  </div>
 	</div>
-	</>
+	// </>
   );
 };
 
