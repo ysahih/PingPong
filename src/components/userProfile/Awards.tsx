@@ -21,54 +21,54 @@ const Award: React.FC<{ data: AwardData }> = (props) => {
     if (data.achivement.includes(data.idx)) setIsRealised(true);
     switch (data.idx) {
       case 1:
-        setdiscription("You have ");
-        setAwardImage("./Awards/valAward.svg");
+        setdiscription("You win in Dark Valley");
+        setAwardImage("./Awards/DarkValleyAward.svg");
         setAwardTitle("Dark Valley");
         break;
       case 2:
-        setdiscription("You have ");
-        setAwardImage("./Awards/flamAward.svg");
-        setAwardTitle("Flam Arina");
+        setdiscription("You win in Flame Arina");
+        setAwardImage("./Awards/FlameArenaAward.svg");
+        setAwardTitle("Flame Arina");
         break;
       case 3:
-        setdiscription("You have ");
+        setdiscription("You win one time");
         setAwardImage("./Awards/winAward.svg");
         setAwardTitle("First Win");
         break;
       case 4:
-        setdiscription("You have ");
+        setdiscription("You win 3 times");
         setAwardImage("./Awards/winAward.svg");
         setAwardTitle("Win 3");
         break;
       case 5:
-        setdiscription("You have ");
+        setdiscription("You win 42 times");
         setAwardImage("./Awards/winAward.svg");
         setAwardTitle("Win 42");
         break;
       case 6:
-        setdiscription("You have ");
-        setAwardImage("./Awards/Award Medal 6.svg");
+        setdiscription("You win 100 times");
+        setAwardImage("./Awards/BigWin.svg");
         setAwardTitle("Big Win");
         break
       case 7:
-        setdiscription("You have ");
-        setAwardImage("/iconsProfile/Award Medal 6.svg");
-        setAwardTitle("The Great Wall");
+        setdiscription("You reached level 1");
+        setAwardImage("./Awards/lvlAward.svg");
+        setAwardTitle("First level");
         break;
       case 8:
-        setdiscription("You have ");
-        setAwardImage("/iconsProfile/Award Medal 6.svg");
-        setAwardTitle("The Great Wall");
+        setdiscription("You reached level 3");
+        setAwardImage("./Awards/lvlAward.svg");
+        setAwardTitle("level 3");
         break;
       case 9:
-        setdiscription("You have ");
-        setAwardImage("/iconsProfile/Award Medal 6.svg");
-        setAwardTitle("The Great Wall");
+        setdiscription("You reached level 42");
+        setAwardImage("./Awards/lvlAward.svg");
+        setAwardTitle("level 42");
         break;
       case 10:
-        setdiscription("You have ");
-        setAwardImage("/iconsProfile/Award Medal 6.svg");
-        setAwardTitle("The Great Wall");
+        setdiscription("100");
+        setAwardImage("./Awards/lvl100Award.svg");
+        setAwardTitle("level 100");
         break;
       default:
         break;
