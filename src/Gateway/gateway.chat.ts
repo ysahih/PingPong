@@ -638,7 +638,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
                     ingame: false ,
                     level : base.level ,
                     achievenemt : base.achievement ,
-                    numberofgames : base.history.length,
+                    numberofWin : base.winCounter,
                 }
 				} catch (error) {
 					console.error("Error fetching user info:", error);
@@ -730,30 +730,8 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
               const level =  this.gameRooms.rooms[room].users[0].level  
               await this.FriendsService.updateResult(user1, user2, "W"  , level);
               await this.FriendsService.updateResult(user2, user1, "L"  );
-
-                console.log("1update achievement" ,this.gameRooms.rooms[room].users[0].level , this.gameRooms.checkAchievement(this.gameRooms.rooms[room].users[0] ,31 )  === false);
-
-                if (this.gameRooms.rooms[room].users[0].level > 0)
-                  {
-                    console.log("test1"  );
-                    
-                  }
-
-                  console.log(this.gameRooms.rooms[room].users[0].achievenemt );
-                  if (this.gameRooms.checkAchievement(this.gameRooms.rooms[room].users[0] ,31 ) === false)
-                    {
-                      console.log("test2"  );
-                    }
-
-              if (this.gameRooms.rooms[room].users[0].level > 0 &&  this.gameRooms.checkAchievement(this.gameRooms.rooms[room].users[0] ,31) === false)
-              {
-
-                console.log("update achievement" ,this.gameRooms.rooms[room].users[0].level );
-                await this.FriendsService.updateAchievement(user1 , 31);
-                console.log("update achievement");
-              }
-  
-              
+              this.gameRooms.rooms[room].users[0].numberofWin += 1;
+               await this.gameRooms.AssignAchievement(user1 ,0  , room  ,   this.FriendsService.updateAchievement.bind(this.FriendsService));
             }
             else if ( this.gameRooms.rooms[room].type != "ai")
             {
@@ -761,24 +739,9 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
               const level =  this.gameRooms.rooms[room].users[1].level          
               await this.FriendsService.updateResult(user1, user2, "L" );
               await this.FriendsService.updateResult(user2, user1, "W" , level );
-              console.log("2update achievement" ,this.gameRooms.rooms[room].users[1].level , this.gameRooms.checkAchievement(this.gameRooms.rooms[room].users[1] ,31 ) === false );
-
-              if (this.gameRooms.rooms[room].users[1].level > 0)
-                {
-                  console.log("test1"  );
-                  
-                }
-                console.log(this.gameRooms.rooms[room].users[0].achievenemt );
-                if (this.gameRooms.checkAchievement(this.gameRooms.rooms[room].users[1] ,31 ) === false)
-                  {
-                    console.log("test2"  );
-                  }
-              if (this.gameRooms.rooms[room].users[1].level > 0 && this.gameRooms.checkAchievement(this.gameRooms.rooms[room].users[1] ,31 )  === false)
-                {
-                  console.log("update achievement" ,this.gameRooms.rooms[room].users[1].level );
-                  await this.FriendsService.updateAchievement(user2 , 31);
-                  
-                }
+              this.gameRooms.rooms[room].users[1].numberofWin += 1;
+              console.log( "mooode" ,this.gameRooms.rooms[room].mode)
+              await  this.gameRooms.AssignAchievement(user2 ,1  , room  ,   this.FriendsService.updateAchievement.bind(this.FriendsService));
             }
 						this.gameRooms.clearIntervals(room);
 
@@ -830,7 +793,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       let user: userinfo ;
 				try {
 					const base = await this._prisma.userInfogame(mydata.clientID );
-					user = {clientid: mydata.clientID , image: base.image, username: base.userName , ingame: false , level : base.level , achievenemt : base.achievement , numberofgames : base.history.length}
+					user = {clientid: mydata.clientID , image: base.image, username: base.userName , ingame: false , level : base.level , achievenemt : base.achievement , numberofWin : base.winCounter}
 				} catch (error) {
 					console.error("Error fetching user info:", error);
 				}
@@ -905,7 +868,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 					const base = await this._prisma.userInfogame(mydata.invitationSenderID);
 
 
-					user = {clientid: mydata.invitationSenderID, image: base.image, username: base.userName , ingame: false , level : base.level , achievenemt : base.achievement , numberofgames : base.history.length}
+					user = {clientid: mydata.invitationSenderID, image: base.image, username: base.userName , ingame: false , level : base.level , achievenemt : base.achievement , numberofWin : base.winCounter}
 				} catch (error) {
 					console.error("Error fetching user info:", error);
           return;
@@ -916,7 +879,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         let curentroom = this.gameRooms.searcheClientRoom(mydata.invitationSenderID);
         if( !curentroom &&!friendroon)
         {
-            this.gameRooms.addRoom( {clientid : mydata.invitationSenderID, image: user.image, username: user.username , ingame: false , level : user.level , achievenemt : user.achievenemt ,numberofgames : user.numberofgames} , mydata.mode , "friend" , mydata.friendId);
+            this.gameRooms.addRoom( {clientid : mydata.invitationSenderID, image: user.image, username: user.username , ingame: false , level : user.level , achievenemt : user.achievenemt ,numberofWin : user.numberofWin} , mydata.mode , "friend" , mydata.friendId);
             SocketsTarget.socketId.forEach((socktId: string) => 
             {
               this._server.to(socktId).emit("gameInvitation", {  invitationSenderID  : mydata.invitationSenderID , username : user.username , userimage : user.image  , message : "game invitation from" , mode : mydata.mode });

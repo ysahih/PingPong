@@ -699,7 +699,7 @@ export class GatewayService {
 				image: true,
         level: true,
         achievement: true,
-        history :true ,
+        winCounter :true ,
 			}
 		});
 return (user);
