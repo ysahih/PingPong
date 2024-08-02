@@ -1,9 +1,24 @@
 import "@/styles/userProfile/userFriend.css";
-import React, { useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { FaAward } from "react-icons/fa6";
+import axios from "axios";
+import { CircularProgress } from "@mui/material";
 
-const Award = () => {
+
+
+
+type AwardData = {
+
+  idx: number;
+  achivement : number[];
+};
+
+
+
+const Award  : React.FC<{   data  : AwardData  }> = (props) => {
+
+  console.log("||||" , props.data);
 
    return (
     <div className=" FriendsPh max-w-[120px] min-w-[120px] rounded-[5px] h-[120px] flex justify-center">
@@ -23,6 +38,10 @@ const Awards = () => {
     const [isDragging, setIsDragging] = useState(false);
     const [startX, setStartX] = useState(0);
     const [stateClick, setStateClick] = useState(0);
+    const [Achievement, setAchievement] = useState([]);
+    const [reciveresponse , setreciveresponse] = useState<boolean>(false);
+
+
   
     const onDragStart = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       if (scrollContainerRef.current) {
@@ -50,6 +69,25 @@ const Awards = () => {
         setStartX(currentX);
       }
     };
+
+      useEffect (() => {
+        const Awards = async () => { 
+          const response =  await axios.get(process.env.NEST_API + "/user/achievements", {
+            withCredentials: true
+        });
+        if (response.data) {
+          setAchievement(response.data);
+          setreciveresponse(true);
+          console.log(  ">>>>>>>>>>>>>>>>>>>>>>>>>>" ,  response.data);
+        }
+      }
+      Awards();
+
+      console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>");
+      },[]);
+
+
+
     return (
       <div className="containerUserFriends relative">
         <div className="flex p-[20px] pt-[20px]">
@@ -73,27 +111,18 @@ const Awards = () => {
           onMouseUp={onDragEnd}
           onMouseMove={onDragMove}
         >
-          <Award/>
-          <Award/>
-          <Award/>
-          <Award/>
-          <Award/>
-          <Award/>
-          <Award/>
-          <Award/>
-          <Award/>
-          <Award/>
-          <Award/>
-          <Award/>
-          <Award/>
-          <Award/>
-          <Award/>
-          <Award/>
-          <Award/>
-          <Award/>
-          <Award/>
-          <Award/>
-          <Award/>
+        {/* {
+          !reciveresponse ? (
+            <div className="w-[100%] h-[100%]  flex items-center justify-center ">
+              <CircularProgress />
+            </div>
+          ) : (
+            Achievement.map((achievement: AwardData, i: number) => (
+              <Award data={{ idx: i,  achivement : Achievement }} key={i} />
+            ))
+          )
+        }
+          */}
         </div>
       </div>
     );

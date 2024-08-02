@@ -133,13 +133,13 @@ interface History {
 
 export const Statistics = () => {
   const [history, setHistory] = useState<History[]>([]);
-  const [reciveresponse ,setreciveresponse] = useState<boolean>(false); 
+  const [reciveresponse ,SetReciveResponse] = useState<boolean>(false); 
   useEffect(() => {
     const histories = async () => {
       const response = await axios.get(process.env.NEST_API + "/user/history", {
         withCredentials: true,
       });
-        setreciveresponse(true);
+        SetReciveResponse(true);
       if (response.data) setHistory(response.data);
     };
     histories();
