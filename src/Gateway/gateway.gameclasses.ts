@@ -1,4 +1,8 @@
+import { userInfo } from "os"
 import { exit } from "process"
+import { FriendsService } from "src/user/user.service"
+
+
 
 export type gameSocket = { 
 	clientid: number ,
@@ -32,7 +36,7 @@ export type GameBack = {
 	colormode : number
 }
 
-export type userinfo = { clientid: number , image : string , username : string , ingame : boolean , level : number}
+export type userinfo = { clientid: number , image : string , username : string , ingame : boolean , level : number , achievenemt : number[] , numberofWin : number};
 export type RoomInfo = {users: userinfo[],gameloding: boolean  , type : string , mode : string, friendid : number};
 
 
@@ -227,13 +231,18 @@ export class datagame {
 		}
 	addRoom( data : userinfo , type : string ,mode : string , friendid : number){
 		const { v4: uuidv4 } = require('uuid');
+
+
+
+
 		const roomname = uuidv4();
 		this.rooms[roomname] = { users: [data], gameloding: true , type : type  , mode : mode , friendid : friendid};
 		this.initgame(roomname);
 		if (type === "ai")
 		{
-			this.addUser(roomname, {clientid: -1, image: "ai", username: "ai", ingame: false , level : 100});
+			this.addUser(roomname, {clientid: -1, image: "ai", username: "ai", ingame: false , level : 100 , achievenemt : [] , numberofWin : 0});
 		}
+		// console.log("mooood" ,  this.rooms[roomname].mode);
 	}
 	addUser(roomname : string, user :userinfo ){
 			this.rooms[roomname].users.push(user); 
@@ -269,9 +278,7 @@ export class datagame {
 		for (const room in this.rooms) {
 			if (this.rooms[room].users.length < 2 && this.rooms[room].type === type && type != "ai" && type != "friend")
 			{
-				console.log("room" , this.rooms[room].type);
-				console.log("mode" , this.rooms[room].mode);
-				console.log("modein" , mode);
+				
 				return room;
 			}
 			if (this.rooms[room].users.length < 2 && this.rooms[room].type === type && type === "friend" && this.rooms[room].friendid === clientid)
@@ -281,6 +288,49 @@ export class datagame {
 		}
 		return null
 	}
+
+
+	
+	async AssignAchievement( id : number ,  user : number , room : string , updateAchievementFn: (user: any, achievementId: number) => Promise<void> )
+	{
+
+		// console.log("room" , this.rooms[room].mode);
+		// console.log("user" , this.rooms[room]);
+
+		try {
+
+		if (this.rooms[room].mode == "Dark Valley"  &&  this.checkAchievement(this.rooms[room].users[user] ,1) === false)
+			await updateAchievementFn(id , 1);
+		  if (this.rooms[room].mode == "Flame Arena"  &&  this.checkAchievement(this.rooms[room].users[user] ,2) === false)
+			await updateAchievementFn(id , 2);
+		  if (this.rooms[room].users[user].numberofWin > 0 &&  this.checkAchievement(this.rooms[room].users[user] ,3) === false)
+			await updateAchievementFn(id , 3);
+		  if (this.rooms[room].users[user].numberofWin >= 3 &&  this.checkAchievement(this.rooms[room].users[user] ,4) === false)
+			  await updateAchievementFn(id , 4);
+		  if (this.rooms[room].users[user].numberofWin >= 42 &&  this.checkAchievement(this.rooms[room].users[user] ,5) === false)
+				await updateAchievementFn(id , 5);
+		  if (this.rooms[room].users[user].numberofWin >=100  &&  this.checkAchievement(this.rooms[room].users[user] ,6) === false)
+				  await updateAchievementFn(id , 6);
+		  if (this.rooms[room].users[user].level > 0 &&  this.checkAchievement(this.rooms[room].users[user] ,7) === false)
+			await updateAchievementFn(id , 7);
+		  if (this.rooms[room].users[user].level >= 3 &&  this.checkAchievement(this.rooms[room].users[user] ,8) === false)
+			  await updateAchievementFn(id , 8);
+		  if (this.rooms[room].users[user].level >= 42 &&  this.checkAchievement(this.rooms[room].users[user] ,9) === false)
+				await updateAchievementFn(id , 9);
+		  if (this.rooms[room].users[user].level >=100  &&  this.checkAchievement(this.rooms[room].users[user] ,10) === false)
+				  await updateAchievementFn(id , 10);
+		} catch (error) {		
+			console.log("error" , error);
+		}
+
+	}
+
+	checkAchievement(user : userinfo , achievement : number)
+	{
+		return user.achievenemt.includes(achievement);
+				
+	}
+	
 	getRoomsLength(): number {
     return Object.keys(this.rooms).length;
   }

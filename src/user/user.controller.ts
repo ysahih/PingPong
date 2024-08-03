@@ -140,6 +140,13 @@ export class UserController {
     return await this.FriendsService.getHistory(req.user['userId']);
   }
 
+
+  @Get('achievements')
+  @UseGuards(JwtAuthGuard)
+  async getAchievements(@Req() req : Request){
+    return await this.FriendsService.getAchievements(req.user['userId']);
+  }
+
   @Get('rankingHistory')
   @UseGuards(JwtAuthGuard)
   async getRanking(@Req() req: Request){

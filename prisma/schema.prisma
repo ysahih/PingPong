@@ -43,6 +43,7 @@ model User {
   winCounter    Int           @default(0) 
   bannedFrom      Room[] @relation("bannedList")
   roomInvites     Room[] @relation("invitesList")
+  achievement    Int[]    
   @@map("Users")
 }
 
