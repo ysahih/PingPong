@@ -1229,11 +1229,11 @@ export class FriendsService {
     }
   }
 
-  async getAchievements(userId: number){
+  async getAchievements(userName: string){
     try{
       const user = await this.prisma.user.findUnique({
         where:{
-          id: userId
+          userName: userName
         },
         select:{
           achievement: true,

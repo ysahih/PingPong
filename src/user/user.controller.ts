@@ -141,10 +141,10 @@ export class UserController {
   }
 
 
-  @Get('achievements')
+  @Get('achievements/:userName')
   @UseGuards(JwtAuthGuard)
-  async getAchievements(@Req() req : Request){
-    return await this.FriendsService.getAchievements(req.user['userId']);
+  async getAchievements(@Req() req : Request, @Param('userName') userName :string){
+    return await this.FriendsService.getAchievements(userName);
   }
 
   @Get('rankingHistory')
