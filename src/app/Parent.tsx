@@ -53,7 +53,7 @@ interface PropesBlockedData {
 
 const getFriends = async (proes: PropesBlockedData) => {
   try {
-    const res = await axios.get(process.env.NEST_API + "/user/friends", {
+    const res = await axiosApi.get(process.env.NEST_API + "/user/friends", {
       withCredentials: true,
     });
     //   console.log(res);
@@ -71,7 +71,7 @@ interface PropesgetInvits {
 
 const getInvits = async (proes: PropesgetInvits) => {
   try {
-    const res = await axios.get(process.env.NEST_API + "/user/invits", {
+    const res = await axiosApi.get(process.env.NEST_API + "/user/invits", {
       withCredentials: true,
     });
     //   console.log(res);
@@ -89,7 +89,7 @@ interface PropessetBlockedData {
 
 const getBlocked = async (proes: PropessetBlockedData) => {
   try {
-    const dataBlocked = await axios.get(
+    const dataBlocked = await axiosApi.get(
       process.env.NEST_API + "/user/blocked",
       {
         withCredentials: true,

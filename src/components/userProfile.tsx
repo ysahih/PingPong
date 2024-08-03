@@ -15,6 +15,7 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import Info from "./userProfile/updateInfo";
 import UpdatePassword from "./userProfile/updatePassword";
 import OTPInput from "react-otp-input";
+import axiosApi from "./signComonents/api";
 
 interface QrCodeProps {
   close: (val: boolean) => void;
@@ -34,7 +35,7 @@ const QrCode = (props: QrCodeProps) => {
     if (btnValue && btnValue.current) {
       (btnValue.current as HTMLButtonElement).textContent = "Verifying...";
     }
-    const res = await axios.post(
+    const res = await axiosApi.post(
       process.env.NEST_API + "/enable-2fa",
       { token: input },
       {
@@ -60,7 +61,7 @@ const QrCode = (props: QrCodeProps) => {
   useEffect(() => {
     if (!QRsrc) {
       const generate2Fa = async () => {
-        const res = await axios.get(process.env.NEST_API + "/generate-2fa", {
+        const res = await axiosApi.get(process.env.NEST_API + "/generate-2fa", {
           headers: {
             "Content-Type": "application/json",
           },
@@ -168,7 +169,7 @@ const Disable2Fa = (props: Disable2FaProps) => {
     if (btnValue && btnValue.current) {
       (btnValue.current as HTMLButtonElement).textContent = "Disabling...";
     }
-    const res = await axios.post(
+    const res = await axiosApi.post(
       process.env.NEST_API + "/disable-2fa",
       { token: input },
       {
@@ -284,7 +285,7 @@ const SettingsAnd2Fa = () => {
     if (file) {
       const formData = new FormData();
       formData.append("image", file);
-      const res = await axios.post(
+      const res = await axiosApi.post(
         process.env.NEST_API + "/updateImage",
         formData,
         {

@@ -5,6 +5,7 @@ import React, { Dispatch, SetStateAction, useContext, useState } from "react";
 import axios from "axios";
 import SocketContext from "../context/socket";
 import RoomInvite from "@/app/roomInvites/interface";
+import axiosApi from "../signComonents/api";
 
 const InviteCard :React.FC<{userId: number | undefined, id: number, name :string, image :string, setRooms :Dispatch<SetStateAction<RoomInvite[]>>}> = (prop) => {
 
@@ -13,7 +14,7 @@ const InviteCard :React.FC<{userId: number | undefined, id: number, name :string
 
     const handleClick = async (e : React.MouseEvent<HTMLElement>, action :'accept' | 'deny') => {
         setClicked(true);
-        const response = await axios.post(process.env.NEST_API + '/user/accInvite', {
+        const response = await axiosApi.post(process.env.NEST_API + '/user/accInvite', {
             roomId: prop.id,
             accept: action === 'accept',
         }, {

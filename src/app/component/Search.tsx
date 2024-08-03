@@ -27,6 +27,7 @@ import axiosApi from "@/components/signComonents/api";
 import { string } from "yup";
 import { useRouter } from "next/navigation";
 import { IoGameController } from "react-icons/io5";
+import logo from '@/../public/RoomSettings/UserInite.svg';
 
 type UserProps = {
   id: number;
@@ -323,7 +324,6 @@ const SentInvits = (props: { invit: SentInvitsType }) => {
 
 const Search = (state: { searchData: string }) => {
   const [users, setUsers] = useState<UserProps[]>([]);
-  // const [userName, setUserName] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const friends = useContext(ProfileDataContext);
   const [userNotFound, setUserNotFound] = useState<boolean>(false);
@@ -410,6 +410,7 @@ const Search = (state: { searchData: string }) => {
   }, [state.searchData, friends]);
 
   return (
+    <>
     <div className="SearchContainer">
       <>
         {friends &&
@@ -472,23 +473,14 @@ const Search = (state: { searchData: string }) => {
           )}
         </>
       )}
-
-      {userNotFound && (
-        <div className="min-w-[600px] h-[600px] text-white2 flex flex-col justify-center items-center bg-[#030824]">
-          <Image
-            src={"./iconsProfile/not-found.png"}
-            width={200}
-            height={100}
-            alt="img"
-            className="mb-14"
-          />
-          <h1 className="text-white">No Result Found</h1>
-          <p className="text-[#8A99E9] text-[14px]">
-            We can't find any item matching your search
-          </p>
-        </div>
-      )}
     </div>
+    {userNotFound && (
+      <div className="joinRoom__message">
+        <p>No user available</p>
+        <Image src={logo} width={20} height={20} alt="User Inite logo"/>
+      </div>
+    )}
+    </>
   );
 };
 

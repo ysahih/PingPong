@@ -7,6 +7,7 @@ import React, { Dispatch, SetStateAction, useContext, useState } from 'react';
 import { UserInvited } from '../interfaces';
 import axios from 'axios';
 import SocketContext from '@/components/context/socket';
+import axiosApi from '@/components/signComonents/api';
 
 const UserInvite :React.FC<{ownerId: number, user: UserInvited, setUsers: Dispatch<SetStateAction<UserInvited[]>> }> = (prop) => {
 
@@ -15,7 +16,7 @@ const UserInvite :React.FC<{ownerId: number, user: UserInvited, setUsers: Dispat
 
     const handleClick = async () => {
         setLoading(true);
-        const data = await axios.post(process.env.NEST_API + '/user/inviteUser', {
+        const data = await axiosApi.post(process.env.NEST_API + '/user/inviteUser', {
             roomId: prop.user.roomId,
             invitedId: prop.user.id,
         }, {

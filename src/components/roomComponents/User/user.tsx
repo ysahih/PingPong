@@ -8,6 +8,7 @@ import OverSwitch from "../Switch/switch";
 import SocketContext from "@/components/context/socket";
 import axios from "axios";
 import { RoomUsers } from "../interfaces";
+import axiosApi from "@/components/signComonents/api";
 
 const User :React.FC<{user :RoomUsers, curUser :RoomUsers | null, updateUsers :Dispatch<SetStateAction<RoomUsers[]>>, updateCurUser :Dispatch<SetStateAction<RoomUsers | null>>}> = (userProp) => {
 
@@ -35,7 +36,7 @@ const User :React.FC<{user :RoomUsers, curUser :RoomUsers | null, updateUsers :D
 
         setUser(newUser);
 
-        const response = await axios.post(process.env.NEST_API + '/user/userStatus' ,{
+        const response = await axiosApi.post(process.env.NEST_API + '/user/userStatus' ,{
             roomId: user.roomId,
             userId: user.userId,
             role: newUser.role,
@@ -68,7 +69,7 @@ const User :React.FC<{user :RoomUsers, curUser :RoomUsers | null, updateUsers :D
 
         action === 'kick' ? setDisableKick(!disableKick) : setDisableBan(!disableBan);
 
-        const response = await axios.post(process.env.NEST_API + '/user/kickBanRoom', {
+        const response = await axiosApi.post(process.env.NEST_API + '/user/kickBanRoom', {
             userId: user.userId,
             roomId: user.roomId,
             ban: action === 'ban',

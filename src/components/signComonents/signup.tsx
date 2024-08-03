@@ -19,11 +19,10 @@ export default function Signup() {
                 firstName: values.FirstName,
                 email: values.Email,
                 lastName: values.LastName,
-                password: undefined // Update the type of password property
             }, {
                 withCredentials: true
             });
-            if (!response)
+            if (!response || response.data.error)
             throw new Error('Error');
             console.log('data:  ', response.data, response?.data?.userName );
             context?.setUser({ userName: response?.data?.userName || '', image: response?.data?.image || '' });

@@ -8,6 +8,7 @@ import { Form, useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
 import SocketContext from "@/components/context/socket";
+import axiosApi from "@/components/signComonents/api";
 
 const RoomUpdate: FC<{id: number, type: ROOMTYPE | undefined, setType: Dispatch<SetStateAction<ROOMTYPE | undefined>>, ownerId: number}> = (updateProp) => {
   const [selcType, setSelType] = useState<ROOMTYPE | null>(null);
@@ -47,7 +48,7 @@ const RoomUpdate: FC<{id: number, type: ROOMTYPE | undefined, setType: Dispatch<
         if (!formData.values().next().done) {
           formData.append("id", updateProp.id.toString());
 
-          const response = await axios.post(
+          const response = await axiosApi.post(
             process.env.NEST_API + "/user/updateRoom",
             formData,
             {

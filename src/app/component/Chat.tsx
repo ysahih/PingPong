@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 import UserStateContext from "@/components/context/userSate";
 import ProfileDataContext from "@/components/context/profilDataContext";
 import { stat } from "fs";
+import axiosApi from "@/components/signComonents/api";
 
 const Header = () => {
   const rout = useRouter();
@@ -280,7 +281,7 @@ const Conversation = (props: ConvoProps) => {
   useEffect(() => {
     const fetchConvo = async () => {
       try {
-        const response = await axios.get(
+        const response = await axiosApi.get(
           process.env.NEST_API + "/user/messages",
           {
             params: {
@@ -461,7 +462,7 @@ const Chat = () => {
     //fetching chat data.
     const fetchData = async () => {
       try {
-        const response = await axios.get(
+        const response = await axiosApi.get(
           process.env.NEST_API + "/user/conversation",
           {
             withCredentials: true,

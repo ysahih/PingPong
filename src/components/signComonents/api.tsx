@@ -6,7 +6,7 @@ interface CustomError extends AxiosError {
 }
 
 const axiosApi = axios.create({
-  baseURL: 'http://10.11.7.6:3000', // Adjust this as per your server setup
+  baseURL: 'http://localhost:3000', // Adjust this as per your server setup
 });
 
 

@@ -33,6 +33,17 @@
         
 }
 
+.ContainerLogo{
+    margin-top: 20px;
+
+}
+
+@media (max-width: 769px) {
+    .ContainerLogo{
+        margin: 20px;
+    }
+}
+
 /* width */
 ::-webkit-scrollbar {
     width: 5px;

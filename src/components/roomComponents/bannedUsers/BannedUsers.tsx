@@ -6,6 +6,7 @@ import WaitingCard from '@/components/roomInviteCard/waitingCard';
 import Image from 'next/image';
 import logo from '@/../public/RoomSettings/Scan_solid.svg';
 import BannedCard from './Cards/Bannedcard';
+import axiosApi from '@/components/signComonents/api';
 
 const BannedUsers :FC<{roomId :number}> = (banProp) => {
 
@@ -14,7 +15,7 @@ const BannedUsers :FC<{roomId :number}> = (banProp) => {
 
     useEffect(() => {
         const getBannedUsers = async () => {
-            const response = await axios.get(process.env.NEST_API + '/user/ban/' + banProp.roomId.toString(), {
+            const response = await axiosApi.get(process.env.NEST_API + '/user/ban/' + banProp.roomId.toString(), {
                 withCredentials: true,
             });
 

@@ -8,6 +8,7 @@ import SocketContext from '@/components/context/socket';
 import UserDataContext from '@/components/context/context';
 import Image from "next/image";
 import logo from '@/../public/RoomSettings/UserInite.svg';
+import axiosApi from '@/components/signComonents/api';
 
 const RoomInvites = () => {
 
@@ -18,7 +19,7 @@ const RoomInvites = () => {
 
     useEffect(() => {
         const getInvites = async () => {
-            const response = await axios.get(process.env.NEST_API + '/user/roomInvites', {
+            const response = await axiosApi.get(process.env.NEST_API + '/user/roomInvites', {
                 withCredentials: true,
             });
 

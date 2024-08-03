@@ -6,6 +6,7 @@ import UserLoading from "../UserLoading/UserLoading";
 import { UserInvited } from "../interfaces";
 import Image from "next/image";
 import logo from '@/../public/RoomSettings/UserInite.svg';
+import axiosApi from "@/components/signComonents/api";
 
 const InviteFriends :React.FC<{id :number, roomId :number}> = (prop) => {
 
@@ -16,7 +17,7 @@ const InviteFriends :React.FC<{id :number, roomId :number}> = (prop) => {
     useEffect(() => {
         // TODO: Get Some random users to put here
         const getData = async () => {
-            const response = await axios.get(process.env.NEST_API + '/user/inviteUsers/' + prop.roomId.toString(), {
+            const response = await axiosApi.get(process.env.NEST_API + '/user/inviteUsers/' + prop.roomId.toString(), {
                 withCredentials: true,
             });
 
@@ -34,7 +35,7 @@ const InviteFriends :React.FC<{id :number, roomId :number}> = (prop) => {
     const handleSubmit = async (e :React.KeyboardEvent<HTMLInputElement>) => {
         if (e.code === 'Enter' && e.currentTarget.value && e.currentTarget.value !== lastSerch) {
             setLastSearch(e.currentTarget.value);
-            const result = await axios.get(process.env.NEST_API + '/user/roomSearch/' + prop.roomId.toString() + '/' + e.currentTarget.value, {
+            const result = await axiosApi.get(process.env.NEST_API + '/user/roomSearch/' + prop.roomId.toString() + '/' + e.currentTarget.value, {
                 withCredentials: true,
             });
 

@@ -4,11 +4,12 @@ import userPic from '@/../public/RoomSettings/DefaultUserPic.svg';
 import Image from 'next/image';
 import axios from 'axios';
 import { Banned } from '../../interfaces';
+import axiosApi from '@/components/signComonents/api';
 
 const BannedCard :FC<{id: number, userName: string, pic: string, roomId: number, setBannedUsers :Dispatch<SetStateAction<Banned[]>>}> = (prop) => {
 
     const handleUnban = async () => {
-        const response = await axios.post(process.env.NEST_API + '/user/unban', {
+        const response = await axiosApi.post(process.env.NEST_API + '/user/unban', {
             roomId: prop.roomId,
             userId: prop.id,
         }, {

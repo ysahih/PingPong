@@ -10,6 +10,7 @@ import SocketContext from "@/components/context/socket";
 import UserLoading from "../UserLoading/UserLoading";
 import { UpdateStatusRoom } from "../interfaces";
 import { useRouter } from "next/navigation";
+import axiosApi from "@/components/signComonents/api";
 
 const RoomUser :React.FC<{id :number, settings :Dispatch<SetStateAction<boolean>>, setOwnerId :Dispatch<SetStateAction<number>>}> = (roomProps) => {
 
@@ -25,7 +26,7 @@ const RoomUser :React.FC<{id :number, settings :Dispatch<SetStateAction<boolean>
 
         const getUsers = async () => {
             // const users = await axios.get(process.env.NEST_API + '/user/roomUsers/' + roomProps.id.toString(), {
-            const users = await axios.get(process.env.NEST_API + '/user/roomUsers/' + String(roomProps.id), {
+            const users = await axiosApi.get(process.env.NEST_API + '/user/roomUsers/' + String(roomProps.id), {
                 withCredentials: true,
             });
 
@@ -114,7 +115,7 @@ const RoomUser :React.FC<{id :number, settings :Dispatch<SetStateAction<boolean>
     };
 
     const handleLeave = async () => {
-        const response = await axios.post(process.env.NEST_API + '/user/leave', {
+        const response = await axiosApi.post(process.env.NEST_API + '/user/leave', {
             roomId: roomProps.id,
         }, {
             withCredentials: true,
@@ -147,7 +148,7 @@ const RoomUser :React.FC<{id :number, settings :Dispatch<SetStateAction<boolean>
     };
 
     const deleteRoom = async () => {
-        const response = await axios.post(process.env.NEST_API + '/user/deleteRoom', {
+        const response = await axiosApi.post(process.env.NEST_API + '/user/deleteRoom', {
             roomId: roomProps.id,
         }, {
             withCredentials: true,

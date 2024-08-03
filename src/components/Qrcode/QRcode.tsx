@@ -5,6 +5,7 @@ import { HtmlContext } from "next/dist/server/future/route-modules/app-page/vend
 import { useRouter } from "next/navigation";
 import "@/styles/userProfile/userprofile.css";
 import OTPInput from "react-otp-input";
+import axiosApi from "../signComonents/api";
 
 interface VerifyTwoFaProps {
   close: (val: boolean) => void;
@@ -19,7 +20,7 @@ const VerifyTwoFa = (props: VerifyTwoFaProps) => {
 
   const Logout = async () => {
     try {
-      const res = await axios.get(process.env.NEST_API + "/logout", {
+      const res = await axiosApi.get(process.env.NEST_API + "/logout", {
         headers: {
           "Content-Type": "application/json",
         },
@@ -38,7 +39,7 @@ const VerifyTwoFa = (props: VerifyTwoFaProps) => {
     if (btnValue && btnValue.current) {
       (btnValue.current as HTMLButtonElement).textContent = "Verify...";
     }
-    const res = await axios.post(
+    const res = await axiosApi.post(
       process.env.NEST_API +"/verify-2fa",
       { token: input },
       {

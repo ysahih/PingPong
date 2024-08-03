@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { NoHistoy } from "../App";
 import { CircularProgress } from "@mui/material";
+import axiosApi from "@/components/signComonents/api";
 
 
 
@@ -45,7 +46,7 @@ const Ranking = ()=>{
 	const [reciveresponse ,setreciveresponse] = useState<boolean>(false); 
 	useEffect(() => {
 		const data = async ( )=>{
-			const ranking = await axios.get(process.env.NEST_API + "/user/rankingHistory", {
+			const ranking = await axiosApi.get(process.env.NEST_API + "/user/rankingHistory", {
 				withCredentials: true,
 			});
 			if (ranking.data){

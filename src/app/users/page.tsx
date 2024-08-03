@@ -7,6 +7,7 @@ import ProfileDataContext from "@/components/context/profilDataContext";
 import axios from "axios";
 import { Loding } from "../home/Loding";
 import Image from "next/image";
+import axiosApi from "@/components/signComonents/api";
 
 export interface USER {
   id: number;
@@ -44,7 +45,7 @@ const ProfileOverlayPage = () => {
   useEffect(() => {
     // console.log("ProfileOverlayPage: ", searchRouter.get("userName"));
     const sentInvit = async () => {
-      const data = await axios.get(
+      const data = await axiosApi.get(
         process.env.NEST_API + "/user/getSentInvits",
         { withCredentials: true }
       );
@@ -76,7 +77,7 @@ const ProfileOverlayPage = () => {
 
   useEffect(() => {
     const getUser = async () => {
-      const user = await axios.get(
+      const user = await axiosApi.get(
         process.env.NEST_API + "/user/users/" + searchRouter.get("userName"),
 
         { withCredentials: true }

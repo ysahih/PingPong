@@ -29,6 +29,7 @@ import CreateRoom from "../components/createRoom/createRoom";
 import RoomSettings from "../components/roomComponents/roomSettings";
 import JoinRoom from "./joinRoom/joinRoom";
 import { CircularProgress } from "@mui/material";
+import axiosApi from "@/components/signComonents/api";
 
 
 export const Tables = () => {
@@ -136,7 +137,7 @@ export const Statistics = () => {
   const [reciveresponse ,setreciveresponse] = useState<boolean>(false); 
   useEffect(() => {
     const histories = async () => {
-      const response = await axios.get(process.env.NEST_API + "/user/history", {
+      const response = await axiosApi.get(process.env.NEST_API + "/user/history", {
         withCredentials: true,
       });
         setreciveresponse(true);

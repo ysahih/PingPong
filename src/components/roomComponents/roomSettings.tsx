@@ -9,6 +9,7 @@ import axios from "axios";
 import SocketContext from "@/components/context/socket";
 import BannedUsers from "./bannedUsers/BannedUsers";
 import { useRouter } from "next/navigation";
+import axiosApi from "../signComonents/api";
 
 const RoomSettings: FC<{ name: string }> = (roomProp) => {
   const [roomType, setRoomType] = useState<ROOMTYPE>();
@@ -24,7 +25,7 @@ const RoomSettings: FC<{ name: string }> = (roomProp) => {
     const data = async () => {
       // setLoading(true);
 
-      const data = await axios.get(
+      const data = await axiosApi.get(
         process.env.NEST_API + "/user/getRoom/" + roomProp.name,
         {
           withCredentials: true,

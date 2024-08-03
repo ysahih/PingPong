@@ -7,6 +7,7 @@ import { JoinRoomDTO } from "./interfaces"
 import RoomLoading from "./roomLoading/roomLoading";
 import Image from "next/image";
 import logo from '@/../public/RoomSettings/UserInite.svg';
+import axiosApi from "@/components/signComonents/api";
 
 const JoinRoom :React.FC<{searchDat :string}> = (prop) => {
 
@@ -16,7 +17,7 @@ const JoinRoom :React.FC<{searchDat :string}> = (prop) => {
     useEffect(() => {
 
         const getRooms = async () => {
-            const response = await axios.get(process.env.NEST_API + `/user/getRooms?name=${prop.searchDat}`, {
+            const response = await axiosApi.get(process.env.NEST_API + `/user/getRooms?name=${prop.searchDat}`, {
                 withCredentials: true,
             });
             

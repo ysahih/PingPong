@@ -9,6 +9,7 @@ import UserDataContext, { UserData } from "@/components/context/context";
 import { useContext } from "react";
 import RenderContext, { renderContext } from "@/components/context/render";
 import SocketContext from "@/components/context/socket";
+import axiosApi from "@/components/signComonents/api";
 
 const Buttons = () => {
   const context: renderContext | null = useContext(RenderContext);
@@ -206,7 +207,7 @@ const Sidebar = (props: { showPopup: boolean}) => {
     
     
     try {
-      const res = await axios.get(process.env.NEST_API + "/logout", {
+      const res = await axiosApi.get(process.env.NEST_API + "/logout", {
         headers: {
           "Content-Type": "application/json",
         },

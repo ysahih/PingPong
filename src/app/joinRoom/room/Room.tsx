@@ -7,6 +7,7 @@ import { ROOMTYPE } from "@/components/createRoom/interfaces";
 import axios from "axios";
 import SocketContext from "@/components/context/socket";
 import UserDataContext from "@/components/context/context";
+import axiosApi from "@/components/signComonents/api";
 
 const Room: React.FC<{
   room: JoinRoomDTO;
@@ -29,7 +30,7 @@ const Room: React.FC<{
     setJoin(true);
 
     if (room.type !== ROOMTYPE.PROTECTED || (room.type === ROOMTYPE.PROTECTED && pass.length)) {
-      const response = await axios.post(
+      const response = await axiosApi.post(
         process.env.NEST_API + "/user/joinRoom",
         {
           id: room.id,

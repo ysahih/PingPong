@@ -13,9 +13,9 @@ const Login = () => {
     <div className="main_1">
       <div className="Container">
         <div className="row_0">
-          <div className="flex items-center pt-8 w-50 logoContainer">
+        <div className="flex items-center gap-2 ContainerLogo">
             <Image
-              className="logoImg"
+              className="max-w-[50px] max-h-[50px]"
               src={"./Vector.svg"}
               alt="logo"
               width={50}

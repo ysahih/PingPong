@@ -10,6 +10,7 @@ import { RoomFormat, ROOMTYPE } from "./interfaces";
 import SocketContext from "../context/socket";
 import UserDataContext from "../context/context";
 import toast, { Toaster } from "react-hot-toast";
+import axiosApi from "../signComonents/api";
 // import { RoomFormat, ROOMTYPE } from "../../app/createRoom/interfaces";
 
 const CreateRoom = () => {
@@ -85,7 +86,7 @@ const CreateRoom = () => {
 			if (value.type === ROOMTYPE.PROTECTED)
 			formData.append("password", value.password);
 
-			const response = await axios.post(process.env.NEST_API + "/user/createRoom", formData,
+			const response = await axiosApi.post(process.env.NEST_API + "/user/createRoom", formData,
 				{
 					headers: {
 					Accept: "form-data",

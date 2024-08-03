@@ -14,6 +14,7 @@ import TimeAgo from "javascript-time-ago";
 import "@/styles/search.css";
 
 import { getTimeAgo } from "./timeAgo";
+import axiosApi from "@/components/signComonents/api";
 
 const PhoneLogo = () => {};
 
@@ -83,7 +84,7 @@ const Notification = () => {
   }, []);
 
   const NotificationsSeen = async () => {
-    const res = await axios.get(
+    const res = await axiosApi.get(
       process.env.NEST_API + "/user/NotificationsSeen",
       {
         withCredentials: true,
@@ -94,7 +95,7 @@ const Notification = () => {
 
   useEffect(() => {
     async function fetchNotification() {
-      const res = await axios.get(
+      const res = await axiosApi.get(
         process.env.NEST_API + "/user/Notifications",
         {
           withCredentials: true,

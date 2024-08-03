@@ -26,9 +26,9 @@ const UpdatePage = () => {
     <>
       <main className="main_1">
         <div className="update-container">
-          <div className="flex items-center pt-8 w-50 logoContainer marginLeft">
+          <div className="flex items-center gap-2 mb-4  p-4">
             <Image
-              className="logoImg"
+              className="max-w-[50px] max-h-[50px]"
               src={"./Vector.svg"}
               alt="logo"
               width={50}
@@ -44,7 +44,6 @@ const UpdatePage = () => {
               P<span>O</span>NGy
             </h1>
           </div>
-          <h1 id="Laststeps">Last steps</h1>
           <div className="update-row">
             <UpdateForm file={file} />
 
