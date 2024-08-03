@@ -78,7 +78,6 @@ const ProfileOverlayPage = () => {
     const getUser = async () => {
       const user = await axios.get(
         process.env.NEST_API + "/user/users/" + searchRouter.get("userName"),
-
         { withCredentials: true }
       );
       setUserData(user.data);

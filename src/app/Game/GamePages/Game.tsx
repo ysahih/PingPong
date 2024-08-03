@@ -7,6 +7,7 @@ import SocketContext from "@/components/context/socket";
 import Image from "next/image";
 import Gameresult from "./Gameresult";
 import { ColitionEffect, Effect } from "./effect";
+import AlertDialog from "./ExitDialog";
 
 
 
@@ -308,9 +309,14 @@ useEffect(() => {
   return (
     <div>
         {gameover && <Gameresult result = {scores.player1score > scores.player2score ? "You Win" : "You Lose"}/>}
-        <div className="fixed  flex  justify-center items-center  w-[100vw] h-[100vh]">
-          <div className="Gamecader flex  flex-col justify-center items-center   mt-5 " >
-            <div className="score flex  justify-between items-center " id = "score">
+        <div className="fixed  flex  justify-center items-center  w-[100vw] h-[100vh] ">
+          <div className="Gamecader flex  flex-col justify-center items-center   mt-5 relative" >
+          <button type="button" 
+          className="text-white bg-[#1B266B] from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg  text-center me-2 mb-3  "   
+          >
+            <AlertDialog/>    
+            </button>
+            <div className="score flex  justify-between items-center  font-lalezar text-xs" id = "score">
               <div className="PlayerProfile">
                 <Image   src={ game?.lodingdata.users[0].image || ""  }  width={48} height={48}  alt ="Player image" 
                   style={

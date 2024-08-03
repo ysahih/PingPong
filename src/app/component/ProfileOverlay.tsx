@@ -331,7 +331,7 @@ const ProfileOverlay = (props: { userData: USER; Type: string | null }) => {
       </div>
 
       <div className={"profileAwards "}>
-        <Awards />
+        <Awards userName={props.userData.userName}/>
       </div>
     </div>
   );

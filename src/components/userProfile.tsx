@@ -483,7 +483,7 @@ const UserProfile = () => {
         {settings ? <SettingsAnd2Fa /> : <UserFriends />}
       </div>
       <div className={settings ? "hidden" : "profileAwards "}>
-        <Awards />
+        <Awards userName={context?.userName || ''}/>
       </div>
     </div>
   );

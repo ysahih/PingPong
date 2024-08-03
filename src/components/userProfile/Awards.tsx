@@ -3,7 +3,7 @@ import React, { use, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { FaAward } from "react-icons/fa6";
 import axios from "axios";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Tooltip } from "@mui/material";
 
 type AwardData = {
   idx: number;
@@ -38,37 +38,37 @@ const Award: React.FC<{ data: AwardData }> = (props) => {
       case 4:
         setdiscription("You win 3 times");
         setAwardImage("./Awards/winAward.svg");
-        setAwardTitle("Win 3");
+        setAwardTitle("TripleWin");
         break;
       case 5:
         setdiscription("You win 42 times");
         setAwardImage("./Awards/winAward.svg");
-        setAwardTitle("Win 42");
+        setAwardTitle("Champion42");
         break;
       case 6:
         setdiscription("You win 100 times");
         setAwardImage("./Awards/BigWin.svg");
-        setAwardTitle("Big Win");
+        setAwardTitle("CenturionWin");
         break
       case 7:
         setdiscription("You reached level 1");
         setAwardImage("./Awards/lvlAward.svg");
-        setAwardTitle("First level");
+        setAwardTitle("FirstStep");
         break;
       case 8:
         setdiscription("You reached level 3");
         setAwardImage("./Awards/lvlAward.svg");
-        setAwardTitle("level 3");
+        setAwardTitle("Rookie");
         break;
       case 9:
         setdiscription("You reached level 42");
         setAwardImage("./Awards/lvlAward.svg");
-        setAwardTitle("level 42");
+        setAwardTitle("Elite42");
         break;
       case 10:
-        setdiscription("100");
+        setdiscription("You reached level 100");
         setAwardImage("./Awards/lvl100Award.svg");
-        setAwardTitle("level 100");
+        setAwardTitle("Centurion");
         break;
       default:
         break;
@@ -76,7 +76,8 @@ const Award: React.FC<{ data: AwardData }> = (props) => {
   }, []);
 
   return (
-    <div className={`${!IsRealised ? 'opacity-[.5] blur-[.5px]' :' opacity-[1]'} FriendsPh max-w-[140px] min-w-[140px] rounded-[5px] h-[140px] flex justify-center flex-col items-center `}>
+    <Tooltip title={AwardDiscription} placement="bottom"   followCursor>
+    <div className={`${!IsRealised ? 'opacity-[.5] blur-[.5px]' :' opacity-[1]'} FriendsPh max-w-[140px] min-w-[140px] rounded-[5px] h-[140px] flex justify-center flex-col items-center cursor-pointer`}>
       <Image
         src={AwardImage}
         width={110}
@@ -87,10 +88,11 @@ const Award: React.FC<{ data: AwardData }> = (props) => {
       />
       <div className="text-[14px] text-[#9FEAFF]">{AwardTitle}</div>
     </div>
+    </Tooltip>
   );
 };
 
-const Awards = () => {
+const Awards = (props: {userName: string}) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -127,9 +129,10 @@ const Awards = () => {
   };
 
   useEffect(() => {
+    if (!props.userName) return;
     const getAwardsData = async () => {
       const response = await axios.get(
-        process.env.NEST_API + "/user/achievements",
+        process.env.NEST_API + "/user/achievements/" + `${props.userName}`,
         {
           withCredentials: true,
         }
