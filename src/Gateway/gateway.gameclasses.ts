@@ -242,7 +242,7 @@ export class datagame {
 		{
 			this.addUser(roomname, {clientid: -1, image: "ai", username: "ai", ingame: false , level : 100 , achievenemt : [] , numberofWin : 0});
 		}
-		console.log("mooood" ,  this.rooms[roomname].mode);
+		// console.log("mooood" ,  this.rooms[roomname].mode);
 	}
 	addUser(roomname : string, user :userinfo ){
 			this.rooms[roomname].users.push(user); 
@@ -294,8 +294,8 @@ export class datagame {
 	async AssignAchievement( id : number ,  user : number , room : string , updateAchievementFn: (user: any, achievementId: number) => Promise<void> )
 	{
 
-		console.log("room" , this.rooms[room].mode);
-		console.log("user" , this.rooms[room]);
+		// console.log("room" , this.rooms[room].mode);
+		// console.log("user" , this.rooms[room]);
 
 		try {
 
