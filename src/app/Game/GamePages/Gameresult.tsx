@@ -1,4 +1,5 @@
 // import '@/app/globals.css'
+"use client";
 import RenderContext from '@/components/context/render';
 import "@/styles/game/Gameplay.css";
 import {  useContext, useEffect } from 'react';
