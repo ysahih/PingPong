@@ -19,17 +19,18 @@ import { generateJwtToken } from "./jwtStrategy/jwtToken";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { cloudinaryService } from "./cloudinary.service";
 import { IntraAuthGuard } from "./intraStrategy/intraGuard";
-
-
+import { validate } from "class-validator";
 
 // check in bakend if the user already has 2fa enabled
 @Controller()
-
 export class authController {
   private readonly FrontEndUrl = process.env.FRONTEND_URL;
   private readonly BackEndUrl = process.env.BACKEND_URL;
 
-  constructor(private authS: authService, private cloudinaryService: cloudinaryService) {}
+  constructor(
+    private authS: authService,
+    private cloudinaryService: cloudinaryService
+  ) {}
 
   @Get("generate-2fa")
   @UseGuards(JwtAuthGuard)
@@ -88,25 +89,46 @@ export class authController {
     const user = await this.authS.signin(req);
     if (user.error) response.status(200).json(user);
     else
-    response.cookie("jwt", generateJwtToken(user.user), {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax", // Use 'none' in production with 'secure: true'
-    }).send({ login: "login success !" });
+      response
+        .cookie("jwt", generateJwtToken(user.user), {
+          httpOnly: true,
+          secure: false,
+          sameSite: "lax", // Use 'none' in production with 'secure: true'
+        })
+        .send({ login: "login success !" });
   }
 
   @Post("signup")
-  async signup(@Body() req: signupData, @Res() response: Response) {
+  async signup(
+    @Body() req: { firstName: string; lastName: string; email: string },
+    @Res() response: Response
+  ) {
+    const userr = new signupData();
+    userr.email = req.email;
+    userr.firstName = req.firstName;
+    userr.lastName = req.lastName;
+    const errors = await validate(userr);
+    if (errors.length > 0) {
+      response.send({ "error": errors.map((e) => e.constraints) });
+    }
     const user = await this.authS.signup(req);
-    console.log("user", req, user);
-    if (user.error) response.status(400).json(user.error);
+    // console.log("user", req, user);
+    if (user.error) response.status(200).json({"error": user.error});
     else
       response
-        .cookie("jwt", generateJwtToken({userName: user.data.userName, id: user.data.id, email: user.data.email}), {
-          httpOnly: true,
-          secure: false,
-          sameSite: "lax",
-        })
+        .cookie(
+          "jwt",
+          generateJwtToken({
+            userName: user.data.userName,
+            id: user.data.id,
+            email: user.data.email,
+          }),
+          {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+          }
+        )
         .send(user.data);
   }
 
@@ -160,7 +182,7 @@ export class authController {
       .clearCookie("jwt", {
         httpOnly: true,
         secure: false,
-          sameSite: "lax",
+        sameSite: "lax",
       })
       .send({ logout: "logout success !" });
   }
@@ -180,7 +202,7 @@ export class authController {
       // console.log(file);
       if (!file) throw new Error("file is required");
       const ImgUrl = await this.cloudinaryService.uploadImage(file);
-      console.log('Imgae----------:  ', ImgUrl);
+      console.log("Imgae----------:  ", ImgUrl);
       // const fileBase64 = file.buffer.toString("base64");
       // const base64DataURI: string = `data:${file.mimetype};base64,${fileBase64}`;
       const base64DataURI: string = ImgUrl;
@@ -191,7 +213,7 @@ export class authController {
         password
       );
       console.log(user);
-      if (user.error) res.status(400).json(user.error);
+      if (user.error) res.status(200).json(user.error);
       else {
         const data = {
           id: user.user.id,
@@ -208,14 +230,14 @@ export class authController {
           .send("ok");
       }
     } catch (error) {
-      if (!image) res.status(400).json({ error: "image is required" });
+      if (!image) res.status(200).json({ error: "image is required" });
       const user = await this.authS.Changedata(
         req.user["userId"],
         image,
         userName,
         password
       );
-      if (user.error) res.status(400).json(user.error);
+      if (user.error) res.status(200).json({ error: user.error });
       else {
         const data = {
           id: user.user.id,
@@ -234,9 +256,9 @@ export class authController {
     }
   }
 
-  @Post('updateImage')
+  @Post("updateImage")
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(FileInterceptor("image"))
   async updateImage(
     @UploadedFile() file: Express.Multer.File,
     @Req() req: Request,
@@ -245,14 +267,12 @@ export class authController {
     try {
       console.log(file);
       const ImgUrl = await this.cloudinaryService.uploadImage(file);
-      if (!ImgUrl) res.send('error');
-      const user = await this.authS.updateImage(req.user['userId'], ImgUrl);
+      if (!ImgUrl) res.send("error");
+      const user = await this.authS.updateImage(req.user["userId"], ImgUrl);
       console.log(user);
-      if (user)
-      res.send(ImgUrl);
+      if (user) res.send(ImgUrl);
     } catch (error) {
-      res.status(400).json({ error: 'image is required' });
+      res.status(400).json({ error: "image is required" });
     }
   }
-
 }
