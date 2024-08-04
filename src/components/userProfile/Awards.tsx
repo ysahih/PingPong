@@ -10,84 +10,102 @@ type AwardData = {
   achivement: number[];
 };
 
-const Award: React.FC<{ data: AwardData }> = (props) => {
-  const { data } = props;
-  const [AwardDiscription, setdiscription] = useState<string>("");
-  const [AwardImage, setAwardImage] = useState<string>("");
+const Award: React.FC<{ data: AwardData }> = ({ data }) => {
+  const [AwardDescription, setDescription] = useState<string>("");
+  const [AwardImage, setAwardImage] = useState<string | null>(null); // Allow null initially
   const [AwardTitle, setAwardTitle] = useState<string>("");
   const [IsRealised, setIsRealised] = useState<boolean>(false);
 
   useEffect(() => {
     if (data.achivement.includes(data.idx)) setIsRealised(true);
+    
+    let description = "";
+    let imagePath = "";
+    let title = "";
+
     switch (data.idx) {
       case 1:
-        setdiscription("You win in Dark Valley");
-        setAwardImage("./Awards/DarkValleyAward.svg");
-        setAwardTitle("Dark Valley");
+        description = "You win in Dark Valley";
+        imagePath = "/Awards/DarkValleyAward.svg";
+        title = "Dark Valley";
         break;
       case 2:
-        setdiscription("You win in Flame Arina");
-        setAwardImage("./Awards/FlameArenaAward.svg");
-        setAwardTitle("Flame Arina");
+        description = "You win in Flame Arena";
+        imagePath = "/Awards/FlameArenaAward.svg";
+        title = "Flame Arena";
         break;
       case 3:
-        setdiscription("You win one time");
-        setAwardImage("./Awards/winAward.svg");
-        setAwardTitle("First Win");
+        description = "You win one time";
+        imagePath = "/Awards/winAward.svg";
+        title = "First Win";
         break;
       case 4:
-        setdiscription("You win 3 times");
-        setAwardImage("./Awards/winAward.svg");
-        setAwardTitle("TripleWin");
+        description = "You win 3 times";
+        imagePath = "/Awards/winAward.svg";
+        title = "Triple Win";
         break;
       case 5:
-        setdiscription("You win 42 times");
-        setAwardImage("./Awards/winAward.svg");
-        setAwardTitle("Champion42");
+        description = "You win 42 times";
+        imagePath = "/Awards/winAward.svg";
+        title = "Champion 42";
         break;
       case 6:
-        setdiscription("You win 100 times");
-        setAwardImage("./Awards/BigWin.svg");
-        setAwardTitle("CenturionWin");
-        break
+        description = "You win 100 times";
+        imagePath = "/Awards/BigWin.svg";
+        title = "Centurion Win";
+        break;
       case 7:
-        setdiscription("You reached level 1");
-        setAwardImage("./Awards/lvlAward.svg");
-        setAwardTitle("FirstStep");
+        description = "You reached level 1";
+        imagePath = "/Awards/lvlAward.svg";
+        title = "First Step";
         break;
       case 8:
-        setdiscription("You reached level 3");
-        setAwardImage("./Awards/lvlAward.svg");
-        setAwardTitle("Rookie");
+        description = "You reached level 3";
+        imagePath = "/Awards/lvlAward.svg";
+        title = "Rookie";
         break;
       case 9:
-        setdiscription("You reached level 42");
-        setAwardImage("./Awards/lvlAward.svg");
-        setAwardTitle("Elite42");
+        description = "You reached level 42";
+        imagePath = "/Awards/lvlAward.svg";
+        title = "Elite 42";
         break;
       case 10:
-        setdiscription("You reached level 100");
-        setAwardImage("./Awards/lvl100Award.svg");
-        setAwardTitle("Centurion");
+        description = "You reached level 100";
+        imagePath = "/Awards/lvl100Award.svg";
+        title = "Centurion";
         break;
       default:
+        description = "";
+        imagePath = "/Awards/default.svg"; // Fallback image
+        title = "";
         break;
     }
-  }, []);
+
+    setDescription(description);
+    setAwardImage(imagePath);
+    setAwardTitle(title);
+  }, [data.idx, data.achivement]);
 
   return (
-    <Tooltip title={AwardDiscription} placement="bottom"   followCursor>
-    <div className={`${!IsRealised ? 'opacity-[.5] blur-[.5px]' :' opacity-[1]'} FriendsPh max-w-[140px] min-w-[140px] rounded-[5px] h-[140px] flex justify-center flex-col items-center cursor-pointer`}>
-      <Image
-        src={AwardImage}
-        width={110}
-        height={110}
-        priority={true}
-        alt="user"
-        className="bg-cover bg-center w-full h-full max-w-[110px] max-h-[110px]  overflow-hidden border-2 border-transparent shadow-lg"
-      />
-      <div className="text-[14px] text-[#9FEAFF]">{AwardTitle}</div>
-    </div>
+    <Tooltip title={AwardDescription} placement="bottom" followCursor>
+      <div className={`${!IsRealised ? 'opacity-[.5] blur-[.5px]' : 'opacity-[1]'} FriendsPh max-w-[140px] min-w-[140px] rounded-[5px] h-[140px] flex justify-center flex-col items-center cursor-pointer`}>
+        {AwardImage ? (
+          <Image
+            src={AwardImage}
+            width={110}
+            height={110}
+            priority={false}
+            alt={AwardTitle}
+            className="bg-cover bg-center w-full h-full max-w-[110px] max-h-[110px] overflow-hidden border-2 border-transparent shadow-lg"
+          />
+        ) : (
+          <div className="bg-gray-200 w-[110px] h-[110px] flex items-center justify-center rounded-full">
+            {/* Placeholder or loading spinner */}
+            <span>Loading...</span>
+          </div>
+        )}
+        <div className="text-[14px] text-[#9FEAFF]">{AwardTitle}</div>
+      </div>
     </Tooltip>
   );
 };

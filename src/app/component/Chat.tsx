@@ -423,6 +423,7 @@ const Conversation = (props: ConvoProps) => {
           <form onSubmit={sendInput} className="input-footer">
             <input
               ref={inputRef}
+              id="msgInput"
               type="text"
               className="convoInput"
               placeholder="Send a Message..."
