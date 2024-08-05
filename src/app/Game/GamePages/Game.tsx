@@ -61,7 +61,7 @@ const Game : React.FC<{}> = () => {
       }
     };
     Socket?.on("game", updatePosition);
-    Socket?.emit("game", { clientid: user?.id, player: { y: p_y.current }, moveball: position.current.stop , player1score :scores.player1score, player2score: scores.player2score});
+    // Socket?.emit("game", { clientid: user?.id, player: { y: p_y.current }, moveball: position.current.stop , player1score :scores.player1score, player2score: scores.player2score});
     return () => {
       Socket?.off("game", updatePosition);
     };
@@ -311,11 +311,10 @@ useEffect(() => {
         {gameover && <Gameresult result = {scores.player1score > scores.player2score ? "You Win" : "You Lose"}/>}
         <div className="fixed  flex  justify-center items-center  w-[100vw] h-[100vh] ">
           <div className="Gamecader flex  flex-col justify-center items-center   mt-5 relative" >
-          <button type="button" 
-          className="text-white bg-[#1B266B] from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg  text-center me-2 mb-3  "   
-          >
+          <div 
+          className="text-white bg-[#1B266B] from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg  text-center me-2 mb-3  ">
             <AlertDialog/>    
-            </button>
+            </div>
             <div className="score flex  justify-between items-center  font-lalezar text-xs" id = "score">
               <div className="PlayerProfile">
                 <Image   src={ game?.lodingdata.users[0].image || ""  }  width={48} height={48}  alt ="Player image" 
@@ -336,7 +335,7 @@ useEffect(() => {
                 </div>
               </div>
               <div className="PlayerProfile">    
-                <Image   src={ game?.lodingdata.users[1].image || ""} width={48} height={48}  alt ="Player image" 
+                <Image   src={  game?.gametype == "ai"  && game?.lodingdata.users[1].username == "ROBOT" ?  "./homeImages/robot.svg"  :   game?.lodingdata.users[1].image || "" } width={48} height={48}  alt ="Player image" 
                 style={
                         {
                          width: 40,  

@@ -33,6 +33,8 @@ import axiosApi from "@/components/signComonents/api";
 
 
 export const Tables = () => {
+  const render = useContext(RenderContext);
+  const game = useContext(GameContext);
   return (
     <Carousel placeholder="carousel" className="tables rounded-lg z-10">
       <div className=" darktable relative h-1/2 w-full">
@@ -55,7 +57,17 @@ export const Tables = () => {
               Dark Valley
             </Typography>
             <div className="flex">
-              <Button placeholder="button" className="playnow" color="blue">
+              <Button placeholder="button" className="playnow" color="blue" 
+                onClick={ 
+                  ()=>{      
+                      game?.setRunning(false);
+                      game?.setGamemode("Flame Arena");
+                      game?.settype("random");
+                      game?.setgamefriend(-1);
+                      render?.setRender("playGame");
+                  }
+                }
+              >
                 Play Now
               </Button>
             </div>
@@ -76,11 +88,21 @@ export const Tables = () => {
               color="white"
               className="typo"
             >
-              Frozen Areana
+              Flame Arena
             </Typography>
 
             <div className="flex text-sm">
-              <Button placeholder="button" className="playnow" color="white">
+              <Button placeholder="button" className="playnow" color="white"
+                 onClick={ 
+                  ()=>{      
+                      game?.setRunning(false);
+                      game?.setGamemode("Flame Arena");
+                      game?.settype("random");
+                      game?.setgamefriend(-1);
+                      render?.setRender("playGame");
+                  }
+                }
+              >
                 Play Now
               </Button>
             </div>

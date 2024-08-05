@@ -12,18 +12,11 @@ import RenderContext from "@/components/context/render";
 
 const  PlayerReady : React.FC<{lodingdata : Userinfo } > = (props) => {
   const user = props.lodingdata;
+  const game = useContext(GameContext);
   return (
     <div className=" w-[100px] h-[60px]      flex flex-col justify-center items-center   " >
       <div  className="  w-[40px] h-[60px] " >
-        <Image  className="rounded-full"  src={  user?.image || "./GamePlayImages/GamePlayerProfile.svg" }width={70} height={70}  alt ="Player image"
-          style={
-            {
-             width: 40,  
-              height: 40,
-              borderRadius: "50%"
-            }
-          }
-        ></Image>
+        <Image  className="rounded-full"  src={  (game?.gametype == "ai"  && user.username === "ROBOT")  ? "./homeImages/robot.svg"    :  ( user?.image || "./GamePlayImages/GamePlayerProfile.svg") }width={70} height={70}  alt ="Player image" />
       </div>
       <p  className="text-white text-[10px]  md:text-[15px] text-center   " >{user?.username}</p>
       <p  className="text-white  text-[10px]  md:text-[12px] text-center "> lv{user?.level}</p>
@@ -42,6 +35,8 @@ const PlayerLoding = ( ) => {
 }
 
 const GameLoding : React.FC<{lodingdata : GameLodingProps } > = ( props ) => {
+
+  
   return (
     <div className="flex items-center justify-center  min-h-screen">
       <div className="w-[200px] h-[160px]  md:w-[600px] md:h-[450px] rounded-[15px]  md:rounded-[20px] bg-[#070F2B] flex  items-center flex-col pt-2 pl-6 md:pt-6 pr-6 ">
