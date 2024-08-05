@@ -34,7 +34,7 @@
 	width: 90px;
 	display: flex;
 	flex-flow: column nowrap;
-	justify-content: start;
+	justify-content: flex-start;
 	align-items: center;
 	gap: 15px;
 }
@@ -54,7 +54,7 @@
 	color: white;
 	background-color: #0064FB;
 	border-radius: 10px;
-	padding: 6px 12px;
+	padding: 7px 12px 6px;
 	cursor: pointer;
 }
 
@@ -64,6 +64,7 @@ input[type="file"] {
 
 .createRoom__form {
 	width: 270px;
+	height: auto;
 	background-color: inherit;
 	/* margin: 0 30px; */
 	display: flex;
@@ -135,6 +136,7 @@ input[type="file"] {
 }
 
 .createRoom__btn {
+	/* padding: 8px 16px; */
 	background-color: #0064FB !important;
 	border-style: none;
 	border-radius: 10px;
@@ -142,7 +144,9 @@ input[type="file"] {
 	color: white;
 	font-family: 'Lalezar';
 	font-size: 20px;
-	padding: 8px 16px;
+	width: 100px;
+	height: 40px;
+	padding-top: 5px;
 	transition: .12s;
 }
 
