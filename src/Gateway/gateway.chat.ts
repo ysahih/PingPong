@@ -889,4 +889,26 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
           }
       }
     }
+
+    @SubscribeMessage('LeaveGame')
+		async LeaveGame(@ConnectedSocket() client: Socket, @MessageBody () leaveGame: { clientid: number }) {	
+      
+      var room = this.gameRooms.searcheClientRoom(leaveGame.clientid);
+      if (!room)
+      {
+        return ;
+      }
+     
+      this.gameRooms.DeleteRoom(room);
+      this.gameRooms.Deletegame(room);
+      this.deleteRoom(room);
+
+    }
+
+    @SubscribeMessage('rejointGame')
+    async rejointGame(@ConnectedSocket() client: Socket, @MessageBody () mydata: { invitationSenderID: number , mode : string ,friendId : number })
+    {
+
+    }
+
 }

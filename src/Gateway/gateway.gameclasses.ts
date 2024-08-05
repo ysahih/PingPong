@@ -36,6 +36,16 @@ export type GameBack = {
 	colormode : number
 }
 
+
+
+
+
+export type leaveGame = {
+	clientid : number
+	
+}
+
+
 export type userinfo = { clientid: number , image : string , username : string , ingame : boolean , level : number , achievenemt : number[] , numberofWin : number};
 export type RoomInfo = {users: userinfo[],gameloding: boolean  , type : string , mode : string, friendid : number};
 
@@ -240,7 +250,7 @@ export class datagame {
 		this.initgame(roomname);
 		if (type === "ai")
 		{
-			this.addUser(roomname, {clientid: -1, image: "ai", username: "ai", ingame: false , level : 100 , achievenemt : [] , numberofWin : 0});
+			this.addUser(roomname, {clientid: -1, image: "ROBOT", username: "ROBOT", ingame: false , level : 100 , achievenemt : [] , numberofWin : 0});
 		}
 		// console.log("mooood" ,  this.rooms[roomname].mode);
 	}
