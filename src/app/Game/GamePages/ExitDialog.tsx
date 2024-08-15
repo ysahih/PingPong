@@ -10,10 +10,9 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { useContext, useEffect, useState } from 'react';
 import React from 'react';
 import SocketContext from "@/components/context/socket";
-import { GameContext, GameLodingProps, Userinfo } from "../Gamecontext/gamecontext";
 import UserDataContext from "@/components/context/context";
 
-export default function AlertDialog() {
+export default function AlertDialog  () {
 
   const socket = useContext (SocketContext);
   const user = useContext(UserDataContext);
@@ -25,29 +24,18 @@ export default function AlertDialog() {
 
 
   const handleClose = () => {
-    socket?.emit("RandomGameroom",   { clientid : user?.id });
+    
+    setOpen(false);
+  };
+
+  const handleave = () => {
+    socket?.emit("LeaveGame",   { clientid : user?.id });
     setOpen(false);
   };
 
 
 
-  useEffect(() => {
-    
-    const Gameover = (data : { GameStatus : boolean }) =>
-    {
-   
-    }
 
-    socket?.on("RandomGameroom", Gameover )
-    
-  }, [socket]);
-
-
-
-  useEffect(() => {
-    console.log("useEffect");
-
-  }, []);
   return (
     
     <React.Fragment>
@@ -77,7 +65,7 @@ export default function AlertDialog() {
         </DialogContent>
         <DialogActions  sx= {{background: '#1B266B' , color : 'white'}}>
           <Button onClick={handleClose} sx= {{background: '#1B266B' , color : 'white'}}>Disagree</Button>
-          <Button onClick={handleClose} sx= {{background: '#1B266B' , color : 'white'}}  autoFocus>
+          <Button onClick={handleave} sx= {{background: '#1B266B' , color : 'white'}}  autoFocus>
             Agree
           </Button>
         </DialogActions>

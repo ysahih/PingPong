@@ -61,3 +61,18 @@ export type NotificationContextType = {
 	message: string;
 }
 export const NotificationContext = createContext<NotificationContextType | null>(null);
+
+
+
+
+export  interface gameExit
+{
+  gameExit : boolean;
+  setgameExit : React.Dispatch<React.SetStateAction<boolean>>;
+  winner : boolean;
+}
+
+
+export type leavegame = {
+	id : number,
+}
