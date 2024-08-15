@@ -25,7 +25,7 @@ import { GatewayService } from "./geteway.service";
 import * as jwt from "jsonwebtoken";
 import { FriendsService } from "src/user/user.service";
 import { Message } from "@prisma/client";
-import { datagame, gameSocket, userinfo } from "./gateway.gameclasses";
+import { datagame, gameSocket, userinfo , leavegame } from "./gateway.gameclasses";
 import { exit } from "process";
 import { Console } from "console";
 import { Room } from "./usersRooms/UserRoom.interface";
@@ -711,7 +711,6 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 			if (!this.gameRooms.gameIntervals[room]) 
       {
         // console.log("create interval");
-        
 				this.gameRooms.gameIntervals[room] = setInterval(async () => {
           if(!this.gameRooms.game[room])
           {
@@ -892,8 +891,9 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
     @SubscribeMessage('LeaveGame')
 		async LeaveGame(@ConnectedSocket() client: Socket, @MessageBody () leaveGame: { clientid: number }) {	
-      
       var room = this.gameRooms.searcheClientRoom(leaveGame.clientid);
+      console.log(">>>>>>>>>>>>>",leaveGame);
+
       if (!room)
       {
         return ;
@@ -902,7 +902,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       var user2 : number;
       var user1index : number
       var user2index : number
-      
+
       if ( this.gameRooms.rooms[room].type != "ai")
         {
           
@@ -920,6 +920,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
             user1index = 1;
             user2index = 0;
           }
+          this.gameRooms.updatelevel(room , user2)
           const level =  this.gameRooms.rooms[room].users[user2index].level
           await this.FriendsService.updateResult(user2, user1, "W"  , level);
         await this.FriendsService.updateResult(user1, user2, "L"  );
@@ -927,7 +928,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         await this.gameRooms.AssignAchievement(user2 ,user2index  , room  ,   this.FriendsService.updateAchievement.bind(this.FriendsService));
       }
       if (this.gameRooms.rooms[room].users.length == 2)
-        {
+      {
           const ids : number[] = [user1 , user2];
           
           const status = await this.FriendsService.setGameStatus(ids, false);
@@ -935,22 +936,22 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
             {
               const SocketsTarget = this._users.getAllSocketsIds();
               if (SocketsTarget) 
-              {
-                SocketsTarget.forEach((socktId: string) => 
-                  {
-                    this._server.to(socktId).emit("gameStatus",{ id: user1, status: false});
-                    this._server.to(socktId).emit("gameStatus",{ id: user2 , status: false});
-                  });
-              }
-          }
+                {
+                  SocketsTarget.forEach((socktId: string) => 
+                    {
+                      this._server.to(socktId).emit("gameStatus",{ id: user1, status: false});
+                      if (this.gameRooms.rooms[room].type != "ai")
+                      this._server.to(socktId).emit("gameStatus",{ id: user2 , status: false});
+                    });
+                  }
+                }
       }
+      
       this.gameRooms.clearIntervals(room);
       this.gameRooms.DeleteRoom(room);
       this.gameRooms.Deletegame(room);
       this.deleteRoom(room);
-      this._server.to(room).emit('game', 
-      {
-        GameStatus: false
-      });
+      let response : leavegame = { id : leaveGame.clientid }
+      this._server.to(room).emit('LeaveGame', response);
     }
 }

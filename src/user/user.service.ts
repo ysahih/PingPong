@@ -662,15 +662,17 @@ export class FriendsService {
 
 
       });
-      const user2 = await this.prisma.user.update({
-        where: {
-          id: userId[1],
-        },
-        data: {
-          inGame: status,
-        },
-      });
-
+      if (userId[1] != -1)
+      {
+        const user2 = await this.prisma.user.update({
+          where: {
+            id: userId[1],
+          },
+          data: {
+            inGame: status,
+          },
+        });
+      }
       return true;
     } catch (e) {
       return false;

@@ -12,6 +12,9 @@ export type gameSocket = {
 	player2score : number 
 }
 
+export type leavegame = {
+	id : number,
+}
 
 export type Gameresponse = { 
 	player1 : number  ,
