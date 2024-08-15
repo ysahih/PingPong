@@ -308,7 +308,7 @@ useEffect(() => {
 
   return (
     <div>
-        {gameover && <Gameresult result = {scores.player1score > scores.player2score ? "You Win" : "You Lose"}/>}
+        {gameover && <Gameresult result = {scores.player1score == 7  ? "You Win" : "You Lose"}/>}
         <div className="fixed  flex  justify-center items-center  w-[100vw] h-[100vh] ">
           <div className="Gamecader flex  flex-col justify-center items-center   mt-5 relative" >
           <div 

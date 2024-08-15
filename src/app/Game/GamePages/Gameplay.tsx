@@ -85,6 +85,7 @@ const Gameplay : React.FC<{  }> = ( ) => {
         game?.setgamefriend(-1);
         socket?.emit("endGame" , { clientid: user?.id })
         render?.setRender("home");
+        
       }
       }
       const gametimeout = setTimeout(handlcheck, 5000 ); 
@@ -92,6 +93,7 @@ const Gameplay : React.FC<{  }> = ( ) => {
         clearTimeout(gametimeout);
       }
     }, [game?.lodingdata])
+
     useEffect(() => 
     {
       const handlegameroom =(responsedata : { room  :{ users : Userinfo[]  , gameloding : boolean} , alreadymatch : boolean }) =>
@@ -122,7 +124,7 @@ const Gameplay : React.FC<{  }> = ( ) => {
 
       const gamematch = () => {
         socket?.emit("RandomGameroom",   { userid : user?.id ,  soketid :socket?.id  , type : game?.gametype , mode : game?.gamemode , friend : game?.gamefriend}  );
-        socket?.on("RandomGameroom", handlegameroom  )
+        socket?.on("RandomGameroom", handlegameroom )
 
       }
       const timematch = setTimeout(gamematch, 1000);
@@ -131,6 +133,9 @@ const Gameplay : React.FC<{  }> = ( ) => {
         clearTimeout(timematch);
       }
     } ,[socket]);
+
+
+
       useEffect(() => {
         if (game?.lodingdata && game?.lodingdata.users.length == 2 )
         {
@@ -139,6 +144,8 @@ const Gameplay : React.FC<{  }> = ( ) => {
           }, 3000);
         }
       } ,  [game?.lodingdata])
+
+
     return ( 
         <div>
           { game?.Isrunning == false  && <GameLoding lodingdata={game.lodingdata}  />} 

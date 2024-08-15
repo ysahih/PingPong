@@ -7,11 +7,16 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import React from 'react';
+import SocketContext from "@/components/context/socket";
+import { GameContext, GameLodingProps, Userinfo } from "../Gamecontext/gamecontext";
+import UserDataContext from "@/components/context/context";
+
 export default function AlertDialog() {
 
-
+  const socket = useContext (SocketContext);
+  const user = useContext(UserDataContext);
   const [open, setOpen] = useState (false);
 
   const handleClickOpen = () => {
@@ -20,8 +25,24 @@ export default function AlertDialog() {
 
 
   const handleClose = () => {
+    socket?.emit("RandomGameroom",   { clientid : user?.id });
     setOpen(false);
   };
+
+
+
+  useEffect(() => {
+    
+    const Gameover = (data : { GameStatus : boolean }) =>
+    {
+   
+    }
+
+    socket?.on("RandomGameroom", Gameover )
+    
+  }, [socket]);
+
+
 
   useEffect(() => {
     console.log("useEffect");
