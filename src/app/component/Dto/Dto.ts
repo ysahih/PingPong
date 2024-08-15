@@ -25,6 +25,7 @@ export type ConvoData = {
     online : Boolean,
     userName: string,
     image: string,
+    hasNoAccess: boolean,
     messages?: Array <Message>
 }
 

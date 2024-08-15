@@ -338,11 +338,8 @@
     min-height: 700px;
     background: var(--bg-color);
     border-left: 1px solid var(--item-border-color);
-    /* box-shadow: -5px 4px 10px 0px #00000040; */
     transition: opacity 0.3s ease;
-
-    /* position: fixed; */
-    
+    /* margin-top: 94px; */
 }
 
 .chatbar{
@@ -446,14 +443,6 @@
 .messagesHolder{
     overflow: scroll;
     overflow-x: hidden;
-    height: calc(70vh - 120px);
-    /* min-height: 300px; */
-}
-
-.chatdiv .convoHolder{
-    height: 80vh;
-    max-height: 80vh;
-
 }
 
 .line{
@@ -597,18 +586,11 @@
 .dotscontainer{
     transition: width 0.1s;;
     cursor: pointer;
-    /* background-color: red; */
     height: 24px;
 
 }
 
 .userOption{
-    /* display: flex; 
-    flex-direction: column; 
-    justify-content: center; 
-    align-items: center;  
-    height: 30px;
-    width: 65px;  */
     margin-left: -20px;
     margin-right: 10px;
     margin-top: -10px;  
@@ -620,7 +602,6 @@
 
 .clash {
     display: flex;
-    /* justify-content: center; */
     padding: 6px;
     gap: 4px;
 }
@@ -1014,8 +995,8 @@
 .convo{
     width: 100%;
     margin: 0px auto;
-    margin-top: 20px;
     padding: 1px;
+
 }
 
 .chatholder .convo{
@@ -1048,12 +1029,6 @@
     height:  30px;
 }
 
-/* //convo details */
-
-
-.chatdiv .conversation{
-    margin-top: 100px;
-}
 
 .chatholder .conversation{
     width: 100%;
@@ -1067,8 +1042,6 @@
     display: flex;
     justify-content: space-around;
     gap: 30px;
-    margin-top: 25px;
-    margin-bottom: 15px;
 
 }
 
@@ -1089,7 +1062,6 @@
 
 }
 .sender-info{
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -1104,9 +1076,6 @@
     width: 100% ;
     overflow-y: scroll ;
     overflow-x: hidden ;
-    height: 60vh;
-    /* min-height: 700px; */
-    max-height: 60vh;
 }
 
 .msgContent{
@@ -1434,16 +1403,9 @@
     }
 }
 
-@media (max-height: 555px) {
-    .chatholder .convoHolder{        
-        /* height: 80%; */
-    }
-}
-
 @media (max-width: 400px) {
     .chatholder .convo{
         width: 74%;        
-        /* margin: 0px auto; */
     }
 }
 
