@@ -807,7 +807,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
           SocketsTarget.socketId.forEach((socktId: string) => 
             {
               
-              this._server.to(socktId).emit("gameresponse", {username : user.username , userimage : user.image  , message :  "accept game invitation" , response : true});
+              this._server.to(socktId).emit("gameresponse", {username : user.username , userimage : user.image  , message :  "accept game invitation" , response : true , type : "friend"});
             });
         }
         else if (mydata.response == false)
@@ -821,7 +821,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
           }
           SocketsTarget.socketId.forEach((socktId: string) => 
             {         
-              this._server.to(socktId).emit("gameresponse", {username : user.username , userimage : user.image  , message :  "reject game invitation" ,  response : false});
+              this._server.to(socktId).emit("gameresponse", {username : user.username , userimage : user.image  , message :  "reject game invitation" ,  response : false , type : "friend"});
             }); 
         }
       }
@@ -883,7 +883,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
             this.gameRooms.addRoom( {clientid : mydata.invitationSenderID, image: user.image, username: user.username , ingame: false , level : user.level , achievenemt : user.achievenemt ,numberofWin : user.numberofWin} , mydata.mode , "friend" , mydata.friendId);
             SocketsTarget.socketId.forEach((socktId: string) => 
             {
-              this._server.to(socktId).emit("gameInvitation", {  invitationSenderID  : mydata.invitationSenderID , username : user.username , userimage : user.image  , message : "game invitation from" , mode : mydata.mode });
+              this._server.to(socktId).emit("gameInvitation", {  invitationSenderID  : mydata.invitationSenderID , username : user.username , userimage : user.image  , message : "game invitation from" , mode : mydata.mode , type : "friend"});
             });
           }
       }
@@ -892,17 +892,38 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     @SubscribeMessage('LeaveGame')
 		async LeaveGame(@ConnectedSocket() client: Socket, @MessageBody () leaveGame: { clientid: number }) {	
       var room = this.gameRooms.searcheClientRoom(leaveGame.clientid);
-      console.log(">>>>>>>>>>>>>",leaveGame);
+      
 
       if (!room)
       {
         return ;
       }
+      
       var user1  : number;
       var user2 : number;
       var user1index : number
       var user2index : number
 
+      if (this.gameRooms.rooms[room].users.length == 2)
+        {
+            const ids : number[] = [user1 , user2];
+            const status = await this.FriendsService.setGameStatus(ids, false);
+            if (status)
+              {
+                const SocketsTarget = this._users.getAllSocketsIds();
+                if (SocketsTarget) 
+                  {
+                    SocketsTarget.forEach((socktId: string) => 
+                      {
+                        this._server.to(socktId).emit("gameStatus",{ id: user1, status: false});
+                        if (this.gameRooms.rooms[room].type != "ai")
+                        this._server.to(socktId).emit("gameStatus",{ id: user2 , status: false});
+                      });
+                    }
+                  }
+        }
+      let response : leavegame = { id : leaveGame.clientid }
+        this._server.to(room).emit('LeaveGame', response);
       if ( this.gameRooms.rooms[room].type != "ai")
         {
           
@@ -920,38 +941,63 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
             user1index = 1;
             user2index = 0;
           }
-          this.gameRooms.updatelevel(room , user2)
-          const level =  this.gameRooms.rooms[room].users[user2index].level
-          await this.FriendsService.updateResult(user2, user1, "W"  , level);
+
+        this.gameRooms.updatelevel(room , user2)
+        const level =  this.gameRooms.rooms[room].users[user2index].level
+        await this.FriendsService.updateResult(user2, user1, "W"  , level);
         await this.FriendsService.updateResult(user1, user2, "L"  );
         this.gameRooms.rooms[room].users[user2index].numberofWin += 1;
         await this.gameRooms.AssignAchievement(user2 ,user2index  , room  ,   this.FriendsService.updateAchievement.bind(this.FriendsService));
       }
-      if (this.gameRooms.rooms[room].users.length == 2)
-      {
-          const ids : number[] = [user1 , user2];
-          
-          const status = await this.FriendsService.setGameStatus(ids, false);
-          if (status)
-            {
-              const SocketsTarget = this._users.getAllSocketsIds();
-              if (SocketsTarget) 
-                {
-                  SocketsTarget.forEach((socktId: string) => 
-                    {
-                      this._server.to(socktId).emit("gameStatus",{ id: user1, status: false});
-                      if (this.gameRooms.rooms[room].type != "ai")
-                      this._server.to(socktId).emit("gameStatus",{ id: user2 , status: false});
-                    });
-                  }
-                }
-      }
-      
       this.gameRooms.clearIntervals(room);
       this.gameRooms.DeleteRoom(room);
       this.gameRooms.Deletegame(room);
       this.deleteRoom(room);
-      let response : leavegame = { id : leaveGame.clientid }
-      this._server.to(room).emit('LeaveGame', response);
     }
+
+
+
+
+
+@SubscribeMessage('joinGame')
+		async joinGame(@ConnectedSocket() client: Socket, @MessageBody () joinGame: { clientid: number }) {	
+      var room = this.gameRooms.searcheClientRoom(joinGame.clientid);
+      
+      if (!room)
+      {
+        return ;
+      }
+      const SocketsTarget = this._users.getUserById(joinGame.clientid);
+      var name  : string;
+      var image : string;
+      var id : number
+      if (this.gameRooms.rooms[room].users.length == 2)
+        {
+          if (this.gameRooms.rooms[room].users[0].clientid != joinGame.clientid)
+          {
+            name = this.gameRooms.rooms[room].users[0].username ;
+            image = this.gameRooms.rooms[room].users[0].image;
+            id = this.gameRooms.rooms[room].users[0].clientid;
+          }
+          else
+          {
+            name = this.gameRooms.rooms[room].users[1].username;
+            image = this.gameRooms.rooms[room].users[1].image;
+            id = this.gameRooms.rooms[room].users[1].clientid;
+          }
+
+          if (SocketsTarget) 
+            {
+                SocketsTarget.socketId.forEach((socktId: string) => 
+                  {
+                    console.log(">>>>>>>>>>>>>",joinGame);
+                    this._server.to(socktId).emit("rejoinGame", {invitationSenderID : id, username :name , userimage: image  , message : "rejoin game " , mode : this.gameRooms.rooms[room].mode , type :this.gameRooms.rooms[room].type });
+                  });
+              }
+        }
+    }
+
+
+
+    
 }
