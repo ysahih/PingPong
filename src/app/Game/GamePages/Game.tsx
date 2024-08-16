@@ -9,10 +9,6 @@ import Gameresult from "./Gameresult";
 import { ColitionEffect, Effect } from "./effect";
 import AlertDialog from "./ExitDialog";
 
-
-
-
-
 const Game : React.FC<{}> = () => {
   const game = useContext(GameContext );
   const canvasRef = useRef <HTMLCanvasElement>(null);
@@ -29,7 +25,6 @@ const Game : React.FC<{}> = () => {
   var color  = { background : game?.gamemode == "Dark Valley" ? "#1B266B" : "#000000"  , player: game?.gamemode == "Dark Valley" ? "#0064FB" : "#FFA500",  grid : game?.gamemode == "Dark Valley" ? "#081041" : "#081041" ,ball: "#1ECDF8"}
   const position = useRef<Gameresponse >({player1: 50, player2: 50, player1score: 0, player2score: 0, ball: { x: 50, y: 50 } , stop : 0 , gameover : false , iscollision : false , colormode : 0});
   const [Winner , setWinner] = useState<boolean>(false);
-  
   let effect : Effect[];
   effect = [];
   let colition : ColitionEffect[] ;
@@ -40,12 +35,12 @@ const Game : React.FC<{}> = () => {
     const Gameover = (data : leavegame) =>
     {
       if (data.id == user?.id)
-      {
         setWinner(false);
-      }
       else
-      setWinner(true);
+        setWinner(true);
       setgameover(true);
+
+      console.log(">>>>>>>>>>>>>>>>>>>>>gameover");
     }
     Socket?.on("LeaveGame", Gameover )
   }, [Socket]);
@@ -329,12 +324,12 @@ useEffect(() => {
 
   return (
     <div>
-        {gameover  && <Gameresult result = {scores.player1score == 7  || Winner == true ? "You Win" : "You Lose"}/>}
+        {gameover  && <Gameresult result = { scores.player1score ==7 || Winner == true   ? "You Win" :   "You Lose" }/>}
         <div className="fixed  flex  justify-center items-center  w-[100vw] h-[100vh] ">
           <div className="Gamecader flex  flex-col justify-center items-center   mt-5 relative" >
           <div 
           className="text-white bg-[#1B266B] from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg  text-center me-2 mb-3  ">
-            <AlertDialog   /> 
+            <AlertDialog /> 
             </div>
             <div className="score flex  justify-between items-center  font-lalezar text-xs" id = "score">
               <div className="PlayerProfile">

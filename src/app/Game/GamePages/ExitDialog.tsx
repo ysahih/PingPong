@@ -22,7 +22,6 @@ export default function AlertDialog  () {
     setOpen(true);
   };
 
-
   const handleClose = () => {
     
     setOpen(false);
@@ -30,10 +29,9 @@ export default function AlertDialog  () {
 
   const handleave = () => {
     socket?.emit("LeaveGame",   { clientid : user?.id });
+    console.log(">>>>>>>>>>>>>>>>>>>>>gameover");
     setOpen(false);
   };
-
-
 
 
   return (

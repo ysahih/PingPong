@@ -5,7 +5,7 @@ import { UserData } from "@/components/context/context";
 import { GameContext } from "../Game/Gamecontext/gamecontext";
 
 import RenderContext from "@/components/context/render";
-import { useContext, useEffect, useState } from "react";
+import { use, useContext, useEffect, useState } from "react";
 import UserDataContext from "@/components/context/context";
 import { useClickAway } from "@uidotdev/usehooks";
 import SocketContext from "@/components/context/socket";
@@ -193,12 +193,14 @@ const Invite = () => {
     userimage: "",
     message: "",
     mode: "",
+    type: "",
   });
   const [display, setDisplay] = useState(false);
   const [displayChoise, setDisplayChoise] = useState(false);
   const game = useContext(GameContext);
   const render = useContext(RenderContext);
   const user = useContext(UserDataContext);
+  const [notificationtype , setNotificationtype] = useState<number>(0);
   useEffect(() => {
     const resetgame = () => {
         game?.setRunning(false);
@@ -222,7 +224,21 @@ const Invite = () => {
         console.log("message", data);
         setNotification(data);
         setDisplayChoise(true);
+        setNotificationtype(2);
         setDisplay(true);
+        setTimeout(() => {
+          setDisplay(false);
+          setDisplayChoise(true);
+        }, 5000);
+      });
+
+
+      console.log("mymessage>>>>>>>>>>>>>>" );
+      socket?.on("rejoinGame", (data) => {
+        setNotification(data);
+        setDisplayChoise(true);
+        setDisplay(true);
+        setNotificationtype(1);
         setTimeout(() => {
           setDisplay(false);
           setDisplayChoise(true);
@@ -233,8 +249,8 @@ const Invite = () => {
         console.log("message1", data);
         setNotification(data);
         setDisplayChoise(false);
+        setNotificationtype(2);
         setDisplay(true);
-
         if (data.response == false) {
           resetgame();
           render?.setRender("home");
@@ -243,6 +259,7 @@ const Invite = () => {
           setDisplay(false);
           setDisplayChoise(true);
         }, 3000);
+        
       });
     };
     HandelNotification();
@@ -251,6 +268,16 @@ const Invite = () => {
       socket?.off("gameInvitation");
     };
   }, [socket]);
+
+
+  useEffect(() => {
+    if(user?.inGame == true )
+    socket?.emit("joinGame",  {  clientid : user?.id });
+    console.log(">>>>>>>>>joinGame");
+  },[]);
+
+
+
 
     return (
         <>
@@ -268,17 +295,31 @@ const Invite = () => {
                         displayChoise &&  <div className="desicion ">
                         <Image src="/homeImages/Deny.svg" className="yes-no   " alt="image" width={24} height={24}  onClick={() =>
                         { 
+                          if (notificationtype == 2) {
                             socket?.emit("gameInvitation", { clientID : user?.id ,  invitationSenderID: notification.invitationSenderID , response: false});
                             setDisplay(false);
+                          }
+                          else if (notificationtype == 1)
+                          {
+                          socket?.emit("LeaveGame", {  clientID : user?.id , invitationSenderID: notification.invitationSenderID , response: false});
+                          }
+                          setNotificationtype(0);
                         } 
                         } />
                         <Image src="/homeImages/Accept.svg" className="yes-no " alt="image" width={24} height={24} onClick={() =>
                             {
-                                socket?.emit("gameInvitation", {  clientID : user?.id , invitationSenderID: notification.invitationSenderID , response: true});
-                                game?.setGamemode(notification.mode);
-                                game?.settype("friend");
-                                render?.setRender("playGame");
+                              if (notificationtype == 1) 
+                                {
+                                  socket?.emit("gameInvitation", {  clientID : user?.id , invitationSenderID: notification.invitationSenderID , response: true});
+                                  game?.setGamemode(notification.mode);
+                                  game?.settype("friend");
+                                  render?.setRender("playGame");
+                                }
+                              else if (notificationtype == 2)
+                                socket?.emit("joinGame",{  clientID : user?.id }); 
                                 setDisplay(false);
+                              
+                              setNotificationtype(0);
                             }
                         } />
                     </div>
@@ -295,7 +336,9 @@ const Header = () => {
   return (
     <div className="header">
       <div className="leftBar">
+      <div className="bg-red-600 ">
         <Invite />
+        </div>
       </div>
 
       <div className="rightBar ">

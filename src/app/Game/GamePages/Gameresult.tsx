@@ -2,9 +2,14 @@
 "use client";
 import RenderContext from '@/components/context/render';
 import "@/styles/game/Gameplay.css";
-import {  useContext, useEffect } from 'react';
+import {  useContext, useEffect, useState } from 'react';
 import { GameContext } from '../Gamecontext/gamecontext';
 import UserDataContext from '@/components/context/context';
+
+
+
+
+
 
 
 const Gameresult : React.FC<{ result : string } > = (props) => {
@@ -12,8 +17,11 @@ const Gameresult : React.FC<{ result : string } > = (props) => {
     const game = useContext(GameContext);
     const render = useContext(RenderContext);
     const user = useContext(UserDataContext );
+    
+
 
   useEffect(() => {
+    
       setTimeout(() => {
         game?.setRunning(false);
         game?.setlodingdata({
@@ -29,9 +37,8 @@ const Gameresult : React.FC<{ result : string } > = (props) => {
         game?.setGamemode("");
         game?.settype("");
         game?.setgamefriend(-1);
-
         render?.setRender("home");
-      }, 2000);
+      }, 4500);
   }, []);
 
 
