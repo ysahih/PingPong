@@ -818,7 +818,7 @@
 }
 
 .playlightnow .typo{
-    color: #00FFE0;
+    color: #8A99E9;
 }
 
 .playdarknow, .playlightnow{
@@ -833,7 +833,7 @@
 }
 
 .playlightnow .playnow{
-    background: var(--bg-color);
+    background: var(--border-top-color);
 
 
 }

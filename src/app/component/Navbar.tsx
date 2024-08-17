@@ -316,7 +316,13 @@ const Invite = () => {
                                   render?.setRender("playGame");
                                 }
                               else if (notificationtype == 2)
-                                socket?.emit("joinGame",{  clientID : user?.id }); 
+                                {
+                                  game?.setGamemode(notification.mode);
+                                  game?.settype(notification.type);
+                                  render?.setRender("playGame");
+
+                                }
+
                                 setDisplay(false);
                               
                               setNotificationtype(0);

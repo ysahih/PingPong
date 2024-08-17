@@ -8,7 +8,7 @@ import Search from "./component/Search";
 import Games from "./component/Games";
 import "./globals.css";
 import axios from "axios";
-import Router from "next/navigation";
+import Router, { useRouter } from "next/navigation";
 import { FiChevronsRight } from "react-icons/fi";
 import "@/styles/userProfile/userFriend.css";
 import userStateContext from "@/components/context/userSate";
@@ -35,6 +35,7 @@ import axiosApi from "@/components/signComonents/api";
 export const Tables = () => {
   const render = useContext(RenderContext);
   const game = useContext(GameContext);
+  const router = useRouter();
   return (
     <Carousel placeholder="carousel" className="tables rounded-lg z-10">
       <div className=" darktable relative h-1/2 w-full">
@@ -65,6 +66,7 @@ export const Tables = () => {
                       game?.settype("random");
                       game?.setgamefriend(-1);
                       render?.setRender("playGame");
+                      router.push("/Game");
                   }
                 }
               >
@@ -74,11 +76,11 @@ export const Tables = () => {
           </div>
         </div>
       </div>
-      <div className="lighttable relative h-full w-full">
-        <img
-          src="./homeImages/frozenarena.svg"
+      <div className="lighttable relative h-full w-full ">
+        <img 
+          src="./homeImages/flame7.svg"
           alt="image 2"
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover "
         />
         <div className="playlightnow absolute inset-0 grid h-full w-full place-items-center ">
           <div className=" w-3/4 text-center md:w-2/4">
@@ -92,7 +94,7 @@ export const Tables = () => {
             </Typography>
 
             <div className="flex text-sm">
-              <Button placeholder="button" className="playnow" color="white"
+              <Button placeholder="button" className="playnow bg- " color="white"
                  onClick={ 
                   ()=>{      
                       game?.setRunning(false);
@@ -100,6 +102,7 @@ export const Tables = () => {
                       game?.settype("random");
                       game?.setgamefriend(-1);
                       render?.setRender("playGame");
+                      router.push("/Game");
                   }
                 }
               >
