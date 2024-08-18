@@ -527,12 +527,22 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 	  if (SocketsTarget) {
 		SocketsTarget.socketId.forEach((socktId: string) => {
 		  this._server.to(socktId).emit("DeleteFriend", Payload.userId);
+      this._server.to(socktId).emit('access', {
+          from: Payload.userId,
+          access: true,
+          isRoom: false,
+        });
 		});
 	  }
 	  const client = this._users.getUserById(Payload.userId);
 	  if (client) {
 		client.socketId.forEach((socktId: string) => {
 		  this._server.to(socktId).emit("NewBlocked", targetFriend);
+      this._server.to(socktId).emit('access', {
+        from: Payload.id,
+        access: true,
+        isRoom: false,
+      });
 		});
 	}
   }
@@ -544,18 +554,28 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 	  Payload.id
 	);
 	if (targetFriend !== null) {
-	  // const SocketsTarget = this._users.getUserById(Payload.id);
-	  // if (SocketsTarget) {
-	  //   SocketsTarget.socketId.forEach((socktId: string) => {
-	  //     this._server.to(socktId).emit("UnBlocked", Payload.userId);
-	  //   });
-	  // }
+	  const SocketsTarget = this._users.getUserById(Payload.id);
+	  if (SocketsTarget) {
+	    SocketsTarget.socketId.forEach((socktId: string) => {
+	      // this._server.to(socktId).emit("UnBlocked", Payload.userId);
+        this._server.to(socktId).emit('access', {
+          from: Payload.userId,
+          access: false,
+          isRoom: false,
+        });
+	    });
+	  }
 	  // console.log("unblocked", targetFriend);
 	  
 	  const client = this._users.getUserById(Payload.userId);
 	  if (client) {
 		client.socketId.forEach((socktId: string) => {
 		  this._server.to(socktId).emit("UnBlocked", Payload.id);
+      this._server.to(socktId).emit('access', {
+        from: Payload.id,
+        access: false,
+        isRoom: false,
+      });
 		});
 	  }
 	}
