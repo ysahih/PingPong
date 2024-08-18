@@ -253,9 +253,8 @@ export class datagame {
 		this.initgame(roomname);
 		if (type === "ai")
 		{
-			this.addUser(roomname, {clientid: -1, image: "ROBOT", username: "ROBOT", ingame: false , level : 100 , achievenemt : [] , numberofWin : 0 , mode : "Dark Valley"});
+			this.addUser(roomname, {clientid: -1, image: "./homeImages/robot.svg", username: "ROBOT", ingame: false , level : 100 , achievenemt : [] , numberofWin : 0 , mode : "Dark Valley"});
 		}
-		// console.log("mooood" ,  this.rooms[roomname].mode);
 	}
 	addUser(roomname : string, user :userinfo ){
 			this.rooms[roomname].users.push(user); 
