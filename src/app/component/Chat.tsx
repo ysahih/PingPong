@@ -9,10 +9,9 @@ import { ChatData } from "./Dto/Dto";
 import axios from "axios";
 import SocketContext from "@/components/context/socket";
 import UserDataContext from "@/components/context/context";
-import { input } from "@material-tailwind/react";
 import ChatContext, { chatContext } from "@/components/context/chatContext";
 import { ConvoData } from "./Dto/Dto";
-import { send } from "process";
+
 import RenderContext, { renderContext } from "@/components/context/render";
 import { render } from "react-dom";
 import type { Message } from "./Dto/Dto";
@@ -22,8 +21,11 @@ import { useRouter } from "next/navigation";
 
 import UserStateContext from "@/components/context/userSate";
 import ProfileDataContext from "@/components/context/profilDataContext";
-import { stat } from "fs";
+import { access, stat } from "fs";
 import axiosApi from "@/components/signComonents/api";
+import { useClickAway } from "@uidotdev/usehooks";
+import { MdOutlineBlock } from "react-icons/md";
+import { FaGamepad } from "react-icons/fa";
 
 const Header = () => {
   const rout = useRouter();
@@ -99,16 +101,10 @@ interface userOptionClass {
 }
 const UserOption = ({ className }: userOptionClass) => {
   return (
-    <div className={`border rounder-[5px] bg-[#040A2F]  ${className}`}>
-      <div className="flex gap-1">
-        <Image
-          className=""
-          src="/homeImages/chat.svg"
-          alt="logo"
-          width={19}
-          height={17}
-        />
-        <p className="clash">Clash</p>
+    <div className={`-mt-3 -ml-2 rounded-lg bg-[#040A2F]  ${className}`}>
+      <div className="ml-1 flex text-xs items-center justify-evenly  text-[#8A99E9]">
+        <FaGamepad className="w-5 h-5" />
+        <p className="clash mt-1">Clash</p>
       </div>
     </div>
   );
@@ -206,6 +202,7 @@ const Conversation = (props: ConvoProps) => {
   const [typing, setTyping] = useState<Boolean>(false);
   const state = useContext(UserStateContext);
   const user = useContext(UserDataContext);
+  const muted = useState<boolean>(false);
 
   const [userState, setUserState] = useState<string>("offline");
 
@@ -291,9 +288,7 @@ const Conversation = (props: ConvoProps) => {
             withCredentials: true,
           }
         );
-
         console.log("data hhh:", response.data);
-
         setConvo(response.data);
 
         if (response.data.inGame) setUserState("inGame");
@@ -333,6 +328,23 @@ const Conversation = (props: ConvoProps) => {
         }, 2000);
       }
     });
+
+    socket?.on(
+      "access",
+      (payload: { from: number; isRoom: boolean; access: boolean }) => {
+        if (
+          payload.from === props.label.id &&
+          props.label.isRoom == payload.isRoom
+        ) {
+          setConvo((prevConvo: any) => {
+            return {
+              ...prevConvo,
+              hasNoAccess: payload.access,
+            };
+          });
+        }
+      }
+    );
     setTimeAgo(getTimeAgo());
     return () => {
       socket?.off("isTyping");
@@ -348,9 +360,9 @@ const Conversation = (props: ConvoProps) => {
         </div>
       )}
       {convo && (
-        <>
-          <div className="convo">
-            <div className="convoHeader">
+        <div>
+          <div className="convo h-full">
+            <div className="convoHeader p-2 mt-4  xl:mt-28">
               <div
                 className="sender-info  cursor-pointer"
                 onClick={() => {
@@ -370,7 +382,11 @@ const Conversation = (props: ConvoProps) => {
                   <h2>{convo?.userName}</h2>
                   {!props.label.isRoom ? (
                     <p className="w-[50px]">
-                      {typing ? "Typing..." : userState}
+                      {typing
+                        ? "Typing..."
+                        : convo.hasNoAccess
+                        ? ""
+                        : userState}
                     </p>
                   ) : (
                     <p className="w-[50px]">Channel</p>
@@ -388,7 +404,10 @@ const Conversation = (props: ConvoProps) => {
             </div>
             <hr className="line" />
 
-            <div className="convoHolder" ref={scrollableDivRef}>
+            <div
+              className="convoHolder h-[60vh] xl:h-[70vh] p-2"
+              ref={scrollableDivRef}
+            >
               {convo?.messages?.map((message: any, index: number) => (
                 <div
                   key={index}
@@ -421,19 +440,32 @@ const Conversation = (props: ConvoProps) => {
           </div>
 
           <form onSubmit={sendInput} className="input-footer">
-            <input
-              ref={inputRef}
-              id="msgInput"
-              type="text"
-              className="convoInput"
-              placeholder="Send a Message..."
-              onChange={handleTyping}
-            />
-            <button type="submit">
-              <RiSendPlaneFill className="sendLogo" />
-            </button>
+            {convo.hasNoAccess ? (
+              <div className="flex items-center justify-center gap-2 text-[#8A99E9] w-full">
+                <MdOutlineBlock className="min-w-[25px] min-h-[25px]" />
+                {props.label.isRoom ? (
+                  <span className="mt-[4px]">Muted</span>
+                ) : (
+                  <span className="mt-[4px]">Blocked</span>
+                )}
+              </div>
+            ) : (
+              <div className="flex w-full items-center">
+                <input
+                  ref={inputRef}
+                  id="msgInput"
+                  type="text"
+                  className="convoInput"
+                  placeholder="Send a Message..."
+                  onChange={handleTyping}
+                />
+                <button type="submit">
+                  <RiSendPlaneFill className="sendLogo" />
+                </button>
+              </div>
+            )}
           </form>
-        </>
+        </div>
       )}
     </div>
   );
@@ -514,7 +546,7 @@ const Chat = () => {
 
   return (
     <div className="chat">
-      {Convo?.label.id && (
+      {Convo?.label.id ? (
         <Conversation
           updateChat={updateChat}
           label={Convo?.label!}
@@ -524,21 +556,21 @@ const Chat = () => {
           }
           inConvo={inConvo!}
         />
-      )}
-      {Convo?.label.id == 0 && (
-        <div>
+      ) : null}
+      {!Convo?.label.id && (
+        <div className="">
           <div className="chatbar">
             <Header />
             <Members chatdata={chatdata} />
           </div>
 
-          <div className="messagesHolder">
+          <div className="messagesHolder h-[44vh] xl:h-[60vh]">
             {chatdata
               ? chatdata.map((user: ChatData, index) => (
                   <Message
                     key={index}
                     handleMsgClick={() =>
-                      Convo.setLabel({ id: user.id, isRoom: user.isRoom })
+                      Convo?.setLabel({ id: user.id, isRoom: user.isRoom })
                     }
                     user={user}
                   />

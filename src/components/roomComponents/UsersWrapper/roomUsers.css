@@ -81,13 +81,13 @@
     background-size: 100% 100%;
 }
 
-.url--bannedUsers {
+/* .url--bannedUsers {
     background-image: url('../../../../public/RoomSettings/BannedUsers.svg') !important;
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center;
     background-size: 100% 100%;
-}
+} */
 
 .room__users {
     width: 95%;

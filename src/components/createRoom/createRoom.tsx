@@ -1,11 +1,10 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
 import "./createRoom.css";
+import React, { useContext, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import Image from "next/image";
 import pic from "@/../public/createRoom/GroupChat.svg";
-import axios from "axios";
 import { RoomFormat, ROOMTYPE } from "./interfaces";
 import SocketContext from "../context/socket";
 import UserDataContext from "../context/context";
@@ -137,10 +136,10 @@ const CreateRoom = () => {
   return (
 	// <>
 	<div className="createRoom">
-	<Toaster containerStyle={{
-		marginTop: "100px",
-		zIndex: "10"
-	}}/>
+		<Toaster containerStyle={{
+			marginTop: "100px",
+			zIndex: "10"
+		}}/>
 	  <h1 className="createRoom__header">Chat Room</h1>
 
 	  <div className="createRoom__wrapper">
@@ -259,11 +258,11 @@ const CreateRoom = () => {
 		  )}
 
 		  {creating ? (
-			<button type="button" className="createRoom__btn">
+			<button type="button" className="createRoom__btn" /*style={{padding: "8px 16px"}}*/ >
 			  Creating...
 			</button>
 		  ) : (
-			<button type="submit" className="createRoom__btn">
+			<button type="submit" className="createRoom__btn" /*style={{padding: "8px 16px"}}*/ >
 			  Create
 			</button>
 		  )}

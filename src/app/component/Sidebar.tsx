@@ -14,7 +14,7 @@ import axiosApi from "@/components/signComonents/api";
 const Buttons = () => {
   const context: renderContext | null = useContext(RenderContext);
   const router = useRouter();
-  // const pathName = usePathname();
+  const pathName = usePathname();
 
 
 
@@ -22,9 +22,10 @@ const Buttons = () => {
     <div className="buttons">
       <div
         className={`sideButton ${
-          context?.render === "home" ? "activeChatButton" : ""
+          pathName === "/" ? "activeChatButton" : ""
         }`}
-        onClick={() => {context?.setRender("home")
+        onClick={() => {
+          
         router.push("/")
       }}
       >
@@ -40,9 +41,9 @@ const Buttons = () => {
 
       <div
         className={`sideButton ${
-          context?.render === "games" ? "activeChatButton" : ""
+          pathName === "/Game" ? "activeChatButton" : ""
         }`}
-        onClick={() => {context?.setRender("games")
+        onClick={() => {
         router.push("/Game")
       }}
       >
@@ -58,9 +59,9 @@ const Buttons = () => {
 
       <div
         className={`sideButton ${
-          context?.render === "ranking" ? "activeChatButton" : ""
+          pathName === "/Ranking" ? "activeChatButton" : ""
         }`}
-        onClick={() => {context?.setRender("ranking")
+        onClick={() => {
         router.push("/Ranking")
       }}
       >
@@ -76,9 +77,9 @@ const Buttons = () => {
 
       <div
         className={`sideButton ${
-          context?.render === "search" ? "activeChatButton" : ""
+          pathName === "/Search" ? "activeChatButton" : ""
         }`}
-        onClick={() => {context?.setRender("search")
+        onClick={() => {
         router.push("/Search")
       }}
       >
@@ -94,9 +95,9 @@ const Buttons = () => {
 
       <div
         className={`sideButton visible xl:invisible ${
-          context?.render === "chat" ? "activeChatButton" : ""
+          pathName === "/Chat" ? "activeChatButton" : ""
         }`}
-        onClick={() => {context?.setRender("chat")
+        onClick={() => {
         router.push("/Chat")}}
       >
         <Image
@@ -115,14 +116,15 @@ const Buttons = () => {
 const PhoneButtons = () => {
   const router = useRouter();
   const context: renderContext | null = useContext(RenderContext);
+  const path = usePathname();
 
   return (
     <div className="phonebuttons">
       <div
         className={`phonebutton ${
-          context?.render === "home" ? "activeChatButton" : ""
+          path === "/" ? "activeChatButton" : ""
         }`}
-        onClick={() => {context?.setRender("home")
+        onClick={() => {
         router.push("/")}}
       >
         <Image
@@ -136,9 +138,9 @@ const PhoneButtons = () => {
 
       <div
         className={`phonebutton ${
-          context?.render === "games" ? "activeChatButton" : ""
+          path === "/Game" ? "activeChatButton" : ""
         }`}
-        onClick={() => {context?.setRender("games")
+        onClick={() => {
         router.push("/Game")}}
       >
         <Image
@@ -151,9 +153,9 @@ const PhoneButtons = () => {
       </div>
       <div
         className={`phonebutton ${
-          context?.render === "ranking" ? "activeChatButton" : ""
+          path === "/Ranking" ? "activeChatButton" : ""
         }`}
-        onClick={() => {context?.setRender("ranking")
+        onClick={() => {
         router.push("/Ranking")}}
       >
         <Image
@@ -166,9 +168,9 @@ const PhoneButtons = () => {
       </div>
       <div
         className={`phonebutton ${
-          context?.render === "search" ? "activeChatButton" : ""
+          path === "/Search" ? "activeChatButton" : ""
         }`}
-        onClick={() => {context?.setRender("search")
+        onClick={() => {
         router.push("/Search")}}
       >
         <Image
@@ -181,9 +183,9 @@ const PhoneButtons = () => {
       </div>
       <div
         className={`phonebutton ${
-          context?.render === "chat" ? "activeChatButton" : ""
+          path === "/Chat" ? "activeChatButton" : ""
         }`}
-        onClick={() => {context?.setRender("chat")
+        onClick={() => {
         router.push("/Chat")}}
       >
         <Image

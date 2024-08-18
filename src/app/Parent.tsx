@@ -25,6 +25,8 @@ import { ChatData } from "./component/Dto/Dto";
 import { number } from "yup";
 import { step } from "@material-tailwind/react";
 import { boolean } from "yup";
+import ScreenWidth from "@/components/context/screenWidth";
+import RenderContext, { renderContext } from "@/components/context/render";
 
 // import { useRouter } from 'next/router';
 /*
@@ -117,6 +119,9 @@ export default function Parent({ children }: { children: React.ReactNode }) {
     id: 0,
     state: '',
   });
+  const [large, setLarge] = useState<boolean>(true);
+  const screenWidth = useContext(ScreenWidth);
+  const context = useContext(RenderContext);
   const router = useRouter();
 
   const setImage = (image: string) => {
@@ -348,16 +353,11 @@ export default function Parent({ children }: { children: React.ReactNode }) {
     if (!BlockedData) {
       getBlocked({ setBlockedData });
     }
-
-    return () => {
-      Socket?.off("connect");
-      Socket?.off("disconnect");
-    };
   }, []);
 
-  console.log("FriendsData:", FriendsData);
-  // // console.log("InvitsData:", InvitsData);
-  // // console.log("BlockedData:", BlockedData);
+  useEffect(() => {
+    
+  })
 
   return (
     <>
@@ -367,6 +367,8 @@ export default function Parent({ children }: { children: React.ReactNode }) {
           >
           <UserStateContext.Provider value={{userState , setUserState}}>
           <SocketContext.Provider value={Socket}>
+     
+          <ScreenWidth.Provider value={{ large, setLarge }}>
             {data ? (
               checkTwoFactor ? (
                 <App>{children}</App>
@@ -376,6 +378,8 @@ export default function Parent({ children }: { children: React.ReactNode }) {
             ) : (
               <Loding />
             )}
+            </ScreenWidth.Provider>
+
           </SocketContext.Provider>
             </UserStateContext.Provider>
         </ProfileDataContext.Provider>

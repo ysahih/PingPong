@@ -1,22 +1,15 @@
 import { use, useContext, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Navbar from "./component/Navbar";
-import Ranking from "./component/Ranking";
 import Sidebar from "./component/Sidebar";
 import Chat from "./component/Chat";
-import Search from "./component/Search";
-import Games from "./component/Games";
 import "./globals.css";
 import axios from "axios";
-import Router, { useRouter } from "next/navigation";
 import { FiChevronsRight } from "react-icons/fi";
 import "@/styles/userProfile/userFriend.css";
-import userStateContext from "@/components/context/userSate";
 import { Carousel, Typography, Button, Switch } from "@material-tailwind/react";
 import ChatContext, { chatContext } from "@/components/context/chatContext";
 import RenderContext, { renderContext } from "@/components/context/render";
-import UserProfile from "@/components/userProfile";
-import ProfileOverlay from "./component/ProfileOverlay";
 import Gameplay from "./Game/GamePages/Gameplay";
 import {
   GameContext,
@@ -24,13 +17,10 @@ import {
   Notificationdata,
 } from "./Game/Gamecontext/gamecontext";
 import UserDataContext from "@/components/context/context";
-import SocketContext from "@/components/context/socket";
-import CreateRoom from "../components/createRoom/createRoom";
-import RoomSettings from "../components/roomComponents/roomSettings";
-import JoinRoom from "./joinRoom/joinRoom";
 import { CircularProgress } from "@mui/material";
 import axiosApi from "@/components/signComonents/api";
-
+import ScreenWidth from "@/components/context/screenWidth";
+import { usePathname, useRouter } from "next/navigation";
 
 export const Tables = () => {
   const render = useContext(RenderContext);
@@ -120,13 +110,14 @@ const Match: React.FC<{ user: History }> = (props) => {
   return (
     <div className="match">
       <div className="opponent w-[30%] xl:mr-[-20%] mr-[-40%]">
-        <Image className="rounded-full w-[30px] h-[30px]" 
+        <Image
+          className="rounded-full w-[30px] h-[30px]"
           src={props.user?.image || "@/public/defaultImg.svg"}
           alt="profile"
           width={26}
           height={26}
         />
-        <p  className="truncate min-w-[40px]">{props.user.userName}</p>
+        <p className="truncate min-w-[40px]">{props.user.userName}</p>
       </div>
       <div className="level">
         <p>{props.user.level}</p>
@@ -145,27 +136,26 @@ interface History {
   level: number;
 }
 
-
-
-  export const NoHistoy = () => {
-
-    return (
-      <div className=" flex justify-center items-center w-[100%] h-[100%] font-inter  text-lg  font-light text-[#8A99E9] ">
-        <p>NO MATCH PLAYED YET</p>
-      </div>
-    );
-  }
-
+export const NoHistoy = () => {
+  return (
+    <div className=" flex justify-center items-center w-[100%] h-[100%] font-inter  text-lg  font-light text-[#8A99E9] ">
+      <p>NO MATCH PLAYED YET</p>
+    </div>
+  );
+};
 
 export const Statistics = () => {
   const [history, setHistory] = useState<History[]>([]);
-  const [reciveresponse ,SetReciveResponse] = useState<boolean>(false); 
+  const [reciveresponse, SetReciveResponse] = useState<boolean>(false);
   useEffect(() => {
     const histories = async () => {
-      const response = await axiosApi.get(process.env.NEST_API + "/user/history", {
-        withCredentials: true,
-      });
-        SetReciveResponse(true);
+      const response = await axiosApi.get(
+        process.env.NEST_API + "/user/history",
+        {
+          withCredentials: true,
+        }
+      );
+      SetReciveResponse(true);
       if (response.data) setHistory(response.data);
     };
     histories();
@@ -180,7 +170,7 @@ export const Statistics = () => {
       </div>
       <div className="Statistics flex flex-col max-h-[800px] overflow-y-auto">
         <div className="Statistics-head">
-          <div className="" >
+          <div className="">
             <p>Opponent</p>
           </div>
 
@@ -193,15 +183,17 @@ export const Statistics = () => {
           </div>
         </div>
         <div className="matches  flex-1 flex flex-col">
-          {  !reciveresponse ? 
-          <div className="w-[100%] h-[100%] flex items-center justify-center ">
-             <CircularProgress /> 
-          </div> :
-              Array.isArray(history)  && history.length > 0 ?
+          {!reciveresponse ? (
+            <div className="w-[100%] h-[100%] flex items-center justify-center ">
+              <CircularProgress />
+            </div>
+          ) : Array.isArray(history) && history.length > 0 ? (
             history.map((user: History, idx: number) => {
               return <Match key={user.userName + idx} user={user} />;
             })
-            : <NoHistoy />}
+          ) : (
+            <NoHistoy />
+          )}
         </div>
       </div>
     </>
@@ -215,8 +207,7 @@ const Home = ({
   children: React.ReactNode;
   showPopup: boolean;
 }) => {
-  const context: renderContext | null = useContext(RenderContext);
-  const [choice, setChoice] = useState<number>(1);
+
   return (
     <div className={showPopup ? "home-margin homepage" : "homepage"}>
       {children}
@@ -226,34 +217,28 @@ const Home = ({
 
 const Body = ({ children }: { children: React.ReactNode }) => {
   const [showPopup, setShowPopup] = useState(true);
-  const [label, setLabel] = useState({id:0, isRoom:false});
+  const [label, setLabel] = useState({ id: 0, isRoom: false });
+  const context: renderContext | null = useContext(RenderContext);
+  const screenWidth = useContext(ScreenWidth);
+  const router = useRouter();
+  const path = usePathname();
 
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 768) setShowPopup(false);
       else setShowPopup(true);
+      if (window.innerWidth <= 1139) screenWidth?.setLarge(false);
+      else {
+        screenWidth?.setLarge(true);
+        if (path == "/Chat") {
+          router.push("/"); 
+        }
+      }
     };
-
-    handleResize();
-
+    // handleResize();
     window.addEventListener("resize", handleResize);
-
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth <= 768) setShowPopup(false);
-      else setShowPopup(true);
-    };
-
-    handleResize();
-
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
+  });
 
   return (
     <ChatContext.Provider value={{ label, setLabel }}>
@@ -272,18 +257,16 @@ const Body = ({ children }: { children: React.ReactNode }) => {
           />
         </div>
         <Home showPopup={showPopup}>{children}</Home>
-      
+
         <div className="chatdiv hidden xl:block">
           <Chat />
         </div>
-        
       </div>
     </ChatContext.Provider>
   );
 };
 
 export default function App({ children }: { children: React.ReactNode }) {
-  // const gamecontext = useContext(GameContext);
   const [render, setRender] = useState("home");
   const [gamemode, setGamemode] = useState<string>("Dark Valley");
   const [gametype, settype] = useState<string>("random");
@@ -291,6 +274,7 @@ export default function App({ children }: { children: React.ReactNode }) {
   const [Isrunning, setRunning] = useState<boolean>(false);
   const [playerposition, setplayerposition] = useState<string>("");
   const user = useContext(UserDataContext);
+
   const [lodingdata, setlodingdata] = useState<GameLodingProps>({
     users: [
       {
@@ -304,7 +288,6 @@ export default function App({ children }: { children: React.ReactNode }) {
     ],
     gameloding: true,
   });
-  console.log("lodingdata");
 
   return (
     <RenderContext.Provider value={{ render, setRender }}>
