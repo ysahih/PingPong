@@ -49,8 +49,8 @@ export type leaveGame = {
 }
 
 
-export type userinfo = { clientid: number , image : string , username : string , ingame : boolean , level : number , achievenemt : number[] , numberofWin : number};
-export type RoomInfo = {users: userinfo[],gameloding: boolean  , type : string , mode : string, friendid : number};
+export type userinfo = { clientid: number , image : string , username : string , ingame : boolean , level : number , achievenemt : number[] , numberofWin : number , mode : string};
+export type RoomInfo = {users: userinfo[],gameloding: boolean  , type : string , friendid : number};
 
 
 export class datagame {
@@ -242,18 +242,18 @@ export class datagame {
 			}
 			return false;
 		}
-	addRoom( data : userinfo , type : string ,mode : string , friendid : number){
+	addRoom( data : userinfo , type : string , friendid : number){
 		const { v4: uuidv4 } = require('uuid');
 
 
 
 
 		const roomname = uuidv4();
-		this.rooms[roomname] = { users: [data], gameloding: true , type : type  , mode : mode , friendid : friendid};
+		this.rooms[roomname] = { users: [data], gameloding: true , type : type , friendid : friendid};
 		this.initgame(roomname);
 		if (type === "ai")
 		{
-			this.addUser(roomname, {clientid: -1, image: "ROBOT", username: "ROBOT", ingame: false , level : 100 , achievenemt : [] , numberofWin : 0});
+			this.addUser(roomname, {clientid: -1, image: "ROBOT", username: "ROBOT", ingame: false , level : 100 , achievenemt : [] , numberofWin : 0 , mode : "Dark Valley"});
 		}
 		// console.log("mooood" ,  this.rooms[roomname].mode);
 	}
@@ -285,7 +285,7 @@ export class datagame {
 		return null
 	}
 
-	findEmptyRoom (type : string , clientid : number , mode : string)
+	findEmptyRoom (type : string , clientid : number )
 	{
 
 		for (const room in this.rooms) {
@@ -310,11 +310,14 @@ export class datagame {
 		// console.log("room" , this.rooms[room].mode);
 		// console.log("user" , this.rooms[room]);
 
-		try {
 
-		if (this.rooms[room].mode == "Dark Valley"  &&  this.checkAchievement(this.rooms[room].users[user] ,1) === false)
+
+		try {
+		
+		
+		if (this.rooms[room].users[user].mode == "Dark Valley"  &&  this.checkAchievement(this.rooms[room].users[user] ,1) === false)
 			await updateAchievementFn(id , 1);
-		  if (this.rooms[room].mode == "Flame Arena"  &&  this.checkAchievement(this.rooms[room].users[user] ,2) === false)
+		  if (this.rooms[room].users[user].mode == "Flame Arena"  &&  this.checkAchievement(this.rooms[room].users[user] ,2) === false)
 			await updateAchievementFn(id , 2);
 		  if (this.rooms[room].users[user].numberofWin > 0 &&  this.checkAchievement(this.rooms[room].users[user] ,3) === false)
 			await updateAchievementFn(id , 3);
