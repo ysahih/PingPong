@@ -169,13 +169,17 @@
   font-family: Lalezar;
   font-size: 17px;
   font-weight: 400;
-  line-height: 11px;
-  letter-spacing: 0em;
-  text-align: left;
+  line-height: 8px;
+  font-size: medium;
+  /* letter-spacing: 0em; */
+  text-align: center;
   color: #ffffff;
   border-radius: 7px;
   padding: 10px 20px;
-  gap: 14px;
+  min-width: 120px;
+  height: 35px;
+
+  /* gap: 14px; */
   background: linear-gradient(272.48deg, #1b266b 6.62%, #0064fb 92.24%);
   margin-bottom: 10px;
 }
@@ -190,6 +194,7 @@
   background: #9f9edd40;
   margin: 2px;
   text-align: center;
+  appearance: 'none';
   @media (max-width: 769px) {
     min-width: 30px;
     height: 30px;

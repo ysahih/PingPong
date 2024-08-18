@@ -58,11 +58,11 @@ export const Tables = () => {
               Dark Valley
             </Typography>
             <div className="flex">
-              <Button placeholder="button" className="playnow" color="blue" 
+              <Button placeholder="button" className="playnow min-w-[100px] w-[100px]" color="blue" 
                 onClick={ 
                   ()=>{      
                       game?.setRunning(false);
-                      game?.setGamemode("Flame Arena");
+                      game?.setGamemode("Dark Valley");
                       game?.settype("random");
                       game?.setgamefriend(-1);
                       render?.setRender("playGame");
@@ -94,7 +94,7 @@ export const Tables = () => {
             </Typography>
 
             <div className="flex text-sm">
-              <Button placeholder="button" className="playnow bg- " color="white"
+              <Button placeholder="button" className="playnow min-w-[100px] w-[100px]" color="white"
                  onClick={ 
                   ()=>{      
                       game?.setRunning(false);
@@ -219,26 +219,6 @@ const Home = ({
   const [choice, setChoice] = useState<number>(1);
   return (
     <div className={showPopup ? "home-margin homepage" : "homepage"}>
-      {/* <button onClick={() => setChoice(() => 0)} style={{position:"absolute", marginLeft: "200px", backgroundColor:"white"}}> RoomSettings </button>
-    <button onClick={() => setChoice(() => 1)} style={{position:"absolute", marginLeft: "400px", backgroundColor:"white"}}> JoinRoom </button>
-    <button onClick={() => setChoice(() => 2)} style={{position:"absolute", marginLeft: "300px", backgroundColor:"white"}}> CreateRoom </button> */}
-      {/* {!choice && <RoomSettings name={"keepItUp"} />}
-      {choice === 1 && <JoinRoom />}
-      {choice === 2 && <CreateRoom />} */}
-      {/* {context?.render === "home" && (
-        <div className="home">
-          <Tables />
-          <Statistics />
-        </div>
-      )}
-      {context?.render === "games" && <Games />}
-      {context?.render === "ranking" && <Ranking />}
-      {context?.render === "search" && <Search />}
-      {context?.render === "profile" && <UserProfile />}
-      {context?.render === "profileOverly" && <ProfileOverlay />}
-      {context?.render === "chat" && (
-        <div className="chatholder visible xl:invisible">{/* }</div>
-      )} */}
       {children}
     </div>
   );
@@ -319,6 +299,7 @@ export default function App({ children }: { children: React.ReactNode }) {
         username: user?.userName || "no name",
         ingame: false,
         level: user?.level || 0,
+        mode : "Dark Valley",
       },
     ],
     gameloding: true,

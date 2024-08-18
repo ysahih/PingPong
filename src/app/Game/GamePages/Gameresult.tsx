@@ -30,7 +30,8 @@ const Gameresult : React.FC<{ result : string } > = (props) => {
                image : user?.image || "no image",
                username : user?.userName || "no name" ,
                 ingame : false,
-                level : user?.level || 0
+                level : user?.level || 0,
+                mode : "",
       } ] ,
           gameloding: true });   
         game?.setplayerposition("");

@@ -80,13 +80,13 @@ const VerifyTwoFa = (props: VerifyTwoFaProps) => {
         <OTPInput
           numInputs={6}
           // renderSeparator={<span>-</span>}
+          
           value={input}
           renderInput={(props, index) => (
-            <input {...props} id={index.toString()} />
+            <input {...props} id={index.toString()}  autoComplete="off"/>
           )}
           inputStyle={`inputwith ${!enable2Fa && "InputError"} `}
           onChange={(res: string) => {
-            console.log("==========",res);
             setInput(res), setEnable2Fa(true);
             setTimeout(() => {
               if (

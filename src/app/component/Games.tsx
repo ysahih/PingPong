@@ -17,9 +17,7 @@ const HowToPlay = (props : {close : (close : boolean) => void }) => {
   // const [close, setClose] = useState(false);
 
   return (
-
-
-      <div   className=" w-[90%]   md:w-[700px] md:h-[800px]  bg-[#FFFFF] " >
+      <div   className=" w-[90%] ml-[5%] md:ml-0 md:w-[700px] md:h-[800px]  bg-[#FFFFF] " >
         <div  className="w-[100%]  flex justify-end  ">
         <CloseBtn  close={props.close} />
         </div>
@@ -41,33 +39,10 @@ const HowToPlay = (props : {close : (close : boolean) => void }) => {
 const Games = () => {
   const game = useContext(GameContext);
   const render = useContext(RenderContext);
-  const user = useContext(UserDataContext);
-  const Socket = useContext(SocketContext);
   const [renderHowToPlay, setRenderHowToPlay] = useState(false); 
   const ref = useClickAway<HTMLDivElement>(() => {
     setRenderHowToPlay(false);
   });
-
-  useEffect(() => {
-
-    // if (user?.inGame == true) {
-    //   Socket?.emit("joinGame", { clientid: user?.id });
-    //   console.log("joinGame>>>GAME");
-    // }
-  
-    // Socket?.on("rejoinGame", (data: any ) => {
-    //   console.log("rejoinGame>>>GAME");
-    //   if (data) {
-    //     console.log( "data",data.mode);
-    //     console.log("rejoinGame>>>GAME");
-    //     game?.setRunning(false);
-    //     game?.setGamemode(data.mode);
-    //     game?.settype(data.type);
-    //     game?.setgamefriend(-1);
-    //     render?.setRender("playGame");
-    //   }
-    // });
-    }, [Socket]);
 
     return (
       <div className="Games">

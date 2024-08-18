@@ -213,7 +213,8 @@ const Invite = () => {
                image : user?.image || "no image",
                username : user?.userName || "no name" ,
                 ingame : false,
-                level : user?.level || 0
+                level : user?.level || 0 ,
+                mode : "Dark Valley"
       } ] ,
           gameloding: true });   
         game?.setplayerposition("");
@@ -354,7 +355,7 @@ const Header = () => {
   return (
     <div className="header">
       <div className="leftBar">
-      <div className="bg-red-600 ">
+      <div >
         <Invite />
         </div>
       </div>
@@ -363,7 +364,7 @@ const Header = () => {
         <Notification />
         <Profile src={data?.image} />
 
-        <h2 className="hidden md:block "> {data?.userName}</h2>
+        <h2 className="hidden md:block ">lvl: {data?.level}</h2>
       </div>
     </div>
   );

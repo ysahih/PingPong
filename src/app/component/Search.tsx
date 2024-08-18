@@ -28,6 +28,8 @@ import { string } from "yup";
 import { useRouter } from "next/navigation";
 import { IoGameController } from "react-icons/io5";
 import logo from '@/../public/RoomSettings/UserInite.svg';
+import { GameContext } from "../Game/Gamecontext/gamecontext";
+import RenderContext from "@/components/context/render";
 
 type UserProps = {
   id: number;
@@ -45,12 +47,22 @@ const Friend = (props: friendsType) => {
   const user = useContext(UserDataContext);
   const context = useContext(ChatContext);
   const [blocking, setBlocking] = useState<boolean>(false);
+  const game = useContext(GameContext);
+  const render = useContext(RenderContext);
   const router = useRouter();
 
   const block = (id: number) => {
     socket?.emit("NewBlocked", { id: id, userId: user?.id });
   };
 
+  const sendGame = (id: number) => {
+    socket?.emit("SendGameInvite", {
+      invitationSenderID: user?.id,
+      mode: "friend",
+      friendId: id,
+    });
+  };
+  
   return (
     <div className="search-card SearchCard  text-white mb-2">
       <div className="relative">
@@ -102,6 +114,13 @@ const Friend = (props: friendsType) => {
           height={28}
           property="true"
           alt="online"
+          onClick={() => {
+            game?.setGamemode("Dark Valley");
+            game?.settype("friend");
+            game?.setgamefriend(props.value.id);
+            sendGame(props.value.id);
+            render?.setRender("playGame");
+          }}
         />
         <Image
           src="/iconsProfile/Chat_solid.svg"

@@ -90,7 +90,7 @@ const Friend = (props: friendsType) => {
           height={28}
           property="true"
           onClick={() => {
-            game?.setGamemode("friend");
+            game?.setGamemode("Dark Valley");
             game?.settype("friend");
             game?.setgamefriend(props.value.id);
             sendGame(props.value.id);

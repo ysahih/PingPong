@@ -47,7 +47,6 @@ const Game : React.FC<{}> = () => {
 
 
 
-
   useEffect (() => {
     const updatePosition = (mydata: Gameresponse ) => {
       if (game?.playerposition == "left")
@@ -351,7 +350,7 @@ useEffect(() => {
                 </div>
               </div>
               <div className="PlayerProfile">    
-                <Image   src={  game?.gametype == "ai"  && game?.lodingdata.users[1].username == "ROBOT" ?  "./homeImages/robot.svg"  :   game?.lodingdata.users[1].image || "" } width={48} height={48}  alt ="Player image" 
+                <Image   src={ game?.gametype == "ai"  && game?.lodingdata.users[1].username == "ROBOT" ?  "./homeImages/robot.svg"  :   game?.lodingdata.users[1].image || "" } width={48} height={48}  alt ="Player image" 
                 style={
                         {
                          width: 40,  
