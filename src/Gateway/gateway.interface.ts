@@ -36,12 +36,9 @@ export class RoomDTO {
 	name		:string
 
 	@IsEnum(ROOMTYPE)
-	// @IsString()
 	type		:ROOMTYPE
 
 	@IsEnum(ROLE)
-	// @IsOptional()
-	// @IsString()
 	userRole	:ROLE
 }
 
@@ -86,16 +83,8 @@ export class UpdateStatusRoom {
 	@IsInt()
 	fromId		:number
 
-	// @IsNotEmpty()
-	// @IsString()
-	// userName	:string
-
 	@IsInt()
 	userId	:number
-
-	// @IsNotEmpty()
-	// @IsString()
-	// roomName	:string
 
 	@IsInt()
 	roomId	:number
@@ -119,9 +108,6 @@ export class UserOutDTO {
 
 	@IsInt()
 	roomId		:number
-
-	// @IsString()
-	// roomName	:string
 }
 
 export class ChatData {
@@ -132,8 +118,6 @@ export class ChatData {
 	createdAt		:Date
 	isOnline		:boolean
 	isRoom			:boolean
-	// TODO: Handle This
-	isRead			:boolean
 }
 
 export class Messages {

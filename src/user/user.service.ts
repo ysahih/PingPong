@@ -873,7 +873,7 @@ export class FriendsService {
 
         lastMessajes.conv.forEach((conv) => {
           let orgConv = new ChatData();
-  
+
           if (conv?.users[0]) {
             orgConv.id = conv.users[0].id;
             orgConv.userName = conv.users[0].userName;
@@ -1063,7 +1063,7 @@ export class FriendsService {
           convData.inGame = false;
           convData.online = false;
           convData.hasNoAccess = room.users[0].isMuted;
-          convData.messages = room.messages.map(msj => {
+          convData.messages = room.messages.filter(msj => !!msj.content).map(msj => {
             return {
               content: msj.content,
               createdAt: msj.createdAt,
@@ -1798,7 +1798,10 @@ export class FriendsService {
 
         
         if (user.users[0].userRole === 'OWNER') {
-          const data = await this.prisma.room.findMany({
+          const data = await this.prisma.room.findUnique({
+            where: {
+              id: roomId,
+            },
             select: {
               users: {
                 orderBy: {
@@ -1818,6 +1821,7 @@ export class FriendsService {
           });
 
           if (data[0]?.users?.length) {
+            console.log(data[0]?.users);
             await this.prisma.userRoom.update({
               where: {
                 userId_roomId: {
