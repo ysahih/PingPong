@@ -103,7 +103,7 @@ const UserOption = ({ className }: userOptionClass) => {
   return (
     <div className={`-mt-3 -ml-2 rounded-lg bg-[#040A2F]  ${className}`}>
       <div className="ml-1 flex text-xs items-center justify-evenly  text-[#8A99E9]">
-        <FaGamepad className="w-5 h-5"/>
+        <FaGamepad className="w-5 h-5" />
         <p className="clash mt-1">Clash</p>
       </div>
     </div>
@@ -263,7 +263,7 @@ const Conversation = (props: ConvoProps) => {
         isRead: false, //will be removed
         isRoom: props.label.isRoom,
         createdAt: new Date(),
-        hasNoAccess: false , // add this later on
+        hasNoAccess: false, // add this later on
       });
       setInput("");
       if (inputRef.current) inputRef.current.value = "";
@@ -328,18 +328,23 @@ const Conversation = (props: ConvoProps) => {
         }, 2000);
       }
     });
-    
-    socket?.on("access", (payload: { from: number, isRoom: boolean, access: boolean }) => {
-      console.log('Access:', payload);
-      if (payload.from === props.label.id && props.label.isRoom == payload.isRoom) {
-        setConvo((prevConvo: any) => {
-          return {
-            ...prevConvo,
-            hasNoAccess: payload.access,
-          };
-        });
+
+    socket?.on(
+      "access",
+      (payload: { from: number; isRoom: boolean; access: boolean }) => {
+        if (
+          payload.from === props.label.id &&
+          props.label.isRoom == payload.isRoom
+        ) {
+          setConvo((prevConvo: any) => {
+            return {
+              ...prevConvo,
+              hasNoAccess: payload.access,
+            };
+          });
+        }
       }
-    });
+    );
     setTimeAgo(getTimeAgo());
     return () => {
       socket?.off("isTyping");
@@ -377,7 +382,11 @@ const Conversation = (props: ConvoProps) => {
                   <h2>{convo?.userName}</h2>
                   {!props.label.isRoom ? (
                     <p className="w-[50px]">
-                      {typing ? "Typing..." : convo.hasNoAccess ? '' : userState}
+                      {typing
+                        ? "Typing..."
+                        : convo.hasNoAccess
+                        ? ""
+                        : userState}
                     </p>
                   ) : (
                     <p className="w-[50px]">Channel</p>
@@ -431,10 +440,14 @@ const Conversation = (props: ConvoProps) => {
           </div>
 
           <form onSubmit={sendInput} className="input-footer">
-            {convo.hasNoAccess  ? (
+            {convo.hasNoAccess ? (
               <div className="flex items-center justify-center gap-2 text-[#8A99E9] w-full">
                 <MdOutlineBlock className="min-w-[25px] min-h-[25px]" />
-                <span className="mt-[4px] hidden sm:block">Muted</span>
+                {props.label.isRoom ? (
+                  <span className="mt-[4px]">Muted</span>
+                ) : (
+                  <span className="mt-[4px]">Blocked</span>
+                )}
               </div>
             ) : (
               <div className="flex w-full items-center">
