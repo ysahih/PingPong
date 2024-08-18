@@ -21,7 +21,7 @@ import Gameplay from "./Game/GamePages/Gameplay";
 import {
   GameContext,
   GameLodingProps,
-  NotificationContext,
+  Notificationdata,
 } from "./Game/Gamecontext/gamecontext";
 import UserDataContext from "@/components/context/context";
 import SocketContext from "@/components/context/socket";

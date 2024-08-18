@@ -65,7 +65,6 @@ const Gameplay : React.FC<{  }> = ( ) => {
     const socket = useContext(SocketContext);
     const render = useContext(RenderContext);
     useEffect(() => {
-      
       const handlcheck = () => {
       if (game?.lodingdata && game?.lodingdata.users.length < 2)
       {
@@ -76,7 +75,8 @@ const Gameplay : React.FC<{  }> = ( ) => {
                image : user?.image || "no image",
                username : user?.userName || "no name" ,
                 ingame : false,
-                level : user?.level || 0
+                level : user?.level || 0,
+                mode : game?.gamemode || ""
           } ] ,
         gameloding: true });   
         game?.setplayerposition("");
@@ -96,7 +96,7 @@ const Gameplay : React.FC<{  }> = ( ) => {
 
     useEffect(() => 
     {
-      const handlegameroom =(responsedata : { room  :{ users : Userinfo[]  , gameloding : boolean} , alreadymatch : boolean }) =>
+      const handlegameroom =(responsedata : { room  :{ users : Userinfo[]  , gameloding : boolean} , alreadymatch : boolean  }) =>
       {
      
         if ( responsedata && responsedata.room  && responsedata.room.users && responsedata.room.users.length == 2) 
@@ -104,16 +104,16 @@ const Gameplay : React.FC<{  }> = ( ) => {
 
           if (game?.lodingdata && game?.lodingdata.users.length < 2 && responsedata.room.users[0].clientid ==  user?.id )
           {
-            
+            game?.setGamemode(responsedata.room.users[0].mode)
             game?.setplayerposition("left");
           }
           else if  (game?.lodingdata &&  game?.lodingdata.users.length < 2  && responsedata.room.users[1].clientid == user?.id)
           {
             game?.setplayerposition("right");
-            
             var tmp = responsedata.room.users[0];
             responsedata.room.users[0] = responsedata.room.users[1];
             responsedata.room.users[1] = tmp;
+            game?.setGamemode(responsedata.room.users[0].mode)
           }
           if (game?.lodingdata &&  game?.lodingdata.users.length  < 2)
             game?.setlodingdata({users : responsedata.room.users,gameloding : true});
@@ -123,9 +123,8 @@ const Gameplay : React.FC<{  }> = ( ) => {
       }
 
       const gamematch = () => {
-        socket?.emit("RandomGameroom",   { userid : user?.id ,  soketid :socket?.id  , type : game?.gametype , mode : game?.gamemode , friend : game?.gamefriend}  );
+        socket?.emit("RandomGameroom",   { userid : user?.id ,  soketid :socket?.id  , type : game?.gametype , mode : game?.gamemode , friend : game?.gamefriend});
         socket?.on("RandomGameroom", handlegameroom )
-
       }
       const timematch = setTimeout(gamematch, 1000);
       return () => {

@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image"
-import { GameContext } from "../Game/Gamecontext/gamecontext";
-import { useContext, useRef, useState } from "react";
+import { GameContext, Notificationdata } from "../Game/Gamecontext/gamecontext";
+import { useContext, useEffect, useRef, useState } from "react";
 import RenderContext from "@/components/context/render";
 import UserDataContext from "@/components/context/context";
 import { useRouter } from "next/navigation";
@@ -9,6 +9,7 @@ import QrContainer from "@/components/Qrcode/QRcode";
 import { Carousel } from "@material-tailwind/react";
 import { useClickAway } from "@uidotdev/usehooks";
 import CloseBtn from "@/components/closebtn";
+import SocketContext from "@/components/context/socket";
 
 
 
@@ -37,16 +38,36 @@ const HowToPlay = (props : {close : (close : boolean) => void }) => {
 }
 
 
-
-
 const Games = () => {
   const game = useContext(GameContext);
   const render = useContext(RenderContext);
   const user = useContext(UserDataContext);
+  const Socket = useContext(SocketContext);
   const [renderHowToPlay, setRenderHowToPlay] = useState(false); 
   const ref = useClickAway<HTMLDivElement>(() => {
     setRenderHowToPlay(false);
   });
+
+  useEffect(() => {
+
+    // if (user?.inGame == true) {
+    //   Socket?.emit("joinGame", { clientid: user?.id });
+    //   console.log("joinGame>>>GAME");
+    // }
+  
+    // Socket?.on("rejoinGame", (data: any ) => {
+    //   console.log("rejoinGame>>>GAME");
+    //   if (data) {
+    //     console.log( "data",data.mode);
+    //     console.log("rejoinGame>>>GAME");
+    //     game?.setRunning(false);
+    //     game?.setGamemode(data.mode);
+    //     game?.settype(data.type);
+    //     game?.setgamefriend(-1);
+    //     render?.setRender("playGame");
+    //   }
+    // });
+    }, [Socket]);
 
     return (
       <div className="Games">

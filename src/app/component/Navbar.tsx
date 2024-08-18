@@ -15,6 +15,7 @@ import "@/styles/search.css";
 
 import { getTimeAgo } from "./timeAgo";
 import axiosApi from "@/components/signComonents/api";
+import { useRouter } from "next/navigation";
 
 const PhoneLogo = () => {};
 
@@ -62,6 +63,7 @@ type NotificationType = {
 };
 
 const Notification = () => {
+  
   const [notification, setNotification] = useState(false);
   const ref = useClickAway<HTMLDivElement>(() => {
     if (!notification) return;
@@ -187,6 +189,7 @@ const Notification = () => {
 
 const Invite = () => {
   const socket = useContext(SocketContext);
+  const router = useRouter();
   const [notification, setNotification] = useState({
     invitationSenderID: "",
     username: "",
@@ -233,17 +236,22 @@ const Invite = () => {
       });
 
 
-      console.log("mymessage>>>>>>>>>>>>>>" );
-      socket?.on("rejoinGame", (data) => {
-        setNotification(data);
-        setDisplayChoise(true);
-        setDisplay(true);
-        setNotificationtype(1);
-        setTimeout(() => {
-          setDisplay(false);
-          setDisplayChoise(true);
-        }, 5000);
-      });
+      
+      // socket?.on("rejoinGame", (data) => {
+      //   console.log("rejoinGame>>>nave");
+      //   setNotification(data);
+      //   setDisplayChoise(true);
+      //   setDisplay(true);
+      //   game?.setGamemode(notification.mode);
+      //   game?.settype(notification.type);
+      //   game?.setgamefriend(-1);
+      //   render?.setRender("playGame");
+      //   setNotificationtype(1);
+      //   setTimeout(() => {
+      //     setDisplay(false);
+      //     setDisplayChoise(true);
+      //   }, 5000);
+      // });
 
       socket?.on("gameresponse", (data) => {
         console.log("message1", data);
@@ -271,10 +279,16 @@ const Invite = () => {
 
 
   useEffect(() => {
-    if(user?.inGame == true )
-    socket?.emit("joinGame",  {  clientid : user?.id });
-    console.log(">>>>>>>>>joinGame");
-  },[]);
+    if(user?.inGame == true && render?.render != "playGame")
+    {
+      render?.setRender("playGame");
+      router.push("/Game");
+    // socket?.emit("joinGame",  {  clientid : user?.id });
+    // console.log("joinGame>>>nave");
+    // console.log("render", render?.render);
+
+    }
+  },[socket]);
 
 
 
@@ -308,23 +322,21 @@ const Invite = () => {
                         } />
                         <Image src="/homeImages/Accept.svg" className="yes-no " alt="image" width={24} height={24} onClick={() =>
                             {
-                              if (notificationtype == 1) 
+                              if (notificationtype == 2) 
                                 {
                                   socket?.emit("gameInvitation", {  clientID : user?.id , invitationSenderID: notification.invitationSenderID , response: true});
                                   game?.setGamemode(notification.mode);
                                   game?.settype("friend");
                                   render?.setRender("playGame");
                                 }
-                              else if (notificationtype == 2)
+                               if (notificationtype == 1)
                                 {
                                   game?.setGamemode(notification.mode);
                                   game?.settype(notification.type);
                                   render?.setRender("playGame");
 
                                 }
-
                                 setDisplay(false);
-                              
                               setNotificationtype(0);
                             }
                         } />

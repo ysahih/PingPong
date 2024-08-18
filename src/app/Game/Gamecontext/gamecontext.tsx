@@ -7,7 +7,7 @@ export  type GameLodingProps =
     gameloding: boolean 
 };
 
-export    type Userinfo = { clientid: number , image : string , username : string , ingame : boolean , level : number}
+export    type Userinfo = { clientid: number , image : string , username : string , ingame : boolean , level : number , mode : string}
 
 
 
@@ -54,13 +54,15 @@ export  interface GameResultProps {
 
 export const GameContext = createContext<GameContextType | null>(null);
 
-export type NotificationContextType = {
+export type Notificationdata = {
 	invitationSenderID : string;
 	username: string;
 	userimage: string;
 	message: string;
+	mode : string;
+	type : string;
 }
-export const NotificationContext = createContext<NotificationContextType | null>(null);
+
 
 
 
