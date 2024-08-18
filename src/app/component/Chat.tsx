@@ -330,6 +330,7 @@ const Conversation = (props: ConvoProps) => {
     });
     
     socket?.on("access", (payload: { from: number, isRoom: boolean, access: boolean }) => {
+      console.log('Access:', payload);
       if (payload.from === props.label.id && props.label.isRoom == payload.isRoom) {
         setConvo((prevConvo: any) => {
           return {
