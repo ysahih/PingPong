@@ -9,10 +9,9 @@ import { ChatData } from "./Dto/Dto";
 import axios from "axios";
 import SocketContext from "@/components/context/socket";
 import UserDataContext from "@/components/context/context";
-import { input } from "@material-tailwind/react";
 import ChatContext, { chatContext } from "@/components/context/chatContext";
 import { ConvoData } from "./Dto/Dto";
-import { send } from "process";
+
 import RenderContext, { renderContext } from "@/components/context/render";
 import { render } from "react-dom";
 import type { Message } from "./Dto/Dto";
@@ -22,10 +21,11 @@ import { useRouter } from "next/navigation";
 
 import UserStateContext from "@/components/context/userSate";
 import ProfileDataContext from "@/components/context/profilDataContext";
-import { stat } from "fs";
+import { access, stat } from "fs";
 import axiosApi from "@/components/signComonents/api";
 import { useClickAway } from "@uidotdev/usehooks";
 import { MdOutlineBlock } from "react-icons/md";
+import { FaGamepad } from "react-icons/fa";
 
 const Header = () => {
   const rout = useRouter();
@@ -102,15 +102,9 @@ interface userOptionClass {
 const UserOption = ({ className }: userOptionClass) => {
   return (
     <div className={`-mt-3 -ml-2 rounded-lg bg-[#040A2F]  ${className}`}>
-      <div className="flex text-xs justify-around ">
-        <Image
-          className=""
-          src="/homeImages/chat.svg"
-          alt="logo"
-          width={16}
-          height={17}
-        />
-        <p className="clash text-[#8A99E9]">Clash</p>
+      <div className="ml-1 flex text-xs items-center justify-evenly  text-[#8A99E9]">
+        <FaGamepad className="w-5 h-5"/>
+        <p className="clash mt-1">Clash</p>
       </div>
     </div>
   );
@@ -334,6 +328,17 @@ const Conversation = (props: ConvoProps) => {
         }, 2000);
       }
     });
+    
+    socket?.on("access", (payload: { from: number, isRoom: boolean, access: boolean }) => {
+      if (payload.from === props.label.id && props.label.isRoom == payload.isRoom) {
+        setConvo((prevConvo: any) => {
+          return {
+            ...prevConvo,
+            hasNoAccess: payload.access,
+          };
+        });
+      }
+    });
     setTimeAgo(getTimeAgo());
     return () => {
       socket?.off("isTyping");
@@ -371,7 +376,7 @@ const Conversation = (props: ConvoProps) => {
                   <h2>{convo?.userName}</h2>
                   {!props.label.isRoom ? (
                     <p className="w-[50px]">
-                      {typing ? "Typing..." : userState}
+                      {typing ? "Typing..." : convo.hasNoAccess ? '' : userState}
                     </p>
                   ) : (
                     <p className="w-[50px]">Channel</p>
@@ -527,7 +532,7 @@ const Chat = () => {
 
   return (
     <div className="chat">
-      {Convo?.label.id && (
+      {Convo?.label.id ? (
         <Conversation
           updateChat={updateChat}
           label={Convo?.label!}
@@ -537,8 +542,8 @@ const Chat = () => {
           }
           inConvo={inConvo!}
         />
-      )}
-      {Convo?.label.id == 0 && (
+      ) : null}
+      {!Convo?.label.id && (
         <div className="">
           <div className="chatbar">
             <Header />
@@ -551,7 +556,7 @@ const Chat = () => {
                   <Message
                     key={index}
                     handleMsgClick={() =>
-                      Convo.setLabel({ id: user.id, isRoom: user.isRoom })
+                      Convo?.setLabel({ id: user.id, isRoom: user.isRoom })
                     }
                     user={user}
                   />
