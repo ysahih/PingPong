@@ -764,7 +764,7 @@ export class FriendsService {
         },
       });
       if (oldinfo) {
-        console.log("User already exists");
+       
         return null;
       }
       const user = await this.prisma.user.update({
@@ -926,7 +926,6 @@ export class FriendsService {
       return sortedData;
     }
     catch(e) {
-      console.log(e);
       return null;
     }
   }
@@ -1080,7 +1079,7 @@ export class FriendsService {
       // console.log('--------------------------')
       return (convData);
     } catch (e) {
-      console.log(e);
+     
       return null;
     }
   }
@@ -1157,7 +1156,7 @@ export class FriendsService {
       });
       if (!user)
         throw new Error('User not found');
-      console.log( "data",  userId ,  achievement);
+      
       
       const newAchievement = [...user.achievement, achievement];
       await this.prisma.user.update({
@@ -1221,9 +1220,6 @@ export class FriendsService {
           user['rank'] = index + 1;
       }
       );
-
-      console.log( ">>>>>>>>>>>" ,users);
-
       return users;
   }
     catch(e){
@@ -1399,7 +1395,7 @@ export class FriendsService {
       return null;
     }
     catch (e) {
-      console.log(e.message);
+      
       return (null);
     }
   }
@@ -1430,7 +1426,7 @@ export class FriendsService {
       }
     });
 
-    console.log(checkCurUser);
+   
 
     // if (!(checkCurUser && (checkCurUser.userRole === 'OWNER' || checkCurUser.userRole === 'ADMIN')))
     //   throw new Error('This user has no privileges !');
@@ -1588,7 +1584,7 @@ export class FriendsService {
       return {status: 0, message: 'Incorect password !'};
 
     } catch (e) {
-      console.log(e);
+     
       return {status: 0, message: 'Something wrong !'};
     }
   }
@@ -1695,7 +1691,7 @@ export class FriendsService {
         },
       });
 
-      console.log("Room:", JSON.stringify(room, null, 2));
+     
 
       if (room && room?.users[0]?.userRole === 'OWNER') {
 
@@ -1733,11 +1729,11 @@ export class FriendsService {
     }
   }
 
-  async getRoom(userId: number, name :string) {
+  async getRoom(userId: number, roomId :number) {
 
     const data = await this.prisma.room.findUnique({
       where: {
-        name: name,
+        id: roomId,
       },
       select: {
         type: true,
@@ -1763,8 +1759,7 @@ export class FriendsService {
 
   async leaveRoom(userId: number, roomId :number) {
 
-    console.log(roomId);
-    console.log(userId);
+    
     try {
       const user = await this.prisma.room.findUnique({
         where: {
@@ -1823,7 +1818,7 @@ export class FriendsService {
           });
 
           if (data[0]?.users?.length) {
-            console.log(data[0]?.users);
+           
             await this.prisma.userRoom.update({
               where: {
                 userId_roomId: {
@@ -1844,7 +1839,7 @@ export class FriendsService {
             });
             return {status: 1, message: "User leaved the room, Room will be deleted !", deleted: 1};
           }
-          // console.log(data);
+          
           return {status: 1, message: "User leaved the room", ownerId: data[0]?.users[0]?.user.id};
         }
 
@@ -1853,7 +1848,7 @@ export class FriendsService {
       return {status: 0, message: 'User is not in the room'};
 
     } catch (e) {
-      console.log(e);
+    
       return {status: 0, message: 'Something wrong'};
     }
   }
@@ -1874,7 +1869,7 @@ export class FriendsService {
       },
     });
 
-    console.log('Invites:', JSON.stringify(invites, null, 2));
+  
 
     return invites.roomInvites.length ? invites.roomInvites : [];
   }
@@ -2065,25 +2060,25 @@ export class FriendsService {
         for (let person of newUsers) {
           if (nbUsers >= 5)
               break ;
-            console.log(person);
+            
             // usersInvited = [...usersInvited, {id: person.sender.id, roomId: roomId, userName: person.sender.userName, pic: person.sender.image}];
           usersInvited.push({id: person.id, roomId: roomId, userName: person.userName, pic: person.image});
           nbUsers++;
         }
       }
 
-      // console.log(usersInvited);
+      
 
       return usersInvited;
     } catch (e) {
-      console.log(e);
+     
       return [];
     }
   }
 
   async handleInviteUser(ownerId: number, userId: number, roomId: number) {
 
-    console.log(userId);
+  
 
     try {
       const checkOwer = await this.prisma.room.findUnique({
@@ -2126,7 +2121,7 @@ export class FriendsService {
         },
       });
 
-      console.log('Room:', JSON.stringify(checkOwer, null, 2));
+      
       const owner = checkOwer.users[0]?.user.id === ownerId ? checkOwer.users[0]?.user : checkOwer.users[1]?.user;
       const user = checkOwer.users[0]?.user.id === userId ? checkOwer.users[0]?.user : checkOwer.users[1]?.user;
 
@@ -2154,7 +2149,7 @@ export class FriendsService {
 
       return {status: 1, message: 'User invited Successfully !'};
     } catch (e) {
-      console.log(e);
+     
       return {status: 0, message: 'Something Wrong !'};
     }
   }
@@ -2201,7 +2196,7 @@ export class FriendsService {
       return {status: 0, message: 'User has not privileges !'};
 
     } catch (e) {
-      console.log(e);
+  
       return {status: 0, message: 'Something wrong !'};
     }
   }
@@ -2259,7 +2254,7 @@ export class FriendsService {
       return newData;
 
     } catch (e) {
-      console.log(e);
+     
       return [];
     }
   }
@@ -2299,14 +2294,14 @@ export class FriendsService {
       }
       return [];
     } catch (e) {
-      console.log(e);
+     
       return []
     }
   }
 
   async unban(roomId :number, ownerId :number, userId :number) {
 
-    console.log(roomId, ownerId, userId);
+    
 
     try {
         const checkOwner = await this.prisma.userRoom.findUnique({
@@ -2351,7 +2346,7 @@ export class FriendsService {
         }
         return {status: 0, message: 'This user has no privileges !'}
     } catch (e) {
-      console.log(e);
+     
       return {status: 0, message: 'Something went wrong !'};
     }
   }
@@ -2389,13 +2384,12 @@ export class FriendsService {
           }
         });
 
-        console.log('Users:', JSON.stringify(users, null, 2));
+        
 
         const banned = users.banned.map(user => ({id: user.id}));
         const invites = users.invites.map(user => ({id: user.id}));
 
-        console.log('Banned:', banned);
-        console.log('invites:', invites);
+       
 
         const deleteUsers = await this.prisma.room.update({
           where: {
@@ -2417,7 +2411,7 @@ export class FriendsService {
           },
         });
 
-        console.log('Delete', JSON.stringify(deleteUsers, null, 2));
+        
 
         const data = await this.prisma.room.delete({
           where: {
@@ -2425,14 +2419,14 @@ export class FriendsService {
           },
         });
 
-        console.log('Delete', JSON.stringify(data, null, 2));
+        
         return {status: 1, message: 'Room deleted successfully !'};
       }
 
       return {status: 0, message: 'User has no privileges !'};
 
     } catch (e) {
-      console.log(e);
+     
       return {status: 0, message: 'Something worng !'};
     }
   }

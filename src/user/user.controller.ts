@@ -32,7 +32,6 @@ export class UserController {
   @Post("sendinvit")
   @UseGuards(JwtAuthGuard)
   async RequestFriend(@Query() id: string, @Req() req: Request) {
-    console.log(id["id"]);
     const user = await this.FriendsService.sendFriendRequest(
       req.user["userId"],
       parseInt(id["id"])
@@ -197,7 +196,6 @@ export class UserController {
       }
 
     } catch (e) {
-      console.log('error ::', e);
       response.send({ "message": "error" });
     }
   }
@@ -219,7 +217,6 @@ export class UserController {
         return { "g": "success" };
       }
     } catch (e) {
-      console.log('error ::', e);
       return { "message": "Error somthing wrong!" };
     }
   }
@@ -303,12 +300,6 @@ export class UserController {
 
     const { id, newName, type, password} : {id :string, newName :string, type :ROOMTYPE, password :string} = request.body;
 
-    console.log('------------------------------------------------------------------------------\n');
-    console.log("id:", id);
-    console.log("newName:", newName);
-    console.log("type:", type);
-    console.log("password:", password);
-    console.log('file:', file);
 
     if ( (parseInt(id) < 1) || (type === ROOMTYPE.PROTECTED && !password))
       return {status: 0, message: 'Invalid data !'};
@@ -323,16 +314,15 @@ export class UserController {
       if (file)
       var imgUrl :string = await this.cloud.uploadImage(file);
     
-    console.log('------------------------------------------------------------------------------\n');
     
     return this.FriendsService.updateRoom(request.user['userId'], parseInt(id), newName, type, imgUrl, hashedPass);
   }
 
-  @Get('getRoom/:name')
+  @Get('getRoom/:id')
   @UseGuards(JwtAuthGuard)
-  async hadnleRoom(@Req() request :Request, @Param('name') name :string) {
+  async hadnleRoom(@Req() request :Request, @Param('id') id :string) {
     try {
-      return await this.FriendsService.getRoom(request.user['userId'], name);
+      return await this.FriendsService.getRoom(request.user['userId'], parseInt(id));
     } catch (e) {
       return null;
     }
@@ -378,8 +368,6 @@ export class UserController {
   async handleRoomSearch(@Req() request :Request, @Param('roomId') roomId :string, @Param('name') name :string) {
 
     // const {roomId} = request.body;
-    console.log(roomId);
-    console.log(name);
 
     return await this.FriendsService.findUser(request.user['userId'], parseInt(roomId) ,name);
   }

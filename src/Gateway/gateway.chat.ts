@@ -150,7 +150,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         await this._prisma.updateConversation(isExist.id, payload)
       }
   
-      console.log('Outgoing:', payload.message);
+    
       if (toUser) {
         const data = await this._prisma.getUser(payload.from, payload.message, payload.createdAt);
         toUser.socketId.forEach((socktId: string) => this._server.to(socktId).emit("newConvo", data));

@@ -183,11 +183,11 @@ export class authService {
   }
 
   async signup(req: signupData) {
-    console.log(req);
+  
     try {
       const hash = await argon.hash("req.password");
       const username = await this.generateUniqueUsername(req.firstName);
-      console.log(username);
+      
       const data = await this.prism.user.create({
         data: {
           email: req.email,
@@ -251,7 +251,7 @@ export class authService {
         await this.ValidateToken(id, true, undefined);
         delete user.hash;
       }
-      console.log(user);
+     
       if (user && !user.token) return null;
       return user || null;
     } catch (error) {
@@ -362,7 +362,7 @@ export class authService {
         },
       });
       if (user && (await argon.verify(user.hash, req.password))) {
-        console.log(req.email, "     ", req.userName);
+        
         delete user.hash;
         await this.ValidateToken(user.id, true, false);
         return { user: user };
