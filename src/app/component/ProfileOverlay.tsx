@@ -61,6 +61,7 @@ const FriendsType = (props: { value: USER }) => {
             sendGame(props.value.id);
             console.log("send game ", props.value.id, user?.id);
             render?.setRender("playGame");
+            router.push("/Game");
           }}
           alt="online"
         />

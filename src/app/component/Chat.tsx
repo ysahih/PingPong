@@ -107,6 +107,7 @@ const UserOption = ({ className  , id}: userOptionClass) => {
   const socket = useContext(SocketContext);
   const user = useContext(UserDataContext);
   const render = useContext(RenderContext);
+  const router = useRouter();
   const sendGame = (id: number) => {
     socket?.emit("SendGameInvite", {
       invitationSenderID: user?.id,
@@ -118,12 +119,12 @@ const UserOption = ({ className  , id}: userOptionClass) => {
   return (
     <div className={`-mt-3 -ml-2 rounded-lg   ${className}`} 
     onClick={() => {
-      game?.setGamemode("friend");
+      game?.setGamemode("Dark Valley");
       game?.settype("friend");
       game?.setgamefriend(id);
-      console.log("send game1 ", "33");
       sendGame(id);
       render?.setRender("playGame");
+      router.push("/Game");
     }}
     >
       <div className="ml-1 flex text-xs items-center justify-evenly  text-[#8A99E9]">
