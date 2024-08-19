@@ -870,7 +870,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 				}
       if (SocketsTarget) 
       {
-        let friendroon = this.gameRooms.searchefriendRoom(mydata.friendId);
+        let friendroon = this.gameRooms.searcheClientRoom(mydata.friendId);
         let curentroom = this.gameRooms.searcheClientRoom(mydata.invitationSenderID);
         if( !curentroom &&!friendroon)
         {
@@ -886,8 +886,6 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     @SubscribeMessage('LeaveGame')
 		async LeaveGame(@ConnectedSocket() client: Socket, @MessageBody () leaveGame: { clientid: number }) {	
       var room = this.gameRooms.searcheClientRoom(leaveGame.clientid);
-      
-
       if (!room)
       {
         return ;
@@ -947,49 +945,4 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       this.deleteRoom(room);
     }
 
-
-
-
-
-@SubscribeMessage('joinGame')
-		async joinGame(@ConnectedSocket() client: Socket, @MessageBody () joinGame: { clientid: number }) {	
-      var room = this.gameRooms.searcheClientRoom(joinGame.clientid);
-      
-      if (!room)
-      {
-        return ;
-      }
-      console.log(">>>>>>>>>>>>>",joinGame);
-      console.log(">>>>>>>>>>>>>",joinGame);
-      console.log(">>>>>>>>>>>>>",joinGame);
-      console.log(">>>>>>>>>>>>>",joinGame);
-      const SocketsTarget = this._users.getUserById(joinGame.clientid);
-      var name  : string;
-      var image : string;
-      var id : number
-      if (this.gameRooms.rooms[room].users.length == 2)
-        {
-          if (this.gameRooms.rooms[room].users[0].clientid != joinGame.clientid)
-          {
-            name = this.gameRooms.rooms[room].users[0].username ;
-            image = this.gameRooms.rooms[room].users[0].image;
-            id = this.gameRooms.rooms[room].users[0].clientid;
-          }
-          else
-          {
-            name = this.gameRooms.rooms[room].users[1].username;
-            image = this.gameRooms.rooms[room].users[1].image;
-            id = this.gameRooms.rooms[room].users[1].clientid;
-          }
-
-          if (SocketsTarget) 
-            {
-                SocketsTarget.socketId.forEach((socktId: string) => 
-                  {
-                    
-                    this._server.to(socktId).emit("rejoinGame", {invitationSenderID : id, username :name , userimage: image  , message : "rejoin game "   , type :this.gameRooms.rooms[room].type });
-                  });
-              }
-        }
-    }
 }

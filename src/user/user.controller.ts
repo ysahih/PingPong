@@ -191,7 +191,7 @@ export class UserController {
         response.cookie("jwt", generateJwtToken(update), {
           httpOnly: true,
           secure: false,
-          sameSite: "none", // Use 'none' in production with 'secure: true'
+          sameSite: "lax", // Use 'none' in production with 'secure: true'
         }).send({  "g": "success"  });
         return { "g": "success" };
       }
