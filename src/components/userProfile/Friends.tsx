@@ -33,7 +33,7 @@ const Friend = (props: friendsType) => {
   const sendGame = (id: number) => {
     socket?.emit("SendGameInvite", {
       invitationSenderID: user?.id,
-      mode: "friend",
+      mode: "Dark Valley",
       friendId: id,
     });
   };
@@ -95,6 +95,7 @@ const Friend = (props: friendsType) => {
             game?.setgamefriend(props.value.id);
             sendGame(props.value.id);
             render?.setRender("playGame");
+            router.push("/Game");
           }}
           alt="online"
         />

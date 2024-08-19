@@ -54,15 +54,14 @@ const Friend = (props: friendsType) => {
   const block = (id: number) => {
     socket?.emit("NewBlocked", { id: id, userId: user?.id });
   };
-
+  
   const sendGame = (id: number) => {
     socket?.emit("SendGameInvite", {
       invitationSenderID: user?.id,
-      mode: "friend",
+      mode: "Dark Valley",
       friendId: id,
     });
   };
-  
   return (
     <div className="search-card SearchCard  text-white mb-2">
       <div className="relative">

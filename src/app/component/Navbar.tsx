@@ -257,6 +257,7 @@ const Invite = () => {
       socket?.on("gameresponse", (data) => {
         console.log("message1", data);
         setNotification(data);
+        console.log(">>>>>notification", notification);
         setDisplayChoise(false);
         setNotificationtype(2);
         setDisplay(true);
@@ -327,6 +328,7 @@ const Invite = () => {
                                 {
                                   socket?.emit("gameInvitation", {  clientID : user?.id , invitationSenderID: notification.invitationSenderID , response: true});
                                   game?.setGamemode(notification.mode);
+                                  console.log("notification.mode", notification.mode);
                                   game?.settype("friend");
                                   render?.setRender("playGame");
                                 }

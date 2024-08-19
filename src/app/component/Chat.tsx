@@ -26,6 +26,7 @@ import axiosApi from "@/components/signComonents/api";
 import { useClickAway } from "@uidotdev/usehooks";
 import { MdOutlineBlock } from "react-icons/md";
 import { FaGamepad } from "react-icons/fa";
+import { GameContext } from "../Game/Gamecontext/gamecontext";
 
 const Header = () => {
   const rout = useRouter();
@@ -94,14 +95,37 @@ const Members: React.FC<Pics> = ({ chatdata }) => {
 };
 
 interface userOptionClass {
-  className: string;
+  className: string,
+  id: number
 }
 
 {
 }
-const UserOption = ({ className }: userOptionClass) => {
+const UserOption = ({ className  , id}: userOptionClass) => {
+
+  const game = useContext(GameContext);
+  const socket = useContext(SocketContext);
+  const user = useContext(UserDataContext);
+  const render = useContext(RenderContext);
+  const sendGame = (id: number) => {
+    socket?.emit("SendGameInvite", {
+      invitationSenderID: user?.id,
+      mode: "Dark Valley",
+      friendId: id,
+    });
+  };
+
   return (
-    <div className={`-mt-3 -ml-2 rounded-lg bg-[#040A2F]  ${className}`}>
+    <div className={`-mt-3 -ml-2 rounded-lg   ${className}`} 
+    onClick={() => {
+      game?.setGamemode("friend");
+      game?.settype("friend");
+      game?.setgamefriend(id);
+      console.log("send game1 ", "33");
+      sendGame(id);
+      render?.setRender("playGame");
+    }}
+    >
       <div className="ml-1 flex text-xs items-center justify-evenly  text-[#8A99E9]">
         <FaGamepad className="w-5 h-5" />
         <p className="clash mt-1">Clash</p>
@@ -142,7 +166,7 @@ const More = ({ user }: { user: ChatData }) => {
           height={16}
         />
       </div>
-      <UserOption className={showMsgOption ? "" : "invisible"} />
+      <UserOption className={showMsgOption ? "" : "invisible"  } id={user.id}  />
       <p className="absolute bottom-0 p-2 text-[9px] date font-small">
         {new Date(user.createdAt).toDateString() ===
         new Date(1970, 0, 1, 0, 0, 0, 0).toDateString()

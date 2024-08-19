@@ -34,7 +34,7 @@ const FriendsType = (props: { value: USER }) => {
   const sendGame = (id: number) => {
     socket?.emit("SendGameInvite", {
       invitationSenderID: user?.id,
-      mode: "friend",
+      mode: "Dark Valley",
       friendId: id,
     });
   };
@@ -54,7 +54,7 @@ const FriendsType = (props: { value: USER }) => {
           height={28}
           property="true"
           onClick={() => {
-            game?.setGamemode("friend");
+            game?.setGamemode("Dark Valley");
             game?.settype("friend");
             game?.setgamefriend(props.value.id);
             console.log("send game1 ", game?.gametype, "33");
