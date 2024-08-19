@@ -115,7 +115,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   @UseFilters(ExceptionHandler)
   @UsePipes(ValidationPipe)
   @SubscribeMessage("directMessage")
-  async handleDirectMessage(@ConnectedSocket() client: Socket, @Body() payload: MessageDTO) {
+  async handleDirectMessage(@ConnectedSocket() client: Socket, @Body() payload: MessageDTO, method?: boolean) {
 
     const fromUser = this._users.getUserById(payload.from);
 
@@ -126,7 +126,10 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       const room = fromUser.rooms.find(room => room.id === payload.to);
       if (room) {
         const data = await this._prisma.updateConvRoom(payload);
-        client.to(payload.to.toString()).emit('newConvo', data);
+        if (!method)
+          client.to(payload.to.toString()).emit('newConvo', data);
+        else
+          this._users.getUserById(payload.from).socketId.forEach(socketId => this._server.to(socketId).emit('newConvo', data));
       }
     }
     else {
@@ -154,70 +157,6 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       }
     }
   } 
-
-  // @UseFilters(ExceptionHandler)
-  // @UsePipes(ValidationPipe)
-  // @SubscribeMessage("directMessage")
-  // handleDirectMessage(@ConnectedSocket() client: Socket, @Body() payload: MessageDTO) {
-
-  //   // setTimeout(() => {
-  //   // TODO: I HAVE TO CHECK IF THE USER BLOKCED
-  //   console.log(payload.message);
-
-  //   // console.log(`Time: ${new Date().getTime() - new Date(payload.createdAt).getTime()}`);
-  //   // TODO: When A user send a message at that sended user to read status
-
-  //   // Get sender User Infos
-  //   const fromUser = this._users.getUserById(payload.from);
-  //   // Check if already there's that conversation
-  //   const isExist = fromUser.DirectChat.find((conv) => conv.toUserId === payload.to);
-
-  //     // Check if the receiver user is online between the _users
-  //     const toUser = this._users.getUserById(payload.to);
-
-  //   if (!isExist) {
-  //     // console.log("Conversation does not Exist !");
-  //     // If dosn't exist create new record
-  //     // const newConv = await this._prisma.createConversation(payload);
-  //     this._prisma.createConversation(payload)
-  //       .then((data) => {
-  //         this._users.addNewConversation(payload, data.id);
-  //         if (toUser) {
-  //           // this._prisma.uniqueConvo(payload.from, payload.to, payload.message, payload.createdAt)
-  //           this._prisma.getUser(payload.from, payload.message, payload.createdAt)
-  //           .then((data) => {
-
-  //             console.log('Message:', data.lastMessage);
-
-  //             toUser.socketId.forEach((socktId: string) =>
-  //               client.to(socktId).emit("newConvo", data)
-  //           );
-  //           });
-  //         }
-  //       });
-  //       // ADD conversation ID for USER1 and USER2
-  //     // this._users.addNewConversation(payload, newConv.id);
-  //   } else {
-  //     // console.log("Conversation Exists !");
-  //     // If Exist Just add the message at the conversation ID
-  //     // await this._prisma.updateConversation(isExist.id, payload);
-  //     this._prisma.updateConversation(isExist.id, payload)
-  //     .then(() => {
-  //       if (toUser) {
-  //         // this._prisma.uniqueConvo(payload.from, payload.to, payload.message, payload.createdAt)
-  //         this._prisma.getUser(payload.from, payload.message, payload.createdAt)
-  //         .then((data) => {
-
-  //             console.log('Message:', data.lastMessage);
-
-  //             toUser.socketId.forEach((socktId: string) =>
-  //               client.to(socktId).emit("newConvo", data)
-  //             );
-  //         });
-  //       }
-  //     });
-  //   }
-  // }
 
   @UseFilters(ExceptionHandler)
   @UsePipes(ValidationPipe)
@@ -258,6 +197,14 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
           isMuted: false,
           role: 'USER',
       });
+      this.handleDirectMessage(client, {
+        createdAt: new Date(1970, 0, 1, 0, 0, 0, 0),
+        from: payload.userId,
+        to: payload.room.id,
+        isRoom: true,
+        message: '',
+      },
+      true);
       // this._rooms.connectToRoom(this._server, this._users.getUserById(payload.userId).socketId, payload.room.name);
     }
   }
@@ -279,6 +226,15 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         UserRole: 'OWNER',
       });
       client.join(payload.roomId.toString());
+
+      this.handleDirectMessage(client, {
+          createdAt: new Date(1970, 0, 1, 0, 0, 0, 0),
+          from: payload.ownerId,
+          to: payload.roomId,
+          isRoom: true,
+          message: '',
+        },
+      true);
     }
   }
 
@@ -295,6 +251,12 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       const user = this._users.getUserById(payload.userId);
       if (user) {
         user.rooms.find(room => room.id === payload.roomId).UserRole = payload.role;
+        // Emit this event when the user is muted
+        user.socketId.forEach(socketId => this._server.to(socketId).emit('access', {
+          from: payload.roomId,
+          access: payload.isMuted,
+          isRoom: true,
+        }))
       }
       client.to(payload.roomId.toString()).emit("UpdateStatus", {
       // client.to(payload.roomName).emit("UpdateStatus", {
@@ -552,6 +514,9 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage("NewBlocked")
   async handleNewBlocked(@Body() Payload: { id: number; userId: number }) {
+    console.log('-----BLOCK:-----')
+    console.log(Payload.id, Payload.userId);
+    console.log('------------------');
 	const targetFriend = await this.FriendsService.blockFriendRequest(
 	  Payload.userId,
 	  Payload.id
@@ -562,12 +527,22 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 	  if (SocketsTarget) {
 		SocketsTarget.socketId.forEach((socktId: string) => {
 		  this._server.to(socktId).emit("DeleteFriend", Payload.userId);
+      this._server.to(socktId).emit('access', {
+          from: Payload.userId,
+          access: true,
+          isRoom: false,
+        });
 		});
 	  }
 	  const client = this._users.getUserById(Payload.userId);
 	  if (client) {
 		client.socketId.forEach((socktId: string) => {
 		  this._server.to(socktId).emit("NewBlocked", targetFriend);
+      this._server.to(socktId).emit('access', {
+        from: Payload.id,
+        access: true,
+        isRoom: false,
+      });
 		});
 	}
   }
@@ -579,18 +554,28 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 	  Payload.id
 	);
 	if (targetFriend !== null) {
-	  // const SocketsTarget = this._users.getUserById(Payload.id);
-	  // if (SocketsTarget) {
-	  //   SocketsTarget.socketId.forEach((socktId: string) => {
-	  //     this._server.to(socktId).emit("UnBlocked", Payload.userId);
-	  //   });
-	  // }
+	  const SocketsTarget = this._users.getUserById(Payload.id);
+	  if (SocketsTarget) {
+	    SocketsTarget.socketId.forEach((socktId: string) => {
+	      // this._server.to(socktId).emit("UnBlocked", Payload.userId);
+        this._server.to(socktId).emit('access', {
+          from: Payload.userId,
+          access: false,
+          isRoom: false,
+        });
+	    });
+	  }
 	  // console.log("unblocked", targetFriend);
 	  
 	  const client = this._users.getUserById(Payload.userId);
 	  if (client) {
 		client.socketId.forEach((socktId: string) => {
 		  this._server.to(socktId).emit("UnBlocked", Payload.id);
+      this._server.to(socktId).emit('access', {
+        from: Payload.id,
+        access: false,
+        isRoom: false,
+      });
 		});
 	  }
 	}
