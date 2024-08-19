@@ -19,11 +19,11 @@ const UpdateForm = (props: UpdateFormProps) => {
     updateForm.userName = userName;
   }
 
-  console.log("file: ", file);
+
 
   const router = useRouter();
   const sendUpdateRequest = async (values: typeof updateForm) => {
-    console.log("values: ", values);
+
 
     try {
       const formData = new FormData();
@@ -45,7 +45,7 @@ const UpdateForm = (props: UpdateFormProps) => {
       if (response && !response.data.error) router.push("/");
       if (response.data.error) throw new Error("Error");
     } catch (error: any) {
-      // console.error('Error:', error);
+
       formik.setErrors({ userName: "userName is already used" });
     }
   };

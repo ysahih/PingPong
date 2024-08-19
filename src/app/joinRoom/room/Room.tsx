@@ -21,7 +21,6 @@ const Room: React.FC<{
   const [error, setError] = useState<boolean>(false);
 
   const handleType = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.currentTarget.value);
     setPass(e.currentTarget.value);
   };
 
@@ -42,7 +41,6 @@ const Room: React.FC<{
       );
 
       if (response.data) {
-        console.log("Response:", response.data);
         if (!response.data.status) {
           setError(true);
           setTimeout(() => {

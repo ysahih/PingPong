@@ -225,7 +225,6 @@ const Invite = () => {
 
     const HandelNotification = () => {
       socket?.on("gameInvitation", (data) => {
-        console.log("message", data);
         setNotification(data);
         setDisplayChoise(true);
         setNotificationtype(2);
@@ -239,7 +238,6 @@ const Invite = () => {
 
       
       // socket?.on("rejoinGame", (data) => {
-      //   console.log("rejoinGame>>>nave");
       //   setNotification(data);
       //   setDisplayChoise(true);
       //   setDisplay(true);
@@ -255,9 +253,7 @@ const Invite = () => {
       // });
 
       socket?.on("gameresponse", (data) => {
-        console.log("message1", data);
         setNotification(data);
-        console.log(">>>>>notification", notification);
         setDisplayChoise(false);
         setNotificationtype(2);
         setDisplay(true);
@@ -286,8 +282,6 @@ const Invite = () => {
       render?.setRender("playGame");
       router.push("/Game");
     // socket?.emit("joinGame",  {  clientid : user?.id });
-    // console.log("joinGame>>>nave");
-    // console.log("render", render?.render);
 
     }
   },[socket]);
@@ -328,7 +322,6 @@ const Invite = () => {
                                 {
                                   socket?.emit("gameInvitation", {  clientID : user?.id , invitationSenderID: notification.invitationSenderID , response: true});
                                   game?.setGamemode(notification.mode);
-                                  console.log("notification.mode", notification.mode);
                                   game?.settype("friend");
                                   render?.setRender("playGame");
                                 }

@@ -30,6 +30,7 @@ import { IoGameController } from "react-icons/io5";
 import logo from '@/../public/RoomSettings/UserInite.svg';
 import { GameContext } from "../Game/Gamecontext/gamecontext";
 import RenderContext from "@/components/context/render";
+import ScreenWidth from "@/components/context/screenWidth";
 
 type UserProps = {
   id: number;
@@ -50,6 +51,7 @@ const Friend = (props: friendsType) => {
   const game = useContext(GameContext);
   const render = useContext(RenderContext);
   const router = useRouter();
+  const screen = useContext(ScreenWidth);
 
   const block = (id: number) => {
     socket?.emit("NewBlocked", { id: id, userId: user?.id });
@@ -119,6 +121,7 @@ const Friend = (props: friendsType) => {
             game?.setgamefriend(props.value.id);
             sendGame(props.value.id);
             render?.setRender("playGame");
+            router.push("/Game");
           }}
         />
         <Image
@@ -127,7 +130,8 @@ const Friend = (props: friendsType) => {
           height={24}
           onClick={() => {
             context?.setLabel({ id: props.value.id, isRoom: false });
-            // handleChat();
+            if (!screen?.large)
+                router.push("/Chat");
           }}
           alt="online"
           className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[24px] h-[24px] min-h-[24px]"
@@ -411,17 +415,13 @@ const Search = (state: { searchData: string }) => {
         if (dataSearch.data) {
           setSentInvits(dataSearch.data.sentInvits);
           const data: UserProps[] = dataSearch.data.users;
-          console.log("data: ", data);
           const filter: UserProps[] = data.filter((u) => {
             return !friends?.InvitsData?.some((s) => s.sender.id === u.id);
           });
-          console.log("filter: ", filter);
           setUsers(filter);
-          console.log("users: ", users);
           setIsLoading(false);
         }
       } catch (error) {
-        console.log(error);
       }
     };
     search();

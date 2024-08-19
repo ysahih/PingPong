@@ -28,8 +28,6 @@ const RoomUpdate: FC<{id: number, type: ROOMTYPE | undefined, setType: Dispatch<
     },
     onSubmit: (value: RoomFormatUpdate) => {
       setUpdating(true);
-      console.log("File:", file);
-      console.log("Value:", value);
 
       const updateRoom = async () => {
         const formData = new FormData();
@@ -58,8 +56,6 @@ const RoomUpdate: FC<{id: number, type: ROOMTYPE | undefined, setType: Dispatch<
               withCredentials: true,
             }
           );
-
-          console.log(response.data);
           // TODO: I have to set that data updated or not message
           if (response.data.status) {
 

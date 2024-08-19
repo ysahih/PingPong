@@ -13,7 +13,6 @@ const axiosApi = axios.create({
 axiosApi.interceptors.response.use(
  
   (response: AxiosResponse) => {
-    console.log('response', response)
     if (response.data && response.data.statusCode === 401 && window && window.location.pathname !== '/login') {
       window.location.href = "/login"; 
     }
@@ -21,7 +20,6 @@ axiosApi.interceptors.response.use(
   },
   
   // (error: CustomError) => {
-  //   console.log('response', error.response  )
   //   if (error.response) {
       
   //     switch (error.response.status) {
@@ -33,7 +31,6 @@ axiosApi.interceptors.response.use(
   //         break;
   //       case 400:
   //         // Handle bad requests, possibly by showing a user-friendly error message
-  //         console.log('A bad request error occurred:', error.response.data);
   //         // error.isHandled = true;  // This prevents further propagation in your promise chain
   //         break;
   //       default:

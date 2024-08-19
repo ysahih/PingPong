@@ -138,9 +138,10 @@ const UserOption = ({ className  , id}: userOptionClass) => {
 type Props = {
   handleMsgClick: () => void;
   user: ChatData;
+  isRoom: boolean;
 };
 
-const More = ({ user }: { user: ChatData }) => {
+const More = ({ user, isRoom }: { user: ChatData, isRoom: boolean }) => {
   const [showMsgOption, setShowMsgOption] = useState(false);
 
   const [timeAgo, setTimeAgo] = useState<TimeAgo | null>(null);
@@ -158,7 +159,8 @@ const More = ({ user }: { user: ChatData }) => {
 
   return (
     <div className="more  ">
-      <div className="dotscontainer" onClick={handleMsgOption}>
+     
+      {!isRoom ? ( <div className="dotscontainer" onClick={handleMsgOption}>
         <Image
           className="dots"
           src="/homeImages/dots.svg"
@@ -166,7 +168,7 @@ const More = ({ user }: { user: ChatData }) => {
           width={16}
           height={16}
         />
-      </div>
+      </div>) : null}
       <UserOption className={showMsgOption ? "" : "invisible"  } id={user.id}  />
       <p className="absolute bottom-0 p-2 text-[9px] date font-small">
         {new Date(user.createdAt).toDateString() ===
@@ -178,7 +180,7 @@ const More = ({ user }: { user: ChatData }) => {
   );
 };
 
-const Message = ({ handleMsgClick, user }: Props) => {
+const Message = ({ handleMsgClick, user, isRoom }: Props) => {
   return (
     <div className="relative Message cursor-pointer w-[20px]">
       <div className="chatData" onClick={handleMsgClick}>
@@ -202,7 +204,7 @@ const Message = ({ handleMsgClick, user }: Props) => {
         </div>
       </div>
 
-      <More user={user} />
+      <More user={user} isRoom={isRoom} />
     </div>
   );
 };
@@ -313,13 +315,11 @@ const Conversation = (props: ConvoProps) => {
             withCredentials: true,
           }
         );
-        console.log("data hhh:", response.data);
         setConvo(response.data);
 
         if (response.data.inGame) setUserState("inGame");
         else if (response.data.online) setUserState("online");
       } catch {
-        console.log("Error Fetching data for all messages !");
       }
     };
     fetchConvo();
@@ -391,9 +391,10 @@ const Conversation = (props: ConvoProps) => {
               <div
                 className="sender-info  cursor-pointer"
                 onClick={() => {
-                  render?.setRender("profileOverly");
+                  // render?.setRender("profileOverly");
+                  props.label.isRoom ? router.push("/room?id=" + props.label.id) : 
                   router.push("/users?userName=" + convo?.userName);
-                  // router.push("/room?name=" + props.roomName);
+
                 }}
               >
                 <Image
@@ -455,7 +456,7 @@ const Conversation = (props: ConvoProps) => {
                     }
                   >
                     {props.label.isRoom && user?.id !== message.userId && (
-                      <h1 className="font-xs text-xs text-[#081041]">user </h1>
+                      <h1 className="font-xs text-xs text-[#081041]">{message.userName}</h1>
                     )}
                     <p className="msgContent">{message?.content}</p>
                   </div>
@@ -513,7 +514,6 @@ const Chat = () => {
     });
   };
   useEffect(() => {
-    console.log("user when enters is: ", Convo?.label.id);
   });
 
   useEffect(() => {
@@ -526,10 +526,8 @@ const Chat = () => {
             withCredentials: true,
           }
         );
-        console.log("Convs:", response.data);
         setChatdata([...response.data].reverse());
       } catch (error) {
-        console.error("Error fetching data:", error);
       }
     };
     fetchData();
@@ -562,6 +560,7 @@ const Chat = () => {
           content: newChatData.lastMessage,
           createdAt: newChatData.createdAt,
           senderID: newChatData.id,
+          userName: newChatData.userName,
         }); //check for isRoom
     });
     return () => {
@@ -577,7 +576,7 @@ const Chat = () => {
           label={Convo?.label!}
           handleMsgClick={() => Convo?.setLabel({ id: 0, isRoom: false })}
           handleConvo={() =>
-            setInConvo({ content: "", createdAt: new Date(), senderID: 0 })
+            setInConvo({ content: "", createdAt: new Date(), senderID: 0 , userName: ""})
           }
           inConvo={inConvo!}
         />
@@ -598,6 +597,7 @@ const Chat = () => {
                       Convo?.setLabel({ id: user.id, isRoom: user.isRoom })
                     }
                     user={user}
+                    isRoom={user.isRoom}
                   />
                 ))
               : null}

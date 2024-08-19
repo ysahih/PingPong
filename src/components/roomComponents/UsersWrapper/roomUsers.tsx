@@ -32,7 +32,7 @@ const RoomUser :React.FC<{id :number, settings :Dispatch<SetStateAction<boolean>
 
             if (users.data)
             {
-                console.log(users.data);
+
                 const founded :RoomUsers = users.data?.users?.find((user :RoomUsers) => user.userName === curUser?.userName);
                 setUsers(users?.data?.users);
                 setCurUserStatus(founded);
@@ -49,7 +49,7 @@ const RoomUser :React.FC<{id :number, settings :Dispatch<SetStateAction<boolean>
         if (users)
         {
             socket?.on('UpdateStatus', (payload :{userId: number, roomId: number, role: 'OWNER' | 'ADMIN' | 'USER', isMuted: boolean}) => {
-                console.log(payload);
+
 
                 // if (payload.roomName === roomProps.name) {
                 if (payload.roomId === roomProps.id) {
@@ -70,7 +70,7 @@ const RoomUser :React.FC<{id :number, settings :Dispatch<SetStateAction<boolean>
 
             socket?.on('newJoin', (payload :RoomUsers) => {
 
-                console.log("Join:", payload);
+
 
                 if (payload.roomId === roomProps.id)
                     setUsers((user) => [...user, payload]);
@@ -78,7 +78,7 @@ const RoomUser :React.FC<{id :number, settings :Dispatch<SetStateAction<boolean>
 
             socket?.on('kickBanUser', (payload :KickBanUser) => {
 
-                console.log("KickBan:", payload);
+
 
                 if (payload.roomId === roomProps.id) {
                     // TODO: I have to take him to the home
@@ -121,7 +121,7 @@ const RoomUser :React.FC<{id :number, settings :Dispatch<SetStateAction<boolean>
             withCredentials: true,
         });
 
-        console.log(response.data);
+
 
         if (response.data.status) {
             if (response.data.deleted !== 1) {
@@ -132,7 +132,7 @@ const RoomUser :React.FC<{id :number, settings :Dispatch<SetStateAction<boolean>
                     // roomName: roomProps.name,
                 });
                 if (curUserStatus?.role === 'OWNER') {
-                    console.log("I'm Here !");
+
                     socket?.emit('changeOwner', {
                         // roomName: roomProps.name,
                         roomId: roomProps.id,
@@ -154,7 +154,7 @@ const RoomUser :React.FC<{id :number, settings :Dispatch<SetStateAction<boolean>
             withCredentials: true,
         });
 
-        console.log(response.data);
+
         if (response.data.status) {
             rout.push('/');
             socket?.emit('deleteRoom', {

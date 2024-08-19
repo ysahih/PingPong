@@ -67,7 +67,6 @@ const Info = () => {
           withCredentials: true,
         }
       );
-      console.log(res?.data);
       if (res?.data?.message) {
         toast.dismiss(toastId);
         toast.error(res?.data?.message, { icon: "⚠️" });

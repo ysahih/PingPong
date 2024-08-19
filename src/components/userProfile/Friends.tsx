@@ -10,6 +10,7 @@ import RenderContext from "../context/render";
 import { GameContext } from "@/app/Game/Gamecontext/gamecontext";
 import { useRouter } from "next/navigation";
 import { IoGameController } from "react-icons/io5";
+import ScreenWidth from "../context/screenWidth";
 
 interface friendsType {
   value: FriendsType;
@@ -20,11 +21,11 @@ const Friend = (props: friendsType) => {
   const user = useContext(UserDataContext);
   const context = useContext(ChatContext);
   const router = useRouter();
-
+  const screen = useContext(ScreenWidth);
   const render = useContext(RenderContext);
 
   const [blocking, setBlocking] = useState<boolean>(false);
-
+  
   const block = (id: number) => {
     socket?.emit("NewBlocked", { id: id, userId: user?.id });
   };
@@ -105,7 +106,8 @@ const Friend = (props: friendsType) => {
           height={24}
           onClick={() => {
             context?.setLabel({ id: props.value.id, isRoom: false });
-            // handleChat();
+            if (!screen?.large)
+                router.push("/Chat");
           }}
           alt="online"
           className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[24px] h-[24px] min-h-[24px]"

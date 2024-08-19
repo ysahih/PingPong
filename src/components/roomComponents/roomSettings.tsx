@@ -11,7 +11,7 @@ import BannedUsers from "./bannedUsers/BannedUsers";
 import { useRouter } from "next/navigation";
 import axiosApi from "../signComonents/api";
 
-const RoomSettings: FC<{ name: string }> = (roomProp) => {
+const RoomSettings: FC<{ id: string }> = (roomProp) => {
   const [roomType, setRoomType] = useState<ROOMTYPE>();
   const [id, setId] = useState<number>(0);
   const [ownerId, setOwnerId] = useState<number>(0);
@@ -26,7 +26,7 @@ const RoomSettings: FC<{ name: string }> = (roomProp) => {
       // setLoading(true);
 
       const data = await axiosApi.get(
-        process.env.NEST_API + "/user/getRoom/" + roomProp.name,
+        process.env.NEST_API + "/user/getRoom/" + roomProp.id,
         {
           withCredentials: true,
         }
@@ -35,18 +35,17 @@ const RoomSettings: FC<{ name: string }> = (roomProp) => {
       if (data.data) {
         setRoomType(data.data.type);
         setId(data.data.id);
-
         setLoading(false);
       }
       else
-        router.push('/404');
+        router.replace('/404');
     };
     data();
   }, []);
 
   useEffect(() => {
     socket?.on("roomType", (payload: { roomId: number, type: ROOMTYPE }) => {
-      console.log("Incoming Data:", payload);
+
       // if (payload.name)
       //   setRoomName(payload.name);
       if (id === payload.roomId && payload.type !== roomType)

@@ -23,7 +23,6 @@ const UserInvite :React.FC<{ownerId: number, user: UserInvited, setUsers: Dispat
             withCredentials: true,
         });
 
-        console.log('UserInvite:', data.data);
         if (data.data.status) {
             socket?.emit('roomInvite', {
                 adminId: prop.ownerId,

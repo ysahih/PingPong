@@ -24,11 +24,9 @@ export default function Signup() {
             });
             if (!response || response.data.error)
             throw new Error('Error');
-            console.log('data:  ', response.data, response?.data?.userName );
             context?.setUser({ userName: response?.data?.userName || '', image: response?.data?.image || '' });
             context?.setNeedUpdate(true);
         } catch (error: any) {
-                console.log(error); 
                 formik.setErrors({ Email: 'Email is already used or invalide' });
         }
     }

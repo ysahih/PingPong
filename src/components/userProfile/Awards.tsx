@@ -180,7 +180,6 @@ const Awards = (props: {userName: string}) => {
         awards = achiv.concat(nanAchiv);
         
         setAchievement(awards);
-        console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>", awards);
       }
     };
     getAwardsData();

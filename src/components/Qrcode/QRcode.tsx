@@ -27,12 +27,9 @@ const VerifyTwoFa = (props: VerifyTwoFaProps) => {
         withCredentials: true,
       });
       if (res.data) {
-        // //console.log('Success:', data);
-
         router.push("/login");
       }
     } catch (error) {
-      //console.error('Error:', error);
     }
   };
   const DisableTwoFaWithToken = async () => {
@@ -58,7 +55,7 @@ const VerifyTwoFa = (props: VerifyTwoFaProps) => {
     if (btnValue && btnValue.current) {
       (btnValue.current as HTMLButtonElement).textContent = "Verify";
     }
-    console.log(res.data);
+
   };
 
   return (

@@ -16,7 +16,6 @@ const BannedCard :FC<{id: number, userName: string, pic: string, roomId: number,
             withCredentials: true,
         });
 
-        console.log(response.data);
         if (response.data.status)
             prop.setBannedUsers(users => users.filter(user => user.id !== prop.id));
     };

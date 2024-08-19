@@ -104,7 +104,6 @@ const Invits = () => {
   // const [Invits, setInvits] = useState<InvitsType[] | null>(null);
 
   const Invits = useContext(ProfileDataContext)?.InvitsData || null;
-  console.log(Invits);
   return (
     <>
       {Invits && Invits.length > 0 ?

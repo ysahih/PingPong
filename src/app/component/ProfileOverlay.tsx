@@ -17,6 +17,7 @@ import ChatContext from "@/components/context/chatContext";
 import { MdOutlinePersonAddDisabled } from "react-icons/md";
 import { IoMdPersonAdd } from "react-icons/io";
 import { IoGameController } from "react-icons/io5";
+import ScreenWidth from "@/components/context/screenWidth";
 
 const FriendsType = (props: { value: USER }) => {
   const socket = useContext(SocketContext);
@@ -25,7 +26,7 @@ const FriendsType = (props: { value: USER }) => {
   const router = useRouter();
 
   const render = useContext(RenderContext);
-
+  const screen = useContext(ScreenWidth);
   const block = (id: number) => {
     socket?.emit("NewBlocked", { id: id, userId: user?.id });
   };
@@ -57,9 +58,7 @@ const FriendsType = (props: { value: USER }) => {
             game?.setGamemode("Dark Valley");
             game?.settype("friend");
             game?.setgamefriend(props.value.id);
-            console.log("send game1 ", game?.gametype, "33");
             sendGame(props.value.id);
-            console.log("send game ", props.value.id, user?.id);
             render?.setRender("playGame");
             router.push("/Game");
           }}
@@ -71,7 +70,8 @@ const FriendsType = (props: { value: USER }) => {
           height={24}
           onClick={() => {
             context?.setLabel({ id: props.value.id, isRoom: false });
-            // handleChat();
+            if (!screen?.large)
+                router.push("/Chat");
           }}
           alt="online"
           className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[24px] h-[24px] min-h-[24px]"
@@ -104,6 +104,7 @@ const InvitType = (props: { value: USER }) => {
   const [deny, setDeny] = useState<boolean>(false);
   const router = useRouter();
   const context = useContext(ChatContext);
+  const screen = useContext(ScreenWidth);
 
   return (
     <>
@@ -154,7 +155,9 @@ const InvitType = (props: { value: USER }) => {
           height={30}
           onClick={() => {
             context?.setLabel({ id: props.value.id, isRoom: false });
-            // handleChat();
+            context?.setLabel({ id: props.value.id, isRoom: false });
+            if (!screen?.large)
+                router.push("/Chat");
           }}
           alt="online"
           className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[30px] h-[30px] min-h-[30px]"
@@ -177,6 +180,7 @@ const SentInvit = (props: { value: USER }) => {
   const router = useRouter();
   const context = useContext(ChatContext);
   const [canceled, setCanceled] = useState<boolean>(false);
+  const screen = useContext(ScreenWidth);
 
   return (
     <>
@@ -202,7 +206,8 @@ const SentInvit = (props: { value: USER }) => {
           height={30}
           onClick={() => {
             context?.setLabel({ id: props.value.id, isRoom: false });
-            // handleChat();
+            if (!screen?.large)
+                router.push("/Chat");
           }}
           alt="online"
           className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[30px] h-[30px] min-h-[30px]"
@@ -220,7 +225,7 @@ const AddFried = (props: { value: USER }) => {
   const user = useContext(UserDataContext);
   const router = useRouter();
   const context = useContext(ChatContext);
-
+  const screen = useContext(ScreenWidth);
   const [sent, setSent] = useState<boolean>(false);
   return (
     <>
@@ -242,7 +247,8 @@ const AddFried = (props: { value: USER }) => {
           height={30}
           onClick={() => {
             context?.setLabel({ id: props.value.id, isRoom: false });
-            // handleChat();
+            if (!screen?.large)
+                router.push("/Chat");
           }}
           alt="online"
           className="cursor-pointer bg-cover bg-center hover:scale-[120%] transition-all duration-300 ease-in-out w-[30px] h-[30px] min-h-[30px]"

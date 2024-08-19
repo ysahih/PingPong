@@ -58,12 +58,10 @@ const getFriends = async (proes: PropesBlockedData) => {
     const res = await axiosApi.get(process.env.NEST_API + "/user/friends", {
       withCredentials: true,
     });
-    //   console.log(res);
     if (res) {
       proes.setFriendsData(res.data);
     }
   } catch (e) {
-    console.log(e);
   }
 };
 
@@ -76,12 +74,10 @@ const getInvits = async (proes: PropesgetInvits) => {
     const res = await axiosApi.get(process.env.NEST_API + "/user/invits", {
       withCredentials: true,
     });
-    //   console.log(res);
     if (res) {
       proes.setInvitsData(res.data);
     }
   } catch (e) {
-    console.log(e);
   }
 };
 
@@ -98,9 +94,7 @@ const getBlocked = async (proes: PropessetBlockedData) => {
       }
     );
     proes.setBlockedData(dataBlocked.data);
-    // console.log('Blocked ::', dataBlocked);
   } catch (error) {
-    console.log(error);
   }
 };
 
@@ -159,7 +153,6 @@ export default function Parent({ children }: { children: React.ReactNode }) {
     });
 
     socket.on("online", (data: { id: number }) => {
-      console.log("online", data);
       if (data){
         
         setFriendsData((currentFriends) =>
@@ -174,7 +167,6 @@ export default function Parent({ children }: { children: React.ReactNode }) {
     });
 
     socket.on("offline", (data: { id: number }) => {
-      console.log("offline", data);
       if (data){
         setFriendsData((currentFriends) =>
           currentFriends
@@ -188,19 +180,15 @@ export default function Parent({ children }: { children: React.ReactNode }) {
     });
     // Setup event listeners only once
     socket.on("connect", () => {
-      console.log("socket connected::::::::::::::::::::::");
     });
 
     socket.on("disconnect", () => {
-      console.log("socket disconnected::::::::::::::::::::::");
     });
 
     // socket?.on("newConvo", (newChatData: ChatData) => {
-    //   console.log(newChatData);
     // })
 
     socket.on("DeleteFriend", (id: number) => {
-      console.log("DeleteFriend", id);
       setFriendsData((currentInvits) =>
         currentInvits
           ? currentInvits.filter((invit: FriendsType) => invit.id !== id)
@@ -209,7 +197,6 @@ export default function Parent({ children }: { children: React.ReactNode }) {
     });
 
     socket.on("UnBlocked", (id: number) => {
-      console.log("UnBlocked", id);
       setBlockedData((currentBlocked) =>
         currentBlocked
           ? currentBlocked.filter((blocked: FriendsType) => blocked.id !== id)
@@ -218,13 +205,11 @@ export default function Parent({ children }: { children: React.ReactNode }) {
     });
 
     socket.on("newConvo", (pylod: any) => {
-      console.log("msg: ", pylod);
     });
 
     socket.on("NewFriend", (data: FriendsType) => {
       if (data === undefined || !data) return;
       // if(FriendsData?.some((friend) => friend.id === data.id)) return;
-      // console.log("NewFriend", data);
       setFriendsData((currentFriends) =>
         currentFriends ? [...currentFriends, data] : [data]
       );
@@ -238,7 +223,6 @@ export default function Parent({ children }: { children: React.ReactNode }) {
     });
 
     socket.on("gameStatus", (gameStatus: {id: number, status: boolean}) => {
-        console.log("gameStatus:  ", gameStatus);
         if (gameStatus) {
           setFriendsData((currentFriends) =>
             currentFriends
@@ -255,7 +239,6 @@ export default function Parent({ children }: { children: React.ReactNode }) {
     })
 
     socket.on("NewInvit", (data: InvitsType) => {
-      console.log("NewInvit :", data);
       if (
         InvitsData?.find(
           (invit: InvitsType) => invit.sender.id === data.sender.id
@@ -268,7 +251,6 @@ export default function Parent({ children }: { children: React.ReactNode }) {
     });
 
     socket.on("DeleteInvit", (id: number) => {
-      console.log("DeleteInvit", id);
       setInvitsData((currentInvits) =>
         currentInvits
           ? currentInvits.filter((invit: InvitsType) => invit.sender.id !== id)
@@ -279,7 +261,6 @@ export default function Parent({ children }: { children: React.ReactNode }) {
     socket.on("NewBlocked", (data: FriendsType) => {
       // const isUserBlocked = BlockedData?.some((blocked: FriendsType) => blocked.id === data.id);
       // if (isUserBlocked) return;
-      // console.log("NewBlocked", data, isUserBlocked);
       setBlockedData((currentBlocked) =>
         currentBlocked ? [...currentBlocked, data] : [data]
       );
@@ -335,9 +316,7 @@ export default function Parent({ children }: { children: React.ReactNode }) {
           setData(data);
           if(data.inGame)
             router.push("/Game");
-          // console.log("Data:", res.data, data);
         } catch (error) {
-          // console.log('Error:', error);
           setRedirect(true);
           router.push("/login");
         }
@@ -356,8 +335,14 @@ export default function Parent({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
+    if (window.innerWidth < 1040) {
+      setLarge(false);
+    }
+    else {
+      setLarge(true);
+    }
     
-  })
+  },[]);
 
   return (
     <>

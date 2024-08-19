@@ -19,7 +19,6 @@ const BannedUsers :FC<{roomId :number}> = (banProp) => {
                 withCredentials: true,
             });
 
-            console.log("Data:", response.data);
 
             setBannedUsers(response.data);
             setLoading(false);

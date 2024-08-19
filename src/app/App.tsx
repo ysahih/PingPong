@@ -231,7 +231,8 @@ const Body = ({ children }: { children: React.ReactNode }) => {
       else {
         screenWidth?.setLarge(true);
         if (path == "/Chat") {
-          router.push("/"); 
+          router.replace("/");
+          // router.push("/"); 
         }
       }
     };

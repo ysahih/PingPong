@@ -23,7 +23,7 @@ const RoomInvites = () => {
                 withCredentials: true,
             });
 
-            console.log('UserInvites:', response.data);
+
             setRooms(response.data);
             setTimeout(() => setLoading(false), 2000);
         };
@@ -33,7 +33,7 @@ const RoomInvites = () => {
 
     useEffect(() => {
         socket?.on('newRoom', (payload :RoomInvite) => {
-            console.log('NewRoom:', payload);
+
             setRooms(rooms => [payload, ...rooms]);
         })
         return () => {

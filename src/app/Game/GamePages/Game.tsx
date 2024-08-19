@@ -40,7 +40,7 @@ const Game : React.FC<{}> = () => {
         setWinner(true);
       setgameover(true);
 
-      console.log(">>>>>>>>>>>>>>>>>>>>>gameover");
+
     }
     Socket?.on("LeaveGame", Gameover )
   }, [Socket]);
@@ -318,7 +318,7 @@ useEffect(() => {
           
         }
       }
-      console.log("touchmove" , p_y.current);
+
     }
 
   return (

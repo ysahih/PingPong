@@ -29,7 +29,6 @@ export default function AlertDialog  () {
 
   const handleave = () => {
     socket?.emit("LeaveGame",   { clientid : user?.id });
-    console.log(">>>>>>>>>>>>>>>>>>>>>gameover");
     setOpen(false);
   };
 

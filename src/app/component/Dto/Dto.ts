@@ -3,6 +3,7 @@ export interface Message {
     content: String;
     senderID: number;
     createdAt: Date;
+    userName: string;
 }
 
 export type ChatData = {

@@ -21,7 +21,6 @@ const InviteCard :React.FC<{userId: number | undefined, id: number, name :string
             withCredentials: true,
         });
 
-        console.log(response.data);
         if (response.data.status) {
             socket?.emit("joinRoom", {
                 userId: prop.userId,

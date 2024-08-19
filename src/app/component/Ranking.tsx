@@ -1,6 +1,5 @@
 "use client";
 import axios from "axios";
-import { Console } from "console";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { NoHistoy } from "../App";
@@ -19,7 +18,7 @@ const UserRank  :React.FC<{data : rankingdata }> = ( Props ) => {
 		<div className=" w-[90%]   m-auto flex justify-between  items-center  bg-[#1B1A55] rounded-full border-t-[1px] border-[#535C91] mt-[14px]">
 			<div className="  RankBlock h-[45px] w-[90%] m-auto   flex justify-between  items-center  ">
 				<div className="flex justify-start items-center w-[20%] gap-[10px]   ">
-					<Image  className="rounded-full  w-[40px] h-[40px]" 
+					<Image  className="rounded-full  w-[40px] h-[40px] cursor-pointer" 
 					onClick={() => {
 						router.push(`/users?userName=${Props.data.userName}`);
 					  }}
@@ -57,7 +56,7 @@ type rankingdata = {
 							  Array.isArray(Props.data) && Props.data && Props.data.length > 1  ?
 							<div className="secondPlace">
 								<Image src="./homeImages/firstplace.svg" width={18} height={7} alt="profile"/>
-								<Image  className="rounded-full w-[43px] h-[43px] " 	
+								<Image  className="rounded-full w-[43px] h-[43px] cursor-pointer" 	
 								src={ Props.data[1].image?  Props.data[1].image : "./homeImages/memeber1.svg"}
 								onClick={() => {
 									if (Props.data)
@@ -74,7 +73,7 @@ type rankingdata = {
 							 Array.isArray(Props.data) && Props.data && Props.data.length > 0  ?
 							<div className="firstPlace">
 								<Image src="./homeImages/firstplace.svg" width={30} height={16} alt="profile"/>
-								<Image  className="rounded-full w-[43px] h-[43px] "  
+								<Image  className="rounded-full w-[43px] h-[43px] cursor-pointer"  
 								src={ Props.data[0].image?  Props.data[0].image : "./homeImages/memeber1.svg"}
 								 width={60} height={60} alt="profile"
 								 onClick={() => {
@@ -90,7 +89,7 @@ type rankingdata = {
 								Array.isArray(Props.data) && Props.data && Props.data.length > 2  ?
 									<div className="thirdPlace">
 									<Image src="./homeImages/firstplace.svg" width={18} height={7} alt="profile"/>
-									<Image  className="rounded-full w-[43px] h-[43px] " 
+									<Image  className="rounded-full w-[43px] h-[43px] cursor-pointer" 
 									src={ Props.data[2].image?  Props.data[2].image : "./homeImages/memeber1.svg"}
 										width={43} height={43} alt="profile"
 										onClick={() => {
@@ -121,8 +120,7 @@ const Ranking = ()=>{
 				setRankingData(ranking.data )
 
 			}
-			console.log(rankingData, "--", ranking.data);
-				setreciveresponse(true);
+			setreciveresponse(true);
 		}
 		data();
 	}, [])
