@@ -19,12 +19,9 @@ export class UsersServices {
   addUser(socket: Socket, user: User, cb: (socket: Socket, rooms: Room[]) => void) {
     if (this._users.has(user.id)) {
       this._users.get(user.id).socketId.push(socket.id);
-      console.log(`${user.username}:ID already Exists!`);
     } else {
       this._users.set(user.id, user);
-      console.log(`${user.username} added !`);
     }
-    console.log(this._users.get(user.id));
     // Connect to rooms
     cb(socket, this._users.get(user.id).rooms);
     // TODO: Made status as ONLINE
@@ -62,17 +59,12 @@ export class UsersServices {
 		{
 			cb(socket, this._users.get(data.id).rooms);
 
-			// console.log('Before: ');
-			console.log(this._users.get(data.id).socketId);
 
 			this._users.get(data.id).socketId.splice(data.index, 1);
 
-			// console.log('After: ');
-			// console.log(this._users.get(data.id).socketId);
 
 			if (!this._users.get(data.id).socketId.length)
 			{
-				// console.log(`${this._users.get(data.id).username} will be deleted !`);
 				this._users.delete(data.id);
 				return (data.id);
 			}
@@ -138,8 +130,6 @@ export class UsersServices {
 
     this._users.get(userId).rooms.push(room);
 
-    console.log("Room Updates:");
-    console.log(this._users.get(userId));
   }
 
   getAllSocketsIds(): string[] {
@@ -147,7 +137,6 @@ export class UsersServices {
 
     for (const user of this._users.values()) {
       arr = arr.concat(user.socketId);
-      // console.log(arr);
     }
 
     return arr;

@@ -25,7 +25,7 @@ import { GatewayService } from "./geteway.service";
 import * as jwt from "jsonwebtoken";
 import { FriendsService } from "src/user/user.service";
 import { Message } from "@prisma/client";
-import { datagame, gameSocket, userinfo } from "./gateway.gameclasses";
+import { datagame, gameSocket, userinfo , leavegame } from "./gateway.gameclasses";
 import { exit } from "process";
 import { Console } from "console";
 import { Room } from "./usersRooms/UserRoom.interface";
@@ -150,7 +150,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         await this._prisma.updateConversation(isExist.id, payload)
       }
   
-      console.log('Outgoing:', payload.message);
+    
       if (toUser) {
         const data = await this._prisma.getUser(payload.from, payload.message, payload.createdAt);
         toUser.socketId.forEach((socktId: string) => this._server.to(socktId).emit("newConvo", data));
@@ -604,8 +604,9 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
             SocketsTarget.forEach((socktId: string) => 
               {
                 console.log("gameStatus", status);
-                this._server.to(socktId).emit("gameStatus",{ id: this.gameRooms.rooms[curentroom].users[1].clientid , status: status});
                 this._server.to(socktId).emit("gameStatus",{ id: this.gameRooms.rooms[curentroom].users[0].clientid , status: status});
+                if (this.gameRooms.rooms[curentroom].type != "ai")
+                this._server.to(socktId).emit("gameStatus",{ id: this.gameRooms.rooms[curentroom].users[1].clientid , status: status});
               });
           }
       }
@@ -626,6 +627,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
                     level : base.level ,
                     achievenemt : base.achievement ,
                     numberofWin : base.winCounter,
+                    mode : lodingdata.mode
                 }
 				} catch (error) {
 					console.error("Error fetching user info:", error);
@@ -634,13 +636,19 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 				// console.log(1);
 				if ( !curentroom )
 				{
-					curentroom = this.gameRooms.findEmptyRoom(lodingdata.type , lodingdata.userid , lodingdata.mode);
+					curentroom = this.gameRooms.findEmptyRoom(lodingdata.type , lodingdata.userid );
 					try{
 					if (!curentroom)
 					{
 						// console.log(2);
-						this.gameRooms.addRoom(user , lodingdata.type , lodingdata.mode ,lodingdata.friendid);	
+						this.gameRooms.addRoom(user , lodingdata.type ,lodingdata.friendid);	
             curentroom =  this.gameRooms.searcheClientRoom(lodingdata.userid)
+            if (lodingdata.type == "ai")
+            {
+              
+              const ids : number[] = [this.gameRooms.rooms[curentroom].users[0].clientid , this.gameRooms.rooms[curentroom].users[1].clientid];
+              this.GameStatus(ids, true, curentroom);
+            }
 					}
 					else
 					{
@@ -661,7 +669,8 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 				{ 
 					// console.log(4);
 					client.join(curentroom);
-					this._server.to(curentroom).emit('RandomGameroom',{ room: this.gameRooms.rooms[curentroom] , alreadymatch: true});
+
+					this._server.to(curentroom).emit('RandomGameroom',{ room: this.gameRooms.rooms[curentroom] , alreadymatch: true });
 					return ;
 				}
 				// join game
@@ -670,7 +679,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 				if ( curentroom && (this.gameRooms.checkRoomsize(curentroom) === 2 ))
 				{
 					// console.log(5);
-					this._server.to(curentroom).emit('RandomGameroom' ,{ room: this.gameRooms.rooms[curentroom] , alreadymatch: false });
+					this._server.to(curentroom).emit('RandomGameroom' ,{ room: this.gameRooms.rooms[curentroom] , alreadymatch: false  });
 				}
 			}
 
@@ -696,7 +705,6 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 			if (!this.gameRooms.gameIntervals[room]) 
       {
         // console.log("create interval");
-        
 				this.gameRooms.gameIntervals[room] = setInterval(async () => {
           if(!this.gameRooms.game[room])
           {
@@ -727,7 +735,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
               await this.FriendsService.updateResult(user1, user2, "L" );
               await this.FriendsService.updateResult(user2, user1, "W" , level );
               this.gameRooms.rooms[room].users[1].numberofWin += 1;
-              console.log( "mooode" ,this.gameRooms.rooms[room].mode)
+              
               await  this.gameRooms.AssignAchievement(user2 ,1  , room  ,   this.FriendsService.updateAchievement.bind(this.FriendsService));
             }
 						this.gameRooms.clearIntervals(room);
@@ -780,7 +788,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       let user: userinfo ;
 				try {
 					const base = await this._prisma.userInfogame(mydata.clientID );
-					user = {clientid: mydata.clientID , image: base.image, username: base.userName , ingame: false , level : base.level , achievenemt : base.achievement , numberofWin : base.winCounter}
+					user = {clientid: mydata.clientID , image: base.image, username: base.userName , ingame: false , level : base.level , achievenemt : base.achievement , numberofWin : base.winCounter , mode : "Dark Valley"}
 				} catch (error) {
 					console.error("Error fetching user info:", error);
 				}
@@ -793,7 +801,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
           SocketsTarget.socketId.forEach((socktId: string) => 
             {
               
-              this._server.to(socktId).emit("gameresponse", {username : user.username , userimage : user.image  , message :  "accept game invitation" , response : true});
+              this._server.to(socktId).emit("gameresponse", {username : user.username , userimage : user.image  , message :  "accept game invitation" , response : true , type : "friend"});
             });
         }
         else if (mydata.response == false)
@@ -807,7 +815,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
           }
           SocketsTarget.socketId.forEach((socktId: string) => 
             {         
-              this._server.to(socktId).emit("gameresponse", {username : user.username , userimage : user.image  , message :  "reject game invitation" ,  response : false});
+              this._server.to(socktId).emit("gameresponse", {username : user.username , userimage : user.image  , message :  "reject game invitation" ,  response : false , type : "friend"});
             }); 
         }
       }
@@ -855,23 +863,86 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 					const base = await this._prisma.userInfogame(mydata.invitationSenderID);
 
 
-					user = {clientid: mydata.invitationSenderID, image: base.image, username: base.userName , ingame: false , level : base.level , achievenemt : base.achievement , numberofWin : base.winCounter}
+					user = {clientid: mydata.invitationSenderID, image: base.image, username: base.userName , ingame: false , level : base.level , achievenemt : base.achievement , numberofWin : base.winCounter , mode : mydata.mode}
 				} catch (error) {
 					console.error("Error fetching user info:", error);
           return;
 				}
       if (SocketsTarget) 
       {
-        let friendroon = this.gameRooms.searchefriendRoom(mydata.friendId);
+        let friendroon = this.gameRooms.searcheClientRoom(mydata.friendId);
         let curentroom = this.gameRooms.searcheClientRoom(mydata.invitationSenderID);
         if( !curentroom &&!friendroon)
         {
-            this.gameRooms.addRoom( {clientid : mydata.invitationSenderID, image: user.image, username: user.username , ingame: false , level : user.level , achievenemt : user.achievenemt ,numberofWin : user.numberofWin} , mydata.mode , "friend" , mydata.friendId);
+            this.gameRooms.addRoom( {clientid : mydata.invitationSenderID, image: user.image, username: user.username , ingame: false , level : user.level , achievenemt : user.achievenemt ,numberofWin : user.numberofWin , mode : mydata.mode}  , "friend" , mydata.friendId);
             SocketsTarget.socketId.forEach((socktId: string) => 
             {
-              this._server.to(socktId).emit("gameInvitation", {  invitationSenderID  : mydata.invitationSenderID , username : user.username , userimage : user.image  , message : "game invitation from" , mode : mydata.mode });
+              this._server.to(socktId).emit("gameInvitation", {  invitationSenderID  : mydata.invitationSenderID , username : user.username , userimage : user.image  , message : "game invitation from" , mode : mydata.mode , type : "friend"});
             });
           }
       }
     }
+
+    @SubscribeMessage('LeaveGame')
+		async LeaveGame(@ConnectedSocket() client: Socket, @MessageBody () leaveGame: { clientid: number }) {	
+      var room = this.gameRooms.searcheClientRoom(leaveGame.clientid);
+      if (!room)
+      {
+        return ;
+      }
+      
+      var user1  : number;
+      var user2 : number;
+      var user1index : number
+      var user2index : number
+      let response : leavegame = { id : leaveGame.clientid }
+
+      this._server.to(room).emit('LeaveGame', response);
+      if ( leaveGame.clientid == this.gameRooms.rooms[room].users[0].clientid)
+      {
+        user1 = this.gameRooms.rooms[room].users[0].clientid;
+        user2 = this.gameRooms.rooms[room].users[1].clientid;
+        user1index = 0;
+        user2index = 1;
+      }
+      else
+      {
+        user1 = this.gameRooms.rooms[room].users[1].clientid;
+        user2 = this.gameRooms.rooms[room].users[0].clientid;
+        user1index = 1;
+        user2index = 0;
+      }
+      if (this.gameRooms.rooms[room].users.length == 2)
+        {
+          const ids : number[] = [user1 , user2];
+          const status = await this.FriendsService.setGameStatus(ids, false);
+          if (status)
+          {
+            const SocketsTarget = this._users.getAllSocketsIds();
+            if (SocketsTarget) 
+            {
+              SocketsTarget.forEach((socktId: string) => 
+              {
+                this._server.to(socktId).emit("gameStatus",{ id: user1, status: false});
+                if (this.gameRooms.rooms[room].type != "ai")
+                  this._server.to(socktId).emit("gameStatus",{ id: user2 , status: false});
+              });
+            }
+          }
+    }
+    if ( this.gameRooms.rooms[room].type != "ai")
+    {            
+      this.gameRooms.updatelevel(room , user2)
+      const level =  this.gameRooms.rooms[room].users[user2index].level
+      await this.FriendsService.updateResult(user2, user1, "W"  , level);
+      await this.FriendsService.updateResult(user1, user2, "L"  );
+      this.gameRooms.rooms[room].users[user2index].numberofWin += 1;
+      await this.gameRooms.AssignAchievement(user2 ,user2index  , room  ,   this.FriendsService.updateAchievement.bind(this.FriendsService));
+    }
+      this.gameRooms.clearIntervals(room);
+      this.gameRooms.DeleteRoom(room);
+      this.gameRooms.Deletegame(room);
+      this.deleteRoom(room);
+    }
+
 }

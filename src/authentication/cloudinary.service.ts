@@ -36,7 +36,7 @@ export class  cloudinaryService {
         
             return result ? result.secure_url : null;
           } catch (error) {
-            console.error(error);
+           
             return null;
           }
     }

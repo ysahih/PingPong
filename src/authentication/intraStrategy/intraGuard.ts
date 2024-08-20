@@ -11,7 +11,7 @@ export class IntraAuthGuard extends AuthGuard('intra'){
             return Activate;
         }
         catch (error){
-            console.log(error);
+         
             throw new UnauthorizedException();
         }
     }

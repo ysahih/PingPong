@@ -93,7 +93,7 @@ export class authController {
         .cookie("jwt", generateJwtToken(user.user), {
           httpOnly: true,
           secure: false,
-          sameSite: "none", // Use 'none' in production with 'secure: true'
+          sameSite: "lax", // Use 'none' in production with 'secure: true'
         })
         .send({ login: "login success !" });
   }
@@ -126,7 +126,7 @@ export class authController {
           {
             httpOnly: true,
             secure: false,
-            sameSite: "none",
+            sameSite: "lax",
           }
         )
         .send(user.data);
@@ -139,7 +139,7 @@ export class authController {
       .cookie("jwt", req.user["jwt"], {
         httpOnly: true,
         secure: false,
-        sameSite: "none",
+        sameSite: "lax",
       })
       .redirect(this.FrontEndUrl);
   }
@@ -153,7 +153,7 @@ export class authController {
         .cookie("jwt", request.user, {
           httpOnly: true,
           secure: false,
-          sameSite: "none",
+          sameSite: "lax",
         })
         .redirect(this.FrontEndUrl);
     } catch (error) {
@@ -166,7 +166,7 @@ export class authController {
   async user(@Req() request: Request, @Res() res: Response) {
     // console.log(request.user);
     const user = await this.authS.findUser(request.user["userId"]);
-    console.log(request.user["userId"]);
+   
     user
       ? res.json(user)
       : res.status(404).json({
@@ -182,7 +182,7 @@ export class authController {
       .clearCookie("jwt", {
         httpOnly: true,
         secure: false,
-        sameSite: "none",
+        sameSite: "lax",
       })
       .send({ logout: "logout success !" });
   }
@@ -202,7 +202,7 @@ export class authController {
       // console.log(file);
       if (!file) throw new Error("file is required");
       const ImgUrl = await this.cloudinaryService.uploadImage(file);
-      console.log("Imgae----------:  ", ImgUrl);
+     
       // const fileBase64 = file.buffer.toString("base64");
       // const base64DataURI: string = `data:${file.mimetype};base64,${fileBase64}`;
       const base64DataURI: string = ImgUrl;
@@ -212,7 +212,7 @@ export class authController {
         userName,
         password
       );
-      console.log(user);
+     
       if (user.error) res.status(200).json(user.error);
       else {
         const data = {
@@ -225,7 +225,7 @@ export class authController {
           .cookie("jwt", generateJwtToken(data), {
             httpOnly: true,
             secure: false,
-            sameSite: "none",
+            sameSite: "lax",
           })
           .send("ok");
       }
@@ -249,7 +249,7 @@ export class authController {
           .cookie("jwt", generateJwtToken(data), {
             httpOnly: true,
             secure: false,
-            sameSite: "none",
+            sameSite: "lax",
           })
           .send("ok");
       }
@@ -265,11 +265,9 @@ export class authController {
     @Res() res: Response
   ) {
     try {
-      console.log(file);
       const ImgUrl = await this.cloudinaryService.uploadImage(file);
       if (!ImgUrl) res.send("error");
       const user = await this.authS.updateImage(req.user["userId"], ImgUrl);
-      console.log(user);
       if (user) res.send(ImgUrl);
     } catch (error) {
       res.status(400).json({ error: "image is required" });
