@@ -332,6 +332,7 @@ const Conversation = (props: ConvoProps) => {
         content: props.inConvo.content,
         userId: props.inConvo.senderID,
         createdAt: props.inConvo.createdAt,
+        userName: props.inConvo.userName,
       });
     props.handleConvo();
   }, [props.inConvo?.content]);
@@ -549,6 +550,7 @@ const Chat = () => {
   // listen
   useEffect(() => {
     socket?.on("newConvo", (newChatData: ChatData) => {
+      console.log("New:", newChatData);
       updateChat(newChatData);
 
       // if you are inside the convo we pass the new message as props
@@ -560,7 +562,8 @@ const Chat = () => {
           content: newChatData.lastMessage,
           createdAt: newChatData.createdAt,
           senderID: newChatData.id,
-          userName: newChatData.userName,
+          userName: newChatData.fromName || newChatData.userName,
+          // fromName: newChatData?.fromName,
         }); //check for isRoom
     });
     return () => {
