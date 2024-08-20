@@ -1,7 +1,6 @@
 "use client";
 import RoomSettings from "@/components/roomComponents/roomSettings";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
 
 const PagePage = () => {
 

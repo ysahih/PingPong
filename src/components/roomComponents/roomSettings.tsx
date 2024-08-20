@@ -5,7 +5,6 @@ import "./roomSettings.css";
 import InviteFriends from "./InviteFriends/InviteFriend";
 import RoomUpdate from "./roomUpdate/roomUpdate";
 import { ROOMTYPE } from "../createRoom/interfaces";
-import axios from "axios";
 import SocketContext from "@/components/context/socket";
 import BannedUsers from "./bannedUsers/BannedUsers";
 import { useRouter } from "next/navigation";
