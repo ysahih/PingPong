@@ -26,10 +26,7 @@ COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
 COPY script.sh .
 COPY tsconfig.json .
-# COPY .env .
-# COPY .env .env
 
-# Generate Prisma client (if needed)
 RUN npx prisma generate
 
 ENTRYPOINT [ "sh", "script.sh" ]
