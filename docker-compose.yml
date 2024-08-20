@@ -1,8 +1,4 @@
 
-# TODO: move this file to the root folder
-# For running the services, run this command: docker compose up --build
-# Also at the back .env uncoment FRONTEND_URL that has port 3001 and comment the other one
-
 networks:
   Pongy:
     name: Pongy
