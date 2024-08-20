@@ -160,6 +160,7 @@ const CreateRoom = () => {
 			name="file"
 			type="file"
 			accept="image/*"
+			autoComplete="none"
 			onChange={handleFileChange}
 		  />
 		</div>
@@ -172,6 +173,7 @@ const CreateRoom = () => {
 			  id="name"
 			  placeholder="Name"
 			  className="createRoom__input"
+			  autoComplete="none"
 			  onChange={formik.handleChange}
 			  onBlur={formik.handleBlur}
 			  value={formik.values.name}
@@ -230,6 +232,7 @@ const CreateRoom = () => {
 				id="password"
 				placeholder="Password"
 				className="createRoom__input"
+				autoComplete="none"
 				onChange={formik.handleChange}
 				onBlur={formik.handleBlur}
 				value={formik.values.password}
