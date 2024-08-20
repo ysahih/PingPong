@@ -185,7 +185,9 @@ input[type="file"] {
 	color: white;
 	font-family: 'Lalezar';
 	font-size: 20px;
-	padding: 8px 16px;
+	width: 100px;
+	height: 40px;
+	padding-top: 5px;
 	transition: .12s;
 }
 

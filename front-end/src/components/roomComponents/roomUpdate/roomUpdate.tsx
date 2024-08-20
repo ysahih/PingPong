@@ -196,6 +196,7 @@ const RoomUpdate: FC<{id: number, type: ROOMTYPE | undefined, setType: Dispatch<
               id="name"
               placeholder="Name"
               className="roomUpdate__input"
+              autoComplete="none"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.name}

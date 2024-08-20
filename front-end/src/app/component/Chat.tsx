@@ -315,6 +315,7 @@ const Conversation = (props: ConvoProps) => {
             withCredentials: true,
           }
         );
+        if (!response.data) return handleClick();
         setConvo(response.data);
 
         if (response.data.inGame) setUserState("inGame");
