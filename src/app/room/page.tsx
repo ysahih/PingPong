@@ -1,24 +1,18 @@
 "use client";
 import RoomSettings from "@/components/roomComponents/roomSettings";
-import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const PagePage = () => {
 
-    const params = useSearchParams().get('name');
+    const params = useSearchParams().get('id');
+    const router = useRouter();
 
-    useEffect(() => {
-        // Push to Not Found
-        // if (!params) {
-        //     console.log("EMPTY !");
-        //     return ;
-        // }
-        console.log(params);
-    }, [params]);
+    if (!params)
+        router.replace('/404');
 
     return (
         <>
-            {params && <RoomSettings name={params} /> }
+            {params && <RoomSettings id={params} /> }
         </>
     );
 }
