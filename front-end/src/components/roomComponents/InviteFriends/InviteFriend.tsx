@@ -47,7 +47,7 @@ const InviteFriends :React.FC<{id :number, roomId :number}> = (prop) => {
             <div className="invite__top--wrapper">
                 <h1 className="invite__header"> Invites </h1>
                 <div className="invite__search--wrapper">
-                    <input type="text" placeholder="search" className="invite__search" id="sear" onKeyDown={e => handleSubmit(e)}/>
+                    <input type="text" placeholder="search" className="invite__search" id="s" onKeyDown={e => handleSubmit(e)}/>
                 </div>
             </div>
             <div className="invite__friends--wrapper">
