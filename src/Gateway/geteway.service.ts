@@ -223,6 +223,7 @@ export class GatewayService {
         createdAt: payload.createdAt,
         lastMessage: payload.message,
         isRoom: true,
+        fromName: data.users[0].user.userName,
         // hasNoAccess: data.users[0].isMuted,
         // Will be deleted !
         isOnline: false,

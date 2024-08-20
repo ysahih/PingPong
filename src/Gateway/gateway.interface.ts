@@ -113,6 +113,7 @@ export class UserOutDTO {
 export class ChatData {
 	id				:number
 	userName		:string
+	fromName		?:string
 	image			:string
 	lastMessage		:string
 	createdAt		:Date
