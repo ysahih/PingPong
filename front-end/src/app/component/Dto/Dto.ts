@@ -1,13 +1,14 @@
 
 export interface Message {
     content: String;
-    senderID: number;
+    userId: number;
     createdAt: Date;
     userName: string;
 }
 
 export type ChatData = {
     id : number,
+    userId: number,
     userName: string,
     fromName?: string,
     image: string,

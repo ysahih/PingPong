@@ -232,7 +232,7 @@ const Conversation = (props: ConvoProps) => {
   const muted = useState<boolean>(false);
 
   const [userState, setUserState] = useState<string>("offline");
-
+  
   const friends = useContext(ProfileDataContext);
 
   useEffect(() => {
@@ -283,6 +283,7 @@ const Conversation = (props: ConvoProps) => {
 
       props.updateChat({
         id: props.label.id,
+        userId: sender?.id!,
         userName: convo?.userName!,
         image: convo?.image!,
         lastMessage: Input,
@@ -331,7 +332,7 @@ const Conversation = (props: ConvoProps) => {
     if (props.inConvo?.content)
       appendMessage({
         content: props.inConvo.content,
-        userId: props.inConvo.senderID,
+        userId: props.inConvo.userId,
         createdAt: props.inConvo.createdAt,
         userName: props.inConvo.userName,
       });
@@ -436,28 +437,29 @@ const Conversation = (props: ConvoProps) => {
               className="convoHolder h-[60vh] xl:h-[70vh] p-2"
               ref={scrollableDivRef}
             >
-              {convo?.messages?.map((message: any, index: number) => (
+              {convo?.messages?.map((message: Message, index: number) => (
                 <div
                   key={index}
                   className={
-                    user?.id === message.userId ? "myMsg" : "othersMsg"
+                    user?.id === message.userId? "myMsg" : "othersMsg"
                   }
                 >
                   <p
                     className={`sentAt ${
-                      user?.id !== message.userId ? "othersDate" : "myDate"
+                      (user?.id !== message.userId) ? "othersDate" : "myDate"
                     }`}
                   >
                     {timeAgo?.format(new Date(message.createdAt))}
                   </p>
                   <div
                     className={
-                      user?.id !== message.userId
+                      (user?.id !== message.userId)
                         ? "othersContent"
                         : "myContent"
                     }
                   >
                     {props.label.isRoom && user?.id !== message.userId && (
+                      console.log("message", message, "user", user?.id),
                       <h1 className="font-xs text-xs text-[#081041]">{message.userName}</h1>
                     )}
                     <p className="msgContent">{message?.content}</p>
@@ -545,7 +547,7 @@ const Chat = () => {
           olddata.isRoom == newChatData.isRoom && olddata.id === newChatData.id
       )
     )
-      setChatdata(chatdata.filter((chat) => chat.id !== newChatData.id)); // to be tested!!
+      setChatdata(chatdata.filter((chat) => chat.id === newChatData.id && chat.isRoom != newChatData.isRoom || chat.id !== newChatData.id)); // to be tested!!
     appendChat(newChatData);
   };
   // listen
@@ -562,7 +564,7 @@ const Chat = () => {
         setInConvo({
           content: newChatData.lastMessage,
           createdAt: newChatData.createdAt,
-          senderID: newChatData.id,
+          userId: newChatData.userId,
           userName: newChatData.fromName || newChatData.userName,
           // fromName: newChatData?.fromName,
         }); //check for isRoom
@@ -580,7 +582,7 @@ const Chat = () => {
           label={Convo?.label!}
           handleMsgClick={() => Convo?.setLabel({ id: 0, isRoom: false })}
           handleConvo={() =>
-            setInConvo({ content: "", createdAt: new Date(), senderID: 0 , userName: ""})
+            setInConvo({ content: "", createdAt: new Date(), userId: 0 , userName: ""})
           }
           inConvo={inConvo!}
         />
