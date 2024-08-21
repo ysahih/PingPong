@@ -852,6 +852,7 @@ export class FriendsService {
                     orderBy: {
                       id: 'desc',
                     },
+                    skip: 1,
                     take: 1,
                     select: {
                       // id: true,
@@ -896,6 +897,7 @@ export class FriendsService {
 
       if (lastMessajes?.rooms.length) {
         lastMessajes.rooms.forEach((room) => {
+          console.log("Room:", JSON.stringify(room, null, 2));
           let orgRoom = new ChatData();
   
           // if (room?.) {
