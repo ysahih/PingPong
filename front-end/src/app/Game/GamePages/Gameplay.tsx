@@ -18,7 +18,7 @@ const  PlayerReady : React.FC<{lodingdata : Userinfo } > = (props) => {
       <div  className="  w-[40px] h-[60px] " >
         <Image  className="rounded-full"  src={  (game?.gametype == "ai"  && user.username == "ROBOT")  ? "./homeImages/robot.svg"    :  ( user?.image || "./GamePlayImages/GamePlayerProfile.svg") }width={70} height={70}  alt ="Player image" />
       </div>
-      <p  className="text-white text-[10px]  md:text-[15px] text-center   " >{user?.username}</p>
+      <p  className="text-white text-[10px] mt-[7px] md:text-[15px] text-center  " >{user?.username}</p>
       <p  className="text-white  text-[10px]  md:text-[12px] text-center "> lv{user?.level}</p>
     </div>
   )

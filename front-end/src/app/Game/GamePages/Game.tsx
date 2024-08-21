@@ -327,12 +327,12 @@ useEffect(() => {
         <div className="fixed  flex  justify-center items-center  w-[100vw] h-[100vh] ">
           <div className="Gamecader flex  flex-col justify-center items-center   mt-5 relative" >
           <div 
-          className="text-white bg-[#1B266B] from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg  text-center me-2 mb-3  ">
+          className=" bg-[#1B266B] from-[#131795] via-[#d6d5e1] to-[#131795] hover:bg-gradient-to-br focus:ring-4 focus:outline-none  rounded-lg  text-center   ">
             <AlertDialog /> 
             </div>
             <div className="score flex  justify-between items-center  font-lalezar text-xs" id = "score">
               <div className="PlayerProfile">
-                <Image   src={ game?.lodingdata.users[0].image || ""  }  width={48} height={48}  alt ="Player image" 
+                <Image className="mb-[7px]"  src={ game?.lodingdata.users[0].image || ""  }  width={48} height={48}  alt ="Player image" 
                   style={
                     {
                      width: 40,  
@@ -340,7 +340,7 @@ useEffect(() => {
                       borderRadius: "50%"
                     }
                   }></Image>
-                <p  >{game?.lodingdata.users[0].username}</p>
+                <p  className="mt-[7px]" >{game?.lodingdata.users[0].username}</p>
               </div>
               <div  className="scoredisplay" id = "scoredisplay" >
                 <div className="leftscore" id = "leftscore">{position.current.player1score}
@@ -350,7 +350,7 @@ useEffect(() => {
                 </div>
               </div>
               <div className="PlayerProfile">    
-                <Image   src={ game?.gametype == "ai"  && game?.lodingdata.users[1].username == "ROBOT" ?  "./homeImages/robot.svg"  :   game?.lodingdata.users[1].image || "" } width={48} height={48}  alt ="Player image" 
+                <Image  className="mb-[7px]" src={ game?.gametype == "ai"  && game?.lodingdata.users[1].username == "ROBOT" ?  "./homeImages/robot.svg"  :   game?.lodingdata.users[1].image || "" } width={48} height={48}  alt ="Player image" 
                 style={
                         {
                          width: 40,  
@@ -359,7 +359,7 @@ useEffect(() => {
                         }
                       }
                 ></Image>
-                <p>{game?.lodingdata.users[1].username}</p>
+                <p className="mt-[7px]">{game?.lodingdata.users[1].username}</p>
               </div>
             </div>
             <div className="flex justify-center items-center" style = {{
