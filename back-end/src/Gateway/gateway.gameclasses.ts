@@ -161,6 +161,8 @@ export class datagame {
 			this.game[room].iscollision = true;
 			let speed =  Math.abs(this.game[room].ball.direction.x) + Math.abs(this.game[room].ball.direction.y);
 			// console.log("speed" , speed);
+			if (speed > 3)
+				speed = 3
 			if (player === 1)
 			{	
 				let base =  this.game[room].ball.y - this.game[room].player1.y ;
