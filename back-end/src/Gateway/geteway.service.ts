@@ -250,7 +250,7 @@ export class GatewayService {
   // }
 
   async findRoom(id: number, userId: number) {
-    console.log(id, userId);
+    // console.log(id, userId);
     const foundedRoom = await this._prisma.room.findUnique({
       where: {
         id: id,
@@ -290,7 +290,7 @@ export class GatewayService {
       },
     });
 
-    console.log(JSON.stringify(foundedRoom, null, 2));
+    // console.log(JSON.stringify(foundedRoom, null, 2));
 
     return foundedRoom;
   }

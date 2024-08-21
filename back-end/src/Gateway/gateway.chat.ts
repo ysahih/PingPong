@@ -163,8 +163,8 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   @SubscribeMessage("joinRoom")
   async handleJoinRoom(@ConnectedSocket() client :Socket, @Body() payload: JoinRoomDTO): Promise<void> {
 
-    console.log("Payload:", payload);
-    console.log(this._users.getUserById(payload.userId));
+    // console.log("Payload:", payload);
+    // console.log(this._users.getUserById(payload.userId));
     // Check if the room already exists in the map
     if (this._users.getUserById(payload.userId).rooms.findIndex(room => room.name === payload.room.name) >= 0)
       return ;
@@ -172,13 +172,13 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     // Check if the room Exists in DB
     const foundedRoom = await this._prisma.findRoom(payload.room.id, payload.userId);
 
-    console.log("Founded:", JSON.stringify(foundedRoom, null, 2));
+    // console.log("Founded:", JSON.stringify(foundedRoom, null, 2));
 
     // Brodcast that there's a new user in the room and add it the it's room data
     if (foundedRoom.users.length) {
 
       // TODO: I have to emit all users in the room to say that there's an new user
-      console.log("Entered!");
+      // console.log("Entered!");
 
       this._users.addNewRoom(payload.userId, payload.room);
       
@@ -329,7 +329,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     const owner = this._users.getUserById(payload.ownerId);
     const checkInRoom = owner.rooms.find(room => room.id === payload.roomId);
 
-    console.log('Room:', room);
+    // console.log('Room:', room);
 
     // TODO:
     // 1. Chekc if thre room doesn't exist anymore
@@ -339,7 +339,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
     if (!room && checkInRoom?.UserRole === 'OWNER') {
       const allClients = await this._server.in(payload.roomId.toString()).fetchSockets();
-      console.log(allClients);
+      // console.log(allClients);
 
       client.to(payload.roomId.toString()).emit('deleted', {roomId: payload.roomId});
       this._server.socketsLeave(payload.roomId.toString());
@@ -356,7 +356,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   @SubscribeMessage("roomTypeChange")
   async RoomData(@ConnectedSocket() client: Socket, @Body() payload: {adminId: number, roomId: number, type: ROOMTYPE}): Promise<void> {
 
-    console.log(payload);
+    // console.log(payload);
 
     const adminChekcer = this._users.getUserById(payload.adminId);
     const room = adminChekcer.rooms.find(room => room.id === payload.roomId);
@@ -379,15 +379,15 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   @SubscribeMessage("roomInvite")
   async roomInvite(@ConnectedSocket() client: Socket, @Body() payload: {adminId: number, roomId: number, userId: number}): Promise<void> {
 
-    console.log(payload);
+    // console.log(payload);
 
     const check = await this._prisma.getInvite(payload.userId, payload.roomId);
     const checkInRoom = this._users.getUserById(payload.adminId).rooms.find(room => room.id === payload.roomId);
     const user = this._users.getUserById(payload.userId);
     const checkUser = user.rooms.find(room => room.id === payload.roomId);
 
-    console.log(check);
-    console.log(checkInRoom);
+    // console.log(check);
+    // console.log(checkInRoom);
 
     if (check.invites[0] && checkInRoom && !checkUser) {
       user.socketId.forEach(socketId => this._server.to(socketId).emit('newRoom', {
@@ -514,14 +514,14 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage("NewBlocked")
   async handleNewBlocked(@Body() Payload: { id: number; userId: number }) {
-    console.log('-----BLOCK:-----')
-    console.log(Payload.id, Payload.userId);
-    console.log('------------------');
+    // console.log('-----BLOCK:-----')
+    // console.log(Payload.id, Payload.userId);
+    // console.log('------------------');
 	const targetFriend = await this.FriendsService.blockFriendRequest(
 	  Payload.userId,
 	  Payload.id
 	);
-  console.log("blocked", targetFriend);
+  // console.log("blocked", targetFriend);
 	if (!targetFriend) return
 	  const SocketsTarget = this._users.getUserById(Payload.id);
 	  if (SocketsTarget) {
@@ -590,7 +590,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     roomSockets.forEach(socket => {
       socket.leave(roomId);
     });
-    console.log(`Room ${roomId} deleted.`);
+    // console.log(`Room ${roomId} deleted.`);
   }
 
 
@@ -603,7 +603,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
           {
             SocketsTarget.forEach((socktId: string) => 
               {
-                console.log("gameStatus", status);
+                // console.log("gameStatus", status);
                 this._server.to(socktId).emit("gameStatus",{ id: this.gameRooms.rooms[curentroom].users[0].clientid , status: status});
                 if (this.gameRooms.rooms[curentroom].type != "ai")
                 this._server.to(socktId).emit("gameStatus",{ id: this.gameRooms.rooms[curentroom].users[1].clientid , status: status});
@@ -655,7 +655,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 						// console.log(3);
 						this.gameRooms.addUser(curentroom, user);
             const ids : number[] = [this.gameRooms.rooms[curentroom].users[0].clientid , this.gameRooms.rooms[curentroom].users[1].clientid];
-            console.log("ids", ids);
+            // console.log("ids", ids);
             this.GameStatus(ids, true, curentroom);
 					}
 
@@ -742,7 +742,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
             if (this.gameRooms.rooms[room])
             {
-              console.log("gmae over")
+              // console.log("gmae over")
               const ids : number[] = [this.gameRooms.rooms[room].users[0].clientid , this.gameRooms.rooms[room].users[1].clientid];
               await this.GameStatus(ids, false, room);
 
@@ -829,7 +829,7 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       {
         return ;
       }
-      console.log("ids---------", this.gameRooms.rooms[room].users.length);
+      // console.log("ids---------", this.gameRooms.rooms[room].users.length);
       if (this.gameRooms.rooms[room].users.length == 2)
       {
         const ids : number[] = [this.gameRooms.rooms[room].users[0].clientid , this.gameRooms.rooms[room].users[1].clientid];

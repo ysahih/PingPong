@@ -897,7 +897,7 @@ export class FriendsService {
 
       if (lastMessajes?.rooms.length) {
         lastMessajes.rooms.forEach((room) => {
-          console.log("Room:", JSON.stringify(room, null, 2));
+          // console.log("Room:", JSON.stringify(room, null, 2));
           let orgRoom = new ChatData();
   
           // if (room?.) {
@@ -1076,7 +1076,7 @@ export class FriendsService {
           });
         }
       }
-      console.log(convData);
+      // console.log(convData);
       // console.log(user);
       // console.log('--------------------------')
       return (convData);

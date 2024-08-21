@@ -337,7 +337,7 @@ export class datagame {
 		  if (this.rooms[room].users[user].level >=100  &&  this.checkAchievement(this.rooms[room].users[user] ,10) === false)
 				  await updateAchievementFn(id , 10);
 		} catch (error) {		
-			console.log("error" , error);
+			// console.log("error" , error);
 		}
 
 	}
