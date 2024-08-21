@@ -1,9 +1,9 @@
 import "@/styles/userProfile/userFriend.css";
-import React, { use, useEffect, useRef, useState } from "react";
+import React, {useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { FaAward } from "react-icons/fa6";
-import axios from "axios";
 import { CircularProgress, Tooltip } from "@mui/material";
+import axiosApi from "../signComonents/api";
 
 type AwardData = {
   idx: number;
@@ -149,7 +149,7 @@ const Awards = (props: {userName: string}) => {
   useEffect(() => {
     if (!props.userName) return;
     const getAwardsData = async () => {
-      const response = await axios.get(
+      const response = await axiosApi.get(
         process.env.NEST_API + "/user/achievements/" + `${props.userName}`,
         {
           withCredentials: true,
