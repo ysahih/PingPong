@@ -114,6 +114,7 @@ export class ChatData {
 	id				:number
 	userName		:string
 	fromName		?:string
+	userId 			:number
 	image			:string
 	lastMessage		:string
 	createdAt		:Date

@@ -224,6 +224,7 @@ export class GatewayService {
         lastMessage: payload.message,
         isRoom: true,
         fromName: data.users[0].user.userName,
+        userId: payload.from,
         // hasNoAccess: data.users[0].isMuted,
         // Will be deleted !
         isOnline: false,
@@ -523,6 +524,7 @@ export class GatewayService {
 
     return {
       id: id,
+      userId: id,
       userName: user.userName,
       image: user.image,
       isOnline: user.online,
