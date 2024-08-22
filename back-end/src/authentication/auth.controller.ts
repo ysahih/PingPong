@@ -169,7 +169,7 @@ export class authController {
    
     user
       ? res.json(user)
-      : res.status(404).json({
+      : res.status(200).json({
           statusCode: 404,
         });
   }
