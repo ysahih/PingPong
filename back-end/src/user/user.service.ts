@@ -1819,12 +1819,11 @@ export class FriendsService {
             },
           });
 
-          if (data[0]?.users?.length) {
-           
+          if (data?.users?.length) {
             await this.prisma.userRoom.update({
               where: {
                 userId_roomId: {
-                  userId: data[0].users[0].user.id,
+                  userId: data.users[0].user.id,
                   roomId: roomId,
                 },
               },
@@ -1833,7 +1832,7 @@ export class FriendsService {
               },
             });
           }
-          if (!data[0]?.users?.length) {
+          if (data && !data.users?.length) {
             await this.prisma.room.delete({
               where: {
                 id: roomId,
@@ -1842,7 +1841,7 @@ export class FriendsService {
             return {status: 1, message: "User leaved the room, Room will be deleted !", deleted: 1};
           }
           
-          return {status: 1, message: "User leaved the room", ownerId: data[0]?.users[0]?.user.id};
+          return {status: 1, message: "User leaved the room", ownerId: data?.users[0]?.user.id};
         }
 
         return {status: 1, message: "User leaved the room"};
@@ -1851,6 +1850,7 @@ export class FriendsService {
 
     } catch (e) {
     
+      // console.log(e);
       return {status: 0, message: 'Something wrong'};
     }
   }
