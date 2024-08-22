@@ -459,7 +459,7 @@ const Conversation = (props: ConvoProps) => {
                     }
                   >
                     {props.label.isRoom && user?.id !== message.userId && (
-                      console.log("message", message, "user", user?.id),
+                      // console.log("message", message, "user", user?.id),
                       <h1 className="font-xs text-xs text-[#081041]">{message.userName}</h1>
                     )}
                     <p className="msgContent">{message?.content}</p>
@@ -553,7 +553,7 @@ const Chat = () => {
   // listen
   useEffect(() => {
     socket?.on("newConvo", (newChatData: ChatData) => {
-      console.log("New:", newChatData);
+      // console.log("New:", newChatData);
       updateChat(newChatData);
 
       // if you are inside the convo we pass the new message as props

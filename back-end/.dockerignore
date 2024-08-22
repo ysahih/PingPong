@@ -1,6 +1,7 @@
-.next
+dist
 node_modules
 .vscode
 .gitignore
 README.md
 .DS_Store
+test

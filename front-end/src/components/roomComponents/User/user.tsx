@@ -45,7 +45,7 @@ const User :React.FC<{user :RoomUsers, curUser :RoomUsers | null, updateUsers :D
             withCredentials: true,
         });
 
-        console.log("Response:", response.data);
+        // console.log("Response:", response.data);
 
         if (response.data.status) {
             socket?.emit('userStatusInRoom', {
@@ -111,25 +111,6 @@ const User :React.FC<{user :RoomUsers, curUser :RoomUsers | null, updateUsers :D
                         <FormControlLabel control={<OverSwitch size="small" name="switch" id={user.userName + "1"} />} label={"Admin"} checked={user.role === 'ADMIN'} className="user__profile--role" onChange={() => handleStatus('role')} disabled={disableAdmin} />
                         <FormControlLabel control={<OverSwitch size="small" name="switch" id={user.userName + "2"} />} label={"Mute"} checked={user.isMuted} className="user__profile--role" onChange={() => handleStatus('mute')} disabled={disableMute}/>
                     </FormGroup>
-
-                    {/* <div className="user__profile--settings"> */}
-
-                        {/* <div className="user__profile--btn--wrapper"> */}
-                            {/* <button type={!disablKick ? "submit" : "button"} className={!disablKick ? "user__profile--btn--enabled" : "user__profile--btn--disabled"} onClick={handleKick}></button> */}
-                            {/* {
-                                !disableKick ?
-                                <button type="submit" className="user__profile--btn--enabled url--kick" onClick={() => handleKick('kick')}></button> :
-                                <Image src={loading} width={20} height={20} className="user__profile--loading" alt="Loading logo"/>
-                                // <button type="button" className="user__profile--btn--disabled url--kick"></button>
-                            }
-                            {
-                                !disableBan ? 
-                                <button type="submit" className="user__profile--btn--enabled url--ban" onClick={() => handleKick('ban')}></button> :
-                                <Image src={loading} width={20} height={20} className="user__profile--loading" alt="Loading logo"/>
-                            } */}
-                        {/* </div> */}
-
-                    {/* </div> */}
                 </>
             }
             {
@@ -139,46 +120,21 @@ const User :React.FC<{user :RoomUsers, curUser :RoomUsers | null, updateUsers :D
                         <FormControlLabel control={<OverSwitch size="small" name="switch" id={user.userName + "1"} />} label={"Admin"} className="user__profile--role" onChange={() => handleStatus('role')} disabled={disableAdmin} />
                         <FormControlLabel control={<OverSwitch size="small" name="switch" id={user.userName + "2"} />} label={"Mute"} checked={user.isMuted} className="user__profile--role" onChange={() => handleStatus('mute')} disabled={disableMute}/>
                     </FormGroup>
-
-                    {/* <div className="user__profile--settings">
-
-
-                            {
-                                !disableKick ?
-                                <button type="submit" className="user__profile--btn--enabled url--kick" onClick={() => handleKick('kick')}></button> :
-                                <Image src={loading} width={20} height={20} className="user__profile--loading" alt="Loading logo"/>
-                            }
-                            {
-                                !disableBan ? 
-                                <button type="submit" className="user__profile--btn--enabled url--ban" onClick={() => handleKick('ban')}></button> :
-                                <Image src={loading} width={20} height={20} className="user__profile--loading" alt="Loading logo"/>
-                            }
-                    </div> */}
-
                 </>
             }
             {
                 ((curUser?.role === 'OWNER' && user.role !== 'OWNER') || (curUser?.role === 'ADMIN' && user.role === 'USER')) &&
                 <div className="user__profile--settings">
-
-                    {/* <div className="user__profile--btn--wrapper">
-                        <Image className="user__profile--btn" src={kickUser.src} width={20} height={20} alt="Kick user svg" onClick={handleKick}/>
-                    </div>
-
-                    <div className="user__profile--btn--wrapper">
-                        <Image className="user__profile--btn" src={banUser.src} width={20} height={20} alt="Ban user svg" />
-                    </div> */}
-
-                        {
-                            !disableKick ?
-                            <button type="submit" className="user__profile--btn--enabled url--kick" onClick={() => handleKick('kick')} title="Kick user"></button> :
-                            <Image src={loading} width={20} height={20} className="user__profile--loading" alt="Loading logo"/>
-                        }
-                        {
-                            !disableBan ? 
-                            <button type="submit" className="user__profile--btn--enabled url--ban" onClick={() => handleKick('ban')} title="Ban user"></button> :
-                            <Image src={loading} width={20} height={20} className="user__profile--loading" alt="Loading logo"/>
-                        }
+                    {
+                        !disableKick ?
+                        <button type="submit" className="user__profile--btn--enabled url--kick" onClick={() => handleKick('kick')} title="Kick user"></button> :
+                        <Image src={loading} width={20} height={20} className="user__profile--loading" alt="Loading logo"/>
+                    }
+                    {
+                        !disableBan ? 
+                        <button type="submit" className="user__profile--btn--enabled url--ban" onClick={() => handleKick('ban')} title="Ban user"></button> :
+                        <Image src={loading} width={20} height={20} className="user__profile--loading" alt="Loading logo"/>
+                    }
                 </div>
             }
         </div>
