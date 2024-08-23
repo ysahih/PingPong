@@ -4,17 +4,21 @@ import {useFormik } from "formik";
 import { SignupForm, signupValidationSchema } from "@/components/Formik/Formik";
 import '@/styles/login/styles.css';
 import UpdateUserData from "@/components/context/update.context";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Signup() {
+    const [singin , setsing] = useState(false);
+
     const context = useContext(UpdateUserData);
     const router = useRouter();
     const signupRequest = async (values: typeof SignupForm) => {
+        
         try {
-            if (values.FirstName === "" || values.LastName === "" || values.Email === "") {
+            if (values.FirstName === "" || values.LastName === "" || values.Email === "" || singin === true) {
                 return;
             }
+            setsing(true);
             const response = await axios.post(process.env.NEST_API + '/signup', {
                 firstName: values.FirstName,
                 email: values.Email,
@@ -26,8 +30,10 @@ export default function Signup() {
             throw new Error('Error');
             context?.setUser({ userName: response?.data?.userName || '', image: response?.data?.image || '' });
             context?.setNeedUpdate(true);
+            setsing(false);
         } catch (error: any) {
                 formik.setErrors({ Email: 'Email is already used or invalide' });
+                setsing(false);
         }
     }
     

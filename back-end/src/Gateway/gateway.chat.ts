@@ -856,30 +856,40 @@ export class serverGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     @SubscribeMessage('SendGameInvite')
 		async SendGameInvite(@ConnectedSocket() client: Socket, @MessageBody () mydata: { invitationSenderID: number , mode : string ,friendId : number }) {	
      
-      const SocketsTarget = this._users.getUserById(mydata.friendId);
-      // console.log("SendGameInvite", mydata);
-      let user: userinfo ;
       try {
-					const base = await this._prisma.userInfogame(mydata.invitationSenderID);
-
-
-					user = {clientid: mydata.invitationSenderID, image: base.image, username: base.userName , ingame: false , level : base.level , achievenemt : base.achievement , numberofWin : base.winCounter , mode : mydata.mode}
-				} catch (error) {
-					console.error("Error fetching user info:", error);
-          return;
-				}
-      if (SocketsTarget) 
-      {
-        let friendroon = this.gameRooms.searcheClientRoom(mydata.friendId);
-        let curentroom = this.gameRooms.searcheClientRoom(mydata.invitationSenderID);
-        if( !curentroom &&!friendroon)
+        const SocketsTarget = this._users.getUserById(mydata.friendId);
+        const blocked = await this.FriendsService.SearchCantShow(mydata.invitationSenderID);
+        if (blocked && blocked.length > 0 && blocked.findIndex((element) => element.id === mydata.friendId) != -1)
         {
-            this.gameRooms.addRoom( {clientid : mydata.invitationSenderID, image: user.image, username: user.username , ingame: false , level : user.level , achievenemt : user.achievenemt ,numberofWin : user.numberofWin , mode : mydata.mode}  , "friend" , mydata.friendId);
-            SocketsTarget.socketId.forEach((socktId: string) => 
-            {
-              this._server.to(socktId).emit("gameInvitation", {  invitationSenderID  : mydata.invitationSenderID , username : user.username , userimage : user.image  , message : "game invitation from" , mode : mydata.mode , type : "friend"});
-            });
+          return ;
+        }
+        
+        // console.log("SendGameInvite", mydata);
+        let user: userinfo ;
+        try {
+            const base = await this._prisma.userInfogame(mydata.invitationSenderID);
+
+
+            user = {clientid: mydata.invitationSenderID, image: base.image, username: base.userName , ingame: false , level : base.level , achievenemt : base.achievement , numberofWin : base.winCounter , mode : mydata.mode}
+          } catch (error) {
+            console.error("Error fetching user info:", error);
+            return;
           }
+        if (SocketsTarget) 
+        {
+          let friendroon = this.gameRooms.searcheClientRoom(mydata.friendId);
+          let curentroom = this.gameRooms.searcheClientRoom(mydata.invitationSenderID);
+          if( !curentroom &&!friendroon)
+          {
+              this.gameRooms.addRoom( {clientid : mydata.invitationSenderID, image: user.image, username: user.username , ingame: false , level : user.level , achievenemt : user.achievenemt ,numberofWin : user.numberofWin , mode : mydata.mode}  , "friend" , mydata.friendId);
+              SocketsTarget.socketId.forEach((socktId: string) => 
+              {
+                this._server.to(socktId).emit("gameInvitation", {  invitationSenderID  : mydata.invitationSenderID , username : user.username , userimage : user.image  , message : "game invitation from" , mode : mydata.mode , type : "friend"});
+              });
+            }
+        }
+      }catch (error) {
+        
       }
     }
 
