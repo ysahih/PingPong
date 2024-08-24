@@ -1,0 +1,23 @@
+
+.roomSettings__wrapper {
+    margin: 150px auto 0;
+    width: 90%;
+    max-width: 840px;
+	/* height: 100%;
+	overflow-y: auto; */
+}
+
+.settings--wrapper {
+	display: flex;
+	gap: 15px;
+	height: 550px;
+	margin-top: 20px;
+    margin-bottom: 50px;
+}
+
+@media (max-width: 690px) {
+	.settings--wrapper {
+		flex-flow: column;
+		height: 1200px;
+	}
+}

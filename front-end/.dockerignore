@@ -1,0 +1,6 @@
+.next
+node_modules
+.vscode
+.gitignore
+README.md
+.DS_Store

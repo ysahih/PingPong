@@ -1,0 +1,56 @@
+
+.roomInvites {
+    margin: 150px auto 30px;
+	background-color: #070F2B;
+	width: 90%;
+	max-width: 800px;
+	height: 70%;
+	border-style: none;
+	border-radius: 20px;
+	border-top: solid 2px #1B266B;
+	display: flex;
+	flex-flow: column;
+}
+
+.roomInvites h1 {
+	background-color: inherit;
+	color: #8A99E9;
+	font-family: "Lalezar";
+	/* font-size: 50px; */
+	font-size: 32px;
+	margin: 20px 40px;
+	width: fit-content;
+}
+
+.roomInvites__users {
+	width: 80%;
+	height: 80%;
+	margin: 0 auto;
+	overflow-y: auto;
+	display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-rows: repeat(auto-fill, minmax(40px, 1fr));
+    gap: 1rem;
+	padding-right: 15px;
+}
+
+.roomInvites__inform {
+	display: flex;
+	flex-flow: column;
+	align-items: center;
+	margin: 0 auto;
+}
+
+.roomInvites__inform p {
+	color: #959dc8;
+	font-family: 'inter';
+	font-size: 15px;
+	margin-bottom: 5px;
+}
+
+@media (max-width: 1359px) and (min-width: 1300px) {
+    .roomInvites__users {
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		gap: 1rem;
+	}
+}

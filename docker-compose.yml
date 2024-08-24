@@ -1,0 +1,44 @@
+
+networks:
+  Pongy:
+    name: Pongy
+    driver: bridge
+
+services:
+  postgresSQL:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    env_file:
+      - ./back-end/.env
+    networks:
+      - Pongy
+
+  backend:
+    image: backend:latest
+    container_name: back
+    build: ./back-end
+    depends_on:
+      - postgresSQL
+    env_file:
+      - ./back-end/.env
+    restart: always
+    networks:
+      - Pongy
+    ports:
+      - '3000:3000'
+
+  frontend:
+    image: frontend:latest
+    container_name: front
+    build: ./front-end
+    depends_on:
+      - backend
+    env_file:
+      - ./front-end/.env
+    restart: always
+    networks:
+      - Pongy
+    ports:
+      - '3001:3000'
+

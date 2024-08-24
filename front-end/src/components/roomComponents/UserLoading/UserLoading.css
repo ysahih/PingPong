@@ -1,0 +1,29 @@
+
+.UserLoading__wrapper {
+    width: 250px;
+    height: 270px;
+    background-color: #060A23;
+    border-radius: 10px;
+    border-top: solid 2px #1B266B;
+    flex-shrink: 0;
+}
+
+.userLoading__loading {
+    width: 100%;
+    height: 50px;
+    position: relative;
+    background-image: linear-gradient(#060A23, #1D254B, #060A23);
+    /* margin: .1px; */
+    animation: move_down 1.5s linear infinite alternate;
+}
+
+@keyframes move_down {
+    from {
+        /* transform: translateY(0%); */
+        top: 0;
+    }
+    to {
+        /* transform: translateY(100%); */
+        top: 85%;
+    }
+}

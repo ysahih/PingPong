@@ -1,0 +1,42 @@
+
+.banned__wrapper {
+    width: 50%;
+    height: 100%;
+    background-color: #070F2B;
+    border-top: solid 2px #1B266B;
+    border-radius: 20px;
+}
+
+.banned__header {
+    background-color: inherit;
+	color: #8A99E9;
+	font-family: "Lalezar";
+	font-size: 32px;
+	margin: 20px 40px;
+	width: fit-content;
+}
+
+.banned__users {
+    width: 90%;
+    height: 440px;
+    margin: 0 auto;
+    padding-right: 10px;
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 10px;
+    overflow-y: scroll;
+}
+
+.banned__users p, .banned__users img {
+    margin: 0 auto;
+    color: #959dc8;
+    font-family: 'inter';
+    font-size: 15px;
+}
+
+@media (max-width: 690px) {
+	.banned__wrapper {
+        height: 500px;
+		width: 100%;
+	}
+}
