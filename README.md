@@ -42,6 +42,13 @@ docker-compose up --build
 1. Once the project is running, open your web browser and navigate to __http://localhost:3001__ to access the application.
 2. Users can sign up using OAuth, play Pong games, chat with other users, and view their profiles.
 
+## Contributors
+
+- [@Youssef](https://github.com/ysahih)
+- [@Mouad](https://github.com/mouadsrk)
+- [@Essadike](https://github.com/essadike-elhafiane)
+- [@Adil](https://github.com/ADILRAQ)
+
 ### Pongy View
 
 ![alt text](https://github.com/ysahih/PingPong/blob/main-dev/Readme-Assets/Pongy-Pictures.png/?raw=true)
